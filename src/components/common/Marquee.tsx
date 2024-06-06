@@ -47,10 +47,10 @@ export default function InfinityMarquee() {
       </StyledSpan>
       <StyledSpan
         style={{
-          fontSize: '32px',
+          fontSize: '44px',
           fontWeight: 'bold',
-          right: '0px',
-          top: '30px',
+          right: '-40px',
+          top: '10px',
         }}
       >
         마음에 안정이 필요해!
@@ -93,7 +93,7 @@ export default function InfinityMarquee() {
           bottom: '100px',
         }}
       >
-        독특한 화분 어디 없을까?
+        이 식물 이름이 뭘까?
       </StyledSpan>
       <StyledSpan
         style={{
@@ -103,7 +103,7 @@ export default function InfinityMarquee() {
           bottom: '160px',
         }}
       >
-        잎사귀에 왜 노랗게 변했지..?
+        잎사귀가 왜 노랗게 변했지..?
       </StyledSpan>
       <StyledSpan
         style={{
@@ -161,11 +161,6 @@ export default function InfinityMarquee() {
 
 const StyledSpan = styled.span`
   position: absolute;
-  color: rgba(20, 20, 20, 1);
+  color: rgba(40, 40, 40, 1);
   transition: all 0.3s ease;
-  cursor: pointer;
-
-  &:hover {
-    transform: scale(1.1);
-  }
 `
