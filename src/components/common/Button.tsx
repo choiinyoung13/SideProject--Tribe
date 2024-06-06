@@ -24,14 +24,14 @@ const Btn = styled.button<{ hover: boolean }>`
   display: flex;
   align-items: center;
   font-size: 1rem;
-  background-color: #fff;
-  border: 1px solid rgba(20, 20, 20, 1);
+  background-color: rgba(20, 20, 20, 1);
+  color: #fff;
   padding: 10px 20px;
   cursor: pointer;
 
   &:hover {
-    background-color: ${props => (props.hover ? 'rgba(20,20,20,1)' : '#fff')};
-    color: ${props => (props.hover ? '#fff' : 'rgba(20,20,20,1)')};
+    background-color: ${props =>
+      props.hover ? 'rgba(30,30,30,1)' : 'rgba(160,160,160,1)'};
   }
 `
 
