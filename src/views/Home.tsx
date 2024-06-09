@@ -1,21 +1,27 @@
 import styled from 'styled-components'
-import home_image from '../assets/images/home.jpg'
-import home_image2 from '../assets/images/home2.jpg'
-import home_image3 from '../assets/images/home3-2.jpg'
+import home_image from '../assets/images/home_web_1.jpg'
+import home_image2 from '../assets/images/home_web_2.jpg'
+import home_image3 from '../assets/images/home_web_3.jpg'
+import home_tablet_image1 from '../assets/images/home_tablet_1.jpg'
+import home_tablet_image2 from '../assets/images/home_tablet_2.jpg'
+import home_tablet_image3 from '../assets/images/home_tablet_3.jpg'
 import Button from '../components/common/Button'
 import InfinityMarquee from '../components/common/Marquee'
+import useWindowWidth from '../hooks/useWindowWidth'
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { RiInstagramFill } from 'react-icons/ri'
-import { FaSquareFacebook } from 'react-icons/fa6'
-import { FaYoutube } from 'react-icons/fa6'
+import { FaSquareFacebook, FaYoutube } from 'react-icons/fa6'
+import MobileHome from './MobileHome'
 
 export default function Home() {
   const firstSectionRef = useRef<HTMLElement | null>(null)
   const secondSectionRef = useRef<HTMLElement | null>(null)
   const thirdSectionRef = useRef<HTMLElement | null>(null)
-  const [isOnMouse, setIsOnMounse] = useState(false)
+  const [isOnMouse, setIsOnMouse] = useState(false)
   const lastScrollY = useRef(0)
+
+  const windowWidth = useWindowWidth()
 
   useEffect(() => {
     const observer = new IntersectionObserver(entries => {
@@ -54,7 +60,6 @@ export default function Home() {
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > lastScrollY.current) {
-        // Scrolling down
         if (
           secondSectionRef.current &&
           window.scrollY < secondSectionRef.current.offsetTop
@@ -73,7 +78,6 @@ export default function Home() {
           })
         }
       } else if (window.scrollY < lastScrollY.current) {
-        // Scrolling up
         if (
           secondSectionRef.current &&
           window.scrollY > secondSectionRef.current.offsetTop
@@ -99,29 +103,35 @@ export default function Home() {
     }
   }, [])
 
+  if (windowWidth <= 414) {
+    return <MobileHome />
+  }
+
   return (
     <HomeCon>
-      <FirstSection ref={firstSectionRef}>
-        <div>
+      <Section ref={firstSectionRef}>
+        <TextBox>
           <span>" 001</span>
           <p>
             당신의 식물 파트너 Tribe에 오신걸 환영합니다. <br />
-            Tribe의 다양한 서비스와 함께 지구와 당신의 삶을 더 푸르게
-            만들어보아요.
+            Tribe의 다양한 서비스와 함께 당신의 삶을 더 푸르게 만들어보아요.
             <br />
             시작은 작은 식물 하나에서부터입니다.
           </p>
-        </div>
-
+        </TextBox>
         <Link to={'/shop'}>
           <Button hover={true} btnType="link">
             Tribe와 함께하기
           </Button>
         </Link>
-        <Img src={home_image} alt="" draggable="false" />
-      </FirstSection>
-      <SecondSection ref={secondSectionRef}>
-        <div>
+        <Img
+          src={windowWidth <= 768 ? home_tablet_image1 : home_image}
+          alt=""
+          draggable="false"
+        />
+      </Section>
+      <Section ref={secondSectionRef}>
+        <TextBox>
           <span>" 002</span>
           <p>
             현대인들은 바쁜 일상 속에서 자연과의 연결을 찾고자 합니다.
@@ -141,8 +151,8 @@ export default function Home() {
             <br /> 이를 통해 사용자는 손쉽게 식물을 거래하고, 커뮤니티에서
             유용한 정보를 얻을 수 있습니다.
           </p>
-        </div>
-        <section>
+        </TextBox>
+        <SocialLinks>
           <Link to={'https://www.instagram.com/'}>
             <RiInstagramFill />
           </Link>
@@ -152,31 +162,30 @@ export default function Home() {
           <Link to={'https://www.youtube.com/'}>
             <FaYoutube />
           </Link>
-        </section>
-        <Img src={home_image2} alt="" draggable="false" />
-      </SecondSection>
-      <ThirdSection ref={thirdSectionRef}>
-        <ThirdSectionTextHoverCon
-          onMouseOver={() => {
-            setIsOnMounse(true)
-          }}
-          onMouseOut={() => {
-            setIsOnMounse(false)
-          }}
-          isOnMouse={isOnMouse}
+        </SocialLinks>
+        <Img
+          src={windowWidth <= 768 ? home_tablet_image2 : home_image2}
+          alt=""
+          draggable="false"
+        />
+      </Section>
+      <Section ref={thirdSectionRef}>
+        <HoverableCon
+          onMouseOver={() => setIsOnMouse(true)}
+          onMouseOut={() => setIsOnMouse(false)}
         >
-          <ThirdSectionTextCon isOnMouse={isOnMouse}>
+          <TextCon isOnMouse={isOnMouse}>
             <InfinityMarquee />
-          </ThirdSectionTextCon>
-          <ThirdSectionDetailText isOnMouse={isOnMouse}>
-            <FirstDetailText>
+          </TextCon>
+          <DetailText isOnMouse={isOnMouse}>
+            <Detail>
               <span>" 003</span>
               <div>
                 <p>
-                  Tribe 커뮤니티 기능은 식물 애호가들의 지식과 경험을 나눌 수
-                  있는 활발한 소통 공간을 제공합니다. 커뮤니티 게시판은 식물
-                  관리 팁, 질문과 답변 등의 주제로 구성되어 있어, 자신의 경험을
-                  공유하고 다른 사용자의 도움을 받을 수 있습니다.
+                  Tribe 커뮤니티는 식물 애호가들의 지식과 경험을 나눌 수 있는
+                  소통 공간을 제공합니다. 커뮤니티 게시판은 식물 관리 팁, 질문과
+                  답변 등의 주제로 구성되어 있어, 자신의 경험을 공유하고 다른
+                  사용자의 도움을 받을 수 있습니다.
                 </p>
                 <Link to={'/community'}>
                   <Button hover={true} btnType="link">
@@ -184,8 +193,8 @@ export default function Home() {
                   </Button>
                 </Link>
               </div>
-            </FirstDetailText>
-            <SecondDetailText>
+            </Detail>
+            <Detail>
               <span>" 004</span>
               <div>
                 <p>
@@ -200,11 +209,15 @@ export default function Home() {
                   </Button>
                 </Link>
               </div>
-            </SecondDetailText>
-          </ThirdSectionDetailText>
-        </ThirdSectionTextHoverCon>
-        <Img src={home_image3} alt="" draggable="false" />
-      </ThirdSection>
+            </Detail>
+          </DetailText>
+        </HoverableCon>
+        <Img
+          src={windowWidth <= 768 ? home_tablet_image3 : home_image3}
+          alt=""
+          draggable="false"
+        />
+      </Section>
     </HomeCon>
   )
 }
@@ -215,102 +228,154 @@ const HomeCon = styled.div`
 `
 
 const Img = styled.img`
-  width: 100%;
-  max-width: 1902px;
+  width: 1902px;
+
+  @media (max-width: 768px) {
+    width: 768px;
+  }
+
+  @media (max-width: 414px) {
+    margin-top: 70px;
+  }
 `
 
-const FirstSection = styled.section`
+const Section = styled.section`
   position: relative;
   width: 100%;
-  height: 105vh;
+  height: 100vh;
   overflow: hidden;
   opacity: 0;
   transition: all 1.5s ease;
 
-  div {
-    display: flex;
-    position: absolute;
-    bottom: 280px;
-    left: 40px;
+  &:nth-child(1) {
+    button {
+      position: absolute;
+      top: 710px;
+      left: 220px;
+      border: none;
+    }
+  }
+
+  &:nth-child(2) {
+    div {
+      top: 400px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    &:nth-child(1) {
+      button {
+        position: absolute;
+        top: 750px;
+        left: 150px;
+        font-size: 0.9rem;
+        border: none;
+      }
+    }
+
+    &:nth-child(2) {
+      div {
+        top: 450px;
+      }
+    }
+  }
+
+  @media (max-width: 414px) {
+    button {
+      position: absolute;
+      bottom: 470px;
+      left: 70px;
+      border: none;
+    }
+  }
+`
+
+const TextBox = styled.div`
+  display: flex;
+  position: absolute;
+  top: 570px;
+  left: 40px;
+  width: 900px;
+
+  span {
+    margin-right: 100px;
+    font-size: 2rem;
+    font-weight: bold;
+  }
+
+  p {
+    line-height: 30px;
+    font-size: 1rem;
+  }
+
+  @media (max-width: 768px) {
+    top: 610px;
 
     span {
-      margin-right: 100px;
-      font-size: 2rem;
+      margin-right: 50px;
+      font-size: 1.5rem;
       font-weight: bold;
     }
 
     p {
       line-height: 30px;
-      font-size: 1rem;
+      font-size: 0.9rem;
     }
   }
 
-  button {
-    position: absolute;
-    bottom: 180px;
-    left: 220px;
-    border: none;
-  }
-`
-
-const SecondSection = styled.section`
-  position: relative;
-  opacity: 0;
-  transition: all 1s ease;
-
-  div {
-    display: flex;
-    position: absolute;
-    bottom: 418px;
-    left: 40px;
-
-    span {
-      margin-right: 100px;
-      font-size: 2rem;
-      font-weight: bold;
-    }
+  @media (max-width: 414px) {
+    top: 350px;
+    left: 20px;
 
     p {
-      line-height: 30px;
-      font-size: 1rem;
+      line-height: 24px;
+      font-size: 0.7rem;
     }
-  }
 
-  section {
-    position: absolute;
-    bottom: 300px;
-    left: 222px;
-    font-size: 32px;
-    height: 40px;
-    width: 130px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    a {
-      color: rgba(20, 20, 20, 1);
+    span {
+      margin-right: 0px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      width: 50px;
+      line-height: 24px;
     }
   }
 `
 
-const ThirdSection = styled.section`
-  position: relative;
-  opacity: 0;
-  transition: all 1s ease;
-  width: 100%;
-  height: 100vh;
+const SocialLinks = styled.section`
+  position: absolute;
+  top: 720px;
+  left: 222px;
+  font-size: 32px;
+  height: 40px;
+  width: 130px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  a {
+    color: rgba(20, 20, 20, 1);
+  }
+
+  @media (max-width: 768px) {
+    top: 770px;
+    left: 150px;
+  }
+
+  @media (max-width: 414px) {
+  }
 `
 
-interface ThirdSectionTextConProps {
+const HoverableCon = styled.div``
+
+interface TextConProps {
   isOnMouse: boolean
 }
 
-const ThirdSectionTextHoverCon = styled.div<ThirdSectionTextConProps>``
-
-const ThirdSectionTextCon = styled.div<ThirdSectionTextConProps>`
+const TextCon = styled.div<TextConProps>`
   overflow: hidden;
   white-space: nowrap;
-  width: 100%;
+  width: 1902px;
   box-sizing: border-box;
   position: absolute;
   top: 180px;
@@ -319,16 +384,39 @@ const ThirdSectionTextCon = styled.div<ThirdSectionTextConProps>`
   opacity: ${props => (props.isOnMouse ? '0' : '1')};
 `
 
-const ThirdSectionDetailText = styled.div<ThirdSectionTextConProps>`
+const DetailText = styled.div<TextConProps>`
   position: absolute;
-  top: 210px;
-
+  top: 200px;
+  left: 300px;
   z-index: 99;
-  width: 100%;
-  height: 190px;
+  width: 1300px;
   display: flex;
-  align-items: start;
   justify-content: center;
+  opacity: ${props => (props.isOnMouse ? '1' : '0')};
+  transition: opacity 0.1s ease;
+
+  @media (max-width: 768px) {
+    width: 768px;
+    left: 150px;
+    flex-direction: column;
+  }
+
+  @media (max-width: 414px) {
+  }
+`
+
+const Detail = styled.div`
+  position: relative;
+  min-width: 500px;
+  height: 210px;
+  display: flex;
+
+  &:first-of-type {
+    border-right: 1px solid rgba(20, 20, 20, 1);
+    margin-right: 60px;
+    margin-bottom: 30px;
+    padding-right: 60px;
+  }
 
   span {
     font-size: 2rem;
@@ -341,24 +429,51 @@ const ThirdSectionDetailText = styled.div<ThirdSectionTextConProps>`
     margin-bottom: 50px;
     max-width: 400px;
   }
-`
-const FirstDetailText = styled.div`
-  display: flex;
 
   div {
-    flex-direction: column;
-    margin-left: 80px;
+    margin-left: 70px;
   }
-`
-const SecondDetailText = styled.div`
-  display: flex;
-  margin-left: 100px;
-  padding-left: 80px;
-  border-left: 1px solid rgba(20, 20, 20, 1);
 
-  div {
-    display: flex;
-    flex-direction: column;
-    margin-left: 80px;
+  button {
+    position: absolute;
+    top: 166px;
+    left: 150px;
+    border: none;
+    span {
+      font-size: 22px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    span {
+      font-size: 1.1rem;
+      font-weight: bold;
+      line-height: 26px;
+    }
+
+    p {
+      line-height: 30px;
+      font-size: 0.8rem;
+      margin-bottom: 50px;
+      max-width: 400px;
+    }
+
+    div {
+      margin-left: 20px;
+    }
+
+    button {
+      position: absolute;
+      top: 114px;
+      left: 60px;
+      border: none;
+      font-size: 0.7rem;
+      span {
+        font-size: 16px;
+      }
+    }
+  }
+
+  @media (max-width: 414px) {
   }
 `

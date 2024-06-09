@@ -13,7 +13,7 @@ export default function Button({ children, hover, btnType }: ButtonProps) {
       {children}
       {btnType === 'link' && (
         <RightIcon>
-          <MdOutlineKeyboardArrowRight size={22} />
+          <MdOutlineKeyboardArrowRight />
         </RightIcon>
       )}
     </Btn>
@@ -29,9 +29,18 @@ const Btn = styled.button<{ hover: boolean }>`
   padding: 10px 20px;
   cursor: pointer;
 
-  &:hover {
+  x &:hover {
     background-color: ${props =>
       props.hover ? 'rgba(30,30,30,1)' : 'rgba(160,160,160,1)'};
+  }
+
+  @media (max-width: 768px) {
+  }
+
+  @media (max-width: 414px) {
+    width: 120px;
+    font-size: 0.6rem;
+    padding: 6px 10px;
   }
 `
 
@@ -39,4 +48,13 @@ const RightIcon = styled.span`
   display: flex;
   align-items: center;
   margin-left: 20px;
+  font-size: 24px;
+
+  @media (max-width: 768px) {
+  }
+
+  @media (max-width: 414px) {
+    margin-left: 0px;
+    font-size: 14px;
+  }
 `
