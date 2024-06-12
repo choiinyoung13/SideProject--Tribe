@@ -1,5 +1,5 @@
-import styled from 'styled-components'
-import home_mobile_image from '../assets/images/home_mobile_1.jpg'
+import styled from "styled-components";
+import home_mobile_image from "../assets/images/home_mobile_1.jpg";
 
 export default function MobileHome() {
   return (
@@ -8,17 +8,17 @@ export default function MobileHome() {
         <MoblieImg src={home_mobile_image} alt="" draggable="false" />
       </MoblieSection>
     </MoblieHomeCon>
-  )
+  );
 }
 
 const MoblieHomeCon = styled.div`
   width: 100%;
   overflow: hidden;
-`
+`;
 
 const MoblieImg = styled.img`
-  width: 414px;
-`
+  width: 100%;
+`;
 
 const MoblieSection = styled.section`
   position: relative;
@@ -29,4 +29,4 @@ const MoblieSection = styled.section`
   &:nth-child(3) {
     height: 100vh;
   }
-`
+`;

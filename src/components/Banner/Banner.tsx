@@ -1,18 +1,18 @@
-import { Swiper, SwiperSlide } from 'swiper/react'
-import { Navigation, Autoplay } from 'swiper/modules'
-import banner1 from '../../assets/images/banner/banner_image_1.jpg'
-import banner2 from '../../assets/images/banner/banner_image_2.jpg'
-import banner3 from '../../assets/images/banner/banner_image_3.jpg'
-import banner_mobile_1 from '../../assets/images/banner/banner_mobile_image1.jpg'
-import banner_mobile_2 from '../../assets/images/banner/banner_mobile_image2.jpg'
-import banner_mobile_3 from '../../assets/images/banner/banner_mobile_image3.jpg'
-import styled from 'styled-components'
-import 'swiper/css'
-import 'swiper/css/navigation'
-import useWindowWidth from '../../hooks/useWindowWidth'
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Autoplay } from "swiper/modules";
+import banner1 from "../../assets/images/banner/banner_image_1.jpg";
+import banner2 from "../../assets/images/banner/banner_image_2.jpg";
+import banner3 from "../../assets/images/banner/banner_image_3.jpg";
+import banner_mobile_1 from "../../assets/images/banner/banner_mobile_image1.jpg";
+import banner_mobile_2 from "../../assets/images/banner/banner_mobile_image2.jpg";
+import banner_mobile_3 from "../../assets/images/banner/banner_mobile_image3.jpg";
+import styled from "styled-components";
+import "swiper/css";
+import "swiper/css/navigation";
+import useWindowWidth from "../../hooks/useWindowWidth";
 
 export default function Banner() {
-  const windowWidth = useWindowWidth()
+  const windowWidth = useWindowWidth();
 
   return (
     <StyledSwiper
@@ -20,8 +20,8 @@ export default function Banner() {
       slidesPerView={1}
       loop={true}
       navigation={{
-        prevEl: '.swiper-button-prev',
-        nextEl: '.swiper-button-next',
+        prevEl: ".swiper-button-prev",
+        nextEl: ".swiper-button-next",
       }}
       autoplay={{
         delay: 3000,
@@ -31,38 +31,47 @@ export default function Banner() {
     >
       <StyledSwiperSlide bgColor="rgba(1, 10, 9, 1)">
         <img
-          src={windowWidth <= 414 ? banner_mobile_1 : banner1}
+          src={windowWidth <= 600 ? banner_mobile_1 : banner1}
           alt="Banner 1"
         />
       </StyledSwiperSlide>
       <StyledSwiperSlide bgColor="rgba(248, 225, 212, 1)">
         <img
-          src={windowWidth <= 414 ? banner_mobile_2 : banner2}
+          src={windowWidth <= 600 ? banner_mobile_2 : banner2}
           alt="Banner 2"
         />
       </StyledSwiperSlide>
       <StyledSwiperSlide bgColor="rgba(216, 223, 227, 1)">
         <img
-          src={windowWidth <= 414 ? banner_mobile_3 : banner3}
+          src={windowWidth <= 600 ? banner_mobile_3 : banner3}
           alt="Banner 2"
         />
       </StyledSwiperSlide>
       <NavigationButton className="swiper-button-prev prev"></NavigationButton>
       <NavigationButton className="swiper-button-next next"></NavigationButton>
     </StyledSwiper>
-  )
+  );
 }
 
 const StyledSwiper = styled(Swiper)`
   position: relative;
   top: 120px; // nav 높이
   width: 100%;
-  @media (max-width: 414px) {
+
+  @media (max-width: 1024px) {
     top: 90px;
   }
-`
+
+  @media (max-width: 768px) {
+    top: 74px;
+  }
+
+  @media (max-width: 600px) {
+    top: 60px;
+  }
+`;
 interface SliderType {
-  bgColor: string
+  bgColor: string;
 }
 
 const StyledSwiperSlide = styled(SwiperSlide)<SliderType>`
@@ -75,22 +84,22 @@ const StyledSwiperSlide = styled(SwiperSlide)<SliderType>`
 
   img {
     min-width: 50%;
-    max-width: 960px;
-    height: 100%;
+    width: 960px;
   }
 
   @media (max-width: 768px) {
     img {
       min-width: 50%;
+      max-width: 960px;
     }
   }
 
-  @media (max-width: 414px) {
+  @media (max-width: 600px) {
     img {
       min-width: 50%;
     }
   }
-`
+`;
 
 const NavigationButton = styled.div`
   position: absolute;
@@ -123,7 +132,7 @@ const NavigationButton = styled.div`
     right: 40px;
   }
 
-  @media (max-width: 414px) {
+  @media (max-width: 600px) {
     &::after {
       color: rgba(150, 150, 150, 1);
       font-size: 1.5rem;
@@ -137,4 +146,4 @@ const NavigationButton = styled.div`
       right: 20px;
     }
   }
-`
+`;

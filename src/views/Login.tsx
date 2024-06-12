@@ -1,12 +1,12 @@
-import styled from 'styled-components'
-import Input from '../components/Common/Input'
-import google_logo from '../assets/images/logo_google.png'
-import kakao_logo from '../assets/images/logo_kakao.png'
-import login_image from '../assets/images/login_web_1.jpg'
-import useWindowWidth from '../hooks/useWindowWidth'
+import styled from "styled-components";
+import Input from "../components/common/Input";
+import google_logo from "../assets/images/logo_google.png";
+import kakao_logo from "../assets/images/logo_kakao.png";
+import login_image from "../assets/images/login_web_1.jpg";
+import useWindowWidth from "../hooks/useWindowWidth";
 
 export default function Login() {
-  const windowWidth = useWindowWidth()
+  const windowWidth = useWindowWidth();
 
   return (
     <LoginCon>
@@ -24,7 +24,7 @@ export default function Login() {
             <Input type="password" placeholder="비밀번호를 입력해주세요." />
             <HelperTextCon>
               <HelperText>
-                계정을 잊으셨나요? <span>ID찾기</span> 또는{' '}
+                계정을 잊으셨나요? <span>ID찾기</span> 또는{" "}
                 <span>비밀번호 찾기</span>
               </HelperText>
             </HelperTextCon>
@@ -46,21 +46,21 @@ export default function Login() {
         </ImgCon>
       )}
     </LoginCon>
-  )
+  );
 }
 
 const LoginCon = styled.div`
   width: 100%;
   height: 100vh;
   display: flex;
-`
+`;
 
 interface FormConType {
-  windowWidth: number
+  windowWidth: number;
 }
 
 const FormCon = styled.div<FormConType>`
-  width: ${props => (props.windowWidth === 1920 ? '50%' : '100%')};
+  width: ${(props) => (props.windowWidth === 1920 ? "50%" : "100%")};
   height: 100vh;
   over-flow: hidden;
   display: flex;
@@ -77,9 +77,9 @@ const FormCon = styled.div<FormConType>`
     }
   }
 
-  @media (max-width: 414px) {
+  @media (max-width: 600px) {
   }
-`
+`;
 const FormWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -87,30 +87,30 @@ const FormWrapper = styled.div`
   align-items: start;
   min-width: 460px;
 
-  @media (max-width: 414px) {
+  @media (max-width: 600px) {
     align-items: center;
     min-width: 100%;
   }
-`
+`;
 const FormTitle = styled.h2`
   font-size: 1.8rem;
   font-weight: bold;
 
-  @media (max-width: 414px) {
+  @media (max-width: 600px) {
     font-size: 1.3rem;
   }
-`
+`;
 
 const FormSubTitle = styled.p`
   font-size: 1rem;
   color: rgba(40, 40, 40, 1);
   margin: 20px 0 50px;
 
-  @media (max-width: 414px) {
+  @media (max-width: 600px) {
     font-size: 0.8rem;
     margin: 20px 0 38px;
   }
-`
+`;
 
 const LoginBtn = styled.button`
   color: #fff;
@@ -123,12 +123,12 @@ const LoginBtn = styled.button`
     background-color: rgba(30, 30, 30, 1);
   }
 
-  @media (max-width: 414px) {
+  @media (max-width: 600px) {
     font-size: 0.9rem;
     width: 85%;
     margin: 0 auto 14px;
   }
-`
+`;
 const GoogleLoginBtn = styled.button`
   color: rgba(20, 20, 20, 1);
   background-color: #fff;
@@ -146,7 +146,7 @@ const GoogleLoginBtn = styled.button`
     margin-right: 10px;
   }
 
-  @media (max-width: 414px) {
+  @media (max-width: 600px) {
     font-size: 0.9rem;
     width: 85%;
     margin: 0 auto 14px;
@@ -156,7 +156,7 @@ const GoogleLoginBtn = styled.button`
       height: 16px;
     }
   }
-`
+`;
 
 const KaKaoLoginBtn = styled.button`
   color: rgba(20, 20, 20, 1);
@@ -175,7 +175,7 @@ const KaKaoLoginBtn = styled.button`
     margin-right: 10px;
   }
 
-  @media (max-width: 414px) {
+  @media (max-width: 600px) {
     font-size: 0.9rem;
     width: 85%;
     margin: 0 auto;
@@ -185,13 +185,13 @@ const KaKaoLoginBtn = styled.button`
       height: 16px;
     }
   }
-`
+`;
 
 const HelperTextCon = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
-`
+`;
 
 const HelperText = styled.p`
   font-size: 0.9rem;
@@ -203,17 +203,18 @@ const HelperText = styled.p`
     font-weight: 600;
   }
 
-  @media (max-width: 414px) {
+  @media (max-width: 600px) {
     font-size: 0.8rem;
   }
-`
+`;
 
 const ImgCon = styled.div`
   width: 50%;
-  height: 920px;
+  height: 100vh;
   over-flow: hidden;
 
   img {
     width: 100%;
+    height: 100vh;
   }
-`
+`;

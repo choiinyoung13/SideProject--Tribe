@@ -1,42 +1,56 @@
-import styled from 'styled-components'
-import { Link, useLocation } from 'react-router-dom'
-import { useState } from 'react'
-import { FaBars, FaTimes } from 'react-icons/fa'
-import tribe_logo from '../../assets/images/logo_tribe.png'
+import styled from "styled-components";
+import { Link, useLocation } from "react-router-dom";
+import { useState } from "react";
+import { FaBars, FaTimes } from "react-icons/fa";
+import { ImInfo } from "react-icons/im";
+import tribe_logo from "../../assets/images/logo_tribe.png";
+import useWindowWidth from "../../hooks/useWindowWidth";
 
 export default function Nav() {
-  const [menuOpen, setMenuOpen] = useState(false)
-  const location = useLocation()
-  const pantName = location.pathname.slice(1)
+  const [menuOpen, setMenuOpen] = useState(false);
+  const location = useLocation();
+  const windowWidth = useWindowWidth();
+  const pantName = location.pathname.slice(1);
 
   const toggleMenu = () => {
-    setMenuOpen(!menuOpen)
-  }
+    setMenuOpen(!menuOpen);
+  };
 
   return (
     <>
-      <NavCon pantName={pantName}>
+      {windowWidth <= 600 && (
+        <Option>
+          <OptionLeft>
+            <ImInfo size={17} />
+            <span>앱 설치하고 10% 추가 할인받기</span>
+          </OptionLeft>
+          <OptionRight>
+            <OptionButton>앱 설치</OptionButton>
+          </OptionRight>
+        </Option>
+      )}
+      <NavCon pantName={pantName} windowWidth={windowWidth}>
         <NavLeft>
           <Logo>
             <img src={tribe_logo} alt="" />
           </Logo>
-          <NavLinks className={menuOpen ? 'open' : ''}>
-            <Link to={'/'}>
+          <NavLinks className={menuOpen ? "open" : ""}>
+            <Link to={"/"}>
               <li>HOME</li>
             </Link>
-            <Link to={'/shop'}>
+            <Link to={"/shop"}>
               <li>SHOP</li>
             </Link>
-            <Link to={'/community'}>
+            <Link to={"/community"}>
               <li>COMMUNITY</li>
             </Link>
           </NavLinks>
         </NavLeft>
         <NavRight>
-          <Link to={'/login'}>
+          <Link to={"/login"}>
             <li>LOGIN</li>
           </Link>
-          <Link to={'/join'}>
+          <Link to={"/join"}>
             <li>JOIN</li>
           </Link>
         </NavRight>
@@ -45,58 +59,78 @@ export default function Nav() {
         </HamburgerMenu>
         {menuOpen && (
           <MobileMenu>
-            <Link to={'/'} onClick={toggleMenu}>
+            <Link to={"/"} onClick={toggleMenu}>
               <li>HOME</li>
             </Link>
-            <Link to={'/shop'} onClick={toggleMenu}>
+            <Link to={"/shop"} onClick={toggleMenu}>
               <li>SHOP</li>
             </Link>
-            <Link to={'/community'} onClick={toggleMenu}>
+            <Link to={"/community"} onClick={toggleMenu}>
               <li>COMMUNITY</li>
             </Link>
-            <Link to={'/login'} onClick={toggleMenu}>
+            <Link to={"/login"} onClick={toggleMenu}>
               <li>LOGIN</li>
             </Link>
-            <Link to={'/join'} onClick={toggleMenu}>
+            <Link to={"/join"} onClick={toggleMenu}>
               <li>JOIN</li>
             </Link>
           </MobileMenu>
         )}
       </NavCon>
     </>
-  )
+  );
 }
 
 interface NavConType {
-  pantName: string
+  pantName: string;
+  windowWidth: number;
 }
 
 const NavCon = styled.nav<NavConType>`
-  position: fixed;
-  top: 0;
+  position: ${(props) =>
+    props.pantName === "" && props.windowWidth > 600 ? "fixed" : "absolute"};
+  top: 0px;
   z-index: 102;
   width: 100%;
   height: 120px;
   padding: 50px 60px;
   display: flex;
   justify-content: space-between;
-  background-color: ${props =>
-    props.pantName === 'login' ||
-    props.pantName === 'join' ||
-    props.pantName === ''
-      ? 'rgba(0,0,0,0)'
-      : 'rgba(255,255,255,1)'};
+  background-color: ${(props) =>
+    props.pantName === "login" ||
+    props.pantName === "join" ||
+    props.pantName === ""
+      ? "rgba(0,0,0,0)"
+      : "rgba(255,255,255,1)"};
 
-  @media (max-width: 414px) {
-    padding: 30px 30px; 20px 30px;
+  @media (max-width: 1024px) {
     height: 90px;
+    padding: 40px 60px;
   }
-`
+
+  @media (max-width: 768px) {
+    height: 74px;
+    padding: 0px 34px;
+  }
+
+  @media (max-width: 600px) {
+    top: 52px;
+    padding: 0px 26px 0px 26px;
+    display: flex;
+    align-items: center;
+    height: 60px;
+    width: 100%;
+  }
+`;
 
 const NavLeft = styled.div`
   display: flex;
   align-items: center;
-`
+
+  @media (max-width: 600px) {
+    align-items: start;
+  }
+`;
 
 const Logo = styled.div`
   width: 22px;
@@ -107,7 +141,11 @@ const Logo = styled.div`
     width: 100%;
     height: 100%;
   }
-`
+
+  @media (max-width: 1024px) {
+    margin-right: 0px;
+  }
+`;
 
 const NavLinks = styled.ul`
   display: flex;
@@ -124,6 +162,14 @@ const NavLinks = styled.ul`
 
     &:first-of-type {
       margin-left: 150px;
+    }
+  }
+
+  @media (max-width: 1024px) {
+    a {
+      &:first-of-type {
+        margin-left: 110px;
+      }
     }
   }
 
@@ -147,7 +193,7 @@ const NavLinks = styled.ul`
       }
     }
   }
-`
+`;
 
 const NavRight = styled.ul`
   display: flex;
@@ -170,18 +216,18 @@ const NavRight = styled.ul`
   @media (max-width: 768px) {
     display: none;
   }
-`
+`;
 
 const HamburgerMenu = styled.div`
   display: none;
   cursor: pointer;
 
   @media (max-width: 768px) {
-    display: block;
-
-    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    font-size: 1.4rem;
   }
-`
+`;
 
 const MobileMenu = styled.ul`
   display: none;
@@ -210,4 +256,38 @@ const MobileMenu = styled.ul`
   @media (max-width: 768px) {
     display: flex;
   }
-`
+`;
+
+const Option = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgba(40, 40, 40, 1);
+  color: #fff;
+  padding: 14px 18px 14px 20px;
+  font-size: 0.9rem;
+`;
+
+const OptionLeft = styled.div`
+  display: flex;
+  align-itmes: center;
+
+  span {
+    margin-left: 12px;
+  }
+`;
+
+const OptionRight = styled.div`
+  display: flex;
+  align-itmes: center;
+`;
+
+const OptionButton = styled.div`
+  background-color: #fff;
+  color: rgba(20, 20, 20, 1);
+  padding: 6px 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 14px;
+`;

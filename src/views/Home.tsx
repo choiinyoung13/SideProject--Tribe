@@ -1,61 +1,62 @@
-import styled from 'styled-components'
-import home_image from '../assets/images/home_web_1.jpg'
-import home_image2 from '../assets/images/home_web_2.jpg'
-import home_image3 from '../assets/images/home_web_3.jpg'
-import home_tablet_image1 from '../assets/images/home_tablet_1.jpg'
-import home_tablet_image2 from '../assets/images/home_tablet_2.jpg'
-import home_tablet_image3 from '../assets/images/home_tablet_3.jpg'
-import Button from '../components/Common/Button'
-import InfinityMarquee from '../components/Common/Marquee'
-import useWindowWidth from '../hooks/useWindowWidth'
-import { useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { RiInstagramFill } from 'react-icons/ri'
-import { FaSquareFacebook, FaYoutube } from 'react-icons/fa6'
-import MobileHome from './MobileHome'
+import styled from "styled-components";
+import home_image from "../assets/images/home_web_1.jpg";
+import home_image2 from "../assets/images/home_web_2.jpg";
+import home_image3 from "../assets/images/home_web_3.jpg";
+import home_tablet_image1 from "../assets/images/home_tablet_1.jpg";
+import home_tablet_image2 from "../assets/images/home_tablet_2.jpg";
+import home_tablet_image3 from "../assets/images/home_tablet_3.jpg";
+import Button from "../components/common/Button";
+import InfinityMarquee from "../components/common/Marquee";
+import useWindowWidth from "../hooks/useWindowWidth";
+import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import { RiInstagramFill } from "react-icons/ri";
+import { FaSquareFacebook, FaYoutube } from "react-icons/fa6";
+import MobileHome from "./MobileHome";
 
 export default function Home() {
-  const firstSectionRef = useRef<HTMLElement | null>(null)
-  const secondSectionRef = useRef<HTMLElement | null>(null)
-  const thirdSectionRef = useRef<HTMLElement | null>(null)
-  const [isOnMouse, setIsOnMouse] = useState(false)
-  const lastScrollY = useRef(0)
+  const firstSectionRef = useRef<HTMLElement | null>(null);
+  const secondSectionRef = useRef<HTMLElement | null>(null);
+  const thirdSectionRef = useRef<HTMLElement | null>(null);
+  const [isOnMouse, setIsOnMouse] = useState(false);
+  const lastScrollY = useRef(0);
 
-  const windowWidth = useWindowWidth()
+  const windowWidth = useWindowWidth();
 
   useEffect(() => {
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          ;(entry.target as HTMLElement).style.opacity = '1'
+          (entry.target as HTMLElement).style.opacity = "1";
         } else {
-          ;(entry.target as HTMLElement).style.opacity = '0'
+          (entry.target as HTMLElement).style.opacity = "0";
         }
-      })
-    })
+      });
+    });
 
     if (firstSectionRef.current) {
-      observer.observe(firstSectionRef.current)
+      observer.observe(firstSectionRef.current);
     }
     if (secondSectionRef.current) {
-      observer.observe(secondSectionRef.current)
+      observer.observe(secondSectionRef.current);
     }
     if (thirdSectionRef.current) {
-      observer.observe(thirdSectionRef.current)
+      observer.observe(thirdSectionRef.current);
     }
 
     return () => {
       if (firstSectionRef.current) {
-        observer.unobserve(firstSectionRef.current)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        observer.unobserve(firstSectionRef.current);
       }
       if (secondSectionRef.current) {
-        observer.unobserve(secondSectionRef.current)
+        observer.unobserve(secondSectionRef.current);
       }
       if (thirdSectionRef.current) {
-        observer.unobserve(thirdSectionRef.current)
+        observer.unobserve(thirdSectionRef.current);
       }
-    }
-  }, [])
+    };
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -66,16 +67,16 @@ export default function Home() {
         ) {
           window.scrollTo({
             top: secondSectionRef.current.offsetTop,
-            behavior: 'instant',
-          })
+            behavior: "instant",
+          });
         } else if (
           thirdSectionRef.current &&
           window.scrollY < thirdSectionRef.current.offsetTop
         ) {
           window.scrollTo({
             top: thirdSectionRef.current.offsetTop,
-            behavior: 'instant',
-          })
+            behavior: "instant",
+          });
         }
       } else if (window.scrollY < lastScrollY.current) {
         if (
@@ -84,27 +85,27 @@ export default function Home() {
         ) {
           window.scrollTo({
             top: secondSectionRef.current.offsetTop,
-            behavior: 'instant',
-          })
+            behavior: "instant",
+          });
         } else if (firstSectionRef.current) {
           window.scrollTo({
             top: firstSectionRef.current.offsetTop,
-            behavior: 'instant',
-          })
+            behavior: "instant",
+          });
         }
       }
-      lastScrollY.current = window.scrollY
-    }
+      lastScrollY.current = window.scrollY;
+    };
 
-    window.addEventListener('scroll', handleScroll)
+    window.addEventListener("scroll", handleScroll);
 
     return () => {
-      window.removeEventListener('scroll', handleScroll)
-    }
-  }, [])
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
-  if (windowWidth <= 414) {
-    return <MobileHome />
+  if (windowWidth <= 600) {
+    return <MobileHome />;
   }
 
   return (
@@ -119,7 +120,7 @@ export default function Home() {
             시작은 작은 식물 하나에서부터입니다.
           </p>
         </TextBox>
-        <Link to={'/shop'}>
+        <Link to={"/shop"}>
           <Button hover={true} btnType="link">
             Tribe와 함께하기
           </Button>
@@ -153,13 +154,13 @@ export default function Home() {
           </p>
         </TextBox>
         <SocialLinks>
-          <Link to={'https://www.instagram.com/'}>
+          <Link to={"https://www.instagram.com/"}>
             <RiInstagramFill />
           </Link>
-          <Link to={'https://www.facebook.com/?locale=ko_KR'}>
+          <Link to={"https://www.facebook.com/?locale=ko_KR"}>
             <FaSquareFacebook size={30} />
           </Link>
-          <Link to={'https://www.youtube.com/'}>
+          <Link to={"https://www.youtube.com/"}>
             <FaYoutube />
           </Link>
         </SocialLinks>
@@ -187,7 +188,7 @@ export default function Home() {
                   답변 등의 주제로 구성되어 있어, 자신의 경험을 공유하고 다른
                   사용자의 도움을 받을 수 있습니다.
                 </p>
-                <Link to={'/community'}>
+                <Link to={"/community"}>
                   <Button hover={true} btnType="link">
                     커뮤니티 이용하기
                   </Button>
@@ -203,7 +204,7 @@ export default function Home() {
                   권장합니다. 이를 통해 사용자는 안전하고 긍정적인 환경에서
                   식물에 대한 열정을 공유할 수 있습니다.
                 </p>
-                <Link to={'/community/guide'}>
+                <Link to={"/community/guide"}>
                   <Button hover={true} btnType="link">
                     커뮤니티 가이드라인
                   </Button>
@@ -219,13 +220,13 @@ export default function Home() {
         />
       </Section>
     </HomeCon>
-  )
+  );
 }
 
 const HomeCon = styled.div`
   width: 100%;
   overflow: hidden;
-`
+`;
 
 const Img = styled.img`
   width: 1902px;
@@ -234,10 +235,10 @@ const Img = styled.img`
     width: 768px;
   }
 
-  @media (max-width: 414px) {
+  @media (max-width: 600px) {
     margin-top: 70px;
   }
-`
+`;
 
 const Section = styled.section`
   position: relative;
@@ -250,7 +251,7 @@ const Section = styled.section`
   &:nth-child(1) {
     button {
       position: absolute;
-      top: 710px;
+      top: 730px;
       left: 220px;
       border: none;
     }
@@ -284,7 +285,7 @@ const Section = styled.section`
     }
   }
 
-  @media (max-width: 414px) {
+  @media (max-width: 600px) {
     button {
       position: absolute;
       bottom: 470px;
@@ -292,7 +293,7 @@ const Section = styled.section`
       border: none;
     }
   }
-`
+`;
 
 const TextBox = styled.div`
   display: flex;
@@ -327,7 +328,7 @@ const TextBox = styled.div`
     }
   }
 
-  @media (max-width: 414px) {
+  @media (max-width: 600px) {
     top: 350px;
     left: 20px;
 
@@ -344,7 +345,7 @@ const TextBox = styled.div`
       line-height: 24px;
     }
   }
-`
+`;
 
 const SocialLinks = styled.section`
   position: absolute;
@@ -366,14 +367,14 @@ const SocialLinks = styled.section`
     left: 150px;
   }
 
-  @media (max-width: 414px) {
+  @media (max-width: 600px) {
   }
-`
+`;
 
-const HoverableCon = styled.div``
+const HoverableCon = styled.div``;
 
 interface TextConProps {
-  isOnMouse: boolean
+  isOnMouse: boolean;
 }
 
 const TextCon = styled.div<TextConProps>`
@@ -383,10 +384,10 @@ const TextCon = styled.div<TextConProps>`
   box-sizing: border-box;
   position: absolute;
   top: 180px;
-  z-index: ${props => (props.isOnMouse ? '98' : '100')};
+  z-index: ${(props) => (props.isOnMouse ? "98" : "100")};
   background-color: #fff;
-  opacity: ${props => (props.isOnMouse ? '0' : '1')};
-`
+  opacity: ${(props) => (props.isOnMouse ? "0" : "1")};
+`;
 
 const DetailText = styled.div<TextConProps>`
   position: absolute;
@@ -396,7 +397,7 @@ const DetailText = styled.div<TextConProps>`
   width: 1300px;
   display: flex;
   justify-content: center;
-  opacity: ${props => (props.isOnMouse ? '1' : '0')};
+  opacity: ${(props) => (props.isOnMouse ? "1" : "0")};
   transition: opacity 0.1s ease;
 
   @media (max-width: 768px) {
@@ -406,9 +407,9 @@ const DetailText = styled.div<TextConProps>`
     flex-direction: column;
   }
 
-  @media (max-width: 414px) {
+  @media (max-width: 600px) {
   }
-`
+`;
 
 const Detail = styled.div`
   position: relative;
@@ -479,6 +480,6 @@ const Detail = styled.div`
     }
   }
 
-  @media (max-width: 414px) {
+  @media (max-width: 600px) {
   }
-`
+`;
