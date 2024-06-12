@@ -5,8 +5,8 @@ import home_image3 from '../assets/images/home_web_3.jpg'
 import home_tablet_image1 from '../assets/images/home_tablet_1.jpg'
 import home_tablet_image2 from '../assets/images/home_tablet_2.jpg'
 import home_tablet_image3 from '../assets/images/home_tablet_3.jpg'
-import Button from '../components/common/Button'
-import InfinityMarquee from '../components/common/Marquee'
+import Button from '../components/Common/Button'
+import InfinityMarquee from '../components/Common/Marquee'
 import useWindowWidth from '../hooks/useWindowWidth'
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
@@ -242,10 +242,10 @@ const Img = styled.img`
 const Section = styled.section`
   position: relative;
   width: 100%;
-  height: 100vh;
+  height: 104vh;
   overflow: hidden;
   opacity: 0;
-  transition: all 1.5s ease;
+  transition: all 0.7s ease;
 
   &:nth-child(1) {
     button {
@@ -260,6 +260,10 @@ const Section = styled.section`
     div {
       top: 400px;
     }
+  }
+
+  &:nth-child(3) {
+    height: 100vh;
   }
 
   @media (max-width: 768px) {
@@ -344,7 +348,7 @@ const TextBox = styled.div`
 
 const SocialLinks = styled.section`
   position: absolute;
-  top: 720px;
+  top: 730px;
   left: 222px;
   font-size: 32px;
   height: 40px;
@@ -398,6 +402,7 @@ const DetailText = styled.div<TextConProps>`
   @media (max-width: 768px) {
     width: 768px;
     left: 150px;
+    top: 160px;
     flex-direction: column;
   }
 

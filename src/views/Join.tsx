@@ -1,11 +1,15 @@
 import styled from 'styled-components'
-import Input from '../components/common/Input'
+import Input from '../components/Common/Input'
 import { AiOutlinePlus } from 'react-icons/ai'
+import join_image from '../assets/images/join_web_1.jpg'
+import useWindowWidth from '../hooks/useWindowWidth'
 
 export default function Join() {
+  const windowWidth = useWindowWidth()
+
   return (
     <JoinCon>
-      <FormCon>
+      <FormCon windowWidth={windowWidth}>
         <FormWrapper>
           <FormTitle>Tribe 회원가입</FormTitle>
           <form action="">
@@ -55,20 +59,28 @@ export default function Join() {
           </form>
         </FormWrapper>
       </FormCon>
-      <ImgCon></ImgCon>
+      {windowWidth === 1920 && (
+        <ImgCon>
+          <img src={join_image} alt="" />
+        </ImgCon>
+      )}
     </JoinCon>
   )
 }
 
 const JoinCon = styled.div`
   width: 100%;
-  height: 100vh;
   display: flex;
 `
 
-const FormCon = styled.div`
-  width: 50%;
-  height: 100%;
+interface FormConType {
+  windowWidth: number
+}
+
+const FormCon = styled.div<FormConType>`
+  width: ${props => (props.windowWidth === 1920 ? '50%' : '100%')};
+  height: 100vh;
+  over-flow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -94,11 +106,27 @@ const FormWrapper = styled.div`
     width: 100%;
     margin-bottom: 30px;
   }
+
+  @media (max-width: 414px) {
+    min-width: 414px;
+
+    hr {
+      width: 80%;
+      margin-bottom: 30px;
+    }
+  }
 `
 const FormTitle = styled.h2`
   font-size: 1.8rem;
   font-weight: bold;
   margin-bottom: 40px;
+
+  @media (max-width: 414px) {
+    font-size: 1.4rem;
+    width: 85%;
+    margin: 0 auto 30px;
+    padding-left: 10px;
+  }
 `
 const IdInputCon = styled.div`
   width: 100%;
@@ -114,12 +142,35 @@ const IdInputCon = styled.div`
     padding: 10px 12px;
     margin-left: 4px;
   }
+
+  @media (max-width: 414px) {
+    width: 80%;
+    display: flex;
+    margin: 0 auto;
+    align-item: center;
+
+    input {
+      flex: 1 0 0;
+    }
+
+    button {
+      font-size: 0.8rem;
+      padding: 10px 12px;
+      margin-left: 6px;
+    }
+  }
 `
 
 const HelperTextCon = styled.div`
   width: 100%;
   display: flex;
   margin-left: 10px;
+
+  @media (max-width: 414px) {
+    width: 90%;
+    margin-bottom: 40px;
+    padding-left: 10px;
+  }
 `
 
 const HelperText = styled.p`
@@ -131,6 +182,12 @@ const HelperText = styled.p`
   span {
     font-weight: 600;
   }
+
+  @media (max-width: 414px) {
+    font-size: 0.7rem;
+    width: 85%;
+    margin: 0 auto;
+  }
 `
 
 const AgreeCon = styled.div`
@@ -139,6 +196,11 @@ const AgreeCon = styled.div`
   justify-content: space-between;
   margin-bottom: 10px;
   width: 100%;
+
+  @media (max-width: 414px) {
+    width: 80%;
+    margin: 0 auto;
+  }
 `
 
 const AgreeWrapper = styled.div`
@@ -148,6 +210,12 @@ const AgreeWrapper = styled.div`
 
   label {
     font-size: 1rem;
+  }
+
+  @media (max-width: 414px) {
+    label {
+      font-size: 0.8rem;
+    }
   }
 `
 const JoinBtn = styled.button`
@@ -161,10 +229,20 @@ const JoinBtn = styled.button`
   &:hover {
     background-color: rgba(30, 30, 30, 1);
   }
+
+  @media (max-width: 414px) {
+    width: 85%;
+    margin: 30px auto 0;
+  }
 `
 
 const ImgCon = styled.div`
   width: 50%;
-  height: 100%;
-  background-color: rgba(230, 230, 230, 1);
+  height: 100vh;
+  over-flow: hidden;
+
+  img {
+    width: 100%;
+    height: 100vh;
+  }
 `

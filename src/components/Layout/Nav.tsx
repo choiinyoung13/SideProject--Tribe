@@ -5,9 +5,9 @@ import { FaBars, FaTimes } from 'react-icons/fa'
 import tribe_logo from '../../assets/images/logo_tribe.png'
 
 export default function Nav() {
-  const location = useLocation()
-  const path = location.pathname.slice(1)
   const [menuOpen, setMenuOpen] = useState(false)
+  const location = useLocation()
+  const pantName = location.pathname.slice(1)
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen)
@@ -15,76 +15,81 @@ export default function Nav() {
 
   return (
     <>
-      {path !== 'login' && path !== 'join' ? (
-        <NavCon>
-          <NavLeft>
-            <Logo>
-              <img src={tribe_logo} alt="" />
-            </Logo>
-            <NavLinks className={menuOpen ? 'open' : ''}>
-              <Link to={'/'}>
-                <li>HOME</li>
-              </Link>
-              <Link to={'/shop'}>
-                <li>SHOP</li>
-              </Link>
-              <Link to={'/community'}>
-                <li>COMMUNITY</li>
-              </Link>
-            </NavLinks>
-          </NavLeft>
-          <NavRight>
-            <Link to={'/login'}>
+      <NavCon pantName={pantName}>
+        <NavLeft>
+          <Logo>
+            <img src={tribe_logo} alt="" />
+          </Logo>
+          <NavLinks className={menuOpen ? 'open' : ''}>
+            <Link to={'/'}>
+              <li>HOME</li>
+            </Link>
+            <Link to={'/shop'}>
+              <li>SHOP</li>
+            </Link>
+            <Link to={'/community'}>
+              <li>COMMUNITY</li>
+            </Link>
+          </NavLinks>
+        </NavLeft>
+        <NavRight>
+          <Link to={'/login'}>
+            <li>LOGIN</li>
+          </Link>
+          <Link to={'/join'}>
+            <li>JOIN</li>
+          </Link>
+        </NavRight>
+        <HamburgerMenu onClick={toggleMenu}>
+          {menuOpen ? <FaTimes /> : <FaBars />}
+        </HamburgerMenu>
+        {menuOpen && (
+          <MobileMenu>
+            <Link to={'/'} onClick={toggleMenu}>
+              <li>HOME</li>
+            </Link>
+            <Link to={'/shop'} onClick={toggleMenu}>
+              <li>SHOP</li>
+            </Link>
+            <Link to={'/community'} onClick={toggleMenu}>
+              <li>COMMUNITY</li>
+            </Link>
+            <Link to={'/login'} onClick={toggleMenu}>
               <li>LOGIN</li>
             </Link>
-            <Link to={'/join'}>
+            <Link to={'/join'} onClick={toggleMenu}>
               <li>JOIN</li>
             </Link>
-          </NavRight>
-          <HamburgerMenu onClick={toggleMenu}>
-            {menuOpen ? <FaTimes /> : <FaBars />}
-          </HamburgerMenu>
-          {menuOpen && (
-            <MobileMenu>
-              <Link to={'/'} onClick={toggleMenu}>
-                <li>HOME</li>
-              </Link>
-              <Link to={'/shop'} onClick={toggleMenu}>
-                <li>SHOP</li>
-              </Link>
-              <Link to={'/community'} onClick={toggleMenu}>
-                <li>COMMUNITY</li>
-              </Link>
-              <Link to={'/login'} onClick={toggleMenu}>
-                <li>LOGIN</li>
-              </Link>
-              <Link to={'/join'} onClick={toggleMenu}>
-                <li>JOIN</li>
-              </Link>
-            </MobileMenu>
-          )}
-        </NavCon>
-      ) : null}
+          </MobileMenu>
+        )}
+      </NavCon>
     </>
   )
 }
 
-const NavCon = styled.nav`
+interface NavConType {
+  pantName: string
+}
+
+const NavCon = styled.nav<NavConType>`
   position: fixed;
   top: 0;
-  z-index: 99;
+  z-index: 102;
   width: 100%;
+  height: 120px;
   padding: 50px 60px;
   display: flex;
   justify-content: space-between;
-  background-color: rgba(0, 0, 0, 0);
-
-  @media (max-width: 768px) {
-    
-  }
+  background-color: ${props =>
+    props.pantName === 'login' ||
+    props.pantName === 'join' ||
+    props.pantName === ''
+      ? 'rgba(0,0,0,0)'
+      : 'rgba(255,255,255,1)'};
 
   @media (max-width: 414px) {
     padding: 30px 30px; 20px 30px;
+    height: 90px;
   }
 `
 
@@ -96,6 +101,7 @@ const NavLeft = styled.div`
 const Logo = styled.div`
   width: 22px;
   height: 22px;
+  margin-right: 20px;
 
   img {
     width: 100%;
@@ -191,7 +197,7 @@ const MobileMenu = styled.ul`
   background-color: #fff;
   justify-content: center;
   align-items: center;
-  z-index: 98;
+  z-index: 9999;
 
   a {
     color: rgba(20, 20, 20, 1);
