@@ -1,23 +1,23 @@
-import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
-import styled from 'styled-components'
+import { MdOutlineKeyboardArrowRight } from "react-icons/md";
+import styled from "styled-components";
 
 type ButtonProps = {
-  children: string
-  hover: boolean
-  btnType?: 'link' | 'button'
-}
+  children: string;
+  hover: boolean;
+  btnType?: "link" | "button";
+};
 
 export default function Button({ children, hover, btnType }: ButtonProps) {
   return (
     <Btn hover={hover}>
       {children}
-      {btnType === 'link' && (
+      {btnType === "link" && (
         <RightIcon>
           <MdOutlineKeyboardArrowRight />
         </RightIcon>
       )}
     </Btn>
-  )
+  );
 }
 
 const Btn = styled.button<{ hover: boolean }>`
@@ -29,9 +29,9 @@ const Btn = styled.button<{ hover: boolean }>`
   padding: 10px 20px;
   cursor: pointer;
 
-  x &:hover {
-    background-color: ${props =>
-      props.hover ? 'rgba(30,30,30,1)' : 'rgba(160,160,160,1)'};
+  &:hover {
+    background-color: ${(props) =>
+      props.hover ? "rgba(40,40,40,1)" : "rgba(20,20,20,1)"};
   }
 
   @media (max-width: 768px) {
@@ -42,7 +42,7 @@ const Btn = styled.button<{ hover: boolean }>`
     font-size: 0.6rem;
     padding: 6px 10px;
   }
-`
+`;
 
 const RightIcon = styled.span`
   display: flex;
@@ -57,4 +57,4 @@ const RightIcon = styled.span`
     margin-left: 0px;
     font-size: 14px;
   }
-`
+`;

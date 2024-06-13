@@ -5,12 +5,16 @@ import Home from "../views/Home";
 import Join from "../views/Join";
 import Login from "../views/Login";
 import Shop from "../views/Shop";
+import About from "../views/About";
+import CommunityFeatures from "../views/CommunityFeatures";
 
 const Router = (): JSX.Element => {
   return (
     <Routes>
       <Route path="*" element={<Error />} />
       <Route path="/" element={<Home />} />
+      <Route path="/about" element={<About />} />
+      <Route path="/community-feature" element={<CommunityFeatures />} />
       <Route path="/login" element={<Login />} />
       <Route path="/join" element={<Join />} />
       <Route path="/shop" element={<Shop />} />

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import home_mobile_image from "../assets/images/home_mobile_1.jpg";
+import home_mobile_image from "../assets/images/home/home_mobile.jpg";
 
 export default function MobileHome() {
   return (

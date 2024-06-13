@@ -1,11 +1,11 @@
-import styled from 'styled-components'
-import Input from '../components/Common/Input'
-import { AiOutlinePlus } from 'react-icons/ai'
-import join_image from '../assets/images/join_web_1.jpg'
-import useWindowWidth from '../hooks/useWindowWidth'
+import styled from "styled-components";
+import Input from "../components/common/Input";
+import { AiOutlinePlus } from "react-icons/ai";
+import join_image from "../assets/images/join_web_1.jpg";
+import useWindowWidth from "../hooks/useWindowWidth";
 
 export default function Join() {
-  const windowWidth = useWindowWidth()
+  const windowWidth = useWindowWidth();
 
   return (
     <JoinCon>
@@ -41,7 +41,7 @@ export default function Join() {
               <AgreeWrapper>
                 <input type="checkbox" />
                 <label htmlFor="">
-                  {' '}
+                  {" "}
                   [필수]만 14세 이상이며 모두 동의합니다.
                 </label>
               </AgreeWrapper>
@@ -51,7 +51,7 @@ export default function Join() {
               <AgreeWrapper>
                 <input type="checkbox" />
                 <label htmlFor="">
-                  {' '}
+                  {" "}
                   [선택]광고성 정보 수신에 모두 동의합니다.
                 </label>
               </AgreeWrapper>
@@ -67,20 +67,20 @@ export default function Join() {
         </ImgCon>
       )}
     </JoinCon>
-  )
+  );
 }
 
 const JoinCon = styled.div`
   width: 100%;
   display: flex;
-`
+`;
 
 interface FormConType {
-  windowWidth: number
+  windowWidth: number;
 }
 
 const FormCon = styled.div<FormConType>`
-  width: ${props => (props.windowWidth === 1920 ? '50%' : '100%')};
+  width: ${(props) => (props.windowWidth === 1920 ? "50%" : "100%")};
   height: 100vh;
   over-flow: hidden;
   display: flex;
@@ -96,7 +96,7 @@ const FormCon = styled.div<FormConType>`
       margin-bottom: 10px;
     }
   }
-`
+`;
 const FormWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -117,7 +117,7 @@ const FormWrapper = styled.div`
       margin-bottom: 30px;
     }
   }
-`
+`;
 const FormTitle = styled.h2`
   font-size: 1.8rem;
   font-weight: bold;
@@ -129,7 +129,7 @@ const FormTitle = styled.h2`
     margin: 0 auto 30px;
     padding-left: 10px;
   }
-`
+`;
 const IdInputCon = styled.div`
   width: 100%;
   display: flex;
@@ -161,13 +161,13 @@ const IdInputCon = styled.div`
       margin-left: 6px;
     }
   }
-`
+`;
 
 const PasswordInputCon = styled.div`
   input {
     width: 100%;
   }
-`
+`;
 
 const HelperTextCon = styled.div`
   width: 100%;
@@ -179,7 +179,7 @@ const HelperTextCon = styled.div`
     margin-bottom: 40px;
     padding-left: 10px;
   }
-`
+`;
 
 const HelperText = styled.p`
   font-size: 0.9rem;
@@ -196,7 +196,7 @@ const HelperText = styled.p`
     width: 85%;
     margin: 0 auto;
   }
-`
+`;
 
 const AgreeCon = styled.div`
   display: flex;
@@ -209,7 +209,7 @@ const AgreeCon = styled.div`
     width: 80%;
     margin: 0 auto;
   }
-`
+`;
 
 const AgreeWrapper = styled.div`
   input {
@@ -225,7 +225,7 @@ const AgreeWrapper = styled.div`
       font-size: 0.8rem;
     }
   }
-`
+`;
 const JoinBtn = styled.button`
   color: #fff;
   background-color: rgba(20, 20, 20, 1);
@@ -242,7 +242,7 @@ const JoinBtn = styled.button`
     width: 85%;
     margin: 30px auto 0;
   }
-`
+`;
 
 const ImgCon = styled.div`
   width: 50%;
@@ -253,4 +253,4 @@ const ImgCon = styled.div`
     width: 100%;
     height: 100vh;
   }
-`
+`;

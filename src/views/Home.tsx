@@ -1,263 +1,160 @@
-import styled from 'styled-components'
-import home_image from '../assets/images/home_web.jpg'
-import home_image_full from '../assets/images/home_web_full.jpg'
-import home_tablet_image from '../assets/images/home_tablet.jpg'
-import Button from '../components/Common/Button'
-import InfinityMarquee from '../components/Common/Marquee'
-import useWindowWidth from '../hooks/useWindowWidth'
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { RiInstagramFill } from 'react-icons/ri'
-import { FaSquareFacebook, FaYoutube } from 'react-icons/fa6'
-import MobileHome from './MobileHome'
-import useWindowHeight from '../hooks/useWindowHeight'
+import styled from "styled-components";
+import home_image from "../assets/images/home/home_web.jpg";
+import home_image_tablet1 from "../assets/images/home/home_tablet(horizontal).jpg";
+import home_image_tablet2 from "../assets/images/home/home_tablet(vertical).jpg";
+import home_image_full from "../assets/images/home/home_web_full.jpg";
+import useWindowWidth from "../hooks/useWindowWidth";
+import { Link } from "react-router-dom";
+import MobileHome from "./MobileHome";
+import useWindowHeight from "../hooks/useWindowHeight";
+import Button from "../components/common/Button";
 
 export default function Home() {
-  const [isOnMouse, setIsOnMouse] = useState(false)
+  const windowWidth = useWindowWidth();
+  const windowHeight = useWindowHeight();
 
-  const windowWidth = useWindowWidth()
-  const windowHeight = useWindowHeight()
-
-  console.log(windowWidth)
-  console.log(windowHeight)
+  console.log(windowWidth);
+  console.log(windowHeight);
 
   if (windowWidth <= 600) {
-    return <MobileHome />
+    return <MobileHome />;
   }
 
   return (
     <HomeCon>
-      <Section></Section>
+      <Section>
+        <TextBox windowHeight={windowHeight}>
+          <TextNumber>" 001</TextNumber>
+          <TextContentCon>
+            <p>
+              {" "}
+              당신의 식물 파트너 Tribe에 오신걸 환영합니다. <br />
+              Tribe의 다양한 서비스와 함께 당신의 삶을 더 푸르게 만들어보아요.
+              <br />
+              시작은 작은 식물 하나에서부터입니다.
+            </p>
+            <ButtonCon>
+              <Link to={"/about"}>
+                <Button btnType={"link"} hover={true}>
+                  ABOUT TRIBE
+                </Button>
+              </Link>
+              <Link to={"/community-feature"}>
+                <Button btnType={"link"} hover={true}>
+                  ABOUT COMMUNITY
+                </Button>
+              </Link>
+            </ButtonCon>
+          </TextContentCon>
+        </TextBox>
+      </Section>
       <Img
-        src={windowHeight >= 1080 ? home_image_full : home_image}
+        src={
+          windowHeight >= 1080
+            ? home_image_full
+            : windowWidth <= 768
+            ? home_image_tablet2
+            : windowWidth <= 1024
+            ? home_image_tablet1
+            : home_image
+        }
         alt=""
         draggable="false"
       />
     </HomeCon>
-  )
+  );
 }
 
 const HomeCon = styled.div`
   width: 100%;
   height: 100vh;
   overflow: hidden;
-`
+`;
 
 const Img = styled.img`
-  width: 100%;
-
-  @media (max-width: 1026px) {
-  }
-
-  @media (max-width: 768px) {
-  }
-
-  @media (max-width: 600px) {
-  }
-`
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+`;
 
 const Section = styled.section`
-  position: absolute;
+  position: fixed;
+  z-index: 2;
+  left: 0;
+  right: 0;
   top: 0;
-  z-index: 60;
-  width: 100%;
-  height: 100vh;
+  bottom: 0;
+`;
 
-  @media (max-width: 1026px) {
+interface TextBoxPropsType {
+  windowHeight: number;
+}
+
+const TextBox = styled.div<TextBoxPropsType>`
+  position: absolute;
+  top: ${(props) => (props.windowHeight >= 1050 ? "700px" : "570px")};
+  left: 60px;
+  display: flex;
+
+  @media (max-width: 1024px) {
+    left: 40px;
   }
 
   @media (max-width: 768px) {
+    top: 500px;
   }
 
   @media (max-width: 600px) {
   }
-`
+`;
 
-const TextBox = styled.div`
-  display: flex;
-  position: absolute;
-  top: 570px;
-  left: 40px;
-  width: 900px;
+const TextNumber = styled.span`
+  font-size: 2rem;
+  font-weight: 700;
+  margin-right: 40px;
 
-  span {
-    margin-right: 55px;
-    font-size: 2rem;
-    font-weight: bold;
+  @media (max-width: 768px) {
+    font-size: 1.5rem;
+    margin-right: 30px;
   }
 
-  p {
-    line-height: 30px;
+  @media (max-width: 600px) {
+  }
+`;
+
+const TextContentCon = styled.div`
+  font-size: 1.1rem;
+  font-weight: 300;
+  line-height: 32px;
+
+  @media (max-width: 768px) {
     font-size: 1rem;
+  }
+`;
+
+const ButtonCon = styled.div`
+  display: flex;
+  margin-top: 80px;
+  button {
+    border: none;
+    border-radius: 2px;
+    transition: color 0.3s ease;
+  }
+
+  a {
+    &:first-of-type {
+      margin-right: 40px;
+    }
   }
 
   @media (max-width: 768px) {
-    top: 610px;
+    margin-top: 140px;
 
-    span {
-      margin-right: 50px;
-      font-size: 1.5rem;
-      font-weight: bold;
-    }
-
-    p {
-      line-height: 30px;
+    button {
       font-size: 0.9rem;
     }
   }
-
-  @media (max-width: 600px) {
-    top: 350px;
-    left: 20px;
-
-    p {
-      line-height: 24px;
-      font-size: 0.7rem;
-    }
-
-    span {
-      margin-right: 0px;
-      font-size: 0.8rem;
-      font-weight: bold;
-      width: 50px;
-      line-height: 24px;
-    }
-  }
-`
-
-const SocialLinks = styled.section`
-  position: absolute;
-  top: 720px;
-  left: 175px;
-  font-size: 32px;
-  height: 40px;
-  width: 130px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  a {
-    color: rgba(20, 20, 20, 1);
-  }
-
-  @media (max-width: 768px) {
-    top: 770px;
-    left: 150px;
-  }
-
-  @media (max-width: 600px) {
-  }
-`
-
-const HoverableCon = styled.div``
-
-interface TextConProps {
-  isOnMouse: boolean
-}
-
-const TextCon = styled.div<TextConProps>`
-  overflow: hidden;
-  white-space: nowrap;
-  width: 1902px;
-  box-sizing: border-box;
-  position: absolute;
-  top: 180px;
-  z-index: ${props => (props.isOnMouse ? '98' : '100')};
-  background-color: #fff;
-  opacity: ${props => (props.isOnMouse ? '0' : '1')};
-`
-
-const DetailText = styled.div<TextConProps>`
-  position: absolute;
-  top: 200px;
-  left: 300px;
-  z-index: 99;
-  width: 1300px;
-  display: flex;
-  justify-content: center;
-  opacity: ${props => (props.isOnMouse ? '1' : '0')};
-  transition: opacity 0.1s ease;
-
-  @media (max-width: 768px) {
-    width: 768px;
-    left: 150px;
-    top: 160px;
-    flex-direction: column;
-  }
-
-  @media (max-width: 600px) {
-  }
-`
-
-const Detail = styled.div`
-  position: relative;
-  min-width: 500px;
-  height: 210px;
-  display: flex;
-
-  &:first-of-type {
-    border-right: 1px solid rgba(20, 20, 20, 1);
-    margin-right: 60px;
-    margin-bottom: 30px;
-    padding-right: 60px;
-  }
-
-  span {
-    font-size: 2rem;
-    font-weight: bold;
-  }
-
-  p {
-    line-height: 30px;
-    font-size: 1rem;
-    margin-bottom: 50px;
-    max-width: 400px;
-  }
-
-  div {
-    margin-left: 70px;
-  }
-
-  button {
-    position: absolute;
-    top: 166px;
-    left: 150px;
-    border: none;
-    span {
-      font-size: 22px;
-    }
-  }
-
-  @media (max-width: 768px) {
-    span {
-      font-size: 1.1rem;
-      font-weight: bold;
-      line-height: 26px;
-    }
-
-    p {
-      line-height: 30px;
-      font-size: 0.8rem;
-      margin-bottom: 50px;
-      max-width: 400px;
-    }
-
-    div {
-      margin-left: 20px;
-    }
-
-    button {
-      position: absolute;
-      top: 114px;
-      left: 60px;
-      border: none;
-      font-size: 0.7rem;
-      span {
-        font-size: 16px;
-      }
-    }
-  }
-
-  @media (max-width: 600px) {
-  }
-`
+`;
