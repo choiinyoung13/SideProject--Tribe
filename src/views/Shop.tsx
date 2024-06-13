@@ -1,48 +1,48 @@
-import styled from "styled-components";
-import Banner from "../components/Banner/Banner";
-import { Link, useSearchParams } from "react-router-dom";
-import { useRef } from "react";
-import { BiSortAlt2 } from "react-icons/bi";
-import { IoSearch } from "react-icons/io5";
-import useWindowWidth from "../hooks/useWindowWidth";
+import styled from 'styled-components'
+import Banner from '../components/Banner/Banner'
+import { Link, useSearchParams } from 'react-router-dom'
+import { useRef } from 'react'
+import { BiSortAlt2 } from 'react-icons/bi'
+import { IoSearch } from 'react-icons/io5'
+import useWindowWidth from '../hooks/useWindowWidth'
 
 export default function Shop() {
-  const [searchParams] = useSearchParams();
-  const tab = searchParams.get("tab");
-  const windowWidth = useWindowWidth();
+  const [searchParams] = useSearchParams()
+  const tab = searchParams.get('tab')
+  const windowWidth = useWindowWidth()
 
   const categories = useRef([
-    "이벤트",
-    "선물용",
-    "인테리어용",
-    "랭킹",
-    "추천",
-    "묘목/씨앗",
-    "화분자재류",
-    "원예자재류",
-  ]);
+    '이벤트',
+    '선물용',
+    '인테리어용',
+    '랭킹',
+    '추천',
+    '묘목/씨앗',
+    '화분자재류',
+    '원예자재류',
+  ])
 
   return (
     <>
       <Banner />
+      {windowWidth <= 1024 && (
+        <FilterCon>
+          <input type="text" placeholder="상품 이름으로 검색해주세요." />
+          <BiSortAlt2 color="rgba(80,80,80,1)" size={27} />
+        </FilterCon>
+      )}
       <ShopCon>
-        {windowWidth <= 1024 && (
-          <FilterCon>
-            <input type="text" placeholder="상품 이름으로 검색해주세요." />
-            <BiSortAlt2 color="rgba(80,80,80,1)" size={27} />
-          </FilterCon>
-        )}
         <ShopHeader>
           <ul>
-            <li className={tab === null ? "active" : ""}>
-              <Link to={"/shop"}>전체</Link>
+            <li className={tab === null ? 'active' : ''}>
+              <Link to={'/shop'}>전체</Link>
             </li>
             {categories.current.map((category, i) => {
               return (
-                <li key={i} className={tab === String(i + 1) ? "active" : ""}>
+                <li key={i} className={tab === String(i + 1) ? 'active' : ''}>
                   <Link to={`/shop?tab=${i + 1}`}>{category}</Link>
                 </li>
-              );
+              )
             })}
           </ul>
           {windowWidth > 1024 && (
@@ -51,7 +51,7 @@ export default function Shop() {
                 <span>인기순</span>
                 <BiSortAlt2 color="rgba(80,80,80,1)" />
               </div>
-              <IoSearch color="rgba(80,80,80,1)" cursor={"pointer"} />
+              <IoSearch color="rgba(80,80,80,1)" cursor={'pointer'} />
             </FilterCon>
           )}
         </ShopHeader>
@@ -59,12 +59,12 @@ export default function Shop() {
         <section></section>
       </ShopCon>
     </>
-  );
+  )
 }
 
 const ShopCon = styled.div`
   position: relative;
-  top: 120px;
+  top: 115px;
   width: 100%;
   height: 130vh;
   overflow-x: auto;
@@ -76,17 +76,17 @@ const ShopCon = styled.div`
   }
 
   @media (max-width: 1024px) {
-    top: 84px;
+    top: 0px;
   }
 
   @media (max-width: 768px) {
-    top: 70px;
+    top: 0px;
   }
 
   @media (max-width: 600px) {
-    top: 82px;
+    top: 0px;
   }
-`;
+`
 
 const ShopHeader = styled.div`
   display: flex;
@@ -140,7 +140,7 @@ const ShopHeader = styled.div`
       }
     }
   }
-`;
+`
 
 const FilterCon = styled.div`
   display: flex;
@@ -158,14 +158,14 @@ const FilterCon = styled.div`
   }
 
   span {
-    font-size: 1rem;
+    font-size: 0.9rem;
     margin-right: 2px;
   }
 
   
   @media (max-width: 1024px) {
     width: 100%;
-    margin-top: 6px;
+    margin-top: 75px;
     padding: 34px 20px 0px 30px;
 
     input {
@@ -178,9 +178,15 @@ const FilterCon = styled.div`
       background-color: rgba(240,240,240,1)
     }
 
+  @media (max-width: 768px) {
+    width: 100%;
+    margin-top: 60px;
+    padding: 34px 20px 0px 30px;
+    }
+
   @media (max-width: 600px) {
     position: relative;
-    margin-top: 0px;
+    margin-top: 80px;
     padding: 0px 10px 26px 26px;
 
     input {
@@ -200,4 +206,4 @@ const FilterCon = styled.div`
         color: rgba(180,180,180,1);
       }
     }
-`;
+`
