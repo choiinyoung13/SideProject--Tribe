@@ -1,26 +1,28 @@
-import styled from 'styled-components'
-import Banner from '../components/Banner/Banner'
-import { Link, useSearchParams } from 'react-router-dom'
-import { useRef } from 'react'
-import { BiSortAlt2 } from 'react-icons/bi'
-import { IoSearch } from 'react-icons/io5'
-import useWindowWidth from '../hooks/useWindowWidth'
+import styled from "styled-components";
+import Banner from "../components/Banner/Banner";
+import { Link, useSearchParams } from "react-router-dom";
+import { useRef } from "react";
+import { BiSortAlt2 } from "react-icons/bi";
+import { IoSearch } from "react-icons/io5";
+import useWindowWidth from "../hooks/useWindowWidth";
+import ItemFilterCon from "../components/Filter/ItemFilterCon";
+import ItemListCon from "../components/Item/ItemListCon";
 
 export default function Shop() {
-  const [searchParams] = useSearchParams()
-  const tab = searchParams.get('tab')
-  const windowWidth = useWindowWidth()
+  const [searchParams] = useSearchParams();
+  const tab = searchParams.get("tab");
+  const windowWidth = useWindowWidth();
 
   const categories = useRef([
-    '이벤트',
-    '선물용',
-    '인테리어용',
-    '랭킹',
-    '추천',
-    '묘목/씨앗',
-    '화분자재류',
-    '원예자재류',
-  ])
+    "이벤트",
+    "선물용",
+    "인테리어용",
+    "랭킹",
+    "추천",
+    "묘목/씨앗",
+    "화분자재류",
+    "원예자재류",
+  ]);
 
   return (
     <>
@@ -34,15 +36,15 @@ export default function Shop() {
       <ShopCon>
         <ShopHeader>
           <ul>
-            <li className={tab === null ? 'active' : ''}>
-              <Link to={'/shop'}>전체</Link>
+            <li className={tab === null ? "active" : ""}>
+              <Link to={"/shop"}>전체</Link>
             </li>
             {categories.current.map((category, i) => {
               return (
-                <li key={i} className={tab === String(i + 1) ? 'active' : ''}>
+                <li key={i} className={tab === String(i + 1) ? "active" : ""}>
                   <Link to={`/shop?tab=${i + 1}`}>{category}</Link>
                 </li>
-              )
+              );
             })}
           </ul>
           {windowWidth > 1024 && (
@@ -51,29 +53,28 @@ export default function Shop() {
                 <span>인기순</span>
                 <BiSortAlt2 color="rgba(80,80,80,1)" />
               </div>
-              <IoSearch color="rgba(80,80,80,1)" cursor={'pointer'} />
+              <IoSearch color="rgba(80,80,80,1)" cursor={"pointer"} />
             </FilterCon>
           )}
         </ShopHeader>
-        <section></section>
-        <section></section>
+        <ShopMain>
+          <FilterSection>
+            <ItemFilterCon />
+          </FilterSection>
+          <ItemSection>
+            <ItemListCon />
+          </ItemSection>
+        </ShopMain>
       </ShopCon>
     </>
-  )
+  );
 }
 
 const ShopCon = styled.div`
   position: relative;
   top: 115px;
   width: 100%;
-  height: 130vh;
-  overflow-x: auto;
   z-index: 97;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-  &::-webkit-scrollbar {
-    display: none;
-  }
 
   @media (max-width: 1024px) {
     top: 0px;
@@ -86,23 +87,29 @@ const ShopCon = styled.div`
   @media (max-width: 600px) {
     top: 0px;
   }
-`
+`;
 
 const ShopHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-width: 1050px;
   width: 100%;
+  overflow-x: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
   border-bottom: 1px solid rgba(220, 220, 220, 1);
 
   ul {
     display: flex;
     padding: 30px 60px 0px;
     font-size: 1rem;
+    min-width: 900px;
 
     li {
-      margin-right: 40px;
+      margin-right: 38px;
       cursor: pointer;
 
       &:last-of-type {
@@ -118,9 +125,6 @@ const ShopHeader = styled.div`
   }
 
   @media (max-width: 600px) {
-    overflow-x: auto;
-    min-width: 710px;
-
     -ms-overflow-style: none;
     scrollbar-width: none;
     &::-webkit-scrollbar {
@@ -130,6 +134,7 @@ const ShopHeader = styled.div`
     ul {
       padding: 0px 26px;
       font-size: 0.9rem;
+      min-width: 709px;
 
       li {
         margin-right: 30px;
@@ -140,7 +145,7 @@ const ShopHeader = styled.div`
       }
     }
   }
-`
+`;
 
 const FilterCon = styled.div`
   display: flex;
@@ -148,17 +153,19 @@ const FilterCon = styled.div`
   font-size: 1.4rem;
   color: rgba(70, 70, 70, 1);
   padding-top: 6px;
-  margin-right: 30px;
+  margin-right: 50px;
 
   div {
     display: flex;
     align-items: center;
-    margin-right: 24px;
+    margin-right: 16px;
     cursor: pointer;
+    min-width: 70px;
+    
   }
 
   span {
-    font-size: 0.9rem;
+    font-size: 1rem;
     margin-right: 2px;
   }
 
@@ -167,6 +174,7 @@ const FilterCon = styled.div`
     width: 100%;
     margin-top: 75px;
     padding: 34px 20px 0px 30px;
+    
 
     input {
       width: 100%;
@@ -206,4 +214,34 @@ const FilterCon = styled.div`
         color: rgba(180,180,180,1);
       }
     }
-`
+`;
+
+const ShopMain = styled.div`
+  display: flex;
+  width: 100%;
+  padding: 40px 50px;
+
+  @media (max-width: 600px) {
+    padding: 30px 20px;
+  }
+`;
+
+const FilterSection = styled.section`
+  min-width: 210px;
+
+  @media (max-width: 1024px) {
+    width: 140px;
+  }
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+
+  @media (max-width: 600px) {
+    display: none;
+  }
+`;
+
+const ItemSection = styled.section`
+  flex-grow: 1;
+`;

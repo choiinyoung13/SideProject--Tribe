@@ -42,7 +42,7 @@ export default function CommunityFeatures() {
                   사용자의 도움을 받을 수 있습니다.
                 </p>
                 <ButtonCon>
-                  <Link to={"/about"}>
+                  <Link to={"/community"}>
                     <Button btnType={"link"} hover={true}>
                       커뮤니티 이용하기
                     </Button>
@@ -60,7 +60,7 @@ export default function CommunityFeatures() {
                   식물에 대한 열정을 공유할 수 있습니다.
                 </p>
                 <ButtonCon>
-                  <Link to={"/about"}>
+                  <Link to={"/community-guide"}>
                     <Button btnType={"link"} hover={true}>
                       커뮤니티 가이드라인
                     </Button>
@@ -176,6 +176,7 @@ const TextBox = styled.div`
   left: 0px;
   display: flex;
   width: 46%;
+  min-width: 620px;
 
   &:nth-child(1) {
     border-right: 1px solid rgba(20, 20, 20, 1);

@@ -1,12 +1,12 @@
-import styled from 'styled-components'
+import styled from "styled-components";
 
 interface InputType {
-  type: 'text' | 'password'
-  placeholder: string
+  type: "text" | "password";
+  placeholder: string;
 }
 
 export default function Input({ type, placeholder }: InputType) {
-  return <FormInput type={type} placeholder={placeholder} maxLength={30} />
+  return <FormInput type={type} placeholder={placeholder} maxLength={30} />;
 }
 
 const FormInput = styled.input`
@@ -18,8 +18,8 @@ const FormInput = styled.input`
     width: 300px;
   }
 
-  @media (max-width: 414px) {
+  @media (max-width: 600px) {
     font-size: 0.8rem;
     margin: 0 auto 14px;
   }
-`
+`;

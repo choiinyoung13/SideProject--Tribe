@@ -77,6 +77,15 @@ const FormCon = styled.div<FormConType>`
       margin-bottom: 10px;
     }
   }
+
+  @media (max-width: 600px) {
+    form {
+      input {
+        width: 84%;
+        margin-bottom: 10px;
+      }
+    }
+  }
 `;
 const FormWrapper = styled.div`
   display: flex;

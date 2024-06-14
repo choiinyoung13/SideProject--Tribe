@@ -110,11 +110,11 @@ const FormWrapper = styled.div`
   }
 
   @media (max-width: 600px) {
-    min-width: 600px;
+    min-width: none;
 
     hr {
       width: 80%;
-      margin-bottom: 30px;
+      margin-bottom: 10px;
     }
   }
 `;
@@ -166,6 +166,16 @@ const IdInputCon = styled.div`
 const PasswordInputCon = styled.div`
   input {
     width: 100%;
+  }
+
+  @media (max-width: 600px) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    input {
+      width: 80%;
+    }
   }
 `;
 
@@ -239,8 +249,8 @@ const JoinBtn = styled.button`
   }
 
   @media (max-width: 600px) {
-    width: 85%;
-    margin: 30px auto 0;
+    width: 80%;
+    margin: 20px auto 0;
   }
 `;
 
