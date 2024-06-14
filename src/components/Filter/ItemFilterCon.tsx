@@ -1,6 +1,6 @@
-import styled from "styled-components";
-import Badge from "../common/Badge";
-import ItemFilter from "./ItemFilter";
+import styled from 'styled-components'
+import Badge from '../common/Badge'
+import ItemFilter from './ItemFilter'
 
 export default function ItemFilterCon() {
   return (
@@ -14,19 +14,16 @@ export default function ItemFilterCon() {
           <Badge badgeType="hot" />
         </BadgeWrapper>
       </BadgeFilterCon>
-      <ItemFilter />
-      <ItemFilter />
-      <ItemFilter />
-      <ItemFilter />
-      <ItemFilter />
-      <ItemFilter />
+      <ItemFilter type="사이즈" />
+      <ItemFilter type="가격" />
+      <ItemFilter type="컬러" />
     </div>
-  );
+  )
 }
 
 const BadgeFilterCon = styled.div`
-  margin-bottom: 4px;
-`;
+  margin-bottom: 8px;
+`
 
 const BadgeWrapper = styled.div`
   margin-bottom: 10px;
@@ -45,9 +42,9 @@ const BadgeWrapper = styled.div`
   &:last-of-type {
     margin-bottom: 0px;
   }
-`;
+`
 
 const Title = styled.p`
   font-weight: 600;
   margin-bottom: 16px;
-`;
+`

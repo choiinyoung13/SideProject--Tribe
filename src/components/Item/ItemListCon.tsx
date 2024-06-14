@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import ItemCard from "./ItemCard";
+import styled from 'styled-components'
+import ItemCard from './ItemCard'
 
 export default function ItemListCon() {
   return (
@@ -15,23 +15,23 @@ export default function ItemListCon() {
         <ItemCard />
       </ListWrapper>
     </ListCon>
-  );
+  )
 }
 
 const ListCon = styled.div`
   width: 100%;
-  padding-left: 50px;
+  padding-left: 55px;
   display: flex;
   justify-content: center;
 
   @media (max-width: 768px) {
     padding-left: 0px;
   }
-`;
+`
 
 const ListWrapper = styled.div`
   display: flex;
   width: 100%;
   flex-wrap: wrap;
   justify-content: flex-start;
-`;
+`

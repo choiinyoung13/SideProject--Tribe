@@ -1,28 +1,28 @@
-import styled from "styled-components";
-import Banner from "../components/Banner/Banner";
-import { Link, useSearchParams } from "react-router-dom";
-import { useRef } from "react";
-import { BiSortAlt2 } from "react-icons/bi";
-import { IoSearch } from "react-icons/io5";
-import useWindowWidth from "../hooks/useWindowWidth";
-import ItemFilterCon from "../components/Filter/ItemFilterCon";
-import ItemListCon from "../components/Item/ItemListCon";
+import styled from 'styled-components'
+import Banner from '../components/banner/Banner'
+import { Link, useSearchParams } from 'react-router-dom'
+import { useRef } from 'react'
+import { BiSortAlt2 } from 'react-icons/bi'
+import { IoSearch } from 'react-icons/io5'
+import useWindowWidth from '../hooks/useWindowWidth'
+import ItemFilterCon from '../components/filter/ItemFilterCon'
+import ItemListCon from '../components/item/ItemListCon'
 
 export default function Shop() {
-  const [searchParams] = useSearchParams();
-  const tab = searchParams.get("tab");
-  const windowWidth = useWindowWidth();
+  const [searchParams] = useSearchParams()
+  const tab = searchParams.get('tab')
+  const windowWidth = useWindowWidth()
 
   const categories = useRef([
-    "이벤트",
-    "선물용",
-    "인테리어용",
-    "랭킹",
-    "추천",
-    "묘목/씨앗",
-    "화분자재류",
-    "원예자재류",
-  ]);
+    '이벤트',
+    '선물용',
+    '인테리어용',
+    '랭킹',
+    '추천',
+    '화환/식물',
+    '화분자재류',
+    '원예자재류',
+  ])
 
   return (
     <>
@@ -36,24 +36,24 @@ export default function Shop() {
       <ShopCon>
         <ShopHeader>
           <ul>
-            <li className={tab === null ? "active" : ""}>
-              <Link to={"/shop"}>전체</Link>
+            <li className={tab === null ? 'active' : ''}>
+              <Link to={'/shop'}>전체</Link>
             </li>
             {categories.current.map((category, i) => {
               return (
-                <li key={i} className={tab === String(i + 1) ? "active" : ""}>
+                <li key={i} className={tab === String(i + 1) ? 'active' : ''}>
                   <Link to={`/shop?tab=${i + 1}`}>{category}</Link>
                 </li>
-              );
+              )
             })}
           </ul>
           {windowWidth > 1024 && (
             <FilterCon>
               <div>
-                <span>인기순</span>
+                <span>신상품순</span>
                 <BiSortAlt2 color="rgba(80,80,80,1)" />
               </div>
-              <IoSearch color="rgba(80,80,80,1)" cursor={"pointer"} />
+              <IoSearch color="rgba(80,80,80,1)" cursor={'pointer'} />
             </FilterCon>
           )}
         </ShopHeader>
@@ -67,7 +67,7 @@ export default function Shop() {
         </ShopMain>
       </ShopCon>
     </>
-  );
+  )
 }
 
 const ShopCon = styled.div`
@@ -87,7 +87,7 @@ const ShopCon = styled.div`
   @media (max-width: 600px) {
     top: 0px;
   }
-`;
+`
 
 const ShopHeader = styled.div`
   display: flex;
@@ -145,15 +145,15 @@ const ShopHeader = styled.div`
       }
     }
   }
-`;
+`
 
 const FilterCon = styled.div`
   display: flex;
   align-items: center;
   font-size: 1.4rem;
-  color: rgba(70, 70, 70, 1);
+  color: rgba(90, 90, 90, 1);
   padding-top: 6px;
-  margin-right: 50px;
+  margin-right: 66px;
 
   div {
     display: flex;
@@ -165,7 +165,7 @@ const FilterCon = styled.div`
   }
 
   span {
-    font-size: 1rem;
+    font-size: 0.9rem;
     margin-right: 2px;
   }
 
@@ -214,7 +214,7 @@ const FilterCon = styled.div`
         color: rgba(180,180,180,1);
       }
     }
-`;
+`
 
 const ShopMain = styled.div`
   display: flex;
@@ -224,7 +224,7 @@ const ShopMain = styled.div`
   @media (max-width: 600px) {
     padding: 30px 20px;
   }
-`;
+`
 
 const FilterSection = styled.section`
   min-width: 210px;
@@ -240,8 +240,8 @@ const FilterSection = styled.section`
   @media (max-width: 600px) {
     display: none;
   }
-`;
+`
 
 const ItemSection = styled.section`
   flex-grow: 1;
-`;
+`

@@ -1,33 +1,37 @@
-import styled from "styled-components";
-import { AiOutlinePlus } from "react-icons/ai";
-import { BiMinus } from "react-icons/bi";
-import { useState } from "react";
-import SelectOptionBox from "./ItemFilterSelectOptionBox";
+import styled from 'styled-components'
+import { AiOutlinePlus } from 'react-icons/ai'
+import { BiMinus } from 'react-icons/bi'
+import { useState } from 'react'
+import SelectOptionBox from './ItemFilterSelectOptionBox'
 
-export default function ItemFilter() {
-  const [isActive, setIsActive] = useState(false);
+interface ItemFilterProps {
+  type: '사이즈' | '가격' | '컬러'
+}
+
+export default function ItemFilter({ type }: ItemFilterProps) {
+  const [isActive, setIsActive] = useState(false)
 
   return (
     <FiterWrapper
       onClick={() => {
-        if (isActive) return;
-        setIsActive(true);
+        if (isActive) return
+        setIsActive(true)
       }}
     >
       <TextCon>
         <Title
           onClick={() => {
-            setIsActive(false);
+            setIsActive(false)
           }}
         >
-          사이즈{" "}
+          {type}
           {isActive && (
             <MinusIcon>
               <BiMinus />
             </MinusIcon>
           )}
         </Title>
-        {!isActive ? <Desc>모든 사이즈</Desc> : <SelectOptionBox />}
+        {!isActive ? <Desc>모든 {type}</Desc> : <SelectOptionBox type={type} />}
       </TextCon>
       {!isActive && (
         <Icon>
@@ -35,7 +39,7 @@ export default function ItemFilter() {
         </Icon>
       )}
     </FiterWrapper>
-  );
+  )
 }
 
 const FiterWrapper = styled.div`
@@ -46,13 +50,13 @@ const FiterWrapper = styled.div`
   justify-content: space-between;
   cursor: pointer;
   transition: all 1s ease;
-`;
+`
 
 const TextCon = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-`;
+`
 
 const Icon = styled.div`
   font-size: 1.1rem;
@@ -67,7 +71,7 @@ const Icon = styled.div`
 
   @media (max-width: 600px) {
   }
-`;
+`
 
 const Title = styled.span`
   font-weight: bold;
@@ -87,7 +91,7 @@ const Title = styled.span`
 
   @media (max-width: 600px) {
   }
-`;
+`
 
 const Desc = styled.span`
   font-size: 0.9rem;
@@ -102,7 +106,7 @@ const Desc = styled.span`
 
   @media (max-width: 600px) {
   }
-`;
+`
 
 const MinusIcon = styled.div`
   font-size: 1.2rem;
@@ -117,4 +121,4 @@ const MinusIcon = styled.div`
 
   @media (max-width: 600px) {
   }
-`;
+`

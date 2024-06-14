@@ -1,7 +1,7 @@
-import { BrowserRouter } from "react-router-dom";
-import Router from "./router/router";
-import Nav from "./components/Layout/Nav";
-import Footer from "./components/Layout/Footer";
+import { BrowserRouter } from 'react-router-dom'
+import Router from './router/router'
+import Nav from './components/layout/Nav'
+import Footer from './components/layout/Footer'
 
 function App() {
   return (
@@ -10,7 +10,7 @@ function App() {
       <Router />
       <Footer />
     </BrowserRouter>
-  );
+  )
 }
 
-export default App;
+export default App
