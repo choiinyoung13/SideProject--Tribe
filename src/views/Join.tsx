@@ -102,7 +102,7 @@ const FormWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: start;
-  min-width: 460px;
+  min-width: 410px;
 
   hr {
     width: 100%;

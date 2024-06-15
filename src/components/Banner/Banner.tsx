@@ -1,24 +1,24 @@
-import { Swiper, SwiperSlide } from 'swiper/react'
-import { Navigation, Autoplay } from 'swiper/modules'
-import banner1 from '../../assets/images/banner/banner_image_1.jpg'
-import banner2 from '../../assets/images/banner/banner_image_2.jpg'
-import banner3 from '../../assets/images/banner/banner_image_3.jpg'
-import banner_mobile_1s from '../../assets/images/banner/banner_mobile_image1(s).jpg'
-import banner_mobile_2s from '../../assets/images/banner/banner_mobile_image2(s).jpg'
-import banner_mobile_3s from '../../assets/images/banner/banner_mobile_image3(s).jpg'
-import banner_mobile_1 from '../../assets/images/banner/banner_mobile_image1.jpg'
-import banner_mobile_2 from '../../assets/images/banner/banner_mobile_image2.jpg'
-import banner_mobile_3 from '../../assets/images/banner/banner_mobile_image3.jpg'
-import banner_tablet_1 from '../../assets/images/banner/banner_tablet_image1.jpg'
-import banner_tablet_2 from '../../assets/images/banner/banner_tablet_image2.jpg'
-import banner_tablet_3 from '../../assets/images/banner/banner_tablet_image3.jpg'
-import styled from 'styled-components'
-import 'swiper/css'
-import 'swiper/css/navigation'
-import useWindowWidth from '../../hooks/useWindowWidth'
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Autoplay } from "swiper/modules";
+import banner1 from "../../assets/images/banner/banner_image_1.jpg";
+import banner2 from "../../assets/images/banner/banner_image_2.jpg";
+import banner3 from "../../assets/images/banner/banner_image_3.jpg";
+import banner_mobile_1s from "../../assets/images/banner/banner_mobile_image1(s).jpg";
+import banner_mobile_2s from "../../assets/images/banner/banner_mobile_image2(s).jpg";
+import banner_mobile_3s from "../../assets/images/banner/banner_mobile_image3(s).jpg";
+import banner_mobile_1 from "../../assets/images/banner/banner_mobile_image1.jpg";
+import banner_mobile_2 from "../../assets/images/banner/banner_mobile_image2.jpg";
+import banner_mobile_3 from "../../assets/images/banner/banner_mobile_image3.jpg";
+import banner_tablet_1 from "../../assets/images/banner/banner_tablet_image1.jpg";
+import banner_tablet_2 from "../../assets/images/banner/banner_tablet_image2.jpg";
+import banner_tablet_3 from "../../assets/images/banner/banner_tablet_image3.jpg";
+import styled from "styled-components";
+import "swiper/css";
+import "swiper/css/navigation";
+import useWindowWidth from "../../hooks/useWindowWidth";
 
 export default function Banner() {
-  const windowWidth = useWindowWidth()
+  const windowWidth = useWindowWidth();
 
   return (
     <StyledSwiper
@@ -26,8 +26,8 @@ export default function Banner() {
       slidesPerView={1}
       loop={true}
       navigation={{
-        prevEl: '.swiper-button-prev',
-        nextEl: '.swiper-button-next',
+        prevEl: ".swiper-button-prev",
+        nextEl: ".swiper-button-next",
       }}
       autoplay={{
         delay: 3000,
@@ -35,7 +35,7 @@ export default function Banner() {
       }}
       modules={[Navigation, Autoplay]}
     >
-      <StyledSwiperSlide bgColor="rgba(34, 34, 34, 1)">
+      <StyledSwiperSlide bgcolor="rgba(34, 34, 34, 1)">
         <img
           src={
             windowWidth <= 450
@@ -49,7 +49,7 @@ export default function Banner() {
           alt="Banner 1"
         />
       </StyledSwiperSlide>
-      <StyledSwiperSlide bgColor="rgba(142, 147, 157, 1)">
+      <StyledSwiperSlide bgcolor="rgba(142, 147, 157, 1)">
         <img
           src={
             windowWidth <= 450
@@ -63,7 +63,7 @@ export default function Banner() {
           alt="Banner 2"
         />
       </StyledSwiperSlide>
-      <StyledSwiperSlide bgColor="rgba(216, 223, 227, 1)">
+      <StyledSwiperSlide bgcolor="rgba(216, 223, 227, 1)">
         <img
           src={
             windowWidth <= 450
@@ -80,7 +80,7 @@ export default function Banner() {
       <NavigationButton className="swiper-button-prev prev"></NavigationButton>
       <NavigationButton className="swiper-button-next next"></NavigationButton>
     </StyledSwiper>
-  )
+  );
 }
 
 const StyledSwiper = styled(Swiper)`
@@ -99,9 +99,9 @@ const StyledSwiper = styled(Swiper)`
   @media (max-width: 600px) {
     top: 60px;
   }
-`
+`;
 interface SliderType {
-  bgColor: string
+  bgcolor: string;
 }
 
 const StyledSwiperSlide = styled(SwiperSlide)<SliderType>`
@@ -110,7 +110,7 @@ const StyledSwiperSlide = styled(SwiperSlide)<SliderType>`
   align-items: center;
   width: 100%;
   height: 400px;
-  background-color: ${({ bgColor }) => bgColor};
+  background-color: ${({ bgcolor }) => bgcolor};
 
   img {
     min-width: 50%;
@@ -134,7 +134,7 @@ const StyledSwiperSlide = styled(SwiperSlide)<SliderType>`
       min-width: 50%;
     }
   }
-`
+`;
 
 const NavigationButton = styled.div`
   position: absolute;
@@ -181,4 +181,4 @@ const NavigationButton = styled.div`
       right: 20px;
     }
   }
-`
+`;
