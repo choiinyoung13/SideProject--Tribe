@@ -42,6 +42,7 @@ export default function Shop() {
           <BiSortAlt2
             color="rgba(140,140,140,1)"
             size={27}
+            cursor={"pointer"}
             onClick={() => {
               setSortModalOpened((prev) => !prev);
             }}

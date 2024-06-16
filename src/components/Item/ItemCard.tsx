@@ -1,12 +1,18 @@
-import styled from 'styled-components'
-import rose from '../../assets/images/shop_item/item_1.jpg'
-import Badge from '../common/Badge'
+import styled from "styled-components";
+import rose from "../../assets/images/shop_item/item_1.jpg";
+import Badge from "../common/Badge";
+import { useNavigate } from "react-router-dom";
 
 export default function ItemCard() {
+  const navigate = useNavigate();
   return (
-    <Card>
+    <Card
+      onClick={() => {
+        navigate(`/product/${1}`);
+      }}
+    >
       <ImgBox>
-        <img src={rose} alt="" />
+        <img src={rose} alt="" draggable="false" />
       </ImgBox>
       <TextBox>
         <ItemTitle>
@@ -23,13 +29,14 @@ export default function ItemCard() {
         </PriceDetail>
       </TextBox>
     </Card>
-  )
+  );
 }
 
 const Card = styled.div`
   width: 20%;
   padding: 0px 12px;
   padding-bottom: 20px;
+  cursor: pointer;
 
   @media (max-width: 1600px) {
     width: 25%;
@@ -45,7 +52,7 @@ const Card = styled.div`
 
   @media (max-width: 600px) {
   }
-`
+`;
 
 const ImgBox = styled.div`
   width: 100%;
@@ -55,7 +62,7 @@ const ImgBox = styled.div`
   img {
     width: 100%;
   }
-`
+`;
 
 const TextBox = styled.div`
   margin-top: 10px;
@@ -64,7 +71,7 @@ const TextBox = styled.div`
   @media (max-width: 600px) {
     padding: 8px 8px 8px 2px;
   }
-`
+`;
 
 const ItemTitle = styled.div`
   font-size: 1rem;
@@ -94,7 +101,7 @@ const ItemTitle = styled.div`
     font-size: 0.7rem;
     margin-bottom: 10px;
   }
-`
+`;
 
 const OriginalPrice = styled.div`
   text-decoration: line-through;
@@ -106,12 +113,12 @@ const OriginalPrice = styled.div`
   @media (max-width: 440px) {
     font-size: 0.7rem;
   }
-`
+`;
 
 const PriceDetail = styled.div`
   display: flex;
   align-items: center;
-`
+`;
 
 const Discount = styled.div`
   font-size: 0.8rem;
@@ -124,7 +131,7 @@ const Discount = styled.div`
     margin-right: 6px;
     padding-top: 1.5px;
   }
-`
+`;
 
 const DiscountedPrice = styled.div`
   font-weight: 600;
@@ -132,7 +139,7 @@ const DiscountedPrice = styled.div`
   @media (max-width: 440px) {
     font-size: 0.75rem;
   }
-`
+`;
 
 const BadgeWrapper = styled.div`
   margin-top: 10px;
@@ -149,4 +156,4 @@ const BadgeWrapper = styled.div`
   @media (max-width: 440px) {
     margin-top: 7px;
   }
-`
+`;

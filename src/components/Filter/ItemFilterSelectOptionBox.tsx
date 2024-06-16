@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { filterState } from "../../recoil/atoms/FilterState";
 
@@ -45,7 +45,7 @@ function getDataByType(type: string) {
 
 export default function SelectOptionBox({ type }: SelectOptionBoxPropsType) {
   const sizeDatas = useRef(getDataByType(type));
-  const setFilterState = useSetRecoilState(filterState);
+  const [filterDataState, setFilterDataState] = useRecoilState(filterState);
 
   interface DataType {
     title: string;
@@ -65,6 +65,13 @@ export default function SelectOptionBox({ type }: SelectOptionBoxPropsType) {
               type="radio"
               id={String(i) + data.value}
               name={type}
+              checked={
+                Object.values(filterDataState).some((value) => {
+                  return value === data.value;
+                })
+                  ? true
+                  : false
+              }
               onChange={() => {
                 const storedFilter = localStorage.getItem("filter");
                 const filterArray = storedFilter
@@ -96,7 +103,7 @@ export default function SelectOptionBox({ type }: SelectOptionBoxPropsType) {
                   return acc;
                 }, {});
 
-                setFilterState((prevState) => ({
+                setFilterDataState((prevState) => ({
                   ...prevState,
                   ...newFilterState,
                 }));

@@ -1,0 +1,16 @@
+.dp-full-width-wrapper {
+  width: 100%;
+}
+
+.dp-full-width {
+  width: 100%;
+}
+
+.dp-full-width input {
+  width: 100%;
+  padding: 4px 6px;
+  border: 1px solid rgba(120, 120, 120, 1);
+  font-weight: 400;
+  cursor: pointer;
+  box-sizing: border-box;
+}
