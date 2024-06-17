@@ -20,9 +20,10 @@ export default function CartItem({
   receivingDate,
 }: CartItemPropsType) {
   const [productCount, setProductCount] = useState(1);
+
   if (type === "header") {
     return (
-      <ItemContentCon>
+      <ItemContentCon className="header">
         <ItemContent>
           <CheckBox className="header">
             <input type="checkbox" />
@@ -69,92 +70,17 @@ export default function CartItem({
     );
 }
 
-const CheckBox = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-grow: 0;
-  flex-basis: 0%;
-  padding: 14px 14px 14px 20px;
+const ItemContentCon = styled.div`
+  @media (max-width: 1024px) {
+    &.header {
+      display: none;
+    }
+  }
 
-  input {
-    width: 18px;
-    height: 18px;
+  @media (max-width: 600px) {
+    font-size: 0.8rem;
   }
 `;
-
-const ProductInfo = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-grow: 18;
-  flex-basis: 50%;
-  border-right: 1px solid rgba(160, 160, 160, 0.5);
-  padding: 18px;
-`;
-const ProductImg = styled.div`
-  flex-grow: 1;
-  flex-basis: 15%;
-
-  img {
-    width: 100%;
-  }
-`;
-
-const ProductText = styled.div`
-  flex-grow: 7;
-  flex-basis: 85%;
-  margin-left: 20px;
-`;
-const ProductTextTitle = styled.div`
-  font-size: 1.1rem;
-  font-weight: 500;
-  margin-bottom: 11px;
-`;
-const ProductTextPrice = styled.div`
-  font-size: 0.9rem;
-  margin-bottom: 12px;
-  padding-left: 3px;
-  color: rgba(130, 130, 130, 1);
-`;
-const ProductTextOption = styled.div`
-  font-size: 0.9rem;
-  padding-left: 2px;
-  color: rgba(130, 130, 130, 1);
-`;
-
-const Amount = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-grow: 3;
-  flex-basis: 15%;
-  border-right: 1px solid rgba(160, 160, 160, 0.5);
-  padding: 14px;
-`;
-const OrderPrice = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-grow: 3;
-  flex-basis: 15%;
-  border-right: 1px solid rgba(160, 160, 160, 0.5);
-  padding: 14px;
-  font-size: 1.2rem;
-  font-weight: 500;
-`;
-const ReceivingDate = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-grow: 3;
-  flex-basis: 15%;
-  padding: 14px;
-  font-size: 1.1rem;
-  font-weight: 400;
-`;
-
-const ItemContentCon = styled.div``;
 
 const ItemContent = styled.div`
   display: flex;
@@ -168,6 +94,188 @@ const ItemContent = styled.div`
       font-weight: 500;
       font-size: 1.1rem;
       border-right: none;
+
+      @media (max-width: 600px) {
+        font-size: 0.9rem;
+      }
     }
+  }
+
+  @media (max-width: 1024px) {
+    align-items: center;
+    position: relative;
+  }
+`;
+
+const CheckBox = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 0;
+  flex-basis: 0%;
+  padding: 14px 14px 14px 20px;
+
+  input {
+    width: 20px;
+    height: 20px;
+  }
+
+  @media (max-width: 1024px) {
+    padding: 10px;
+    position: absolute;
+    top: 2px;
+  }
+
+  @media (max-width: 600px) {
+    padding: 9px;
+
+    input {
+      width: 15px;
+      height: 15px;
+    }
+  }
+`;
+
+const ProductInfo = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 18;
+  flex-basis: 50%;
+  border-right: 1px solid rgba(160, 160, 160, 0.5);
+  padding: 18px;
+
+  @media (max-width: 1024px) {
+    padding: 10px;
+    border-right: none;
+  }
+
+  @media (max-width: 600px) {
+    padding: 8px;
+    align-items: center;
+  }
+`;
+const ProductImg = styled.div`
+  flex-grow: 1;
+  flex-basis: 15%;
+
+  img {
+    width: 100%;
+    min-width: 80px;
+  }
+
+  @media (max-width: 1024px) {
+    img {
+      width: 100%;
+      min-width: 100px;
+    }
+  }
+
+  @media (max-width: 600px) {
+    margin-right: 10px;
+
+    img {
+      width: 100%;
+      min-width: 70px;
+    }
+  }
+`;
+
+const ProductText = styled.div`
+  flex-grow: 7;
+  flex-basis: 85%;
+  margin-left: 20px;
+
+  @media (max-width: 1024px) {
+    margin-left: 10px;
+  }
+
+  @media (max-width: 600px) {
+    margin-left: 0;
+  }
+`;
+const ProductTextTitle = styled.div`
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: 11px;
+
+  @media (max-width: 600px) {
+    font-size: 0.8rem;
+    margin-bottom: 7px;
+  }
+`;
+const ProductTextPrice = styled.div`
+  font-size: 0.9rem;
+  margin-bottom: 12px;
+  padding-left: 3px;
+  color: rgba(130, 130, 130, 1);
+
+  @media (max-width: 600px) {
+    font-size: 0.7rem;
+    margin-bottom: 7px;
+  }
+`;
+const ProductTextOption = styled.div`
+  font-size: 0.9rem;
+  padding-left: 2px;
+  color: rgba(130, 130, 130, 1);
+
+  @media (max-width: 600px) {
+    font-size: 0.7rem;
+  }
+`;
+
+const Amount = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 3;
+  flex-basis: 15%;
+  border-right: 1px solid rgba(160, 160, 160, 0.5);
+  padding: 14px;
+
+  @media (max-width: 1024px) {
+    padding: 10px;
+    border-right: none;
+  }
+
+  @media (max-width: 600px) {
+    padding: 8px;
+    flex-basis: auto;
+  }
+`;
+const OrderPrice = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 3;
+  flex-basis: 15%;
+  border-right: 1px solid rgba(160, 160, 160, 0.5);
+  padding: 14px;
+  font-size: 1.2rem;
+  font-weight: 500;
+
+  @media (max-width: 1024px) {
+    padding: 10px;
+    border-right: none;
+    font-size: 1.1rem;
+  }
+
+  @media (max-width: 600px) {
+    display: none;
+  }
+`;
+const ReceivingDate = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 3;
+  flex-basis: 17%;
+  padding: 14px;
+  font-size: 1.1rem;
+  font-weight: 400;
+
+  @media (max-width: 1024px) {
+    display: none;
   }
 `;

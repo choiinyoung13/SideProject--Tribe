@@ -1,0 +1,160 @@
+import styled from "styled-components";
+
+export default function ProductInfo() {
+  return (
+    <>
+      <Title>용기가 필요할 땐, 푸에고 장미</Title>
+      <InfoWrapper>
+        <Info>
+          <InfoKey>사이즈</InfoKey>
+          <InfoValue>Small</InfoValue>
+        </Info>
+        <Info>
+          <InfoKey>분류</InfoKey>
+          <InfoValue>Single Line</InfoValue>
+        </Info>
+        <Info>
+          <InfoKey>원산지</InfoKey>
+          <InfoValue>스페인</InfoValue>
+        </Info>
+        <Info>
+          <InfoKey>배송기간</InfoKey>
+          <InfoValue>2일</InfoValue>
+        </Info>
+      </InfoWrapper>
+    </>
+  );
+}
+
+const Title = styled.div`
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-top: 16px;
+
+  @media (max-width: 1024px) {
+    font-size: 1.2rem;
+    margin-top: 10px;
+  }
+
+  @media (max-width: 600px) {
+    font-size: 1rem;
+    margin-top: 10px;
+  }
+`;
+
+const InfoWrapper = styled.div`
+  margin: 30px 0px 40px;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  min-width: 500px;
+  display: flex;
+  overflow-x: auto;
+
+  ::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 6px;
+  }
+
+  scrollbar-width: thin;
+  scrollbar-color: rgba(210, 210, 210, 1) #fff;
+
+  @media (max-width: 1920px) {
+    min-width: 440px;
+  }
+
+  @media (max-width: 1024px) {
+    width: 90%;
+    margin: 30px auto 0px;
+    scrollbar-color: rgba(210, 210, 210, 0) #fff;
+  }
+
+  @media (max-width: 600px) {
+    width: 100%;
+    min-width: 200px;
+    scrollbar-color: rgba(210, 210, 210, 0) #fff;
+  }
+`;
+
+const Info = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 40px;
+  border-left: 1px solid rgba(90, 90, 90, 1);
+  flex-shrink: 0;
+
+  &:first-of-type {
+    border: none;
+    padding: 4px 40px 4px 20px;
+  }
+
+  &:last-of-type {
+    padding: 4px 20px 4px 40px;
+  }
+
+  @media (max-width: 1024px) {
+    margin: 0px;
+    align-items: center;
+    flex-grow: 1;
+  }
+
+  @media (max-width: 600px) {
+    margin: 0px;
+    align-items: center;
+    padding: 0px;
+    border-left: 1px solid rgba(90, 90, 90, 0.3);
+    flex-grow: 3;
+
+    &:first-of-type {
+      padding-right: 18px;
+      border: none;
+      flex-grow: 1;
+    }
+
+    &:last-of-type {
+      padding-left: 18px;
+      flex-grow: 0.5;
+    }
+  }
+`;
+
+const InfoKey = styled.div`
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: rgba(90, 90, 90, 1);
+
+  @media (max-width: 1024px) {
+    font-size: 1rem;
+  }
+
+  @media (max-width: 600px) {
+    font-size: 0.8rem;
+  }
+`;
+
+const InfoValue = styled.div`
+  font-size: 1rem;
+  font-weight: 400;
+  color: rgba(60, 60, 60, 1);
+  margin-top: 10px;
+
+  @media (max-width: 1024px) {
+    font-size: 1rem;
+    font-weight: 500;
+  }
+
+  @media (max-width: 600px) {
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+`;

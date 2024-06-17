@@ -55,6 +55,8 @@ const Btn = styled.button<ButtonPropsType>`
   }
 
   @media (max-width: 768px) {
+    padding: 8px 16px;
+    font-size: 0.9rem;
   }
 
   @media (max-width: 414px) {
@@ -71,6 +73,8 @@ const RightIcon = styled.span`
   font-size: 24px;
 
   @media (max-width: 768px) {
+    font-size: 20px;
+    margin-left: 10px;
   }
 
   @media (max-width: 414px) {

@@ -54,9 +54,8 @@ const PlusButton = styled.div<CountButtonType>`
   font-size: ${(props) => (props.type === "cart" ? "1.1rem" : "0.9rem")};
 
   @media (max-width: 1024px) {
-  }
-  @media (max-width: 600px) {
-    font-size: 0.8rem;
+    padding: 4px;
+    font-size: 0.9rem;
   }
 `;
 
@@ -69,9 +68,8 @@ const MinusButton = styled.div<CountButtonType>`
   font-size: ${(props) => (props.type === "cart" ? "1.1rem" : "0.9rem")};
 
   @media (max-width: 1024px) {
-  }
-  @media (max-width: 600px) {
-    font-size: 0.8rem;
+    padding: 4px;
+    font-size: 0.9rem;
   }
 `;
 
@@ -86,8 +84,7 @@ const Count = styled.div<CountButtonType>`
   font-size: ${(props) => (props.type === "cart" ? "1rem" : "0.9rem")};
 
   @media (max-width: 1024px) {
-  }
-  @media (max-width: 600px) {
-    font-size: 0.8rem;
+    padding: 4px;
+    font-size: 0.9rem;
   }
 `;
