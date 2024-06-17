@@ -6,6 +6,7 @@ import Join from "../views/Join";
 import Login from "../views/Login";
 import Shop from "../views/Shop";
 import About from "../views/About";
+import Cart from "../views/Cart";
 import CommunityFeatures from "../views/CommunityFeatures";
 import ProductDetail from "../views/ProductDetail";
 
@@ -19,6 +20,7 @@ const Router = (): JSX.Element => {
       <Route path="/login" element={<Login />} />
       <Route path="/join" element={<Join />} />
       <Route path="/shop" element={<Shop />} />
+      <Route path="/cart" element={<Cart />} />
       <Route path="/product/:id" element={<ProductDetail />} />
     </Routes>
   );

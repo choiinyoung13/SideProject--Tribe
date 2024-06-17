@@ -43,7 +43,7 @@ export default function CommunityFeatures() {
                 </p>
                 <ButtonCon>
                   <Link to={"/community"}>
-                    <Button btnType={"link"} hover={true}>
+                    <Button colorType="black" btnType={"link"} hover={true}>
                       커뮤니티 이용하기
                     </Button>
                   </Link>
@@ -61,7 +61,7 @@ export default function CommunityFeatures() {
                 </p>
                 <ButtonCon>
                   <Link to={"/community-guide"}>
-                    <Button btnType={"link"} hover={true}>
+                    <Button colorType="black" btnType={"link"} hover={true}>
                       커뮤니티 가이드라인
                     </Button>
                   </Link>

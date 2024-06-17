@@ -50,7 +50,7 @@ export default function Nav() {
           <Link to={"/login"}>
             <li>LOGIN</li>
           </Link>
-          <Link to={"/CART"}>
+          <Link to={"/cart"}>
             <li>CART</li>
           </Link>
         </NavRight>

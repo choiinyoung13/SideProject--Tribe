@@ -35,12 +35,12 @@ export default function Home() {
             </p>
             <ButtonCon>
               <Link to={"/about"}>
-                <Button btnType={"link"} hover={true}>
+                <Button colorType="black" btnType={"link"} hover={true}>
                   ABOUT TRIBE
                 </Button>
               </Link>
               <Link to={"/community-feature"}>
-                <Button btnType={"link"} hover={true}>
+                <Button colorType="black" btnType={"link"} hover={true}>
                   ABOUT COMMUNITY
                 </Button>
               </Link>
@@ -137,7 +137,7 @@ const TextContentCon = styled.div`
 
 const ButtonCon = styled.div`
   display: flex;
-  margin-top: 80px;
+  margin-top: 90px;
   button {
     border: none;
     border-radius: 2px;
