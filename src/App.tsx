@@ -1,11 +1,11 @@
-import { BrowserRouter } from "react-router-dom";
-import Router from "./router/router";
-import Nav from "./components/Layout/Nav";
-import Footer from "./components/Layout/Footer";
-import useLocalStorageFilter from "./hooks/useLocalStorageFilter";
+import { BrowserRouter } from 'react-router-dom'
+import Router from './router/router'
+import Nav from './components/layout/Nav'
+import Footer from './components/layout/Footer'
+import useLocalStorageFilter from './hooks/useLocalStorageFilter'
 
 function App() {
-  useLocalStorageFilter();
+  useLocalStorageFilter()
 
   return (
     <BrowserRouter>
@@ -13,7 +13,7 @@ function App() {
       <Router />
       <Footer />
     </BrowserRouter>
-  );
+  )
 }
 
-export default App;
+export default App
