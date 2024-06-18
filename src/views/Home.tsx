@@ -7,7 +7,7 @@ import useWindowWidth from "../hooks/useWindowWidth";
 import { Link } from "react-router-dom";
 import MobileHome from "./MobileHome";
 import useWindowHeight from "../hooks/useWindowHeight";
-import Button from "../components/common/Button";
+import Button from "../components/Common/Button";
 
 export default function Home() {
   const windowWidth = useWindowWidth();

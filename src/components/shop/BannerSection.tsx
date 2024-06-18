@@ -1,5 +1,5 @@
-import Banner from '../banner/Banner'
+import Banner from "../Banner/Banner";
 
 export default function BannerSection() {
-  return <Banner />
+  return <Banner />;
 }

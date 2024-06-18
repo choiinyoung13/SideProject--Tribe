@@ -53,12 +53,12 @@ const ModalCon = styled.div`
   width: 130px;
 
   @media (max-width: 600px) {
-    display: none;
+    width: 103px;
   }
 `;
 
 const ModalText = styled.div`
-  padding: 16px 14px;
+  padding: 14px 12px;
   font-size: 0.9rem;
   font-weight: 400;
   color: rgba(110, 110, 110, 1);
@@ -83,6 +83,24 @@ const ModalText = styled.div`
       height: 11px;
       border-right: 1px solid black;
       border-bottom: 1px solid black;
+    }
+  }
+
+  @media (max-width: 600px) {
+    font-size: 0.8rem;
+
+    &.active {
+      &::after {
+        position: absolute;
+        right: 16px;
+        top: 13px;
+        content: "";
+        transform: rotate(45deg);
+        width: 5px;
+        height: 9px;
+        border-right: 1px solid black;
+        border-bottom: 1px solid black;
+      }
     }
   }
 `;

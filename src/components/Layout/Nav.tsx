@@ -239,6 +239,8 @@ const MobileMenu = styled.ul`
   padding: 0;
   position: fixed;
   top: 0;
+  bottom: 0;
+  right: 0;
   left: 0;
   width: 100%;
   height: 100vh;
@@ -257,6 +259,10 @@ const MobileMenu = styled.ul`
 
   @media (max-width: 768px) {
     display: flex;
+  }
+
+  @media (max-width: 600px) {
+    min-width: 375px;
   }
 `;
 

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import Input from "../components/common/Input";
+import Input from "../components/Common/Input";
 import { AiOutlinePlus } from "react-icons/ai";
 import join_image from "../assets/images/join_web_1.jpg";
 import useWindowWidth from "../hooks/useWindowWidth";

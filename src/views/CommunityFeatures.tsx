@@ -6,10 +6,10 @@ import community_feature_tablet2 from "../assets/images/communityFeature/communi
 import useWindowWidth from "../hooks/useWindowWidth";
 import MobileHome from "./MobileHome";
 import useWindowHeight from "../hooks/useWindowHeight";
-import InfinityMarquee from "../components/common/Marquee";
+import InfinityMarquee from "../components/Common/Marquee";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import Button from "../components/common/Button";
+import Button from "../components/Common/Button";
 
 export default function CommunityFeatures() {
   const windowWidth = useWindowWidth();

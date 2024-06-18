@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import FutureDatePicker from "../../components/common/DatePicker";
+import FutureDatePicker from "../Common/DatePicker";
 
 interface DatePickerSectionProps {
   setIsDateSelected: React.Dispatch<React.SetStateAction<boolean>>;

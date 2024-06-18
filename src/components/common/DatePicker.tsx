@@ -68,5 +68,5 @@ const DataPickerIcon = styled.div`
   justify-content: center;
   font-size: 1.4rem;
   color: rgba(100, 100, 100, 1);
-  margin-right: 8px;
+  margin-right: 8.5px;
 `;

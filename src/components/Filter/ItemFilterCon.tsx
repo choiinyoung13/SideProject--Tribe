@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import Badge from "../common/Badge";
+import Badge from "../Common/Badge";
 import ItemFilter from "./ItemFilter";
 import { useSetRecoilState } from "recoil";
 import { filterState } from "../../recoil/atoms/FilterState";

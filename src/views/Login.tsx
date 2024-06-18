@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import Input from "../components/common/Input";
+import Input from "../components/Common/Input";
 import google_logo from "../assets/images/logo/logo_google.png";
 import kakao_logo from "../assets/images/logo/logo_kakao.png";
 import login_image from "../assets/images/logo/login_web_1.jpg";

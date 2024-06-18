@@ -1,8 +1,8 @@
-import BannerSection from '../components/shop/BannerSection'
-import HeaderSection from '../components/shop/HeaderSection'
-import MainSection from '../components/shop/MainSection'
-import StyledWebSortModal from '../components/shop/StyledWebSortModal'
-import styled from 'styled-components'
+import BannerSection from "../components/shop/BannerSection";
+import HeaderSection from "../components/shop/HeaderSection";
+import MainSection from "../components/shop/MainSection";
+import StyledWebSortModal from "../components/shop/StyledWebSortModal";
+import styled from "styled-components";
 
 export default function Shop() {
   return (
@@ -14,7 +14,7 @@ export default function Shop() {
         <MainSection />
       </ShopCon>
     </>
-  )
+  );
 }
 
 const ShopCon = styled.div`
@@ -24,7 +24,7 @@ const ShopCon = styled.div`
   z-index: 97;
 
   @media (max-width: 1024px) {
-    top: 150px;
+    top: 90px;
   }
 
   @media (max-width: 768px) {
@@ -34,4 +34,4 @@ const ShopCon = styled.div`
   @media (max-width: 600px) {
     top: 0px;
   }
-`
+`;

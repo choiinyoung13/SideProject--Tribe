@@ -1,5 +1,5 @@
-import styled from 'styled-components'
-import WebSortModal from '../modal/WebSortModal'
+import styled from "styled-components";
+import WebSortModal from "../Modal/WebSortModal";
 
 const StyledWebSortModal = styled(WebSortModal)`
   position: absolute;
@@ -12,9 +12,14 @@ const StyledWebSortModal = styled(WebSortModal)`
   }
 
   @media (max-width: 1024px) {
-    top: 0px;
-    right: 30px;
+    top: 50px;
+    right: 36px;
   }
-`
 
-export default StyledWebSortModal
+  @media (max-width: 768px) {
+    top: 120px;
+    right: 32px;
+  }
+`;
+
+export default StyledWebSortModal;
