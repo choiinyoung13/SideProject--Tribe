@@ -1,9 +1,9 @@
-import React from "react";
-import styled from "styled-components";
-import FutureDatePicker from "../Common/DatePicker";
+import React from 'react'
+import styled from 'styled-components'
+import FutureDatePicker from '../common/DatePicker'
 
 interface DatePickerSectionProps {
-  setIsDateSelected: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsDateSelected: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export default function DatePickerSection({
@@ -22,7 +22,7 @@ export default function DatePickerSection({
         />
       </DatePicker>
     </DatePickerWrapper>
-  );
+  )
 }
 
 const DatePickerWrapper = styled.div`
@@ -36,7 +36,7 @@ const DatePickerWrapper = styled.div`
   @media (max-width: 600px) {
     margin: 35px 0;
   }
-`;
+`
 
 const PickDateText = styled.div`
   font-size: 1.1rem;
@@ -62,9 +62,9 @@ const PickDateText = styled.div`
       font-size: 0.8rem;
     }
   }
-`;
+`
 
 const DatePicker = styled.div`
   margin-top: 10px;
   width: 100%;
-`;
+`

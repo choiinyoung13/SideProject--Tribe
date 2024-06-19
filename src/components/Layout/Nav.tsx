@@ -49,10 +49,22 @@ export default function Nav() {
           </NavLinks>
         </NavLeft>
         <NavRight>
-          <Link to={'/login'}>
-            <li>LOGIN</li>
-          </Link>
-          <Link to={'/cart'}>
+          {session ? (
+            <Link
+              to={'/'}
+              onClick={() => {
+                toggleMenu()
+                signOut()
+              }}
+            >
+              <li>LOGOUT</li>
+            </Link>
+          ) : (
+            <Link to={'/login'} onClick={toggleMenu}>
+              <li>LOGIN</li>
+            </Link>
+          )}
+          <Link to={session ? '/cart' : '/login'}>
             <li>CART</li>
           </Link>
         </NavRight>
@@ -78,7 +90,7 @@ export default function Nav() {
                   signOut()
                 }}
               >
-                <li>LOOUT</li>
+                <li>LOGOUT</li>
               </Link>
             ) : (
               <Link to={'/login'} onClick={toggleMenu}>

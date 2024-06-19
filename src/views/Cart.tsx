@@ -1,13 +1,13 @@
-import styled from "styled-components";
-import CartItem from "../components/Cart/CartItem";
-import Button from "../components/Common/Button";
-import TotalPriceSection from "../components/Cart/TotalPriceSection";
-import useWindowWidth from "../hooks/useWindowWidth";
-import { useNavigate } from "react-router-dom";
+import styled from 'styled-components'
+import CartItem from '../components/Cart/CartItem'
+import Button from '../components/common/Button'
+import TotalPriceSection from '../components/Cart/TotalPriceSection'
+import useWindowWidth from '../hooks/useWindowWidth'
+import { useNavigate } from 'react-router-dom'
 
 export default function Cart() {
-  const windowWidth = useWindowWidth();
-  const navitgate = useNavigate();
+  const windowWidth = useWindowWidth()
+  const navitgate = useNavigate()
 
   return (
     <CartCon>
@@ -51,7 +51,7 @@ export default function Cart() {
       <ButtonCon>
         <button
           onClick={() => {
-            navitgate("/shop");
+            navitgate('/shop')
           }}
         >
           계속 쇼핑하기
@@ -59,7 +59,7 @@ export default function Cart() {
         <button>결제하기</button>
       </ButtonCon>
     </CartCon>
-  );
+  )
 }
 
 const CartCon = styled.div`
@@ -79,7 +79,7 @@ const CartCon = styled.div`
     margin: 60px auto;
     padding: 0 14px;
   }
-`;
+`
 
 const Title = styled.div`
   margin-bottom: 20px;
@@ -89,7 +89,7 @@ const Title = styled.div`
   @media (max-width: 1024px) {
     display: none;
   }
-`;
+`
 
 const CheckHeader = styled.div`
   display: flex;
@@ -97,7 +97,7 @@ const CheckHeader = styled.div`
   align-items: center;
   padding: 10px;
   margin-bottom: 6px;
-`;
+`
 
 const CheckHeaderLeft = styled.div`
   display: flex;
@@ -118,14 +118,14 @@ const CheckHeaderLeft = styled.div`
       margin-right: 8px;
     }
   }
-`;
+`
 const CheckHeaderRight = styled.div`
   cursor: pointer;
 
   @media (max-width: 600px) {
     font-size: 0.9rem;
   }
-`;
+`
 
 const ItemCon = styled.div`
   border-top: 3px solid rgba(20, 20, 20, 1);
@@ -138,7 +138,7 @@ const ItemCon = styled.div`
   @media (max-width: 600px) {
     border-top: 1px solid rgba(20, 20, 20, 1);
   }
-`;
+`
 
 const ItemSubButtonCon = styled.div`
   display: flex;
@@ -154,7 +154,7 @@ const ItemSubButtonCon = styled.div`
 
   @media (max-width: 600px) {
   }
-`;
+`
 
 const ButtonWrapper = styled.div`
   display: flex;
@@ -165,7 +165,7 @@ const ButtonWrapper = styled.div`
   @media (max-width: 1024px) {
     display: none;
   }
-`;
+`
 
 const PriceConWrapper = styled.div`
   margin-top: 90px;
@@ -179,7 +179,7 @@ const PriceConWrapper = styled.div`
     margin-top: 30px;
     margin-bottom: 40px;
   }
-`;
+`
 
 const DetailDesc = styled.div`
   @media (max-width: 1024px) {
@@ -189,7 +189,7 @@ const DetailDesc = styled.div`
   @media (max-width: 600px) {
     font-size: 0.8rem;
   }
-`;
+`
 
 const ButtonCon = styled.div`
   display: flex;
@@ -235,4 +235,4 @@ const ButtonCon = styled.div`
       font-size: 1rem;
     }
   }
-`;
+`

@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import rose from '../../assets/images/shop_item/item_1.jpg'
-import Badge from '../Common/Badge'
+import Badge from '../common/Badge'
 import { useNavigate } from 'react-router-dom'
 
 export default function ItemCard() {

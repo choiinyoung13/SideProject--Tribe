@@ -1,12 +1,12 @@
-import React from "react";
-import styled from "styled-components";
-import CountButton from "../Common/CountButton";
+import React from 'react'
+import styled from 'styled-components'
+import CountButton from '../common/CountButton'
 
 interface TotalPriceSectionProps {
-  formatNumberWithCommas: (num: number) => string;
-  productCount: number;
-  additionalOptionsPrice: number;
-  setProductCount: React.Dispatch<React.SetStateAction<number>>;
+  formatNumberWithCommas: (num: number) => string
+  productCount: number
+  additionalOptionsPrice: number
+  setProductCount: React.Dispatch<React.SetStateAction<number>>
 }
 
 export default function TotalPriceSection({
@@ -44,10 +44,10 @@ export default function TotalPriceSection({
         </TotalPriceText>
       </PriceInfoBox>
     </TotalPriceCon>
-  );
+  )
 }
 
-const TotalPriceCon = styled.div``;
+const TotalPriceCon = styled.div``
 
 const TotalPriceTitle = styled.span`
   display: block;
@@ -62,7 +62,7 @@ const TotalPriceTitle = styled.span`
   @media (max-width: 600px) {
     font-size: 0.9rem;
   }
-`;
+`
 
 const DeliveryPriceText = styled.div`
   display: flex;
@@ -81,7 +81,7 @@ const DeliveryPriceText = styled.div`
     font-size: 0.9rem;
     padding: 0px 6px;
   }
-`;
+`
 
 const TotalPriceText = styled.div`
   display: flex;
@@ -98,13 +98,13 @@ const TotalPriceText = styled.div`
     font-size: 0.9rem;
     padding: 0px 6px;
   }
-`;
+`
 
 const PriceInfoBox = styled.div`
   width: 100%;
   background-color: rgba(240, 240, 240, 1);
   padding: 20px 14px 26px;
-`;
+`
 
 const MainProductPrice = styled.div`
   display: flex;
@@ -113,7 +113,7 @@ const MainProductPrice = styled.div`
   width: 100%;
   background-color: #fff;
   padding: 10px;
-`;
+`
 
 const MainProduct = styled.div`
   @media (max-width: 1024px) {
@@ -123,4 +123,4 @@ const MainProduct = styled.div`
   @media (max-width: 600px) {
     font-size: 0.9rem;
   }
-`;
+`
