@@ -1,44 +1,44 @@
-import styled from "styled-components";
-import { Link, useSearchParams } from "react-router-dom";
-import { useRef } from "react";
-import FilterSection from "./FilterSection";
+import styled from 'styled-components'
+import { Link, useSearchParams } from 'react-router-dom'
+import { useRef } from 'react'
+import FilterSection from '../Shop/FilterSection'
 
 export default function HeaderSection() {
-  const [searchParams] = useSearchParams();
-  const tab = searchParams.get("tab");
+  const [searchParams] = useSearchParams()
+  const tab = searchParams.get('tab')
   const categories = useRef([
-    "이벤트",
-    "선물용",
-    "인테리어용",
-    "랭킹",
-    "추천",
-    "화환/식물",
-    "화분자재류",
-    "원예자재류",
-  ]);
+    '이벤트',
+    '선물용',
+    '인테리어용',
+    '랭킹',
+    '추천',
+    '화환/식물',
+    '화분자재류',
+    '원예자재류',
+  ])
 
   return (
     <ShopHeader>
       <CategoryWrapper>
         <CategoryList>
-          <CategoryListItem className={tab === null ? "active" : ""}>
-            <Link to={"/shop"}>전체</Link>
+          <CategoryListItem className={tab === null ? 'active' : ''}>
+            <Link to={'/shop'}>전체</Link>
           </CategoryListItem>
           {categories.current.map((category, i) => {
             return (
               <CategoryListItem
                 key={i}
-                className={tab === String(i + 1) ? "active" : ""}
+                className={tab === String(i + 1) ? 'active' : ''}
               >
                 <Link to={`/shop?tab=${i + 1}`}>{category}</Link>
               </CategoryListItem>
-            );
+            )
           })}
         </CategoryList>
       </CategoryWrapper>
       <FilterSection />
     </ShopHeader>
-  );
+  )
 }
 
 const ShopHeader = styled.div`
@@ -50,7 +50,7 @@ const ShopHeader = styled.div`
   @media (max-width: 1024px) {
     flex-direction: column-reverse;
   }
-`;
+`
 
 const CategoryWrapper = styled.div`
   @media (max-width: 1024px) {
@@ -66,7 +66,7 @@ const CategoryWrapper = styled.div`
   @media (max-width: 768px) {
     width: 100%;
   }
-`;
+`
 
 const CategoryList = styled.ul`
   display: flex;
@@ -95,7 +95,7 @@ const CategoryList = styled.ul`
       min-width: 740px;
     }
   }
-`;
+`
 
 const CategoryListItem = styled.li`
   margin-right: 38px;
@@ -122,4 +122,4 @@ const CategoryListItem = styled.li`
       padding-bottom: 17px;
     }
   }
-`;
+`
