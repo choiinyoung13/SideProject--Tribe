@@ -21,5 +21,22 @@ export const useHandleSignIn = () => {
     }
   }
 
-  return { handleSignIn, errorMessage }
+  const SignInWithGoogle = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent',
+        },
+      },
+    })
+
+    if (error) {
+      console.error(error)
+      setErrorMessage('Error signing in with Google')
+    }
+  }
+
+  return { handleSignIn, SignInWithGoogle, errorMessage }
 }

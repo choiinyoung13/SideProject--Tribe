@@ -12,7 +12,7 @@ export default function Login() {
   const windowWidth = useWindowWidth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const { handleSignIn } = useHandleSignIn()
+  const { handleSignIn, SignInWithGoogle, errorMessage } = useHandleSignIn()
   const navigate = useNavigate()
 
   return (
@@ -25,7 +25,8 @@ export default function Login() {
           </FormSubTitle>
           <form
             action=""
-            onSubmit={() => {
+            onSubmit={e => {
+              e.preventDefault()
               try {
                 handleSignIn(email, password)
                 navigate('/')
@@ -42,6 +43,7 @@ export default function Login() {
               type="password"
               placeholder="비밀번호를 입력해주세요."
             />
+            {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
             <HelperTextCon>
               <HelperText>
                 계정을 잊으셨나요? <span>ID찾기</span> 또는{' '}
@@ -49,11 +51,14 @@ export default function Login() {
               </HelperText>
             </HelperTextCon>
             <LoginBtn type="submit">로그인</LoginBtn>
-            <GoogleLoginBtn type="submit">
+            <GoogleLoginBtn
+              type="button" // onClick에서 form submit 방지
+              onClick={SignInWithGoogle}
+            >
               <img src={google_logo} alt="" />
               Google로 시작하기
             </GoogleLoginBtn>
-            <KaKaoLoginBtn type="submit">
+            <KaKaoLoginBtn type="button">
               <img src={kakao_logo} alt="" />
               Kakao로 시작하기
             </KaKaoLoginBtn>
