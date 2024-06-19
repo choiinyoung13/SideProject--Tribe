@@ -1,15 +1,15 @@
-import { AiFillThunderbolt } from "react-icons/ai";
-import { FaHotjar } from "react-icons/fa";
-import styled from "styled-components";
+import { AiFillThunderbolt } from 'react-icons/ai'
+import { FaHotjar } from 'react-icons/fa'
+import styled from 'styled-components'
 
 interface badgeType {
-  badgeType: "fast" | "hot";
+  badgeType: 'fast' | 'hot'
 }
 
 export default function Badge({ badgeType }: badgeType) {
   return (
     <BadgeCon>
-      {badgeType === "fast" && (
+      {badgeType === 'fast' && (
         <>
           <BadgeFastIcon>
             <AiFillThunderbolt />
@@ -17,7 +17,7 @@ export default function Badge({ badgeType }: badgeType) {
           <BadgeText>빠른배송</BadgeText>
         </>
       )}
-      {badgeType === "hot" && (
+      {badgeType === 'hot' && (
         <>
           <BadgeHotIcon>
             <FaHotjar />
@@ -26,7 +26,7 @@ export default function Badge({ badgeType }: badgeType) {
         </>
       )}
     </BadgeCon>
-  );
+  )
 }
 
 const BadgeCon = styled.div`
@@ -41,7 +41,7 @@ const BadgeCon = styled.div`
     padding: 2px 4px;
     width: 64px;
   }
-`;
+`
 
 const BadgeFastIcon = styled.span`
   display: flex;
@@ -54,7 +54,7 @@ const BadgeFastIcon = styled.span`
   @media (max-width: 480px) {
     font-size: 0.8rem;
   }
-`;
+`
 
 const BadgeHotIcon = styled.span`
   display: flex;
@@ -67,14 +67,14 @@ const BadgeHotIcon = styled.span`
   @media (max-width: 480px) {
     font-size: 0.6rem;
   }
-`;
+`
 
 const BadgeText = styled.p`
   font-size: 0.8rem;
-  font-weight: 300;
-  color: rgb(110, 110, 110);
+  font-weight: 400;
+  color: rgba(90, 90, 90, 1);
 
   @media (max-width: 480px) {
     font-size: 0.6rem;
   }
-`;
+`

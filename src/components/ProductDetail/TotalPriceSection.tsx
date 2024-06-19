@@ -1,19 +1,23 @@
 import React from 'react'
 import styled from 'styled-components'
 import CountButton from '../Common/CountButton'
+import formatNumberWithCommas from '../../utill/formatNumberWithCommas'
+import { priceCalculation } from '../../utill/priceCalculation'
 
 interface TotalPriceSectionProps {
-  formatNumberWithCommas: (num: number) => string
   productCount: number
   additionalOptionsPrice: number
   setProductCount: React.Dispatch<React.SetStateAction<number>>
+  originalprice: number
+  discount: number
 }
 
 export default function TotalPriceSection({
-  formatNumberWithCommas,
   productCount,
   additionalOptionsPrice,
   setProductCount,
+  originalprice,
+  discount,
 }: TotalPriceSectionProps) {
   return (
     <TotalPriceCon>
@@ -37,7 +41,9 @@ export default function TotalPriceSection({
           <div>총 주문금액</div>
           <div>
             {formatNumberWithCommas(
-              9900 * productCount + 2900 + additionalOptionsPrice
+              priceCalculation(originalprice, discount) * productCount +
+                2900 +
+                additionalOptionsPrice
             )}
             원
           </div>

@@ -1,31 +1,55 @@
 import styled from 'styled-components'
-import rose from '../../assets/images/shop_item/item_1.jpg'
 import Badge from '../Common/Badge'
 import { useNavigate } from 'react-router-dom'
+import { priceCalculation } from '../../utill/priceCalculation'
+import formatNumberWithCommas from '../../utill/formatNumberWithCommas'
 
-export default function ItemCard() {
+type BadgeType = 'hot' | 'fast'
+
+interface ItemCardPropsType {
+  id: number
+  title: string
+  imgurl: string
+  originalprice: number
+  badge: BadgeType[]
+  discount: number
+}
+
+export default function ItemCard({
+  id,
+  title,
+  imgurl,
+  originalprice,
+  badge,
+  discount,
+}: ItemCardPropsType) {
   const navigate = useNavigate()
+
   return (
     <Card
       onClick={() => {
-        navigate(`/product/${1}`)
+        navigate(`/product/${id}`)
       }}
     >
       <ImgBox>
-        <img src={rose} alt="" draggable="false" />
+        <img src={imgurl} alt="" draggable="false" />
       </ImgBox>
       <TextBox>
         <ItemTitle>
-          <span>용기가 필요할 땐, 푸에고 장미</span>
+          <Title>{title}</Title>
           <BadgeWrapper>
-            <Badge badgeType="fast" />
-            <Badge badgeType="hot" />
+            {badge.map((badgeType: 'hot' | 'fast', i: number) => {
+              return <Badge key={i} badgeType={badgeType} />
+            })}
           </BadgeWrapper>
         </ItemTitle>
-        <OriginalPrice>13,900원</OriginalPrice>
+        <OriginalPrice>{formatNumberWithCommas(originalprice)}원</OriginalPrice>
         <PriceDetail>
-          <Discount>28%</Discount>
-          <DiscountedPrice>9,900원</DiscountedPrice>
+          <Discount>{discount}%</Discount>
+          <DiscountedPrice>
+            {formatNumberWithCommas(priceCalculation(originalprice, discount))}
+            원
+          </DiscountedPrice>
         </PriceDetail>
       </TextBox>
     </Card>
@@ -81,13 +105,6 @@ const ItemTitle = styled.div`
   flex-direction: column;
   min-width: 200px;
 
-  span {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    padding-bottom: 2px;
-  }
-
   @media (max-width: 1024px) {
     min-width: 180px;
   }
@@ -101,6 +118,13 @@ const ItemTitle = styled.div`
     font-size: 0.7rem;
     margin-bottom: 10px;
   }
+`
+
+const Title = styled.span`
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-bottom: 2px;
 `
 
 const OriginalPrice = styled.div`

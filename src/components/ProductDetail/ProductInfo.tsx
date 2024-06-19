@@ -1,29 +1,43 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
-export default function ProductInfo() {
+interface ProductInfoPropsType {
+  title: string
+  size: string
+  origin: string
+  classification: string
+  deliveryPeriod: number
+}
+
+export default function ProductInfo({
+  title,
+  size,
+  origin,
+  classification,
+  deliveryPeriod,
+}: ProductInfoPropsType) {
   return (
     <>
-      <Title>용기가 필요할 땐, 푸에고 장미</Title>
+      <Title>{title}</Title>
       <InfoWrapper>
         <Info>
           <InfoKey>사이즈</InfoKey>
-          <InfoValue>Small</InfoValue>
+          <InfoValue>{size}</InfoValue>
         </Info>
         <Info>
           <InfoKey>분류</InfoKey>
-          <InfoValue>Single Line</InfoValue>
+          <InfoValue>{classification}</InfoValue>
         </Info>
         <Info>
           <InfoKey>원산지</InfoKey>
-          <InfoValue>스페인</InfoValue>
+          <InfoValue>{origin}</InfoValue>
         </Info>
         <Info>
           <InfoKey>배송기간</InfoKey>
-          <InfoValue>2일</InfoValue>
+          <InfoValue>{deliveryPeriod}일</InfoValue>
         </Info>
       </InfoWrapper>
     </>
-  );
+  )
 }
 
 const Title = styled.div`
@@ -40,7 +54,7 @@ const Title = styled.div`
     font-size: 1rem;
     margin-top: 10px;
   }
-`;
+`
 
 const InfoWrapper = styled.div`
   margin: 30px 0px 40px;
@@ -82,7 +96,7 @@ const InfoWrapper = styled.div`
     min-width: 200px;
     scrollbar-color: rgba(210, 210, 210, 0) #fff;
   }
-`;
+`
 
 const Info = styled.div`
   display: flex;
@@ -126,7 +140,7 @@ const Info = styled.div`
       flex-grow: 0.5;
     }
   }
-`;
+`
 
 const InfoKey = styled.div`
   font-size: 0.8rem;
@@ -140,7 +154,7 @@ const InfoKey = styled.div`
   @media (max-width: 600px) {
     font-size: 0.8rem;
   }
-`;
+`
 
 const InfoValue = styled.div`
   font-size: 1rem;
@@ -157,4 +171,4 @@ const InfoValue = styled.div`
     font-size: 0.8rem;
     font-weight: 600;
   }
-`;
+`

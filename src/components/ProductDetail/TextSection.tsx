@@ -1,46 +1,77 @@
-import React from "react";
-import styled from "styled-components";
-import PriceInfo from "../../components/ProductDetail/PriceInfo";
-import ProductInfo from "../../components/ProductDetail/ProductInfo";
-import DatePickerSection from "../../components/ProductDetail/DatePickerSection";
-import OptionsSection from "../../components/ProductDetail/OptionSection";
-import TotalPriceSection from "../../components/ProductDetail/TotalPriceSection";
-import ButtonSection from "../../components/ProductDetail/ButtonSection";
+import React from 'react'
+import styled from 'styled-components'
+import PriceInfo from '../../components/ProductDetail/PriceInfo'
+import ProductInfo from '../../components/ProductDetail/ProductInfo'
+import DatePickerSection from '../../components/ProductDetail/DatePickerSection'
+import OptionsSection from '../../components/ProductDetail/OptionSection'
+import TotalPriceSection from '../../components/ProductDetail/TotalPriceSection'
+import ButtonSection from '../../components/ProductDetail/ButtonSection'
+
+type BadgeType = 'hot' | 'fast'
 
 interface TextSectionProps {
-  formatNumberWithCommas: (num: number) => string;
-  productCount: number;
-  setProductCount: React.Dispatch<React.SetStateAction<number>>;
-  additionalOptionsPrice: number;
-  handleSelectChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
-  isDateSelected: boolean;
-  setIsDateSelected: React.Dispatch<React.SetStateAction<boolean>>;
+  productCount: number
+  setProductCount: React.Dispatch<React.SetStateAction<number>>
+  additionalOptionsPrice: number
+  handleSelectChange: (event: React.ChangeEvent<HTMLSelectElement>) => void
+  isDateSelected: boolean
+  setIsDateSelected: React.Dispatch<React.SetStateAction<boolean>>
+  productInfo: {
+    id: number
+    title: string
+    imgurl: string
+    originalprice: number
+    badge: BadgeType[]
+    discount: number
+    category: string
+    size: string
+    origin: string
+    classification: string
+    deliveryperiod: number
+  }
 }
 
 export default function TextSection({
-  formatNumberWithCommas,
   productCount,
   setProductCount,
   additionalOptionsPrice,
   handleSelectChange,
   isDateSelected,
   setIsDateSelected,
+  productInfo,
 }: TextSectionProps) {
+  const {
+    title,
+    originalprice,
+    discount,
+    size,
+    origin,
+    classification,
+    deliveryperiod,
+  } = productInfo
+
   return (
     <TextSectionCon>
-      <PriceInfo formatNumberWithCommas={formatNumberWithCommas} />
-      <ProductInfo />
+      <PriceInfo originalprice={originalprice} discount={discount} />
+      <ProductInfo
+        title={title}
+        size={size}
+        classification={classification}
+        deliveryPeriod={deliveryperiod}
+        origin={origin}
+      />
       <DatePickerSection setIsDateSelected={setIsDateSelected} />
       <OptionsSection handleSelectChange={handleSelectChange} />
       <TotalPriceSection
-        formatNumberWithCommas={formatNumberWithCommas}
         productCount={productCount}
         additionalOptionsPrice={additionalOptionsPrice}
         setProductCount={setProductCount}
+        originalprice={originalprice}
+        discount={discount}
       />
       <ButtonSection isDateSelected={isDateSelected} />
     </TextSectionCon>
-  );
+  )
 }
 
 const TextSectionCon = styled.section`
@@ -62,4 +93,4 @@ const TextSectionCon = styled.section`
     padding: 20px;
     border-left: none;
   }
-`;
+`
