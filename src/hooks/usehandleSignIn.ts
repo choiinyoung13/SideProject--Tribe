@@ -38,5 +38,22 @@ export const useHandleSignIn = () => {
     }
   }
 
-  return { handleSignIn, SignInWithGoogle, errorMessage }
+  const SignInWithKakao = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'kakao',
+      options: {
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'select_account',
+        },
+      },
+    })
+
+    if (error) {
+      console.error(error)
+      setErrorMessage('Error signing in with Google')
+    }
+  }
+
+  return { handleSignIn, SignInWithGoogle, SignInWithKakao, errorMessage }
 }

@@ -12,7 +12,8 @@ export default function Login() {
   const windowWidth = useWindowWidth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const { handleSignIn, SignInWithGoogle, errorMessage } = useHandleSignIn()
+  const { handleSignIn, SignInWithGoogle, SignInWithKakao, errorMessage } =
+    useHandleSignIn()
   const navigate = useNavigate()
 
   return (
@@ -58,7 +59,7 @@ export default function Login() {
               <img src={google_logo} alt="" />
               Google로 시작하기
             </GoogleLoginBtn>
-            <KaKaoLoginBtn type="button">
+            <KaKaoLoginBtn type="button" onClick={SignInWithKakao}>
               <img src={kakao_logo} alt="" />
               Kakao로 시작하기
             </KaKaoLoginBtn>
