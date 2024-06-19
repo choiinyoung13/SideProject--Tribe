@@ -1,15 +1,15 @@
-import { useState } from "react";
-import styled from "styled-components";
-import product_img from "../../assets/images/shop_item/item_1.jpg";
-import CountButton from "../Common/CountButton";
-import formatNumberWithCommas from "../../utill/formatNumberWithCommas";
+import { useState } from 'react'
+import styled from 'styled-components'
+import product_img from '../../assets/images/shop_item/item_1.jpg'
+import CountButton from '../Common/CountButton'
+import formatNumberWithCommas from '../../utill/formatNumberWithCommas'
 
 interface CartItemPropsType {
-  type?: string;
-  title?: string;
-  price?: number;
-  option?: string;
-  receivingDate?: string;
+  type?: string
+  title?: string
+  price?: number
+  option?: string
+  receivingDate?: string
 }
 
 export default function CartItem({
@@ -19,9 +19,9 @@ export default function CartItem({
   option,
   receivingDate,
 }: CartItemPropsType) {
-  const [productCount, setProductCount] = useState(1);
+  const [productCount, setProductCount] = useState(1)
 
-  if (type === "header") {
+  if (type === 'header') {
     return (
       <ItemContentCon className="header">
         <ItemContent>
@@ -34,7 +34,7 @@ export default function CartItem({
           <ReceivingDate className="header">수령일</ReceivingDate>
         </ItemContent>
       </ItemContentCon>
-    );
+    )
   }
 
   if (title && price && option && receivingDate)
@@ -58,7 +58,7 @@ export default function CartItem({
           </ProductInfo>
           <Amount>
             <CountButton
-              type={"cart"}
+              type={'cart'}
               productCount={productCount}
               setProductCount={setProductCount}
             />
@@ -67,7 +67,7 @@ export default function CartItem({
           <ReceivingDate>{receivingDate}</ReceivingDate>
         </ItemContent>
       </ItemContentCon>
-    );
+    )
 }
 
 const ItemContentCon = styled.div`
@@ -80,7 +80,7 @@ const ItemContentCon = styled.div`
   @media (max-width: 600px) {
     font-size: 0.8rem;
   }
-`;
+`
 
 const ItemContent = styled.div`
   display: flex;
@@ -105,7 +105,7 @@ const ItemContent = styled.div`
     align-items: center;
     position: relative;
   }
-`;
+`
 
 const CheckBox = styled.div`
   display: flex;
@@ -134,7 +134,7 @@ const CheckBox = styled.div`
       height: 15px;
     }
   }
-`;
+`
 
 const ProductInfo = styled.div`
   display: flex;
@@ -154,7 +154,7 @@ const ProductInfo = styled.div`
     padding: 8px;
     align-items: center;
   }
-`;
+`
 const ProductImg = styled.div`
   flex-grow: 1;
   flex-basis: 15%;
@@ -179,7 +179,7 @@ const ProductImg = styled.div`
       min-width: 70px;
     }
   }
-`;
+`
 
 const ProductText = styled.div`
   flex-grow: 7;
@@ -193,7 +193,7 @@ const ProductText = styled.div`
   @media (max-width: 600px) {
     margin-left: 0;
   }
-`;
+`
 const ProductTextTitle = styled.div`
   font-size: 1.1rem;
   font-weight: 500;
@@ -203,7 +203,7 @@ const ProductTextTitle = styled.div`
     font-size: 0.8rem;
     margin-bottom: 7px;
   }
-`;
+`
 const ProductTextPrice = styled.div`
   font-size: 0.9rem;
   margin-bottom: 12px;
@@ -214,7 +214,7 @@ const ProductTextPrice = styled.div`
     font-size: 0.7rem;
     margin-bottom: 7px;
   }
-`;
+`
 const ProductTextOption = styled.div`
   font-size: 0.9rem;
   padding-left: 2px;
@@ -223,7 +223,7 @@ const ProductTextOption = styled.div`
   @media (max-width: 600px) {
     font-size: 0.7rem;
   }
-`;
+`
 
 const Amount = styled.div`
   display: flex;
@@ -243,7 +243,7 @@ const Amount = styled.div`
     padding: 8px;
     flex-basis: auto;
   }
-`;
+`
 const OrderPrice = styled.div`
   display: flex;
   justify-content: center;
@@ -264,7 +264,7 @@ const OrderPrice = styled.div`
   @media (max-width: 600px) {
     display: none;
   }
-`;
+`
 const ReceivingDate = styled.div`
   display: flex;
   justify-content: center;
@@ -278,4 +278,4 @@ const ReceivingDate = styled.div`
   @media (max-width: 1024px) {
     display: none;
   }
-`;
+`
