@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import CountButton from '../common/CountButton'
+import CountButton from '../Common/CountButton'
 
 interface TotalPriceSectionProps {
   formatNumberWithCommas: (num: number) => string

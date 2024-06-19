@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import CartItem from '../components/Cart/CartItem'
-import Button from '../components/common/Button'
+import Button from '../components/Common/Button'
 import TotalPriceSection from '../components/Cart/TotalPriceSection'
 import useWindowWidth from '../hooks/useWindowWidth'
 import { useNavigate } from 'react-router-dom'

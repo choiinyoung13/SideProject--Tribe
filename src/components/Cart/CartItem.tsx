@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import styled from 'styled-components'
 import product_img from '../../assets/images/shop_item/item_1.jpg'
-import CountButton from '../common/CountButton'
+import CountButton from '../Common/CountButton'
 import formatNumberWithCommas from '../../utill/formatNumberWithCommas'
 
 interface CartItemPropsType {
