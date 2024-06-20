@@ -4,6 +4,10 @@ import { useNavigate } from "react-router-dom";
 import { priceCalculation } from "../../utill/priceCalculation";
 import formatNumberWithCommas from "../../utill/formatNumberWithCommas";
 import { IoMdHeart } from "react-icons/io";
+import { useAuth } from "../../hooks/useAuth";
+import { addItemToCart } from "../../utill/addItemToCart";
+import { useMutation, useQueryClient } from "react-query";
+import { PiShoppingCartFill } from "react-icons/pi";
 
 type BadgeType = "hot" | "fast";
 
@@ -14,6 +18,7 @@ interface ItemCardPropsType {
   originalprice: number;
   badge: BadgeType[];
   discount: number;
+  isInCart: boolean;
 }
 
 export default function ItemCard({
@@ -23,8 +28,21 @@ export default function ItemCard({
   originalprice,
   badge,
   discount,
+  isInCart,
 }: ItemCardPropsType) {
   const navigate = useNavigate();
+  const { session } = useAuth();
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation(
+    ({ itemId, quantity }: { itemId: number; quantity: number }) =>
+      addItemToCart({ itemId, quantity, receivingDate: 0, option: "-" }),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("@cartData");
+      },
+    }
+  );
 
   return (
     <Card
@@ -32,15 +50,34 @@ export default function ItemCard({
         navigate(`/product/${id}`);
       }}
     >
-      <ImgBox>
-        <img src={imgurl} alt="" draggable="false" />
+      <OptionButtonWrapper>
         <LikeButton
           onClick={(e) => {
             e.stopPropagation();
+            if (!session) {
+              navigate("/login");
+              return;
+            }
           }}
         >
           <IoMdHeart />
         </LikeButton>
+        <CartButton
+          isincart={isInCart.toString()}
+          onClick={(e) => {
+            e.stopPropagation();
+            if (!session) {
+              navigate("/login");
+              return;
+            }
+            mutation.mutate({ itemId: id, quantity: 1 });
+          }}
+        >
+          <PiShoppingCartFill />
+        </CartButton>
+      </OptionButtonWrapper>
+      <ImgBox>
+        <img src={imgurl} alt="" draggable="false" />
       </ImgBox>
       <TextBox>
         <ItemTitle>
@@ -65,9 +102,10 @@ export default function ItemCard({
 }
 
 const Card = styled.div`
+  position: relative;
   width: 20%;
   padding: 0px 12px;
-  padding-bottom: 20px;
+  padding-bottom: 26px;
   cursor: pointer;
 
   @media (max-width: 1600px) {
@@ -86,26 +124,89 @@ const Card = styled.div`
   }
 `;
 
-const LikeButton = styled.span`
+const OptionButtonWrapper = styled.div`
   position: absolute;
-  bottom: 18px;
-  right: 18px;
-  font-size: 2.3rem;
-  color: rgba(170, 170, 170, 1);
+  right: 30px;
+  bottom: 30px;
+  font-size: 1.7rem;
+
+  @media (max-width: 1900px) {
+    font-size: 1.6rem;
+  }
+
+  @media (max-width: 1680px) {
+    font-size: 1.5rem;
+  }
+
+  @media (max-width: 1120px) {
+    font-size: 1.3rem;
+  }
+
+  @media (max-width: 1024px) {
+    font-size: 1.6rem;
+  }
+
+  @media (max-width: 860px) {
+    font-size: 1.4rem;
+  }
+
+  @media (max-width: 810px) {
+    font-size: 1.1rem;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 1.6rem;
+  }
+
+  @media (max-width: 600px) {
+    font-size: 1.5rem;
+  }
+
+  @media (max-width: 490px) {
+    right: 25px;
+    bottom: 30px;
+    font-size: 1.1rem;
+  }
+
+  @media (max-width: 400px) {
+    font-size: 1.1rem;
+  }
+
+  @media (max-width: 390px) {
+    right: 24px;
+    bottom: 32px;
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 365px) {
+    display: none;
+  }
+`;
+
+const CartButton = styled.span<{ isincart: string }>`
+  color: ${(props) =>
+    props.isincart === "true" ? "rgba(50,50,50,1)" : "rgba(210, 210, 210, 1)"};
+
+  &:hover {
+    ${(props) =>
+      props.isincart === "true" ? "" : "color: rgba(180, 180, 180, 1)"};
+  }
+`;
+
+const LikeButton = styled.span`
+  margin-right: 6px;
+  color: rgba(210, 210, 210, 1);
 
   &:hover {
     color: rgba(190, 190, 190, 1);
   }
 
-  @media (max-width: 600px) {
-    bottom: 14px;
-    right: 14px;
-    font-size: 1.9rem;
+  @media (max-width: 400px) {
+    margin-right: 4px;
   }
 `;
 
 const ImgBox = styled.div`
-  position: relative;
   width: 100%;
   border-radius: 20px;
   overflow: hidden;
@@ -120,6 +221,7 @@ const TextBox = styled.div`
   padding: 8px;
 
   @media (max-width: 600px) {
+    margin-top: 8px;
     padding: 8px 8px 8px 2px;
   }
 `;
@@ -127,7 +229,7 @@ const TextBox = styled.div`
 const ItemTitle = styled.div`
   font-size: 1rem;
   font-weight: 600;
-  margin-bottom: 16px;
+  margin-bottom: 13px;
   display: flex;
   flex-direction: column;
   min-width: 200px;

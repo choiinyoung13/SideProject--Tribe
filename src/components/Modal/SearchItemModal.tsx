@@ -21,6 +21,7 @@ const SearchModalCon = styled.div`
   top: 60px;
   right: 90px;
   width: 400px;
+  z-index: 10002;
   box-shadow: 5px 5px 20px rgba(30, 30, 30, 0.3);
   background-color: #fff;
   padding: 16px 14px;

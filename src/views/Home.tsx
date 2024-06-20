@@ -1,43 +1,51 @@
-import styled from 'styled-components'
-import home_image from '../assets/images/home/home_web.jpg'
-import home_image_tablet1 from '../assets/images/home/home_tablet(horizontal).jpg'
-import home_image_tablet2 from '../assets/images/home/home_tablet(vertical).jpg'
-import home_image_full from '../assets/images/home/home_web_full.jpg'
-import useWindowWidth from '../hooks/useWindowWidth'
-import { Link } from 'react-router-dom'
-import MobileHome from './MobileHome'
-import useWindowHeight from '../hooks/useWindowHeight'
-import Button from '../components/Common/Button'
+import styled from "styled-components";
+import home_image from "../assets/images/home/home_web.jpg";
+import home_image_tablet1 from "../assets/images/home/home_tablet(horizontal).jpg";
+import home_image_tablet2 from "../assets/images/home/home_tablet(vertical).jpg";
+import home_image_full from "../assets/images/home/home_web_full.jpg";
+import useWindowWidth from "../hooks/useWindowWidth";
+import { Link } from "react-router-dom";
+import MobileHome from "./MobileHome";
+import useWindowHeight from "../hooks/useWindowHeight";
+import Button from "../components/Common/Button";
 
 export default function Home() {
-  const windowWidth = useWindowWidth()
-  const windowHeight = useWindowHeight()
+  const windowWidth = useWindowWidth();
+  const windowHeight = useWindowHeight();
 
   if (windowWidth <= 600) {
-    return <MobileHome />
+    return <MobileHome />;
   }
 
   return (
     <HomeCon>
       <Section>
-        <TextBox windowHeight={windowHeight}>
+        <TextBox windowheight={windowHeight}>
           <TextNumber>" 001</TextNumber>
           <TextContentCon>
             <p>
-              {' '}
+              {" "}
               당신의 식물 파트너 Tribe에 오신걸 환영합니다. <br />
               Tribe의 다양한 서비스와 함께 당신의 삶을 더 푸르게 만들어보아요.
               <br />
               시작은 작은 식물 하나에서부터입니다.
             </p>
             <ButtonCon>
-              <Link to={'/about'}>
-                <Button colorType="black" btnType={'link'} hover={true}>
+              <Link to={"/about"}>
+                <Button
+                  colortype="black"
+                  btntype={"link"}
+                  hover={true.toString()}
+                >
                   ABOUT TRIBE
                 </Button>
               </Link>
-              <Link to={'/community-feature'}>
-                <Button colorType="black" btnType={'link'} hover={true}>
+              <Link to={"/community-feature"}>
+                <Button
+                  colortype="black"
+                  btntype={"link"}
+                  hover={true.toString()}
+                >
                   ABOUT COMMUNITY
                 </Button>
               </Link>
@@ -59,14 +67,14 @@ export default function Home() {
         draggable="false"
       />
     </HomeCon>
-  )
+  );
 }
 
 const HomeCon = styled.div`
   width: 100%;
   height: 100vh;
   overflow: hidden;
-`
+`;
 
 const Img = styled.img`
   position: fixed;
@@ -75,7 +83,7 @@ const Img = styled.img`
   right: 0;
   top: 0;
   bottom: 0;
-`
+`;
 
 const Section = styled.section`
   position: fixed;
@@ -84,15 +92,15 @@ const Section = styled.section`
   right: 0;
   top: 0;
   bottom: 0;
-`
+`;
 
 interface TextBoxPropsType {
-  windowHeight: number
+  windowheight: number;
 }
 
 const TextBox = styled.div<TextBoxPropsType>`
   position: absolute;
-  top: ${props => (props.windowHeight >= 1050 ? '700px' : '570px')};
+  top: ${(props) => (props.windowheight >= 1050 ? "700px" : "570px")};
   left: 60px;
   display: flex;
 
@@ -106,7 +114,7 @@ const TextBox = styled.div<TextBoxPropsType>`
 
   @media (max-width: 600px) {
   }
-`
+`;
 
 const TextNumber = styled.span`
   font-size: 2rem;
@@ -120,7 +128,7 @@ const TextNumber = styled.span`
 
   @media (max-width: 600px) {
   }
-`
+`;
 
 const TextContentCon = styled.div`
   font-size: 1.1rem;
@@ -130,7 +138,7 @@ const TextContentCon = styled.div`
   @media (max-width: 768px) {
     font-size: 1rem;
   }
-`
+`;
 
 const ButtonCon = styled.div`
   display: flex;
@@ -154,4 +162,4 @@ const ButtonCon = styled.div`
       font-size: 0.9rem;
     }
   }
-`
+`;

@@ -5,6 +5,7 @@ const StyledWebSortModal = styled(WebSortModal)`
   position: absolute;
   top: 60px;
   right: 120px;
+  z-index: 10002;
 
   @media (max-width: 1060px) {
     top: 60px;

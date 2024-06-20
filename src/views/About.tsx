@@ -21,7 +21,7 @@ export default function About() {
   return (
     <HomeCon>
       <Section>
-        <TextBox windowHeight={windowHeight}>
+        <TextBox windowheight={windowHeight}>
           <TextNumber>" 002</TextNumber>
           <TextContentCon>
             <p>
@@ -32,7 +32,7 @@ export default function About() {
               그러나 식물의 구매, 관리, 교환 등에 있어 효율적인 플랫폼이 부족한
               상황입니다.
               <br />
-              <div>
+              <span>
                 <br />
                 "Tribe"는 간단하면서도 효과적인 식물 거래 및 커뮤니케이션
                 플랫폼을 제공합니다.
@@ -42,7 +42,7 @@ export default function About() {
                 있습니다.
                 <br /> 이를 통해 사용자는 손쉽게 식물을 거래하고, 커뮤니티에서
                 유용한 정보를 얻을 수 있습니다.
-              </div>
+              </span>
             </p>
             <SocialLinks>
               <Link to={"https://www.instagram.com/"}>
@@ -109,12 +109,12 @@ const Section = styled.section`
 `;
 
 interface TextBoxPropsType {
-  windowHeight: number;
+  windowheight: number;
 }
 
 const TextBox = styled.div<TextBoxPropsType>`
   position: absolute;
-  top: ${(props) => (props.windowHeight >= 1050 ? "488px" : "394px")};
+  top: ${(props) => (props.windowheight >= 1050 ? "488px" : "394px")};
   left: 60px;
   display: flex;
 

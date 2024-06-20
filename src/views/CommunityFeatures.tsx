@@ -1,37 +1,40 @@
-import styled from 'styled-components'
-import community_feature_image from '../assets/images/communityFeature/communityFeature_web.jpg'
-import community_feature_full from '../assets/images/communityFeature/communityFeature_web_full.jpg'
-import community_feature_tablet1 from '../assets/images/communityFeature/communityFeature_tablet(horizontal).jpg'
-import community_feature_tablet2 from '../assets/images/communityFeature/communityFeature_tablet(vertical).jpg'
-import useWindowWidth from '../hooks/useWindowWidth'
-import MobileHome from './MobileHome'
-import useWindowHeight from '../hooks/useWindowHeight'
-import InfinityMarquee from '../components/Common/Marquee'
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import Button from '../components/Common/Button'
+import styled from "styled-components";
+import community_feature_image from "../assets/images/communityFeature/communityFeature_web.jpg";
+import community_feature_full from "../assets/images/communityFeature/communityFeature_web_full.jpg";
+import community_feature_tablet1 from "../assets/images/communityFeature/communityFeature_tablet(horizontal).jpg";
+import community_feature_tablet2 from "../assets/images/communityFeature/communityFeature_tablet(vertical).jpg";
+import useWindowWidth from "../hooks/useWindowWidth";
+import MobileHome from "./MobileHome";
+import useWindowHeight from "../hooks/useWindowHeight";
+import InfinityMarquee from "../components/Common/Marquee";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import Button from "../components/Common/Button";
 
 export default function CommunityFeatures() {
-  const windowWidth = useWindowWidth()
-  const windowHeight = useWindowHeight()
-  const [isOnMouse, setIsOnMouse] = useState(false)
+  const windowWidth = useWindowWidth();
+  const windowHeight = useWindowHeight();
+  const [isOnMouse, setIsOnMouse] = useState(false);
 
   if (windowWidth <= 600) {
-    return <MobileHome />
+    return <MobileHome />;
   }
 
   return (
     <HomeCon>
       <Section>
         <HoverableCon
-          windowHeight={windowHeight}
+          windowheight={windowHeight}
           onMouseOver={() => setIsOnMouse(true)}
           onMouseOut={() => setIsOnMouse(false)}
         >
-          <TextCon isOnMouse={isOnMouse}>
+          <TextCon isonmouse={isOnMouse.toString()}>
             <InfinityMarquee />
           </TextCon>
-          <DetailText isOnMouse={isOnMouse} windowHeight={windowHeight}>
+          <DetailText
+            isonmouse={isOnMouse.toString()}
+            windowheight={windowHeight}
+          >
             <TextBox>
               <TextNumber>" 003</TextNumber>
               <TextContentCon>
@@ -42,8 +45,12 @@ export default function CommunityFeatures() {
                   사용자의 도움을 받을 수 있습니다.
                 </p>
                 <ButtonCon>
-                  <Link to={'/community'}>
-                    <Button colorType="black" btnType={'link'} hover={true}>
+                  <Link to={"/community"}>
+                    <Button
+                      colortype="black"
+                      btntype={"link"}
+                      hover={true.toString()}
+                    >
                       커뮤니티 이용하기
                     </Button>
                   </Link>
@@ -60,8 +67,12 @@ export default function CommunityFeatures() {
                   식물에 대한 열정을 공유할 수 있습니다.
                 </p>
                 <ButtonCon>
-                  <Link to={'/community-guide'}>
-                    <Button colorType="black" btnType={'link'} hover={true}>
+                  <Link to={"/community-guide"}>
+                    <Button
+                      colortype="black"
+                      btntype={"link"}
+                      hover={true.toString()}
+                    >
                       커뮤니티 가이드라인
                     </Button>
                   </Link>
@@ -85,7 +96,7 @@ export default function CommunityFeatures() {
         draggable="false"
       />
     </HomeCon>
-  )
+  );
 }
 
 const HomeCon = styled.div`
@@ -93,7 +104,7 @@ const HomeCon = styled.div`
   height: 100vh;
   position: relative;
   overflow: hidden;
-`
+`;
 
 const Img = styled.img`
   position: fixed;
@@ -102,7 +113,7 @@ const Img = styled.img`
   right: 0;
   top: 0;
   bottom: 0;
-`
+`;
 
 const Section = styled.section`
   position: fixed;
@@ -111,10 +122,10 @@ const Section = styled.section`
   right: 0;
   top: 0;
   bottom: 0;
-`
+`;
 
 interface HoverableConPropsType {
-  windowHeight: number
+  windowheight: number;
 }
 
 const HoverableCon = styled.div<HoverableConPropsType>`
@@ -124,35 +135,35 @@ const HoverableCon = styled.div<HoverableConPropsType>`
   position: absolute;
   top: 170px;
   width: 100%;
-  height: ${props => (props.windowHeight >= 1050 ? '440px' : '290px')};
-`
+  height: ${(props) => (props.windowheight >= 1050 ? "440px" : "290px")};
+`;
 
 interface TextConProps {
-  isOnMouse: boolean
+  isonmouse: string;
 }
 
 const TextCon = styled.div<TextConProps>`
   width: 100%;
   min-width: 1800px;
-  z-index: ${props => (props.isOnMouse ? '98' : '100')};
+  z-index: ${(props) => (props.isonmouse === "true" ? "98" : "100")};
   background-color: #fff;
-  opacity: ${props => (props.isOnMouse ? '0' : '1')};
-`
+  opacity: ${(props) => (props.isonmouse === "true" ? "0" : "1")};
+`;
 
 interface DetailTextProps {
-  isOnMouse: boolean
-  windowHeight: number
+  isonmouse: string;
+  windowheight: number;
 }
 
 const DetailText = styled.div<DetailTextProps>`
   position: absolute;
-  top: ${props => (props.windowHeight >= 1050 ? '18%' : '10%')};
+  top: ${(props) => (props.windowheight >= 1050 ? "18%" : "10%")};
   left: 18%;
   z-index: 99;
   width: 70%;
   display: flex;
   justify-content: space-around;
-  opacity: ${props => (props.isOnMouse ? '1' : '0')};
+  opacity: ${(props) => (props.isonmouse === "true" ? "1" : "0")};
   transition: opacity 0.1s ease;
 
   @media (max-width: 1024px) {
@@ -168,7 +179,7 @@ const DetailText = styled.div<DetailTextProps>`
     top: 10%;
     flex-direction: column;
   }
-`
+`;
 
 const TextBox = styled.div`
   position: absolute;
@@ -220,7 +231,7 @@ const TextBox = styled.div`
 
   @media (max-width: 600px) {
   }
-`
+`;
 
 const TextNumber = styled.span`
   font-size: 1.7rem;
@@ -239,7 +250,7 @@ const TextNumber = styled.span`
 
   @media (max-width: 600px) {
   }
-`
+`;
 
 const TextContentCon = styled.div`
   font-size: 1.1rem;
@@ -257,7 +268,7 @@ const TextContentCon = styled.div`
 
   @media (max-width: 600px) {
   }
-`
+`;
 
 const ButtonCon = styled.div`
   display: flex;
@@ -291,4 +302,4 @@ const ButtonCon = styled.div`
 
   @media (max-width: 600px) {
   }
-`
+`;
