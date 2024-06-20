@@ -1,19 +1,19 @@
-import styled from 'styled-components'
-import Badge from '../Common/Badge'
-import { useNavigate } from 'react-router-dom'
-import { priceCalculation } from '../../utill/priceCalculation'
-import formatNumberWithCommas from '../../utill/formatNumberWithCommas'
-import { IoMdHeart } from 'react-icons/io'
+import styled from "styled-components";
+import Badge from "../Common/Badge";
+import { useNavigate } from "react-router-dom";
+import { priceCalculation } from "../../utill/priceCalculation";
+import formatNumberWithCommas from "../../utill/formatNumberWithCommas";
+import { IoMdHeart } from "react-icons/io";
 
-type BadgeType = 'hot' | 'fast'
+type BadgeType = "hot" | "fast";
 
 interface ItemCardPropsType {
-  id: number
-  title: string
-  imgurl: string
-  originalprice: number
-  badge: BadgeType[]
-  discount: number
+  id: number;
+  title: string;
+  imgurl: string;
+  originalprice: number;
+  badge: BadgeType[];
+  discount: number;
 }
 
 export default function ItemCard({
@@ -24,17 +24,21 @@ export default function ItemCard({
   badge,
   discount,
 }: ItemCardPropsType) {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   return (
     <Card
       onClick={() => {
-        navigate(`/product/${id}`)
+        navigate(`/product/${id}`);
       }}
     >
       <ImgBox>
         <img src={imgurl} alt="" draggable="false" />
-        <LikeButton>
+        <LikeButton
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
           <IoMdHeart />
         </LikeButton>
       </ImgBox>
@@ -42,8 +46,8 @@ export default function ItemCard({
         <ItemTitle>
           <Title>{title}</Title>
           <BadgeWrapper>
-            {badge.map((badgeType: 'hot' | 'fast', i: number) => {
-              return <Badge key={i} badgeType={badgeType} />
+            {badge.map((badgeType: "hot" | "fast", i: number) => {
+              return <Badge key={i} badgeType={badgeType} />;
             })}
           </BadgeWrapper>
         </ItemTitle>
@@ -57,7 +61,7 @@ export default function ItemCard({
         </PriceDetail>
       </TextBox>
     </Card>
-  )
+  );
 }
 
 const Card = styled.div`
@@ -80,15 +84,25 @@ const Card = styled.div`
 
   @media (max-width: 600px) {
   }
-`
+`;
 
 const LikeButton = styled.span`
   position: absolute;
   bottom: 18px;
   right: 18px;
-  font-size: 2.2rem;
+  font-size: 2.3rem;
   color: rgba(170, 170, 170, 1);
-`
+
+  &:hover {
+    color: rgba(190, 190, 190, 1);
+  }
+
+  @media (max-width: 600px) {
+    bottom: 14px;
+    right: 14px;
+    font-size: 1.9rem;
+  }
+`;
 
 const ImgBox = styled.div`
   position: relative;
@@ -99,7 +113,7 @@ const ImgBox = styled.div`
   img {
     width: 100%;
   }
-`
+`;
 
 const TextBox = styled.div`
   margin-top: 10px;
@@ -108,7 +122,7 @@ const TextBox = styled.div`
   @media (max-width: 600px) {
     padding: 8px 8px 8px 2px;
   }
-`
+`;
 
 const ItemTitle = styled.div`
   font-size: 1rem;
@@ -131,14 +145,14 @@ const ItemTitle = styled.div`
     font-size: 0.7rem;
     margin-bottom: 10px;
   }
-`
+`;
 
 const Title = styled.span`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   padding-bottom: 2px;
-`
+`;
 
 const OriginalPrice = styled.div`
   text-decoration: line-through;
@@ -150,12 +164,12 @@ const OriginalPrice = styled.div`
   @media (max-width: 440px) {
     font-size: 0.7rem;
   }
-`
+`;
 
 const PriceDetail = styled.div`
   display: flex;
   align-items: center;
-`
+`;
 
 const Discount = styled.div`
   font-size: 0.8rem;
@@ -168,7 +182,7 @@ const Discount = styled.div`
     margin-right: 6px;
     padding-top: 1.5px;
   }
-`
+`;
 
 const DiscountedPrice = styled.div`
   font-weight: 600;
@@ -176,7 +190,7 @@ const DiscountedPrice = styled.div`
   @media (max-width: 440px) {
     font-size: 0.75rem;
   }
-`
+`;
 
 const BadgeWrapper = styled.div`
   margin-top: 10px;
@@ -193,4 +207,4 @@ const BadgeWrapper = styled.div`
   @media (max-width: 440px) {
     margin-top: 7px;
   }
-`
+`;
