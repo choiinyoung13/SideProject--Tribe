@@ -3,6 +3,7 @@ import Badge from '../Common/Badge'
 import { useNavigate } from 'react-router-dom'
 import { priceCalculation } from '../../utill/priceCalculation'
 import formatNumberWithCommas from '../../utill/formatNumberWithCommas'
+import { IoMdHeart } from 'react-icons/io'
 
 type BadgeType = 'hot' | 'fast'
 
@@ -33,6 +34,9 @@ export default function ItemCard({
     >
       <ImgBox>
         <img src={imgurl} alt="" draggable="false" />
+        <LikeButton>
+          <IoMdHeart />
+        </LikeButton>
       </ImgBox>
       <TextBox>
         <ItemTitle>
@@ -78,7 +82,16 @@ const Card = styled.div`
   }
 `
 
+const LikeButton = styled.span`
+  position: absolute;
+  bottom: 18px;
+  right: 18px;
+  font-size: 2.2rem;
+  color: rgba(170, 170, 170, 1);
+`
+
 const ImgBox = styled.div`
+  position: relative;
   width: 100%;
   border-radius: 20px;
   overflow: hidden;
