@@ -1,20 +1,20 @@
-import styled from "styled-components";
-import Input from "../components/Common/Input";
-import google_logo from "../assets/images/logo/logo_google.png";
-import kakao_logo from "../assets/images/logo/logo_kakao.png";
-import login_image from "../assets/images/logo/login_web_1.jpg";
-import useWindowWidth from "../hooks/useWindowWidth";
-import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { useHandleSignIn } from "../hooks/usehandleSignIn";
+import styled from 'styled-components'
+import Input from '../components/Common/Input'
+import google_logo from '../assets/images/logo/logo_google.png'
+import kakao_logo from '../assets/images/logo/logo_kakao.png'
+import login_image from '../assets/images/logo/login_web_1.jpg'
+import useWindowWidth from '../hooks/useWindowWidth'
+import { Link, useNavigate } from 'react-router-dom'
+import { useState } from 'react'
+import { useHandleSignIn } from '../hooks/usehandleSignIn'
 
 export default function Login() {
-  const windowWidth = useWindowWidth();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const { handleSignIn, SignInWithGoogle, SignInWithKakao, errorMessage } =
-    useHandleSignIn();
-  const navigate = useNavigate();
+  const windowWidth = useWindowWidth()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const { handleSignIn, signInWithOAuth, handleAuthRedirect, errorMessage } =
+    useHandleSignIn()
+  const navigate = useNavigate()
 
   return (
     <LoginCon>
@@ -26,13 +26,13 @@ export default function Login() {
           </FormSubTitle>
           <form
             action=""
-            onSubmit={(e) => {
-              e.preventDefault();
+            onSubmit={e => {
+              e.preventDefault()
               try {
-                handleSignIn(email, password);
-                navigate("/");
+                handleSignIn(email, password)
+                navigate('/')
               } catch (e) {
-                console.error(e);
+                console.error(e)
               }
             }}
           >
@@ -46,22 +46,29 @@ export default function Login() {
               type="password"
               placeholder="비밀번호를 입력해주세요."
             />
-            {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
+            {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
             <HelperTextCon>
               <HelperText>
-                계정을 잊으셨나요? <span>ID찾기</span> 또는{" "}
+                계정을 잊으셨나요? <span>ID찾기</span> 또는{' '}
                 <span>비밀번호 찾기</span>
               </HelperText>
             </HelperTextCon>
             <LoginBtn type="submit">로그인</LoginBtn>
             <GoogleLoginBtn
-              type="button" // onClick에서 form submit 방지
-              onClick={SignInWithGoogle}
+              type="button"
+              onClick={() => {
+                signInWithOAuth('google')
+              }}
             >
               <img src={google_logo} alt="" />
               Google로 시작하기
             </GoogleLoginBtn>
-            <KaKaoLoginBtn type="button" onClick={SignInWithKakao}>
+            <KaKaoLoginBtn
+              type="button"
+              onClick={() => {
+                signInWithOAuth('kakao')
+              }}
+            >
               <img src={kakao_logo} alt="" />
               Kakao로 시작하기
             </KaKaoLoginBtn>
@@ -70,7 +77,7 @@ export default function Login() {
             <HelperText>
               아직 회원이 아니신가요?
               <span>
-                <Link to={"/join"}> 회원가입</Link>
+                <Link to={'/join'}> 회원가입</Link>
               </span>
             </HelperText>
           </HelperTextCon>
@@ -82,21 +89,21 @@ export default function Login() {
         </ImgCon>
       )}
     </LoginCon>
-  );
+  )
 }
 
 const LoginCon = styled.div`
   width: 100%;
   height: 100vh;
   display: flex;
-`;
+`
 
 interface FormConType {
-  windowwidth: number;
+  windowwidth: number
 }
 
 const FormCon = styled.div<FormConType>`
-  width: ${(props) => (props.windowwidth === 1920 ? "50%" : "100%")};
+  width: ${props => (props.windowwidth === 1920 ? '50%' : '100%')};
   height: 100vh;
   over-flow: hidden;
   display: flex;
@@ -123,7 +130,7 @@ const FormCon = styled.div<FormConType>`
       }
     }
   }
-`;
+`
 const FormWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -135,7 +142,7 @@ const FormWrapper = styled.div`
     align-items: center;
     min-width: 100%;
   }
-`;
+`
 const FormTitle = styled.h2`
   font-size: 1.8rem;
   font-weight: bold;
@@ -143,7 +150,7 @@ const FormTitle = styled.h2`
   @media (max-width: 600px) {
     font-size: 1.3rem;
   }
-`;
+`
 
 const FormSubTitle = styled.p`
   font-size: 1rem;
@@ -154,7 +161,7 @@ const FormSubTitle = styled.p`
     font-size: 0.8rem;
     margin: 20px 0 38px;
   }
-`;
+`
 
 const LoginBtn = styled.button`
   color: #fff;
@@ -172,7 +179,7 @@ const LoginBtn = styled.button`
     width: 85%;
     margin: 0 auto 14px;
   }
-`;
+`
 const GoogleLoginBtn = styled.button`
   color: rgba(20, 20, 20, 1);
   background-color: #fff;
@@ -200,7 +207,7 @@ const GoogleLoginBtn = styled.button`
       height: 16px;
     }
   }
-`;
+`
 
 const KaKaoLoginBtn = styled.button`
   color: rgba(20, 20, 20, 1);
@@ -231,13 +238,13 @@ const KaKaoLoginBtn = styled.button`
       height: 16px;
     }
   }
-`;
+`
 
 const HelperTextCon = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
-`;
+`
 
 const HelperText = styled.p`
   font-size: 0.9rem;
@@ -252,7 +259,7 @@ const HelperText = styled.p`
   @media (max-width: 600px) {
     font-size: 0.8rem;
   }
-`;
+`
 
 const ImgCon = styled.div`
   width: 50%;
@@ -263,4 +270,4 @@ const ImgCon = styled.div`
     width: 100%;
     height: 100vh;
   }
-`;
+`

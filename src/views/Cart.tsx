@@ -1,79 +1,80 @@
-import styled from "styled-components";
-import CartItem from "../components/Cart/CartItem";
-import Button from "../components/Common/Button";
-import TotalPriceSection from "../components/Cart/TotalPriceSection";
-import useWindowWidth from "../hooks/useWindowWidth";
-import { useNavigate } from "react-router-dom";
-import { getCartItems } from "../utill/getCartItem";
-import { useEffect, useState } from "react";
-import { fetchItemById } from "../utill/fetchItems";
-import { priceCalculation } from "../utill/priceCalculation";
+import styled from 'styled-components'
+import CartItem from '../components/Cart/CartItem'
+import Button from '../components/Common/Button'
+import TotalPriceSection from '../components/Cart/TotalPriceSection'
+import useWindowWidth from '../hooks/useWindowWidth'
+import { useNavigate } from 'react-router-dom'
+import { getCartItems } from '../utill/getCartItem'
+import { useEffect, useState } from 'react'
+import { fetchItemById } from '../utill/fetchItems'
+import { priceCalculation } from '../utill/priceCalculation'
+import EmptyCart from '../components/Cart/EmptyCart'
 
 interface CartItem {
-  itemId: number;
-  quantity: number;
-  receivingDate: number;
-  option: string;
+  itemId: number
+  quantity: number
+  receivingDate: number
+  option: string
 }
 
 interface ItemDetails {
-  id: number;
-  imgurl: string;
-  title: string;
-  originalprice: number;
-  discount: number;
-  badge: string[];
-  category: string;
-  classification: string;
-  deliveryperiod: number;
-  origin: string;
-  size: string;
+  id: number
+  imgurl: string
+  title: string
+  originalprice: number
+  discount: number
+  badge: string[]
+  category: string
+  classification: string
+  deliveryperiod: number
+  origin: string
+  size: string
 }
 
 interface DetailedCartItem extends CartItem {
-  details: ItemDetails;
+  details: ItemDetails
 }
 
 export default function Cart() {
-  const windowWidth = useWindowWidth();
-  const navigate = useNavigate();
-  const [cartItems, setCartItems] = useState<DetailedCartItem[]>([]);
-  const [totalPrice, setTotalPrice] = useState(0);
+  const windowWidth = useWindowWidth()
+  const navigate = useNavigate()
+  const [cartItems, setCartItems] = useState<DetailedCartItem[]>([])
+  const [totalPrice, setTotalPrice] = useState(0)
 
   useEffect(() => {
     const fetchCartItems = async () => {
-      const data = await getCartItems();
+      const data = await getCartItems()
       if (data && data.items) {
         const itemsPromises = data.items.map(async (item: CartItem) => {
-          const itemDetails = await fetchItemById(item.itemId);
-          return { ...item, details: itemDetails };
-        });
+          const itemDetails = await fetchItemById(item.itemId)
+          return { ...item, details: itemDetails }
+        })
 
-        const detailedItems = await Promise.all(itemsPromises);
-        setCartItems(detailedItems);
+        const detailedItems = await Promise.all(itemsPromises)
+        setCartItems(detailedItems)
       }
-    };
+    }
 
-    fetchCartItems().catch((error) => {
-      console.error("Error fetching cart items:", error);
-    });
-  }, []);
+    fetchCartItems().catch(error => {
+      console.error('Error fetching cart items:', error)
+    })
+  }, [])
 
-  if (cartItems.length > 0)
-    return (
-      <CartCon>
-        <Title>장바구니</Title>
-        {windowWidth < 1024 && (
-          <CheckHeader>
-            <CheckHeaderLeft>
-              <div>
-                <input type="checkbox" />
-              </div>
-              <div>전체선택 (1/2)</div>
-            </CheckHeaderLeft>
-            <CheckHeaderRight>선택삭제</CheckHeaderRight>
-          </CheckHeader>
-        )}
+  return (
+    <CartCon>
+      <Title>장바구니</Title>
+      {windowWidth < 1024 && (
+        <CheckHeader>
+          <CheckHeaderLeft>
+            <div>
+              <input type="checkbox" />
+            </div>
+            <div>전체선택 (1/2)</div>
+          </CheckHeaderLeft>
+          <CheckHeaderRight>선택삭제</CheckHeaderRight>
+        </CheckHeader>
+      )}
+      {cartItems.length > 0 ? (
         <ItemCon>
           <CartItem type="header" />
           {cartItems.map((item, i: number) => {
@@ -90,37 +91,41 @@ export default function Cart() {
                 receivingDate={item.receivingDate}
                 setTotalPrice={setTotalPrice}
               />
-            );
+            )
           })}
         </ItemCon>
-        <ItemSubButtonCon>
-          <ButtonWrapper>
-            <Button colortype="white" hover={false.toString()}>
-              선택상품 삭제
-            </Button>
-            <Button colortype="white" hover={false.toString()}>
-              품절상품 삭제
-            </Button>
-          </ButtonWrapper>
-          <DetailDesc>
-            장바구니는 최대 100개의 상품을 담을 수 있습니다.
-          </DetailDesc>
-        </ItemSubButtonCon>
-        <PriceConWrapper>
-          <TotalPriceSection totalPrice={totalPrice} />
-        </PriceConWrapper>
-        <ButtonCon>
-          <button
-            onClick={() => {
-              navigate("/shop"); // 변수명 수정
-            }}
-          >
-            계속 쇼핑하기
-          </button>
-          <button>결제하기</button>
-        </ButtonCon>
-      </CartCon>
-    );
+      ) : (
+        <EmptyCart />
+      )}
+
+      <ItemSubButtonCon>
+        <ButtonWrapper>
+          <Button colortype="white" hover={false.toString()}>
+            선택상품 삭제
+          </Button>
+          <Button colortype="white" hover={false.toString()}>
+            품절상품 삭제
+          </Button>
+        </ButtonWrapper>
+        <DetailDesc>
+          장바구니는 최대 100개의 상품을 담을 수 있습니다.
+        </DetailDesc>
+      </ItemSubButtonCon>
+      <PriceConWrapper>
+        <TotalPriceSection totalPrice={totalPrice} cartItems={cartItems} />
+      </PriceConWrapper>
+      <ButtonCon>
+        <button
+          onClick={() => {
+            navigate('/shop') // 변수명 수정
+          }}
+        >
+          계속 쇼핑하기
+        </button>
+        <button>결제하기</button>
+      </ButtonCon>
+    </CartCon>
+  )
 }
 const CartCon = styled.div`
   position: relative;
@@ -139,7 +144,7 @@ const CartCon = styled.div`
     margin: 60px auto;
     padding: 0 14px;
   }
-`;
+`
 
 const Title = styled.div`
   margin-bottom: 20px;
@@ -149,7 +154,7 @@ const Title = styled.div`
   @media (max-width: 1024px) {
     display: none;
   }
-`;
+`
 
 const CheckHeader = styled.div`
   display: flex;
@@ -157,7 +162,7 @@ const CheckHeader = styled.div`
   align-items: center;
   padding: 10px;
   margin-bottom: 6px;
-`;
+`
 
 const CheckHeaderLeft = styled.div`
   display: flex;
@@ -178,14 +183,14 @@ const CheckHeaderLeft = styled.div`
       margin-right: 8px;
     }
   }
-`;
+`
 const CheckHeaderRight = styled.div`
   cursor: pointer;
 
   @media (max-width: 600px) {
     font-size: 0.9rem;
   }
-`;
+`
 
 const ItemCon = styled.div`
   border-top: 3px solid rgba(20, 20, 20, 1);
@@ -198,7 +203,7 @@ const ItemCon = styled.div`
   @media (max-width: 600px) {
     border-top: 1px solid rgba(20, 20, 20, 1);
   }
-`;
+`
 
 const ItemSubButtonCon = styled.div`
   display: flex;
@@ -214,7 +219,7 @@ const ItemSubButtonCon = styled.div`
 
   @media (max-width: 600px) {
   }
-`;
+`
 
 const ButtonWrapper = styled.div`
   display: flex;
@@ -225,7 +230,7 @@ const ButtonWrapper = styled.div`
   @media (max-width: 1024px) {
     display: none;
   }
-`;
+`
 
 const PriceConWrapper = styled.div`
   margin-top: 90px;
@@ -239,7 +244,7 @@ const PriceConWrapper = styled.div`
     margin-top: 30px;
     margin-bottom: 40px;
   }
-`;
+`
 
 const DetailDesc = styled.div`
   @media (max-width: 1024px) {
@@ -249,7 +254,7 @@ const DetailDesc = styled.div`
   @media (max-width: 600px) {
     font-size: 0.8rem;
   }
-`;
+`
 
 const ButtonCon = styled.div`
   display: flex;
@@ -295,4 +300,4 @@ const ButtonCon = styled.div`
       font-size: 1rem;
     }
   }
-`;
+`

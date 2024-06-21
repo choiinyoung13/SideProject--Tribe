@@ -1,63 +1,62 @@
-import { supabase } from "../supabase/supabaseClient";
-import { useState } from "react";
-import { makeUserCart } from "../utill/makeUserCart";
+import { supabase } from '../supabase/supabaseClient'
+import { useState } from 'react'
+import { makeUserCart } from '../utill/makeUserCart'
 
 export const useHandleSignIn = () => {
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState('')
 
   const handleSignIn = async (email: string, password: string) => {
-    setErrorMessage("");
+    setErrorMessage('')
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signInWithPassword({
         email: email,
         password: password,
-      });
-
-      if (data && data.user) makeUserCart(data.user.id);
+      })
 
       if (error) {
-        console.error(error);
+        console.error(error)
       }
     } catch (err) {
-      console.error("Sign up error:", err);
-      setErrorMessage("An unexpected error occurred. Please try again later.");
+      console.error('Sign up error:', err)
+      setErrorMessage('An unexpected error occurred. Please try again later.')
     }
-  };
+  }
 
-  const SignInWithGoogle = async () => {
+  const signInWithOAuth = async (provider: any) => {
     const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
+      provider: provider,
       options: {
         queryParams: {
-          access_type: "offline",
-          prompt: "select_account",
+          access_type: 'offline',
+          prompt: 'select_account',
         },
       },
-    });
+    })
 
     if (error) {
-      console.error(error);
-      setErrorMessage("Error signing in with Google");
-      return;
+      console.error(`Error signing in with ${provider}:`, error)
+      setErrorMessage(`Error signing in with ${provider}`)
     }
-  };
+  }
 
-  const SignInWithKakao = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "kakao",
-      options: {
-        queryParams: {
-          access_type: "offline",
-          prompt: "select_account",
-        },
-      },
-    });
+  const handleAuthRedirect = async () => {
+    const { data, error } = await supabase.auth.getSession()
 
     if (error) {
-      console.error(error);
-      setErrorMessage("Error signing in with Google");
+      console.error('Error retrieving session:', error)
+      setErrorMessage('Error retrieving session')
+      return
     }
-  };
 
-  return { handleSignIn, SignInWithGoogle, SignInWithKakao, errorMessage };
-};
+    if (data?.session?.user?.id) {
+      await makeUserCart(data.session.user.id)
+    }
+  }
+
+  return {
+    handleSignIn,
+    signInWithOAuth,
+    handleAuthRedirect,
+    errorMessage,
+  }
+}
