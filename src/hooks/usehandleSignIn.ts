@@ -1,6 +1,6 @@
 import { supabase } from '../supabase/supabaseClient'
 import { useState } from 'react'
-import { makeUserCart } from '../utill/makeUserCart'
+import { makeUserCart } from '../utill/cart/makeUserCart'
 
 export const useHandleSignIn = () => {
   const [errorMessage, setErrorMessage] = useState('')

@@ -6,7 +6,7 @@ import { ImInfo } from 'react-icons/im'
 import tribe_logo from '../../assets/images/logo/logo_tribe.png'
 import usewindowWidth from '../../hooks/useWindowWidth'
 import { useAuth } from '../../hooks/useAuth'
-import { getCartItems } from '../../utill/getCartItem'
+import { getCartItems } from '../../utill/cart/getCartItem'
 import { useQuery, useQueryClient } from 'react-query'
 
 export default function Nav() {

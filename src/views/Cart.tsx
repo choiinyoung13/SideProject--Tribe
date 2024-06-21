@@ -4,16 +4,20 @@ import Button from '../components/Common/Button'
 import TotalPriceSection from '../components/Cart/TotalPriceSection'
 import useWindowWidth from '../hooks/useWindowWidth'
 import { useNavigate } from 'react-router-dom'
-import { getCartItems } from '../utill/getCartItem'
+import { getCartItems } from '../utill/cart/getCartItem'
 import { useEffect, useState } from 'react'
 import { fetchItemById } from '../utill/fetchItems'
 import { priceCalculation } from '../utill/priceCalculation'
 import EmptyCart from '../components/Cart/EmptyCart'
+import { useAuth } from '../hooks/useAuth'
+import { useMutation, useQueryClient } from 'react-query'
+import { toggleCartItemStatus } from '../utill/cart/toggleCartItemStatus'
 
 interface CartItem {
   itemId: number
   quantity: number
   receivingDate: number
+  checked: boolean
   option: string
 }
 
@@ -40,6 +44,9 @@ export default function Cart() {
   const navigate = useNavigate()
   const [cartItems, setCartItems] = useState<DetailedCartItem[]>([])
   const [totalPrice, setTotalPrice] = useState(0)
+  const { session } = useAuth()
+  const [forceReRender, setForceReRender] = useState(false)
+  const [allItemChecked, setAllItemChecked] = useState(false)
 
   useEffect(() => {
     const fetchCartItems = async () => {
@@ -58,7 +65,21 @@ export default function Cart() {
     fetchCartItems().catch(error => {
       console.error('Error fetching cart items:', error)
     })
-  }, [])
+    console.log('re-render')
+  }, [forceReRender])
+
+  useEffect(() => {
+    const allChecked = cartItems.every(item => item.checked)
+    setAllItemChecked(allChecked)
+  }, [cartItems])
+
+  const handleItemCheckedChange = (itemId: number, checked: boolean) => {
+    setCartItems(prevItems =>
+      prevItems.map(item =>
+        item.itemId === itemId ? { ...item, checked } : item
+      )
+    )
+  }
 
   return (
     <CartCon>
@@ -76,7 +97,13 @@ export default function Cart() {
       )}
       {cartItems.length > 0 ? (
         <ItemCon>
-          <CartItem type="header" />
+          <CartItem
+            type="header"
+            cartId={session?.user.id}
+            setForceReRender={setForceReRender}
+            allItemChecked={allItemChecked}
+            setAllItemChecked={setAllItemChecked}
+          />
           {cartItems.map((item, i: number) => {
             return (
               <CartItem
@@ -88,8 +115,13 @@ export default function Cart() {
                   item.details.discount
                 )}
                 option={item.option}
+                checked={item.checked}
                 receivingDate={item.receivingDate}
                 setTotalPrice={setTotalPrice}
+                cartId={session?.user.id}
+                itemId={item.details.id}
+                setForceReRender={setForceReRender}
+                handleItemCheckedChange={handleItemCheckedChange}
               />
             )
           })}
@@ -99,14 +131,18 @@ export default function Cart() {
       )}
 
       <ItemSubButtonCon>
-        <ButtonWrapper>
-          <Button colortype="white" hover={false.toString()}>
-            선택상품 삭제
-          </Button>
-          <Button colortype="white" hover={false.toString()}>
-            품절상품 삭제
-          </Button>
-        </ButtonWrapper>
+        {cartItems.length > 0 ? (
+          <ButtonWrapper>
+            <Button colortype="white" hover={false.toString()}>
+              선택상품 삭제
+            </Button>
+            <Button colortype="white" hover={false.toString()}>
+              품절상품 삭제
+            </Button>
+          </ButtonWrapper>
+        ) : (
+          <div></div>
+        )}
         <DetailDesc>
           장바구니는 최대 100개의 상품을 담을 수 있습니다.
         </DetailDesc>
@@ -120,10 +156,11 @@ export default function Cart() {
             navigate('/shop') // 변수명 수정
           }}
         >
-          계속 쇼핑하기
+          {cartItems.length > 0 ? '계속 쇼핑하기' : '쇼핑하러 가기'}
         </button>
-        <button>결제하기</button>
+        {cartItems.length > 0 && <button>결제하기</button>}
       </ButtonCon>
+      <Footer />
     </CartCon>
   )
 }
@@ -300,4 +337,8 @@ const ButtonCon = styled.div`
       font-size: 1rem;
     }
   }
+`
+const Footer = styled.div`
+  width: 100%;
+  height: 100px;
 `

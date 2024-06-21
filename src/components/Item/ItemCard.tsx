@@ -1,24 +1,24 @@
-import styled from "styled-components";
-import Badge from "../Common/Badge";
-import { useNavigate } from "react-router-dom";
-import { priceCalculation } from "../../utill/priceCalculation";
-import formatNumberWithCommas from "../../utill/formatNumberWithCommas";
-import { IoMdHeart } from "react-icons/io";
-import { useAuth } from "../../hooks/useAuth";
-import { addItemToCart } from "../../utill/addItemToCart";
-import { useMutation, useQueryClient } from "react-query";
-import { PiShoppingCartFill } from "react-icons/pi";
+import styled from 'styled-components'
+import Badge from '../Common/Badge'
+import { useNavigate } from 'react-router-dom'
+import { priceCalculation } from '../../utill/priceCalculation'
+import formatNumberWithCommas from '../../utill/formatNumberWithCommas'
+import { IoMdHeart } from 'react-icons/io'
+import { useAuth } from '../../hooks/useAuth'
+import { addItemToCart } from '../../utill/cart/addItemToCart'
+import { useMutation, useQueryClient } from 'react-query'
+import { PiShoppingCartFill } from 'react-icons/pi'
 
-type BadgeType = "hot" | "fast";
+type BadgeType = 'hot' | 'fast'
 
 interface ItemCardPropsType {
-  id: number;
-  title: string;
-  imgurl: string;
-  originalprice: number;
-  badge: BadgeType[];
-  discount: number;
-  isInCart: boolean;
+  id: number
+  title: string
+  imgurl: string
+  originalprice: number
+  badge: BadgeType[]
+  discount: number
+  isInCart: boolean
 }
 
 export default function ItemCard({
@@ -30,33 +30,39 @@ export default function ItemCard({
   discount,
   isInCart,
 }: ItemCardPropsType) {
-  const navigate = useNavigate();
-  const { session } = useAuth();
-  const queryClient = useQueryClient();
+  const navigate = useNavigate()
+  const { session } = useAuth()
+  const queryClient = useQueryClient()
 
   const mutation = useMutation(
     ({ itemId, quantity }: { itemId: number; quantity: number }) =>
-      addItemToCart({ itemId, quantity, receivingDate: 0, option: "-" }),
+      addItemToCart({
+        itemId,
+        quantity,
+        receivingDate: 0,
+        option: '-',
+        checked: false,
+      }),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries("@cartData");
+        queryClient.invalidateQueries(import.meta.env.VITE_CART_ITEM_QUERY_KEY)
       },
     }
-  );
+  )
 
   return (
     <Card
       onClick={() => {
-        navigate(`/product/${id}`);
+        navigate(`/product/${id}`)
       }}
     >
       <OptionButtonWrapper>
         <LikeButton
-          onClick={(e) => {
-            e.stopPropagation();
+          onClick={e => {
+            e.stopPropagation()
             if (!session) {
-              navigate("/login");
-              return;
+              navigate('/login')
+              return
             }
           }}
         >
@@ -64,13 +70,13 @@ export default function ItemCard({
         </LikeButton>
         <CartButton
           isincart={isInCart.toString()}
-          onClick={(e) => {
-            e.stopPropagation();
+          onClick={e => {
+            e.stopPropagation()
             if (!session) {
-              navigate("/login");
-              return;
+              navigate('/login')
+              return
             }
-            mutation.mutate({ itemId: id, quantity: 1 });
+            mutation.mutate({ itemId: id, quantity: 1 })
           }}
         >
           <PiShoppingCartFill />
@@ -83,8 +89,8 @@ export default function ItemCard({
         <ItemTitle>
           <Title>{title}</Title>
           <BadgeWrapper>
-            {badge.map((badgeType: "hot" | "fast", i: number) => {
-              return <Badge key={i} badgeType={badgeType} />;
+            {badge.map((badgeType: 'hot' | 'fast', i: number) => {
+              return <Badge key={i} badgeType={badgeType} />
             })}
           </BadgeWrapper>
         </ItemTitle>
@@ -98,7 +104,7 @@ export default function ItemCard({
         </PriceDetail>
       </TextBox>
     </Card>
-  );
+  )
 }
 
 const Card = styled.div`
@@ -122,7 +128,7 @@ const Card = styled.div`
 
   @media (max-width: 600px) {
   }
-`;
+`
 
 const OptionButtonWrapper = styled.div`
   position: absolute;
@@ -181,17 +187,17 @@ const OptionButtonWrapper = styled.div`
   @media (max-width: 365px) {
     display: none;
   }
-`;
+`
 
 const CartButton = styled.span<{ isincart: string }>`
-  color: ${(props) =>
-    props.isincart === "true" ? "rgba(50,50,50,1)" : "rgba(210, 210, 210, 1)"};
+  color: ${props =>
+    props.isincart === 'true' ? 'rgba(50,50,50,1)' : 'rgba(210, 210, 210, 1)'};
 
   &:hover {
-    ${(props) =>
-      props.isincart === "true" ? "" : "color: rgba(180, 180, 180, 1)"};
+    ${props =>
+      props.isincart === 'true' ? '' : 'color: rgba(180, 180, 180, 1)'};
   }
-`;
+`
 
 const LikeButton = styled.span`
   margin-right: 6px;
@@ -204,7 +210,7 @@ const LikeButton = styled.span`
   @media (max-width: 400px) {
     margin-right: 4px;
   }
-`;
+`
 
 const ImgBox = styled.div`
   width: 100%;
@@ -214,7 +220,7 @@ const ImgBox = styled.div`
   img {
     width: 100%;
   }
-`;
+`
 
 const TextBox = styled.div`
   margin-top: 10px;
@@ -224,7 +230,7 @@ const TextBox = styled.div`
     margin-top: 8px;
     padding: 8px 8px 8px 2px;
   }
-`;
+`
 
 const ItemTitle = styled.div`
   font-size: 1rem;
@@ -247,14 +253,14 @@ const ItemTitle = styled.div`
     font-size: 0.7rem;
     margin-bottom: 10px;
   }
-`;
+`
 
 const Title = styled.span`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   padding-bottom: 2px;
-`;
+`
 
 const OriginalPrice = styled.div`
   text-decoration: line-through;
@@ -266,12 +272,12 @@ const OriginalPrice = styled.div`
   @media (max-width: 440px) {
     font-size: 0.7rem;
   }
-`;
+`
 
 const PriceDetail = styled.div`
   display: flex;
   align-items: center;
-`;
+`
 
 const Discount = styled.div`
   font-size: 0.8rem;
@@ -284,7 +290,7 @@ const Discount = styled.div`
     margin-right: 6px;
     padding-top: 1.5px;
   }
-`;
+`
 
 const DiscountedPrice = styled.div`
   font-weight: 600;
@@ -292,7 +298,7 @@ const DiscountedPrice = styled.div`
   @media (max-width: 440px) {
     font-size: 0.75rem;
   }
-`;
+`
 
 const BadgeWrapper = styled.div`
   margin-top: 10px;
@@ -309,4 +315,4 @@ const BadgeWrapper = styled.div`
   @media (max-width: 440px) {
     margin-top: 7px;
   }
-`;
+`
