@@ -1,0 +1,54 @@
+import { supabase } from "../../supabase/supabaseClient";
+
+export const handleItemQuantity = async ({
+  cartId,
+  itemId,
+  direction,
+}: {
+  cartId: string;
+  itemId: number;
+  direction: string;
+}) => {
+  const { data: cart, error: fetchError } = await supabase
+    .from("carts")
+    .select("items")
+    .eq("user_id", cartId)
+    .single();
+
+  if (fetchError) {
+    console.error("Error fetching cart:", fetchError);
+    return;
+  }
+
+  const items = cart.items;
+  const updatedItems = items.map(
+    (item: {
+      itemId: number;
+      option: string;
+      checked: boolean;
+      quantity: number;
+      receivingDate: number;
+    }) => {
+      if (item.itemId === itemId) {
+        if (direction === "plus") {
+          return { ...item, quantity: item.quantity + 1 };
+        } else if (direction === "minus") {
+          if (item.quantity === 1) return;
+          return { ...item, quantity: item.quantity - 1 };
+        }
+      }
+      return item;
+    }
+  );
+
+  const { data, error: updateError } = await supabase
+    .from("carts")
+    .update({ items: updatedItems })
+    .eq("user_id", cartId);
+
+  if (updateError) {
+    console.error("Error updating item:", updateError);
+  } else {
+    console.log("Item updated:", data);
+  }
+};

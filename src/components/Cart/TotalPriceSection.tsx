@@ -1,19 +1,16 @@
-import styled from 'styled-components'
-import formatNumberWithCommas from '../../utill/formatNumberWithCommas'
-import { FaPlus } from 'react-icons/fa6'
-import { PiEqualsBold } from 'react-icons/pi'
-import useWindowWidth from '../../hooks/useWindowWidth'
-import { useRef } from 'react'
+import styled from "styled-components";
+import formatNumberWithCommas from "../../utill/formatNumberWithCommas";
+import { FaPlus } from "react-icons/fa6";
+import { PiEqualsBold } from "react-icons/pi";
+import useWindowWidth from "../../hooks/useWindowWidth";
+import { SHIPPING_COST } from "../../config/constants";
 
 export default function TotalPriceSection({
   totalPrice,
-  cartItems,
 }: {
-  totalPrice: number
-  cartItems: object[]
+  totalPrice: number;
 }) {
-  const windowWidth = useWindowWidth()
-  const deliveryPrice = useRef(3000)
+  const windowWidth = useWindowWidth();
 
   return (
     <>
@@ -22,28 +19,17 @@ export default function TotalPriceSection({
           <MobileTotalPriceSection>
             <MobileTotalOrderPrice>
               <div>총 주문금액</div>
-              <span>
-                {cartItems.length > 0 ? formatNumberWithCommas(totalPrice) : 0}
-                원
-              </span>
+              <span>{formatNumberWithCommas(totalPrice)}원</span>
             </MobileTotalOrderPrice>
             <MobileDeliveryPrice>
               <div>배송비</div>
-              <span>
-                {cartItems.length > 0
-                  ? formatNumberWithCommas(deliveryPrice.current)
-                  : 0}
-                원
-              </span>
+              <span>{formatNumberWithCommas(SHIPPING_COST)}원</span>
             </MobileDeliveryPrice>
             <hr />
             <MobileTotalPrice>
               <div>총 결제금액</div>
               <span>
-                {cartItems.length > 0
-                  ? formatNumberWithCommas(totalPrice + deliveryPrice.current)
-                  : 0}
-                원
+                {formatNumberWithCommas(totalPrice + SHIPPING_COST)}원
               </span>
             </MobileTotalPrice>
           </MobileTotalPriceSection>
@@ -56,40 +42,33 @@ export default function TotalPriceSection({
             </ItemContent>
             <ItemContent>
               <TotalOrderPrice className="body">
-                {cartItems.length > 0 ? formatNumberWithCommas(totalPrice) : 0}
-                원
+                {formatNumberWithCommas(totalPrice)}원
                 <PlusIcon>
                   <FaPlus />
                 </PlusIcon>
               </TotalOrderPrice>
               <DeliveryPrice className="body">
-                {cartItems.length > 0
-                  ? formatNumberWithCommas(deliveryPrice.current)
-                  : 0}
-                원
+                {formatNumberWithCommas(SHIPPING_COST)}원
                 <EqualIcon>
                   <PiEqualsBold />
                 </EqualIcon>
               </DeliveryPrice>
               <TotalPrice className="body">
-                {cartItems.length > 0
-                  ? formatNumberWithCommas(totalPrice + deliveryPrice.current)
-                  : 0}
-                원
+                {formatNumberWithCommas(totalPrice + SHIPPING_COST)}원
               </TotalPrice>
             </ItemContent>
           </>
         )}
       </ItemContentCon>
     </>
-  )
+  );
 }
 
 const ItemContentCon = styled.div`
   @media (max-width: 600px) {
     font-size: 0.8rem;
   }
-`
+`;
 
 const ItemContent = styled.div`
   display: flex;
@@ -108,7 +87,7 @@ const ItemContent = styled.div`
     align-items: flex-start;
     padding: 10px;
   }
-`
+`;
 
 const TotalOrderPrice = styled.div`
   flex-grow: 1;
@@ -137,7 +116,7 @@ const TotalOrderPrice = styled.div`
       font-size: 1.2rem;
     }
   }
-`
+`;
 const DeliveryPrice = styled.div`
   flex-grow: 1;
   flex-basis: 33.3%;
@@ -164,7 +143,7 @@ const DeliveryPrice = styled.div`
       font-size: 1.2rem;
     }
   }
-`
+`;
 const TotalPrice = styled.div`
   flex-grow: 1;
   flex-basis: 33.3%;
@@ -191,7 +170,7 @@ const TotalPrice = styled.div`
       font-size: 1.2rem;
     }
   }
-`
+`;
 
 const PlusIcon = styled.div`
   position: absolute;
@@ -221,7 +200,7 @@ const PlusIcon = styled.div`
   @media (max-width: 600px) {
     display: none;
   }
-`
+`;
 
 const EqualIcon = styled.div`
   position: absolute;
@@ -251,11 +230,11 @@ const EqualIcon = styled.div`
   @media (max-width: 600px) {
     display: none;
   }
-`
+`;
 
 const MobileTotalPriceSection = styled.div`
   padding: 10px 12px;
-`
+`;
 
 const MobileTotalOrderPrice = styled.div`
   display: flex;
@@ -268,7 +247,7 @@ const MobileTotalOrderPrice = styled.div`
   span {
     font-weight: 500;
   }
-`
+`;
 const MobileDeliveryPrice = styled.div`
   display: flex;
   justify-content: space-between;
@@ -279,7 +258,7 @@ const MobileDeliveryPrice = styled.div`
   span {
     font-weight: 500;
   }
-`
+`;
 const MobileTotalPrice = styled.div`
   display: flex;
   justify-content: space-between;
@@ -291,4 +270,4 @@ const MobileTotalPrice = styled.div`
   span {
     font-weight: 500;
   }
-`
+`;

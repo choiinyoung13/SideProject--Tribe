@@ -6,6 +6,7 @@ type ButtonProps = {
   hover: string;
   btntype?: "link";
   colortype: "white" | "black";
+  onClick?: () => void;
 };
 
 export default function Button({
@@ -13,9 +14,10 @@ export default function Button({
   hover,
   btntype,
   colortype,
+  onClick,
 }: ButtonProps) {
   return (
-    <Btn hover={hover} colortype={colortype}>
+    <Btn hover={hover} colortype={colortype} onClick={onClick}>
       {children}
       {btntype === "link" && (
         <RightIcon>

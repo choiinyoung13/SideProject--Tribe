@@ -1,12 +1,26 @@
-import { useNavigate } from 'react-router-dom'
-import styled from 'styled-components'
+import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
+import { useCartMutations } from "../../mutations/useCartMutations";
 
-interface ButtonSectionProps {
-  isDateSelected: boolean
+interface OrderInfo {
+  itemId: number;
+  quantity: number;
+  receivingDate: number;
+  option: string;
+  checked: boolean;
 }
 
-export default function ButtonSection({ isDateSelected }: ButtonSectionProps) {
-  const navigate = useNavigate()
+interface ButtonSectionProps {
+  isDateSelected: boolean;
+  orderInfo: OrderInfo;
+}
+
+export default function ButtonSection({
+  isDateSelected,
+  orderInfo,
+}: ButtonSectionProps) {
+  const { addItemToCartMutation } = useCartMutations();
+  const navigate = useNavigate();
 
   return (
     <ButtonCon>
@@ -15,13 +29,28 @@ export default function ButtonSection({ isDateSelected }: ButtonSectionProps) {
           <button
             type="button"
             onClick={() => {
-              alert('구매해주셔서 감사합니다')
-              navigate('/shop')
+              alert("구매해주셔서 감사합니다");
+              navigate("/shop");
             }}
           >
             바로 구매
           </button>
-          <button type="button">장바구니에 담기</button>
+          <button
+            type="button"
+            onClick={() => {
+              addItemToCartMutation.mutate({
+                itemId: orderInfo.itemId,
+                quantity: orderInfo.quantity,
+                receivingDate: orderInfo.receivingDate,
+                option: orderInfo.option,
+                checked: orderInfo.checked,
+              });
+              alert("장바구니에 추가 되었습니다. 감사합니다.");
+              navigate("/shop");
+            }}
+          >
+            장바구니에 담기
+          </button>
         </ButtonOption2>
       ) : (
         <ButtonOption1>
@@ -29,13 +58,13 @@ export default function ButtonSection({ isDateSelected }: ButtonSectionProps) {
         </ButtonOption1>
       )}
     </ButtonCon>
-  )
+  );
 }
 
 const ButtonCon = styled.div`
   margin-top: 30px;
   width: 100%;
-`
+`;
 
 const ButtonOption1 = styled.div`
   button {
@@ -56,7 +85,7 @@ const ButtonOption1 = styled.div`
       font-size: 0.9rem;
     }
   }
-`
+`;
 
 const ButtonOption2 = styled.div`
   display: flex;
@@ -91,4 +120,4 @@ const ButtonOption2 = styled.div`
       font-size: 0.9rem;
     }
   }
-`
+`;

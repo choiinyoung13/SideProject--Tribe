@@ -1,33 +1,75 @@
 import styled from "styled-components";
 import { AiOutlinePlus, AiOutlineMinus } from "react-icons/ai";
+import { useCartMutations } from "../../mutations/useCartMutations";
+import { useEffect } from "react";
+
+interface OrderInfo {
+  itemId: number;
+  quantity: number;
+  receivingDate: number;
+  option: string;
+  checked: boolean;
+}
 
 interface CountButtonPropsType {
   type?: string;
-  productCount: number;
-  setProductCount: React.Dispatch<React.SetStateAction<number>>;
+  productCount?: number;
+  cartId: string;
+  itemId: number;
+  quantity: number;
+  setCount?: React.Dispatch<React.SetStateAction<number>>;
+  count: number;
+  setOrderInfo?: React.Dispatch<React.SetStateAction<OrderInfo>>;
 }
 
 export default function CountButton({
   type,
-  productCount,
-  setProductCount,
+  cartId,
+  itemId,
+  quantity,
+  setCount,
+  count,
+  setOrderInfo,
 }: CountButtonPropsType) {
+  const { cartItemQuantityMutation } = useCartMutations();
+
+  useEffect(() => {
+    if (setOrderInfo) setOrderInfo((prev) => ({ ...prev, quantity: count }));
+  }, [count]);
+
   return (
     <ButtonCon>
       <MinusButton
         type={type}
         onClick={() => {
-          if (productCount === 1) return;
-          setProductCount((prev) => prev - 1);
+          if (type === "cart") {
+            const direction = "minus";
+            if (quantity === 1) return;
+            cartItemQuantityMutation.mutate({ cartId, itemId, direction });
+            return;
+          }
+          if (type === "productDetail" && setCount) {
+            if (count === 1) return;
+            setCount((prev) => prev - 1);
+            return;
+          }
         }}
       >
         <AiOutlineMinus />
       </MinusButton>
-      <Count type={type}>{productCount}</Count>
+      <Count type={type}>{type === "productDetail" ? count : quantity}</Count>
       <PlusButton
         type={type}
         onClick={() => {
-          setProductCount((prev) => prev + 1);
+          if (type === "cart") {
+            const direction = "plus";
+            cartItemQuantityMutation.mutate({ cartId, itemId, direction });
+            return;
+          }
+          if (type === "productDetail" && setCount) {
+            setCount((prev) => prev + 1);
+            return;
+          }
         }}
       >
         <AiOutlinePlus />

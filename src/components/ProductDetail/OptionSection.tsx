@@ -2,12 +2,22 @@ import React from "react";
 import styled from "styled-components";
 import { PiFlowerLight } from "react-icons/pi";
 
+interface OrderInfo {
+  itemId: number;
+  quantity: number;
+  receivingDate: number;
+  option: string;
+  checked: boolean;
+}
+
 interface OptionsSectionProps {
   handleSelectChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+  setOrderInfo: React.Dispatch<React.SetStateAction<OrderInfo>>;
 }
 
 export default function OptionsSection({
   handleSelectChange,
+  setOrderInfo,
 }: OptionsSectionProps) {
   return (
     <OptionCon>
@@ -19,11 +29,24 @@ export default function OptionsSection({
         <FlowerIcon>
           <PiFlowerLight />
         </FlowerIcon>
-        <select name="" id="" onChange={handleSelectChange}>
-          <option value="default">기본 화병 (+0원)</option>
-          <option value="A">편지로 마음 담기 (+2,500원)</option>
-          <option value="B">커브 라운드 화병 (+13,500원)</option>
-          <option value="C">미니 세라믹 화병 (+14,500원)</option>
+        <select
+          name=""
+          id=""
+          onChange={(e) => {
+            handleSelectChange(e);
+            setOrderInfo((prev) => ({ ...prev, option: e.target.value }));
+          }}
+        >
+          <option value="-">기본 화병 (+0원)</option>
+          <option value="편지로 마음 담기 (+2,500원)">
+            편지로 마음 담기 (+2,500원)
+          </option>
+          <option value="커브 라운드 화병 (+13,500원)">
+            커브 라운드 화병 (+13,500원)
+          </option>
+          <option value="미니 세라믹 화병 (+14,500원)">
+            미니 세라믹 화병 (+14,500원)
+          </option>
         </select>
       </SelectWrapper>
     </OptionCon>

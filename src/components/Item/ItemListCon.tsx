@@ -1,48 +1,42 @@
-import styled from 'styled-components'
-import ItemCard from './ItemCard'
-import { fetchItems } from '../../utill/fetchItems'
-import { useQuery } from 'react-query'
-import { useAuth } from '../../hooks/useAuth'
-import { getCartItems } from '../../utill/cart/getCartItem'
+import styled from "styled-components";
+import ItemCard from "./ItemCard";
+import { fetchItems } from "../../utill/items/fetchItems";
+import { useQuery } from "react-query";
+import { useAuth } from "../../hooks/useAuth";
+import { fetchCartItems } from "../../utill/cart/fetchCartItems";
+import { QUERY_KEYS } from "../../config/queryKeys";
 
 interface CartItemType {
-  itemId: number
-  quantity: number
+  itemId: number;
+  quantity: number;
 }
 
 export default function ItemListCon() {
-  const { session } = useAuth()
-  const { data, error, isLoading } = useQuery(
-    import.meta.env.VITE_TRIBE_ITEM_QUERY_KEY,
-    fetchItems,
-    {
-      staleTime: Infinity,
-      cacheTime: 30 * 60 * 1000,
-    }
-  )
+  const { session } = useAuth();
 
-  const { data: cartData } = useQuery(
-    import.meta.env.VITE_CART_ITEM_QUERY_KEY,
-    getCartItems,
-    {
-      enabled: !!session,
-      staleTime: Infinity,
-      cacheTime: 30 * 60 * 1000,
-    }
-  )
+  const { data, error, isLoading } = useQuery(QUERY_KEYS.PRODUCTS, fetchItems, {
+    staleTime: Infinity,
+    cacheTime: 30 * 60 * 1000,
+  });
 
-  if (isLoading) return <div>Loading...</div>
+  const { data: cartData } = useQuery(QUERY_KEYS.CART_ITEMS, fetchCartItems, {
+    enabled: !!session,
+    staleTime: Infinity,
+    cacheTime: 30 * 60 * 1000,
+  });
 
-  if (error) return <div>Error...</div>
+  if (isLoading) return <div>Loading...</div>;
 
-  const cartItems: CartItemType[] = cartData ? cartData.items : []
+  if (error) return <div>Error...</div>;
+
+  const cartItems: CartItemType[] = cartData ? cartData.items : [];
 
   if (data)
     return (
       <ListCon>
         <ListWrapper>
           {data.map(({ id, title, imgurl, originalprice, badge, discount }) => {
-            const isInCart = cartItems.some(item => item.itemId === id)
+            const isInCart = cartItems.some((item) => item.itemId === id);
             return (
               <ItemCard
                 key={id}
@@ -54,11 +48,11 @@ export default function ItemListCon() {
                 discount={discount}
                 isInCart={isInCart}
               />
-            )
+            );
           })}
         </ListWrapper>
       </ListCon>
-    )
+    );
 }
 
 const ListCon = styled.div`
@@ -70,11 +64,11 @@ const ListCon = styled.div`
   @media (max-width: 768px) {
     padding-left: 0px;
   }
-`
+`;
 
 const ListWrapper = styled.div`
   display: flex;
   width: 100%;
   flex-wrap: wrap;
   justify-content: flex-start;
-`
+`;

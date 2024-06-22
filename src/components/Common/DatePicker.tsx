@@ -6,21 +6,36 @@ import getCurrentDateFormatted from "../../utill/getCurrentDateFormatted";
 import { AiOutlineCalendar } from "react-icons/ai";
 import useWindowWidth from "../../hooks/useWindowWidth";
 import styled from "styled-components";
+import { formatDateToYYYYMMDD } from "../../utill/formatDateToYYYYMMDD";
+
+interface OrderInfo {
+  itemId: number;
+  quantity: number;
+  receivingDate: number;
+  option: string;
+  checked: boolean;
+}
 
 interface FutureDatePickerProps {
   daysOffset: number;
   setIsDateSelected: React.Dispatch<React.SetStateAction<boolean>>;
+  setOrderInfo: React.Dispatch<React.SetStateAction<OrderInfo>>;
 }
 
 export default function FutureDatePicker({
   daysOffset,
   setIsDateSelected,
+  setOrderInfo,
 }: FutureDatePickerProps) {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const windowWidth = useWindowWidth();
 
   const handleDateChange = (date: Date | null) => {
     setSelectedDate(date);
+    setOrderInfo((prev) => ({
+      ...prev,
+      receivingDate: Number(formatDateToYYYYMMDD(date!)),
+    }));
     setIsDateSelected(true);
   };
 

@@ -1,11 +1,11 @@
-import styled from 'styled-components'
+import styled from "styled-components";
 
 export default function EmptyCart() {
   return (
     <EmptyCartCon>
       <Text>장바구니가 비어 있습니다</Text>
     </EmptyCartCon>
-  )
+  );
 }
 
 const EmptyCartCon = styled.div`
@@ -16,8 +16,13 @@ const EmptyCartCon = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-`
+`;
 const Text = styled.div`
   font-size: 2rem;
   font-weight: 600;
-`
+
+  @media (max-width: 600px) {
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+`;

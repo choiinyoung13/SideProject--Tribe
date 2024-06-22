@@ -1,84 +1,106 @@
-import styled from 'styled-components'
-import CartItem from '../components/Cart/CartItem'
-import Button from '../components/Common/Button'
-import TotalPriceSection from '../components/Cart/TotalPriceSection'
-import useWindowWidth from '../hooks/useWindowWidth'
-import { useNavigate } from 'react-router-dom'
-import { getCartItems } from '../utill/cart/getCartItem'
-import { useEffect, useState } from 'react'
-import { fetchItemById } from '../utill/fetchItems'
-import { priceCalculation } from '../utill/priceCalculation'
-import EmptyCart from '../components/Cart/EmptyCart'
-import { useAuth } from '../hooks/useAuth'
-import { useMutation, useQueryClient } from 'react-query'
-import { toggleCartItemStatus } from '../utill/cart/toggleCartItemStatus'
+import styled from "styled-components";
+import CartItem from "../components/Cart/CartItem";
+import Button from "../components/Common/Button";
+import TotalPriceSection from "../components/Cart/TotalPriceSection";
+import useWindowWidth from "../hooks/useWindowWidth";
+import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { priceCalculation } from "../utill/priceCalculation";
+import EmptyCart from "../components/Cart/EmptyCart";
+import { useAuth } from "../hooks/useAuth";
+import { useCartMutations } from "../mutations/useCartMutations";
+import { useQuery } from "react-query";
+import { fetchCartItems } from "../utill/cart/fetchCartItems";
+import { fetchItemById } from "../utill/items/fetchItems";
+import { QUERY_KEYS } from "../config/queryKeys";
 
 interface CartItem {
-  itemId: number
-  quantity: number
-  receivingDate: number
-  checked: boolean
-  option: string
+  itemId: number;
+  quantity: number;
+  receivingDate: number;
+  checked: boolean;
+  option: string;
 }
 
 interface ItemDetails {
-  id: number
-  imgurl: string
-  title: string
-  originalprice: number
-  discount: number
-  badge: string[]
-  category: string
-  classification: string
-  deliveryperiod: number
-  origin: string
-  size: string
+  id: number;
+  imgurl: string;
+  title: string;
+  originalprice: number;
+  discount: number;
+  badge: string[];
+  category: string;
+  classification: string;
+  deliveryperiod: number;
+  origin: string;
+  size: string;
 }
 
 interface DetailedCartItem extends CartItem {
-  details: ItemDetails
+  details: ItemDetails;
 }
 
 export default function Cart() {
-  const windowWidth = useWindowWidth()
-  const navigate = useNavigate()
-  const [cartItems, setCartItems] = useState<DetailedCartItem[]>([])
-  const [totalPrice, setTotalPrice] = useState(0)
-  const { session } = useAuth()
-  const [forceReRender, setForceReRender] = useState(false)
-  const [allItemChecked, setAllItemChecked] = useState(false)
+  const windowWidth = useWindowWidth();
+  const navigate = useNavigate();
+  const [cartItems, setCartItems] = useState<DetailedCartItem[]>([]);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const { session } = useAuth();
+  const [allItemChecked, setAllItemChecked] = useState(false);
+  const {
+    deleteCartItemMutation,
+    deleteAllCartItemMutation,
+    toggleAllCartItemStatusMutation,
+  } = useCartMutations();
 
   useEffect(() => {
-    const fetchCartItems = async () => {
-      const data = await getCartItems()
-      if (data && data.items) {
-        const itemsPromises = data.items.map(async (item: CartItem) => {
-          const itemDetails = await fetchItemById(item.itemId)
-          return { ...item, details: itemDetails }
-        })
-
-        const detailedItems = await Promise.all(itemsPromises)
-        setCartItems(detailedItems)
-      }
-    }
-
-    fetchCartItems().catch(error => {
-      console.error('Error fetching cart items:', error)
-    })
-    console.log('re-render')
-  }, [forceReRender])
-
-  useEffect(() => {
-    const allChecked = cartItems.every(item => item.checked)
-    setAllItemChecked(allChecked)
-  }, [cartItems])
+    const allChecked = cartItems.every((item) => item.checked);
+    setAllItemChecked(allChecked);
+  }, [cartItems]);
 
   const handleItemCheckedChange = (itemId: number, checked: boolean) => {
-    setCartItems(prevItems =>
-      prevItems.map(item =>
+    setCartItems((prevItems) =>
+      prevItems.map((item) =>
         item.itemId === itemId ? { ...item, checked } : item
       )
-    )
+    );
+  };
+
+  const {
+    data: cartData,
+    error,
+    isLoading,
+  } = useQuery(QUERY_KEYS.CART_ITEMS, fetchCartItems, {
+    enabled: !!session,
+    staleTime: Infinity,
+    cacheTime: 30 * 60 * 1000,
+  });
+
+  useEffect(() => {
+    const fetchDetailedCartItems = async () => {
+      if (cartData) {
+        const detailedItemsPromises = cartData.items.map(
+          async (cartItem: CartItem) => {
+            const itemDetails = await fetchItemById(cartItem.itemId);
+            return { ...cartItem, details: itemDetails };
+          }
+        );
+
+        const detailedItems = await Promise.all(detailedItemsPromises);
+        setCartItems(detailedItems);
+      }
+    };
+
+    fetchDetailedCartItems();
+  }, [cartData]);
+
+  if (error) {
+    console.error(error);
+    return <div>Error loading cart data</div>;
+  }
+
+  if (isLoading) {
+    return null;
   }
 
   return (
@@ -88,11 +110,32 @@ export default function Cart() {
         <CheckHeader>
           <CheckHeaderLeft>
             <div>
-              <input type="checkbox" />
+              <input
+                type="checkbox"
+                checked={allItemChecked}
+                onClick={() => {
+                  const cartId = session!.user.id;
+
+                  setAllItemChecked((prev) => {
+                    const newValue = !prev;
+                    toggleAllCartItemStatusMutation.mutate({
+                      cartId,
+                      allItemChecked: newValue,
+                    });
+                    return newValue;
+                  });
+                }}
+              />
             </div>
             <div>전체선택 (1/2)</div>
           </CheckHeaderLeft>
-          <CheckHeaderRight>선택삭제</CheckHeaderRight>
+          <CheckHeaderRight
+            onClick={() => {
+              if (session) deleteCartItemMutation.mutate(session.user.id);
+            }}
+          >
+            선택삭제
+          </CheckHeaderRight>
         </CheckHeader>
       )}
       {cartItems.length > 0 ? (
@@ -100,31 +143,29 @@ export default function Cart() {
           <CartItem
             type="header"
             cartId={session?.user.id}
-            setForceReRender={setForceReRender}
             allItemChecked={allItemChecked}
             setAllItemChecked={setAllItemChecked}
+            allCartItemMutation={toggleAllCartItemStatusMutation}
           />
-          {cartItems.map((item, i: number) => {
-            return (
-              <CartItem
-                key={i}
-                title={item.details.title}
-                imgUrl={item.details.imgurl}
-                price={priceCalculation(
-                  item.details.originalprice,
-                  item.details.discount
-                )}
-                option={item.option}
-                checked={item.checked}
-                receivingDate={item.receivingDate}
-                setTotalPrice={setTotalPrice}
-                cartId={session?.user.id}
-                itemId={item.details.id}
-                setForceReRender={setForceReRender}
-                handleItemCheckedChange={handleItemCheckedChange}
-              />
-            )
-          })}
+          {cartItems.map((cartItem, i) => (
+            <CartItem
+              key={i}
+              title={cartItem.details.title}
+              imgUrl={cartItem.details.imgurl}
+              price={priceCalculation(
+                cartItem.details.originalprice,
+                cartItem.details.discount
+              )}
+              option={cartItem.option}
+              checked={cartItem.checked}
+              receivingDate={cartItem.receivingDate}
+              setTotalPrice={setTotalPrice}
+              cartId={session?.user.id}
+              itemId={cartItem.itemId}
+              handleItemCheckedChange={handleItemCheckedChange}
+              quantity={cartItem.quantity}
+            />
+          ))}
         </ItemCon>
       ) : (
         <EmptyCart />
@@ -133,7 +174,13 @@ export default function Cart() {
       <ItemSubButtonCon>
         {cartItems.length > 0 ? (
           <ButtonWrapper>
-            <Button colortype="white" hover={false.toString()}>
+            <Button
+              colortype="white"
+              hover={false.toString()}
+              onClick={() => {
+                if (session) deleteCartItemMutation.mutate(session.user.id);
+              }}
+            >
               선택상품 삭제
             </Button>
             <Button colortype="white" hover={false.toString()}>
@@ -148,22 +195,33 @@ export default function Cart() {
         </DetailDesc>
       </ItemSubButtonCon>
       <PriceConWrapper>
-        <TotalPriceSection totalPrice={totalPrice} cartItems={cartItems} />
+        <TotalPriceSection totalPrice={totalPrice} />
       </PriceConWrapper>
       <ButtonCon>
         <button
           onClick={() => {
-            navigate('/shop') // 변수명 수정
+            navigate("/shop"); // 변수명 수정
           }}
         >
-          {cartItems.length > 0 ? '계속 쇼핑하기' : '쇼핑하러 가기'}
+          {cartItems.length > 0 ? "계속 쇼핑하기" : "쇼핑하러 가기"}
         </button>
-        {cartItems.length > 0 && <button>결제하기</button>}
+        {cartItems.length > 0 && (
+          <button
+            onClick={() => {
+              alert("구매해주셔서 감사합니다");
+              navigate("/shop");
+              deleteAllCartItemMutation.mutate(session!.user.id);
+            }}
+          >
+            결제하기
+          </button>
+        )}
       </ButtonCon>
       <Footer />
     </CartCon>
-  )
+  );
 }
+
 const CartCon = styled.div`
   position: relative;
   width: 75%;
@@ -181,7 +239,7 @@ const CartCon = styled.div`
     margin: 60px auto;
     padding: 0 14px;
   }
-`
+`;
 
 const Title = styled.div`
   margin-bottom: 20px;
@@ -191,7 +249,7 @@ const Title = styled.div`
   @media (max-width: 1024px) {
     display: none;
   }
-`
+`;
 
 const CheckHeader = styled.div`
   display: flex;
@@ -199,7 +257,7 @@ const CheckHeader = styled.div`
   align-items: center;
   padding: 10px;
   margin-bottom: 6px;
-`
+`;
 
 const CheckHeaderLeft = styled.div`
   display: flex;
@@ -220,14 +278,14 @@ const CheckHeaderLeft = styled.div`
       margin-right: 8px;
     }
   }
-`
+`;
 const CheckHeaderRight = styled.div`
   cursor: pointer;
 
   @media (max-width: 600px) {
     font-size: 0.9rem;
   }
-`
+`;
 
 const ItemCon = styled.div`
   border-top: 3px solid rgba(20, 20, 20, 1);
@@ -240,7 +298,7 @@ const ItemCon = styled.div`
   @media (max-width: 600px) {
     border-top: 1px solid rgba(20, 20, 20, 1);
   }
-`
+`;
 
 const ItemSubButtonCon = styled.div`
   display: flex;
@@ -256,7 +314,7 @@ const ItemSubButtonCon = styled.div`
 
   @media (max-width: 600px) {
   }
-`
+`;
 
 const ButtonWrapper = styled.div`
   display: flex;
@@ -267,7 +325,7 @@ const ButtonWrapper = styled.div`
   @media (max-width: 1024px) {
     display: none;
   }
-`
+`;
 
 const PriceConWrapper = styled.div`
   margin-top: 90px;
@@ -281,7 +339,7 @@ const PriceConWrapper = styled.div`
     margin-top: 30px;
     margin-bottom: 40px;
   }
-`
+`;
 
 const DetailDesc = styled.div`
   @media (max-width: 1024px) {
@@ -291,7 +349,7 @@ const DetailDesc = styled.div`
   @media (max-width: 600px) {
     font-size: 0.8rem;
   }
-`
+`;
 
 const ButtonCon = styled.div`
   display: flex;
@@ -337,8 +395,8 @@ const ButtonCon = styled.div`
       font-size: 1rem;
     }
   }
-`
+`;
 const Footer = styled.div`
   width: 100%;
   height: 100px;
-`
+`;
