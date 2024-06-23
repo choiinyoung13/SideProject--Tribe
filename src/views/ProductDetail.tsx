@@ -4,7 +4,7 @@ import ImageSection from "../components/ProductDetail/ImageSection";
 import TextSection from "../components/ProductDetail/TextSection";
 import { useParams } from "react-router-dom";
 import { useQuery } from "react-query";
-import { fetchItemById } from "../utill/items/fetchItems";
+import { fetchItemById } from "../config/api/items/fetchItems";
 
 export default function ProductDetail() {
   const [isDateSelected, setIsDateSelected] = useState(false);

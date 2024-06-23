@@ -3,7 +3,7 @@ import styled from "styled-components";
 import CountButton from "../Common/CountButton";
 import formatNumberWithCommas from "../../utill/formatNumberWithCommas";
 import { priceCalculation } from "../../utill/priceCalculation";
-import { SHIPPING_COST } from "../../config/constants";
+import { SHIPPING_COST } from "../../config/constants/constants";
 
 interface OrderInfo {
   itemId: number;

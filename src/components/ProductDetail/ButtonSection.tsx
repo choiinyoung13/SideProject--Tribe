@@ -1,6 +1,9 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { useCartMutations } from "../../mutations/useCartMutations";
+import { hasCheckedItemInCartByID } from "../../config/api/cart/hasCheckedItemsInCart ";
+import { useAuth } from "../../hooks/useAuth";
+import { useEffect, useState } from "react";
 
 interface OrderInfo {
   itemId: number;
@@ -21,6 +24,19 @@ export default function ButtonSection({
 }: ButtonSectionProps) {
   const { addItemToCartMutation } = useCartMutations();
   const navigate = useNavigate();
+  const { id } = useParams();
+  const { session } = useAuth();
+  const [isInCart, setIsInCart] = useState(false);
+
+  useEffect(() => {
+    const checkItemById = async () => {
+      if (session) {
+        const res = await hasCheckedItemInCartByID(session.user.id, Number(id));
+        setIsInCart(res);
+      }
+    };
+    checkItemById();
+  }, [id, session]);
 
   return (
     <ButtonCon>
@@ -35,22 +51,33 @@ export default function ButtonSection({
           >
             바로 구매
           </button>
-          <button
-            type="button"
-            onClick={() => {
-              addItemToCartMutation.mutate({
-                itemId: orderInfo.itemId,
-                quantity: orderInfo.quantity,
-                receivingDate: orderInfo.receivingDate,
-                option: orderInfo.option,
-                checked: orderInfo.checked,
-              });
-              alert("장바구니에 추가 되었습니다. 감사합니다.");
-              navigate("/shop");
-            }}
-          >
-            장바구니에 담기
-          </button>
+          {isInCart ? (
+            <button
+              type="button"
+              onClick={() => {
+                navigate("/cart");
+              }}
+            >
+              장바구니에 들어있어요!
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => {
+                addItemToCartMutation.mutate({
+                  itemId: orderInfo.itemId,
+                  quantity: orderInfo.quantity,
+                  receivingDate: orderInfo.receivingDate,
+                  option: orderInfo.option,
+                  checked: orderInfo.checked,
+                });
+                alert("장바구니에 추가 되었습니다. 감사합니다.");
+                navigate("/shop");
+              }}
+            >
+              장바구니에 담기
+            </button>
+          )}
         </ButtonOption2>
       ) : (
         <ButtonOption1>

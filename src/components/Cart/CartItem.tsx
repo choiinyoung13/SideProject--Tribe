@@ -4,6 +4,8 @@ import CountButton from "../Common/CountButton";
 import formatNumberWithCommas from "../../utill/formatNumberWithCommas";
 import { UseMutationResult } from "react-query";
 import { useCartMutations } from "../../mutations/useCartMutations";
+import { optionToPrice } from "../../utill/optionToPrice";
+import FutureDatePicker from "../Common/DatePicker";
 
 interface ToggleCartItemStatusArgs {
   cartId: string;
@@ -26,11 +28,7 @@ interface CartItemPropsType {
   setAllItemChecked?: React.Dispatch<React.SetStateAction<boolean>>;
   handleItemCheckedChange?: (itemId: number, checked: boolean) => void;
   quantity?: number;
-  allCartItemMutation?: UseMutationResult<
-    void,
-    unknown,
-    { cartId: string; allItemChecked: boolean }
-  >;
+  deliveryperiod?: number;
 }
 
 export default function CartItem({
@@ -48,9 +46,10 @@ export default function CartItem({
   setAllItemChecked,
   handleItemCheckedChange,
   quantity,
-  allCartItemMutation,
+  deliveryperiod,
 }: CartItemPropsType) {
-  const { toggleCartItemStatusMutation } = useCartMutations();
+  const { toggleCartItemStatusMutation, toggleAllCartItemStatusMutation } =
+    useCartMutations();
 
   useEffect(() => {
     if (price && quantity && setTotalPrice) {
@@ -64,7 +63,7 @@ export default function CartItem({
     };
   }, [quantity, price, setTotalPrice]);
 
-  if (type === "header" && cartId && setAllItemChecked && allCartItemMutation) {
+  if (type === "header" && cartId && setAllItemChecked) {
     return (
       <ItemContentCon className="header">
         <ItemContent>
@@ -75,7 +74,7 @@ export default function CartItem({
               onClick={() => {
                 setAllItemChecked((prev) => {
                   const newValue = !prev;
-                  allCartItemMutation.mutate({
+                  toggleAllCartItemStatusMutation.mutate({
                     cartId,
                     allItemChecked: newValue,
                   });
@@ -85,9 +84,11 @@ export default function CartItem({
             />
           </CheckBox>
           <ProductInfo className="header">상품정보</ProductInfo>
+          <ReceivingDate className="header">
+            수령일 <Required>* (필수)</Required>
+          </ReceivingDate>
           <Amount className="header">수량</Amount>
           <OrderPrice className="header">주문금액</OrderPrice>
-          <ReceivingDate className="header">수령일</ReceivingDate>
         </ItemContent>
       </ItemContentCon>
     );
@@ -98,7 +99,8 @@ export default function CartItem({
     option &&
     cartId &&
     itemId &&
-    quantity
+    quantity &&
+    deliveryperiod
   ) {
     return (
       <ItemContentCon>
@@ -127,6 +129,16 @@ export default function CartItem({
               <ProductTextOption>추가상품: {option}</ProductTextOption>
             </ProductText>
           </ProductInfo>
+          <ReceivingDate>
+            <DatePicker>
+              <FutureDatePicker
+                daysOffset={deliveryperiod}
+                receivingDate={receivingDate}
+                itemId={itemId}
+                type={"cartItem"}
+              />
+            </DatePicker>
+          </ReceivingDate>
           <Amount>
             <CountButton
               type={"cart"}
@@ -136,8 +148,9 @@ export default function CartItem({
               count={0}
             />
           </Amount>
-          <OrderPrice>{formatNumberWithCommas(price * quantity)}원</OrderPrice>
-          <ReceivingDate>{receivingDate}</ReceivingDate>
+          <OrderPrice>
+            {formatNumberWithCommas(price * quantity + optionToPrice(option))}원
+          </OrderPrice>
         </ItemContent>
       </ItemContentCon>
     );
@@ -331,7 +344,7 @@ const Amount = styled.div`
 
   @media (max-width: 1024px) {
     padding: 10px;
-    border-right: none;
+    border: none;
   }
 
   @media (max-width: 600px) {
@@ -345,10 +358,10 @@ const OrderPrice = styled.div`
   align-items: center;
   flex-grow: 3;
   flex-basis: 15%;
-  border-right: 1px solid rgba(160, 160, 160, 0.5);
   padding: 14px;
   font-size: 1.2rem;
   font-weight: 500;
+  min-width: 120px;
 
   @media (max-width: 1024px) {
     padding: 10px;
@@ -356,7 +369,7 @@ const OrderPrice = styled.div`
     font-size: 1.1rem;
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: 768px) {
     display: none;
   }
 `;
@@ -369,8 +382,28 @@ const ReceivingDate = styled.div`
   padding: 14px;
   font-size: 1.1rem;
   font-weight: 400;
+  min-width: 173px;
+  border-right: 1px solid rgba(160, 160, 160, 0.5);
 
   @media (max-width: 1024px) {
-    display: none;
+    border: none;
   }
+
+  @media (max-width: 600px) {
+    flex-grow: 1;
+    flex-basis: 10%;
+    min-width: 40px;
+  }
+`;
+
+const DatePicker = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 90%;
+`;
+
+const Required = styled.span`
+  color: rgb(223, 33, 19);
+  font-size: 1rem;
 `;

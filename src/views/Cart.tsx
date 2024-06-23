@@ -10,9 +10,10 @@ import EmptyCart from "../components/Cart/EmptyCart";
 import { useAuth } from "../hooks/useAuth";
 import { useCartMutations } from "../mutations/useCartMutations";
 import { useQuery } from "react-query";
-import { fetchCartItems } from "../utill/cart/fetchCartItems";
-import { fetchItemById } from "../utill/items/fetchItems";
-import { QUERY_KEYS } from "../config/queryKeys";
+import { fetchCartItems } from "../config/api/cart/fetchCartItems";
+import { fetchItemById } from "../config/api/items/fetchItems";
+import { QUERY_KEYS } from "../config/constants/queryKeys";
+import { checkAllCartItemReceivingDate } from "../config/api/cart/checkCartItemReceivingDate";
 
 interface CartItem {
   itemId: number;
@@ -47,6 +48,7 @@ export default function Cart() {
   const [totalPrice, setTotalPrice] = useState(0);
   const { session } = useAuth();
   const [allItemChecked, setAllItemChecked] = useState(false);
+  const [allitemhasReceivingDate, setAllitemhasReceivingDate] = useState(false);
   const {
     deleteCartItemMutation,
     deleteAllCartItemMutation,
@@ -56,6 +58,17 @@ export default function Cart() {
   useEffect(() => {
     const allChecked = cartItems.every((item) => item.checked);
     setAllItemChecked(allChecked);
+
+    const ReceivingDate = async () => {
+      if (session) {
+        const res = await checkAllCartItemReceivingDate({
+          cartId: session.user.id,
+        });
+        setAllitemhasReceivingDate(res);
+      }
+    };
+
+    ReceivingDate();
   }, [cartItems]);
 
   const handleItemCheckedChange = (itemId: number, checked: boolean) => {
@@ -145,7 +158,6 @@ export default function Cart() {
             cartId={session?.user.id}
             allItemChecked={allItemChecked}
             setAllItemChecked={setAllItemChecked}
-            allCartItemMutation={toggleAllCartItemStatusMutation}
           />
           {cartItems.map((cartItem, i) => (
             <CartItem
@@ -164,6 +176,7 @@ export default function Cart() {
               itemId={cartItem.itemId}
               handleItemCheckedChange={handleItemCheckedChange}
               quantity={cartItem.quantity}
+              deliveryperiod={cartItem.details.deliveryperiod}
             />
           ))}
         </ItemCon>
@@ -183,7 +196,13 @@ export default function Cart() {
             >
               선택상품 삭제
             </Button>
-            <Button colortype="white" hover={false.toString()}>
+            <Button
+              colortype="white"
+              hover={false.toString()}
+              onClick={() => {
+                alert("품절 상품이 없습니다");
+              }}
+            >
               품절상품 삭제
             </Button>
           </ButtonWrapper>
@@ -191,7 +210,7 @@ export default function Cart() {
           <div></div>
         )}
         <DetailDesc>
-          장바구니는 최대 100개의 상품을 담을 수 있습니다.
+          선택 가능한 수령일는 제품 배송기간에 따라 달라집니다.
         </DetailDesc>
       </ItemSubButtonCon>
       <PriceConWrapper>
@@ -205,7 +224,7 @@ export default function Cart() {
         >
           {cartItems.length > 0 ? "계속 쇼핑하기" : "쇼핑하러 가기"}
         </button>
-        {cartItems.length > 0 && (
+        {cartItems.length > 0 && !allitemhasReceivingDate ? (
           <button
             onClick={() => {
               alert("구매해주셔서 감사합니다");
@@ -215,7 +234,9 @@ export default function Cart() {
           >
             결제하기
           </button>
-        )}
+        ) : cartItems.length > 0 && allitemhasReceivingDate ? (
+          <button>수령일을 선택해주세요</button>
+        ) : null}
       </ButtonCon>
       <Footer />
     </CartCon>
@@ -225,7 +246,6 @@ export default function Cart() {
 const CartCon = styled.div`
   position: relative;
   width: 75%;
-  height: 70vh;
   margin: 150px auto;
 
   @media (max-width: 1024px) {
@@ -399,4 +419,8 @@ const ButtonCon = styled.div`
 const Footer = styled.div`
   width: 100%;
   height: 100px;
+
+  @media (max-width: 600px) {
+    height: 0px;
+  }
 `;

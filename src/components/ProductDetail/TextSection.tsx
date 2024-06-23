@@ -78,6 +78,8 @@ export default function TextSection({
       <DatePickerSection
         setIsDateSelected={setIsDateSelected}
         setOrderInfo={setOrderInfo}
+        deliveryperiod={deliveryperiod}
+        isDateSelected={isDateSelected}
       />
       <OptionsSection
         handleSelectChange={handleSelectChange}

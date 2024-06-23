@@ -99,6 +99,11 @@ const PlusButton = styled.div<CountButtonType>`
     padding: 4px;
     font-size: 0.9rem;
   }
+
+  @media (max-width: 400px) {
+    padding: 2px;
+    font-size: 0.8rem;
+  }
 `;
 
 const MinusButton = styled.div<CountButtonType>`
@@ -112,6 +117,11 @@ const MinusButton = styled.div<CountButtonType>`
   @media (max-width: 1024px) {
     padding: 4px;
     font-size: 0.9rem;
+  }
+
+  @media (max-width: 400px) {
+    padding: 2px;
+    font-size: 0.8rem;
   }
 `;
 
@@ -128,5 +138,10 @@ const Count = styled.div<CountButtonType>`
   @media (max-width: 1024px) {
     padding: 4px;
     font-size: 0.9rem;
+  }
+
+  @media (max-width: 400px) {
+    padding: 2px;
+    font-size: 0.8rem;
   }
 `;

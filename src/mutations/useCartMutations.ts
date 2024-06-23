@@ -2,15 +2,16 @@ import { useMutation, useQueryClient } from "react-query";
 import {
   deleteAllCartItem,
   deleteCartItem,
-} from "../utill/cart/deleteCartItem";
+} from "../config/api/cart/deleteCartItem";
 import {
   toggleAllCartItemStatus,
   toggleCartItemStatus,
-} from "../utill/cart/toggleCartItemStatus";
-import { handleItemQuantity } from "../utill/cart/handleItemQuantity";
-import { QUERY_KEYS } from "../config/queryKeys";
-import { hasCheckedItemsInCart } from "../utill/cart/hasCheckedItemsInCart ";
-import { addItemToCart } from "../utill/cart/addItemToCart";
+} from "../config/api/cart/toggleCartItemStatus";
+import { updateCartItemQuantity } from "../config/api/cart/updateCartItemQuantity";
+import { QUERY_KEYS } from "../config/constants/queryKeys";
+import { hasCheckedItemsInCart } from "../config/api/cart/hasCheckedItemsInCart ";
+import { addItemToCart } from "../config/api/cart/addItemToCart";
+import { updateCartItemReceivingDate } from "../config/api/cart/updateCartItemReceivingDate";
 
 export function useCartMutations() {
   const queryClient = useQueryClient();
@@ -56,7 +57,7 @@ export function useCartMutations() {
       cartId: string;
       itemId: number;
       direction: string;
-    }) => handleItemQuantity({ cartId, itemId, direction }),
+    }) => updateCartItemQuantity({ cartId, itemId, direction }),
     {
       onSuccess: () => {
         queryClient.invalidateQueries(QUERY_KEYS.CART_ITEMS);
@@ -85,6 +86,23 @@ export function useCartMutations() {
     },
   });
 
+  const updateCartItemReceivingDateMutation = useMutation(
+    ({
+      cartId,
+      itemId,
+      newReceivingDate,
+    }: {
+      cartId: string;
+      itemId: number;
+      newReceivingDate: number;
+    }) => updateCartItemReceivingDate({ cartId, itemId, newReceivingDate }),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(QUERY_KEYS.CART_ITEMS);
+      },
+    }
+  );
+
   return {
     deleteCartItemMutation,
     deleteAllCartItemMutation,
@@ -92,5 +110,6 @@ export function useCartMutations() {
     cartItemQuantityMutation,
     toggleCartItemStatusMutation,
     addItemToCartMutation,
+    updateCartItemReceivingDateMutation,
   };
 }

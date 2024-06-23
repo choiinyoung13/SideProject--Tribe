@@ -6,9 +6,9 @@ import { ImInfo } from "react-icons/im";
 import tribe_logo from "../../assets/images/logo/logo_tribe.png";
 import usewindowWidth from "../../hooks/useWindowWidth";
 import { useAuth } from "../../hooks/useAuth";
-import { fetchCartItems } from "../../utill/cart/fetchCartItems";
+import { fetchCartItems } from "../../config/api/cart/fetchCartItems";
 import { useQuery, useQueryClient } from "react-query";
-import { QUERY_KEYS } from "../../config/queryKeys";
+import { QUERY_KEYS } from "../../config/constants/queryKeys";
 
 export default function Nav() {
   const [menuOpen, setMenuOpen] = useState(false);

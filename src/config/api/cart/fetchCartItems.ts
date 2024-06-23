@@ -1,4 +1,4 @@
-import { supabase } from "../../supabase/supabaseClient";
+import { supabase } from "../../../supabase/supabaseClient";
 
 export const fetchCartItems = async () => {
   const Logged = localStorage.getItem("sb-dipwebufeocjtwzmmcjt-auth-token");

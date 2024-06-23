@@ -1,6 +1,6 @@
 import { supabase } from "../supabase/supabaseClient";
 import { useState } from "react";
-import { makeUserCart } from "../utill/cart/makeUserCart";
+import { makeUserCart } from "../config/api/cart/makeUserCart";
 import { Provider } from "@supabase/supabase-js";
 import { useNavigate } from "react-router-dom";
 

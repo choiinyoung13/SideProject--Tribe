@@ -1,4 +1,4 @@
-import { supabase } from "../../supabase/supabaseClient";
+import { supabase } from "../../../supabase/supabaseClient";
 
 export const deleteCartItem = async (cartId: string) => {
   const { data: cart, error: fetchError } = await supabase

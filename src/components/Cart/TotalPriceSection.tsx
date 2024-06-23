@@ -3,7 +3,7 @@ import formatNumberWithCommas from "../../utill/formatNumberWithCommas";
 import { FaPlus } from "react-icons/fa6";
 import { PiEqualsBold } from "react-icons/pi";
 import useWindowWidth from "../../hooks/useWindowWidth";
-import { SHIPPING_COST } from "../../config/constants";
+import { SHIPPING_COST } from "../../config/constants/constants";
 
 export default function TotalPriceSection({
   totalPrice,

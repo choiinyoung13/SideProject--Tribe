@@ -1,13 +1,13 @@
-import { supabase } from "../../supabase/supabaseClient";
+import { supabase } from "../../../supabase/supabaseClient";
 
-export const handleItemQuantity = async ({
+export const updateCartItemReceivingDate = async ({
   cartId,
   itemId,
-  direction,
+  newReceivingDate,
 }: {
   cartId: string;
   itemId: number;
-  direction: string;
+  newReceivingDate: number;
 }) => {
   const { data: cart, error: fetchError } = await supabase
     .from("carts")
@@ -30,12 +30,7 @@ export const handleItemQuantity = async ({
       receivingDate: number;
     }) => {
       if (item.itemId === itemId) {
-        if (direction === "plus") {
-          return { ...item, quantity: item.quantity + 1 };
-        } else if (direction === "minus") {
-          if (item.quantity === 1) return;
-          return { ...item, quantity: item.quantity - 1 };
-        }
+        return { ...item, receivingDate: newReceivingDate };
       }
       return item;
     }

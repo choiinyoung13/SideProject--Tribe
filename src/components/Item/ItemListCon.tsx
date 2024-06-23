@@ -1,10 +1,10 @@
 import styled from "styled-components";
 import ItemCard from "./ItemCard";
-import { fetchItems } from "../../utill/items/fetchItems";
+import { fetchItems } from "../../config/api/items/fetchItems";
 import { useQuery } from "react-query";
 import { useAuth } from "../../hooks/useAuth";
-import { fetchCartItems } from "../../utill/cart/fetchCartItems";
-import { QUERY_KEYS } from "../../config/queryKeys";
+import { fetchCartItems } from "../../config/api/cart/fetchCartItems";
+import { QUERY_KEYS } from "../../config/constants/queryKeys";
 
 interface CartItemType {
   itemId: number;

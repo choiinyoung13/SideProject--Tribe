@@ -13,11 +13,15 @@ interface OrderInfo {
 interface DatePickerSectionProps {
   setIsDateSelected: React.Dispatch<React.SetStateAction<boolean>>;
   setOrderInfo: React.Dispatch<React.SetStateAction<OrderInfo>>;
+  deliveryperiod: number;
+  isDateSelected: boolean;
 }
 
 export default function DatePickerSection({
   setIsDateSelected,
   setOrderInfo,
+  deliveryperiod,
+  isDateSelected,
 }: DatePickerSectionProps) {
   return (
     <DatePickerWrapper>
@@ -27,9 +31,10 @@ export default function DatePickerSection({
       </PickDateText>
       <DatePicker>
         <FutureDatePicker
-          daysOffset={2}
+          daysOffset={deliveryperiod}
           setIsDateSelected={setIsDateSelected}
           setOrderInfo={setOrderInfo}
+          isDateSelected={isDateSelected}
         />
       </DatePicker>
     </DatePickerWrapper>

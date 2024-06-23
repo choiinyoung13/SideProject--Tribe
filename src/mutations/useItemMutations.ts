@@ -1,3 +1,3 @@
-export function useCartMutations() {
+export function useItemMutations() {
   return {};
 }
