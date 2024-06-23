@@ -13,6 +13,7 @@
     "@supabase/supabase-js": "^2.43.5",
     "date-fns": "^3.6.0",
     "dotenv": "^16.4.5",
+    "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-datepicker": "^7.0.0",
     "react-dom": "^18.2.0",
@@ -26,6 +27,7 @@
     "swiper": "^11.1.4"
   },
   "devDependencies": {
+    "@types/lodash": "^4.17.5",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
     "@types/react-modal": "^3.16.3",

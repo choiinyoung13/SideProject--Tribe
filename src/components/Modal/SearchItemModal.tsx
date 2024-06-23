@@ -1,32 +1,57 @@
-import styled from "styled-components";
-import SearchItem from "./SearchItem";
+import styled from 'styled-components'
+import SearchItem from './SearchItem'
+import { useQuery } from 'react-query'
+import { fetchItems } from '../../config/api/items/fetchItems'
+import { QUERY_KEYS } from '../../config/constants/queryKeys'
 
-export default function SearchItemModal() {
-  return (
-    <SearchModalCon>
-      <SearchInputWraper>
-        <input type="text" placeholder="상품 이름으로 검색해주세요." />
-      </SearchInputWraper>
-      <SearchItemList>
-        <SearchItem />
-        <SearchItem />
-        <SearchItem />
-      </SearchItemList>
-    </SearchModalCon>
-  );
+export default function SearchItemModal({ type }: { type: string }) {
+  const { data, error, isLoading } = useQuery(QUERY_KEYS.PRODUCTS, fetchItems, {
+    staleTime: Infinity,
+    cacheTime: 30 * 60 * 1000,
+  })
+
+  if (isLoading)
+    return (
+      <SearchModalCon type={type}>
+        {type !== 'wide' && (
+          <SearchInputWraper>
+            <input type="text" placeholder="상품 이름으로 검색해주세요." />
+          </SearchInputWraper>
+        )}
+        <SearchItemList>Loading...</SearchItemList>
+      </SearchModalCon>
+    )
+
+  if (error) return <div>Error...</div>
+
+  if (data)
+    return (
+      <SearchModalCon type={type}>
+        {type !== 'wide' && (
+          <SearchInputWraper>
+            <input type="text" placeholder="상품 이름으로 검색해주세요." />
+          </SearchInputWraper>
+        )}
+        <SearchItemList>
+          {data.map(item => (
+            <SearchItem
+              key={item.id}
+              title={item.title}
+              id={item.id}
+              imgUrl={item.imgurl}
+            />
+          ))}
+        </SearchItemList>
+      </SearchModalCon>
+    )
 }
 
-const SearchModalCon = styled.div`
-  position: absolute;
-  top: 60px;
-  right: 90px;
-  width: 400px;
-  z-index: 10002;
-  box-shadow: 5px 5px 20px rgba(30, 30, 30, 0.3);
+const SearchModalCon = styled.div<{ type?: string }>`
   background-color: #fff;
-  padding: 16px 14px;
+  padding: ${props => (props.type === 'wide' ? '0px 14px 16px' : '16px 14px')};
   border-radius: 10px;
-`;
+  min-width: 350px;
+`
 
 const SearchInputWraper = styled.div`
   input {
@@ -39,14 +64,15 @@ const SearchInputWraper = styled.div`
 
     &::placeholder {
       color: rgba(180, 180, 180, 1);
+      font-size: 0.9rem;
     }
 
     &:focus {
       outline: none;
     }
   }
-`;
+`
 
 const SearchItemList = styled.ul`
   width: 100%;
-`;
+`
