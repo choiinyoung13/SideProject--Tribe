@@ -8,7 +8,6 @@ import SearchItemModal from '../Modal/SearchItemModal'
 import { useState, useEffect, useCallback, useRef } from 'react'
 import throttle from 'lodash/throttle'
 import WebSortModal from '../Modal/WebSortModal'
-import debounce from 'lodash/debounce'
 
 export default function FilterSection() {
   const windowWidth = useWindowWidth()
