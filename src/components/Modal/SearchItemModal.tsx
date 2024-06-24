@@ -3,12 +3,59 @@ import SearchItem from './SearchItem'
 import { useQuery } from 'react-query'
 import { fetchItems } from '../../config/api/items/fetchItems'
 import { QUERY_KEYS } from '../../config/constants/queryKeys'
+import { useCallback, useEffect, useState } from 'react'
+import debounce from 'lodash/debounce'
 
-export default function SearchItemModal({ type }: { type: string }) {
+interface Item {
+  id: number
+  title: string
+  imgurl: string
+}
+
+export default function SearchItemModal({
+  type,
+  wideModeSearchData,
+}: {
+  type: string
+  wideModeSearchData?: string
+}) {
   const { data, error, isLoading } = useQuery(QUERY_KEYS.PRODUCTS, fetchItems, {
     staleTime: Infinity,
     cacheTime: 30 * 60 * 1000,
   })
+  const [searchData, setSearchData] = useState('')
+  const [itemData, setItemchData] = useState<Item[]>([])
+
+  const handleSearch = useCallback(
+    debounce(value => {
+      if (data && !wideModeSearchData) {
+        const newData = data.filter(item => {
+          return item.title.includes(value)
+        })
+        setItemchData([...newData])
+      } else if (data && wideModeSearchData) {
+        const newData = data.filter(item => {
+          return item.title.includes(wideModeSearchData)
+        })
+        setItemchData([...newData])
+      }
+    }, 200),
+    [data]
+  )
+
+  useEffect(() => {
+    handleSearch(searchData)
+  }, [searchData, handleSearch])
+
+  useEffect(() => {
+    handleSearch(wideModeSearchData)
+  }, [wideModeSearchData])
+
+  useEffect(() => {
+    if (itemData.length === 0 && data) {
+      setItemchData(data)
+    }
+  }, [itemData, data])
 
   if (isLoading)
     return (
@@ -29,11 +76,18 @@ export default function SearchItemModal({ type }: { type: string }) {
       <SearchModalCon type={type}>
         {type !== 'wide' && (
           <SearchInputWraper>
-            <input type="text" placeholder="상품 이름으로 검색해주세요." />
+            <input
+              type="text"
+              placeholder="상품 이름으로 검색해주세요."
+              value={searchData}
+              onChange={e => {
+                setSearchData(e.target.value)
+              }}
+            />
           </SearchInputWraper>
         )}
         <SearchItemList>
-          {data.map(item => (
+          {itemData.map(item => (
             <SearchItem
               key={item.id}
               title={item.title}

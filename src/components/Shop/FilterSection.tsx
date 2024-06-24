@@ -1,22 +1,28 @@
 import styled from 'styled-components'
 import { BiSortAlt2 } from 'react-icons/bi'
 import { IoSearch } from 'react-icons/io5'
-import { useRecoilState, useSetRecoilState } from 'recoil'
-import { WebSortModalState } from '../../recoil/atoms/WebSortModalState'
+import { useRecoilState } from 'recoil'
 import { sortState } from '../../recoil/atoms/SortState'
 import useWindowWidth from '../../hooks/useWindowWidth'
 import SearchItemModal from '../Modal/SearchItemModal'
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import throttle from 'lodash/throttle'
+import WebSortModal from '../Modal/WebSortModal'
+import debounce from 'lodash/debounce'
 
 export default function FilterSection() {
   const windowWidth = useWindowWidth()
-  const setSortModalOpened = useSetRecoilState(WebSortModalState)
   const [sortDataState] = useRecoilState(sortState)
   const [inputModalOpened, setInputModalOpened] = useState(false)
+  const [sortModalOpened, setSortModalOpenedState] = useState(false)
+  const [searchData, setSearchData] = useState('')
+
   const [inputMode, setInputMode] = useState<'wide' | 'narrow'>(
     windowWidth <= 1024 ? 'wide' : 'narrow'
   )
+  const inputWrapperRef = useRef<HTMLDivElement>(null)
+  const sortFilterRef = useRef<HTMLDivElement>(null)
+  const sortModalRef = useRef<HTMLDivElement>(null)
 
   const handleResize = useCallback(
     throttle(() => {
@@ -28,12 +34,31 @@ export default function FilterSection() {
     []
   )
 
+  const handleClickOutside = useCallback((event: MouseEvent) => {
+    if (
+      inputWrapperRef.current &&
+      !inputWrapperRef.current.contains(event.target as Node)
+    ) {
+      setInputModalOpened(false)
+    }
+    if (
+      sortFilterRef.current &&
+      !sortFilterRef.current.contains(event.target as Node) &&
+      sortModalRef.current &&
+      !sortModalRef.current.contains(event.target as Node)
+    ) {
+      setSortModalOpenedState(false)
+    }
+  }, [])
+
   useEffect(() => {
     window.addEventListener('resize', handleResize)
+    document.addEventListener('mousedown', handleClickOutside)
     return () => {
       window.removeEventListener('resize', handleResize)
+      document.removeEventListener('mousedown', handleClickOutside)
     }
-  }, [handleResize])
+  }, [handleResize, handleClickOutside])
 
   useEffect(() => {
     setInputMode(windowWidth <= 1024 ? 'wide' : 'narrow')
@@ -42,19 +67,16 @@ export default function FilterSection() {
     }
   }, [windowWidth])
 
-  useEffect(() => {
-    console.log(inputMode)
-  }, [inputMode])
-
   return (
     <>
       <FilterCon>
         {windowWidth <= 1024 ? (
           <>
-            <SearchInputWrapper>
+            <SearchInputWrapper ref={inputWrapperRef}>
               <SearchInput
                 type="text"
                 placeholder="상품 이름으로 검색해주세요."
+                value={searchData}
                 onFocus={() => {
                   if (inputMode === 'wide') {
                     setInputModalOpened(true)
@@ -62,6 +84,9 @@ export default function FilterSection() {
                 }}
                 onBlur={() => {
                   setInputModalOpened(false)
+                }}
+                onChange={e => {
+                  setSearchData(e.target.value)
                 }}
               />
               {inputModalOpened && inputMode === 'wide' ? (
@@ -71,30 +96,52 @@ export default function FilterSection() {
                     e.preventDefault()
                   }}
                 >
-                  <SearchItemModal type={'wide'} />
+                  <SearchItemModal
+                    type={'wide'}
+                    wideModeSearchData={searchData}
+                  />
                 </SearchItemWrapper>
               ) : null}
             </SearchInputWrapper>
-            <BiSortAlt2
-              color="rgba(140,140,140,1)"
-              size={27}
-              cursor={'pointer'}
-              onClick={() => {
-                setSortModalOpened(prev => !prev)
-              }}
-            />
+            <SortIcon>
+              <BiSortAlt2
+                color="rgba(140,140,140,1)"
+                size={27}
+                cursor={'pointer'}
+                onClick={() => {
+                  setSortModalOpenedState(prev => !prev)
+                }}
+              />
+              {sortModalOpened && (
+                <SortModal ref={sortModalRef}>
+                  <WebSortModal
+                    setSortModalOpenedState={setSortModalOpenedState}
+                  />
+                </SortModal>
+              )}
+            </SortIcon>
           </>
         ) : (
           <>
             <SortFilter
+              ref={sortFilterRef}
               onClick={() => {
-                setSortModalOpened(prev => !prev)
+                setSortModalOpenedState(prev => !prev)
               }}
             >
-              <span>{sortDataState}</span>
-              <BiSortAlt2 color="rgba(80,80,80,1)" />
+              <SortType>{sortDataState}</SortType>
+              <SortIcon>
+                <BiSortAlt2 color="rgba(80,80,80,1)" />
+                {sortModalOpened && (
+                  <SortModal ref={sortModalRef}>
+                    <WebSortModal
+                      setSortModalOpenedState={setSortModalOpenedState}
+                    />
+                  </SortModal>
+                )}
+              </SortIcon>
             </SortFilter>
-            <SearchIcon>
+            <SearchIcon ref={inputWrapperRef}>
               <IoSearch
                 color="rgba(80,80,80,1)"
                 cursor={'pointer'}
@@ -195,17 +242,34 @@ const SearchItemWrapper = styled.div<{ type?: string }>`
   left: ${props => (props.type === 'wide' ? '0px' : '-330px')};
   width: 100%;
   min-width: 350px;
-  height: ${props => (props.type === 'wide' ? '272px' : '329px')};
+  max-height: ${props => (props.type === 'wide' ? '272px' : '329px')};
   overflow-y: auto;
   overflow-x: hidden;
   z-index: 10000;
   border-radius: 10px;
   box-shadow: 5px 5px 20px rgba(30, 30, 30, 0.3);
   background-color: #fff;
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+  scrollbar-width: thin; /* thin, auto, none */
 `
 
 const SearchInputWrapper = styled.div`
   position: relative;
   width: 100%;
   margin-right: 14px;
+`
+
+const SortModal = styled.div`
+  position: absolute;
+  top: 30px;
+  right: 10px;
+  z-index: 10000;
+`
+
+const SortType = styled.span``
+
+const SortIcon = styled.div`
+  position: relative;
 `

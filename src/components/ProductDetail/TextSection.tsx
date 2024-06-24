@@ -1,40 +1,40 @@
-import React, { useEffect, useState } from "react";
-import styled from "styled-components";
-import PriceInfo from "../../components/ProductDetail/PriceInfo";
-import ProductInfo from "../../components/ProductDetail/ProductInfo";
-import DatePickerSection from "../../components/ProductDetail/DatePickerSection";
-import OptionsSection from "../../components/ProductDetail/OptionSection";
-import TotalPriceSection from "../../components/ProductDetail/TotalPriceSection";
-import ButtonSection from "../../components/ProductDetail/ButtonSection";
+import React, { useEffect, useState } from 'react'
+import styled from 'styled-components'
+import PriceInfo from '../../components/ProductDetail/PriceInfo'
+import ProductInfo from '../../components/ProductDetail/ProductInfo'
+import DatePickerSection from '../../components/ProductDetail/DatePickerSection'
+import OptionsSection from '../../components/ProductDetail/OptionSection'
+import TotalPriceSection from '../../components/ProductDetail/TotalPriceSection'
+import ButtonSection from '../../components/ProductDetail/ButtonSection'
 
-type BadgeType = "hot" | "fast";
+type BadgeType = 'hot' | 'fast'
 
 interface TextSectionProps {
-  additionalOptionsPrice: number;
-  handleSelectChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
-  isDateSelected: boolean;
-  setIsDateSelected: React.Dispatch<React.SetStateAction<boolean>>;
+  additionalOptionsPrice: number
+  handleSelectChange: (event: React.ChangeEvent<HTMLSelectElement>) => void
+  isDateSelected: boolean
+  setIsDateSelected: React.Dispatch<React.SetStateAction<boolean>>
   productInfo: {
-    id: number;
-    title: string;
-    imgurl: string;
-    originalprice: number;
-    badge: BadgeType[];
-    discount: number;
-    category: string;
-    size: string;
-    origin: string;
-    classification: string;
-    deliveryperiod: number;
-  };
+    id: number
+    title: string
+    imgurl: string
+    originalprice: number
+    badge: BadgeType[]
+    discount: number
+    category: string
+    size: string
+    origin: string
+    classification: string
+    deliveryperiod: number
+  }
 }
 
 interface OrderInfo {
-  itemId: number;
-  quantity: number;
-  receivingDate: number;
-  option: string;
-  checked: boolean;
+  itemId: number
+  quantity: number
+  receivingDate: number
+  option: string
+  checked: boolean
 }
 
 export default function TextSection({
@@ -52,18 +52,14 @@ export default function TextSection({
     origin,
     classification,
     deliveryperiod,
-  } = productInfo;
+  } = productInfo
   const [orderInfo, setOrderInfo] = useState<OrderInfo>({
     itemId: productInfo.id,
     quantity: 1,
     receivingDate: 0,
-    option: "",
+    option: '',
     checked: false,
-  });
-
-  useEffect(() => {
-    console.log(orderInfo);
-  }, [orderInfo]);
+  })
 
   return (
     <TextSectionCon>
@@ -93,7 +89,7 @@ export default function TextSection({
       />
       <ButtonSection isDateSelected={isDateSelected} orderInfo={orderInfo} />
     </TextSectionCon>
-  );
+  )
 }
 
 const TextSectionCon = styled.section`
@@ -115,4 +111,4 @@ const TextSectionCon = styled.section`
     padding: 20px;
     border-left: none;
   }
-`;
+`
