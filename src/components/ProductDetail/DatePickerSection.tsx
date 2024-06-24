@@ -1,20 +1,20 @@
-import React from "react";
-import styled from "styled-components";
-import FutureDatePicker from "../Common/DatePicker";
+import React from 'react'
+import styled from 'styled-components'
+import FutureDatePicker from '../Common/DatePicker'
 
 interface OrderInfo {
-  itemId: number;
-  quantity: number;
-  receivingDate: number;
-  option: string;
-  checked: boolean;
+  itemId: number
+  quantity: number
+  receivingDate: number
+  option: string
+  checked: boolean
 }
 
 interface DatePickerSectionProps {
-  setIsDateSelected: React.Dispatch<React.SetStateAction<boolean>>;
-  setOrderInfo: React.Dispatch<React.SetStateAction<OrderInfo>>;
-  deliveryperiod: number;
-  isDateSelected: boolean;
+  setIsDateSelected: React.Dispatch<React.SetStateAction<boolean>>
+  setOrderInfo: React.Dispatch<React.SetStateAction<OrderInfo>>
+  deliveryperiod: number
+  isDateSelected: boolean
 }
 
 export default function DatePickerSection({
@@ -38,7 +38,7 @@ export default function DatePickerSection({
         />
       </DatePicker>
     </DatePickerWrapper>
-  );
+  )
 }
 
 const DatePickerWrapper = styled.div`
@@ -52,7 +52,7 @@ const DatePickerWrapper = styled.div`
   @media (max-width: 600px) {
     margin: 35px 0;
   }
-`;
+`
 
 const PickDateText = styled.div`
   font-size: 1.1rem;
@@ -78,9 +78,9 @@ const PickDateText = styled.div`
       font-size: 0.8rem;
     }
   }
-`;
+`
 
 const DatePicker = styled.div`
   margin-top: 10px;
   width: 100%;
-`;
+`
