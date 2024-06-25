@@ -93,9 +93,9 @@ export default function TextSection({
 }
 
 const TextSectionCon = styled.section`
-  width: 40%;
-  min-width: 500px;
-  padding: 30px 0px 0px 60px;
+  width: 41%;
+  min-width: 520px;
+  padding: 14px 0px 0px 60px;
   border-left: 1px solid rgba(150, 150, 150, 1);
 
   @media (max-width: 1024px) {

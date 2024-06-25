@@ -61,7 +61,7 @@ const InfoWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   width: 100%;
-  min-width: 500px;
+  min-width: 520px;
   display: flex;
   overflow-x: auto;
 
