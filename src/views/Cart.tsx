@@ -69,7 +69,7 @@ export default function Cart() {
     };
 
     ReceivingDate();
-  }, [cartItems]);
+  }, [cartItems, session]);
 
   const handleItemCheckedChange = (itemId: number, checked: boolean) => {
     setCartItems((prevItems) =>
@@ -83,7 +83,7 @@ export default function Cart() {
     data: cartData,
     error,
     isLoading,
-  } = useQuery(QUERY_KEYS.CART_ITEMS, fetchCartItems, {
+  } = useQuery(QUERY_KEYS.CART_ITEMS, () => fetchCartItems(session!.user.id), {
     enabled: !!session,
     staleTime: Infinity,
     cacheTime: 30 * 60 * 1000,
@@ -115,6 +115,8 @@ export default function Cart() {
   if (isLoading) {
     return null;
   }
+
+  console.log(cartItems);
 
   return (
     <CartCon>

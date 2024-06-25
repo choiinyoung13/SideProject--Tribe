@@ -1,10 +1,10 @@
 import { supabase } from "../../../supabase/supabaseClient";
 
-export const fetchCartItems = async (userId: string) => {
+export const fetchUserLikesInfo = async (userId: string) => {
   const { data, error } = await supabase
-    .from("carts")
-    .select("items")
-    .eq("user_id", userId)
+    .from("userinfo")
+    .select("likes")
+    .eq("id", userId)
     .single();
 
   if (error) {

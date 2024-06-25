@@ -1,40 +1,40 @@
-import { useMutation, useQueryClient } from 'react-query'
+import { useMutation, useQueryClient } from "react-query";
 import {
   deleteAllCartItem,
   deleteCartItem,
-} from '../config/api/cart/deleteCartItem'
+} from "../config/api/cart/deleteCartItem";
 import {
   toggleAllCartItemStatus,
   toggleCartItemStatus,
-} from '../config/api/cart/toggleCartItemStatus'
-import { updateCartItemQuantity } from '../config/api/cart/updateCartItemQuantity'
-import { QUERY_KEYS } from '../config/constants/queryKeys'
-import { hasCheckedItemsInCart } from '../config/api/cart/hasCheckedItemsInCart '
-import { addItemToCart } from '../config/api/cart/addItemToCart'
-import { updateCartItemReceivingDate } from '../config/api/cart/updateCartItemReceivingDate'
+} from "../config/api/cart/toggleCartItemStatus";
+import { updateCartItemQuantity } from "../config/api/cart/updateCartItemQuantity";
+import { QUERY_KEYS } from "../config/constants/queryKeys";
+import { hasCheckedItemsInCart } from "../config/api/cart/hasCheckedItemsInCart ";
+import { addItemToCart } from "../config/api/cart/addItemToCart";
+import { updateCartItemReceivingDate } from "../config/api/cart/updateCartItemReceivingDate";
 
 export function useCartMutations() {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
   /******* deleteCartItemMutation  ********/
   const deleteCartItemMutation = useMutation(
     (cartId: string) => deleteCartItem(cartId),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries(QUERY_KEYS.CART_ITEMS)
+        queryClient.invalidateQueries(QUERY_KEYS.CART_ITEMS);
       },
     }
-  )
+  );
 
   /******* deleteAllCartItemMutation  ********/
   const deleteAllCartItemMutation = useMutation(
     (cartId: string) => deleteAllCartItem(cartId),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries(QUERY_KEYS.CART_ITEMS)
+        queryClient.invalidateQueries(QUERY_KEYS.CART_ITEMS);
       },
     }
-  )
+  );
 
   /******* toggleAllCartItemStatusMutation  ********/
   const toggleAllCartItemStatusMutation = useMutation(
@@ -42,10 +42,10 @@ export function useCartMutations() {
       toggleAllCartItemStatus({ cartId, allItemChecked }),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries(QUERY_KEYS.CART_ITEMS).then(() => {})
+        queryClient.invalidateQueries(QUERY_KEYS.CART_ITEMS).then(() => {});
       },
     }
-  )
+  );
 
   /******* caartItemQuantityMutation  ********/
   const cartItemQuantityMutation = useMutation(
@@ -54,16 +54,16 @@ export function useCartMutations() {
       itemId,
       direction,
     }: {
-      cartId: string
-      itemId: number
-      direction: string
+      cartId: string;
+      itemId: number;
+      direction: string;
     }) => updateCartItemQuantity({ cartId, itemId, direction }),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries(QUERY_KEYS.CART_ITEMS)
+        queryClient.invalidateQueries(QUERY_KEYS.CART_ITEMS);
       },
     }
-  )
+  );
 
   /******* toggleCartItemStatusMutation  ********/
   const toggleCartItemStatusMutation = useMutation(
@@ -71,20 +71,47 @@ export function useCartMutations() {
       toggleCartItemStatus({ cartId, itemId }),
     {
       onSuccess: async (_data, variables) => {
-        const { cartId } = variables
-        await queryClient.invalidateQueries(QUERY_KEYS.CART_ITEMS)
+        const { cartId } = variables;
+        await queryClient.invalidateQueries(QUERY_KEYS.CART_ITEMS);
 
-        const res = await hasCheckedItemsInCart(cartId)
-        return res
+        const res = await hasCheckedItemsInCart(cartId);
+        return res;
       },
     }
-  )
+  );
 
-  const addItemToCartMutation = useMutation(addItemToCart, {
-    onSuccess: () => {
-      queryClient.invalidateQueries(QUERY_KEYS.CART_ITEMS)
-    },
-  })
+  interface CartItemType {
+    userId: string;
+    itemId: number;
+    quantity: number;
+    receivingDate?: number;
+    option?: string;
+    checked?: boolean;
+  }
+
+  const addItemToCartMutation = useMutation(
+    ({
+      userId,
+      itemId,
+      quantity,
+      receivingDate,
+      option,
+      checked,
+    }: CartItemType) =>
+      addItemToCart({
+        userId,
+        itemId,
+        quantity,
+        receivingDate,
+        option,
+        checked,
+      }),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(QUERY_KEYS.CART_ITEMS);
+      },
+    }
+  );
 
   const updateCartItemReceivingDateMutation = useMutation(
     ({
@@ -92,16 +119,16 @@ export function useCartMutations() {
       itemId,
       newReceivingDate,
     }: {
-      cartId: string
-      itemId: number
-      newReceivingDate: number
+      cartId: string;
+      itemId: number;
+      newReceivingDate: number;
     }) => updateCartItemReceivingDate({ cartId, itemId, newReceivingDate }),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries(QUERY_KEYS.CART_ITEMS)
+        queryClient.invalidateQueries(QUERY_KEYS.CART_ITEMS);
       },
     }
-  )
+  );
 
   return {
     deleteCartItemMutation,
@@ -111,5 +138,5 @@ export function useCartMutations() {
     toggleCartItemStatusMutation,
     addItemToCartMutation,
     updateCartItemReceivingDateMutation,
-  }
+  };
 }

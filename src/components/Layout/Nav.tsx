@@ -19,16 +19,20 @@ export default function Nav() {
   const queryClient = useQueryClient();
   const [cartState, setCartState] = useState(false);
 
-  const { refetch } = useQuery(QUERY_KEYS.CART_ITEMS, fetchCartItems, {
-    enabled: !!session,
-    onSuccess: (data) => {
-      if (data && data.items.length > 0) {
-        setCartState(true);
-      } else {
-        setCartState(false);
-      }
-    },
-  });
+  const { refetch } = useQuery(
+    QUERY_KEYS.CART_ITEMS,
+    () => fetchCartItems(session!.user.id),
+    {
+      enabled: !!session,
+      onSuccess: (data) => {
+        if (data && data.items.length > 0) {
+          setCartState(true);
+        } else {
+          setCartState(false);
+        }
+      },
+    }
+  );
 
   useEffect(() => {
     if (session) {

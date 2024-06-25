@@ -22,6 +22,7 @@ export default function Banner() {
 
   return (
     <StyledSwiper
+      draggable={false}
       spaceBetween={0}
       slidesPerView={1}
       loop={true}
@@ -35,8 +36,9 @@ export default function Banner() {
       }}
       modules={[Navigation, Autoplay]}
     >
-      <StyledSwiperSlide bgcolor="rgba(34, 34, 34, 1)">
+      <StyledSwiperSlide draggable={false} bgcolor="rgba(34, 34, 34, 1)">
         <img
+          draggable={false}
           src={
             windowWidth <= 450
               ? banner_mobile_1s

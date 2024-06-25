@@ -65,6 +65,7 @@ export default function ButtonSection({
               type="button"
               onClick={() => {
                 addItemToCartMutation.mutate({
+                  userId: session!.user.id,
                   itemId: orderInfo.itemId,
                   quantity: orderInfo.quantity,
                   receivingDate: orderInfo.receivingDate,

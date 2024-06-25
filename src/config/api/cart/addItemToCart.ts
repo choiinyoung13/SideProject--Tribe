@@ -1,6 +1,7 @@
 import { supabase } from "../../../supabase/supabaseClient";
 
 interface CartItemType {
+  userId: string;
   itemId: number;
   quantity: number;
   receivingDate?: number;
@@ -9,22 +10,17 @@ interface CartItemType {
 }
 
 export const addItemToCart = async ({
+  userId,
   itemId,
   quantity,
   receivingDate,
   option,
   checked,
 }: CartItemType) => {
-  const Logged = localStorage.getItem("sb-dipwebufeocjtwzmmcjt-auth-token");
-  if (Logged === null) {
-    console.error("User not logged in");
-    return;
-  }
-
   const { data: cartData, error: cartError } = await supabase
     .from("carts")
     .select("items")
-    .eq("user_id", JSON.parse(Logged).user.id)
+    .eq("user_id", userId)
     .single();
 
   if (cartError) {
@@ -46,7 +42,7 @@ export const addItemToCart = async ({
   const { error: updateError } = await supabase
     .from("carts")
     .update({ items })
-    .eq("user_id", JSON.parse(Logged).user.id);
+    .eq("user_id", userId);
 
   if (updateError) {
     console.error("Error updating cart:", updateError);

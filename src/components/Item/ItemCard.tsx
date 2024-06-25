@@ -5,11 +5,15 @@ import { priceCalculation } from "../../utill/priceCalculation";
 import formatNumberWithCommas from "../../utill/formatNumberWithCommas";
 import { IoMdHeart } from "react-icons/io";
 import { useAuth } from "../../hooks/useAuth";
-import { addItemToCart } from "../../config/api/cart/addItemToCart";
-import { useMutation, useQueryClient } from "react-query";
 import { PiShoppingCartFill } from "react-icons/pi";
-
+import { useCartMutations } from "../../mutations/useCartMutations";
+import { useEffect, useState } from "react";
+import { useUserInfoMutations } from "../../mutations/useUserInfoMutation";
 type BadgeType = "hot" | "fast";
+
+const checkIsLikeeItem = (likeDatas: number[], itemId: number): boolean => {
+  return likeDatas.some((item) => item === itemId);
+};
 
 interface ItemCardPropsType {
   id: number;
@@ -19,6 +23,7 @@ interface ItemCardPropsType {
   badge: BadgeType[];
   discount: number;
   isInCart: boolean;
+  userLikeData: number[];
 }
 
 export default function ItemCard({
@@ -29,26 +34,18 @@ export default function ItemCard({
   badge,
   discount,
   isInCart,
+  userLikeData,
 }: ItemCardPropsType) {
   const navigate = useNavigate();
   const { session } = useAuth();
-  const queryClient = useQueryClient();
+  const [isLiked, setIsLiked] = useState(false);
+  const { addItemToCartMutation } = useCartMutations();
+  const { UsersLikesInfoUpdate } = useUserInfoMutations();
 
-  const mutation = useMutation(
-    ({ itemId, quantity }: { itemId: number; quantity: number }) =>
-      addItemToCart({
-        itemId,
-        quantity,
-        receivingDate: 0,
-        option: "-",
-        checked: false,
-      }),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(import.meta.env.VITE_CART_ITEM_QUERY_KEY);
-      },
-    }
-  );
+  useEffect(() => {
+    const res = checkIsLikeeItem(userLikeData, id);
+    setIsLiked(res);
+  }, [id, setIsLiked, userLikeData]);
 
   return (
     <Card
@@ -58,12 +55,17 @@ export default function ItemCard({
     >
       <OptionButtonWrapper>
         <LikeButton
+          isliked={isLiked.toString()}
           onClick={(e) => {
             e.stopPropagation();
             if (!session) {
               navigate("/login");
               return;
             }
+            UsersLikesInfoUpdate.mutate({
+              userId: session.user.id,
+              itemId: id,
+            });
           }}
         >
           <IoMdHeart />
@@ -76,7 +78,14 @@ export default function ItemCard({
               navigate("/login");
               return;
             }
-            mutation.mutate({ itemId: id, quantity: 1 });
+            addItemToCartMutation.mutate({
+              userId: session.user.id,
+              itemId: id,
+              quantity: 1,
+              receivingDate: 0,
+              option: "-",
+              checked: false,
+            });
           }}
         >
           <PiShoppingCartFill />
@@ -199,12 +208,14 @@ const CartButton = styled.span<{ isincart: string }>`
   }
 `;
 
-const LikeButton = styled.span`
+const LikeButton = styled.span<{ isliked: string }>`
   margin-right: 6px;
-  color: rgba(210, 210, 210, 1);
+  color: ${(props) =>
+    props.isliked === "true" ? "rgb(253, 70, 108)" : "rgba(210, 210, 210, 1)"};
 
   &:hover {
-    color: rgba(190, 190, 190, 1);
+    color: ${(props) =>
+      props.isliked === "true" ? "rgb(253, 0, 108)" : "rgba(190, 190, 190, 1)"};
   }
 
   @media (max-width: 400px) {
