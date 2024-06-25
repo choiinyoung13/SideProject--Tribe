@@ -4,6 +4,11 @@ import { useCartMutations } from "../../mutations/useCartMutations";
 import { hasCheckedItemInCartByID } from "../../config/api/cart/hasCheckedItemsInCart ";
 import { useAuth } from "../../hooks/useAuth";
 import { useEffect, useState } from "react";
+import { IoHeartSharp } from "react-icons/io5";
+import { useQuery } from "react-query";
+import { fetchUserLikesInfo } from "../../config/api/user/fetchUserInfo";
+import { QUERY_KEYS } from "../../config/constants/queryKeys";
+import { useUserInfoMutations } from "../../mutations/useUserInfoMutation";
 
 interface OrderInfo {
   itemId: number;
@@ -18,6 +23,10 @@ interface ButtonSectionProps {
   orderInfo: OrderInfo;
 }
 
+const checkIsLikeeItem = (likeDatas: number[], itemId: number): boolean => {
+  return likeDatas.some((item) => item === itemId);
+};
+
 export default function ButtonSection({
   isDateSelected,
   orderInfo,
@@ -27,6 +36,20 @@ export default function ButtonSection({
   const { id } = useParams();
   const { session } = useAuth();
   const [isInCart, setIsInCart] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
+  const { UsersLikesInfoUpdate } = useUserInfoMutations();
+
+  const { data: userLikeData } = useQuery(
+    QUERY_KEYS.USERS,
+    () => {
+      if (session) return fetchUserLikesInfo(session?.user.id);
+    },
+    {
+      enabled: !!session,
+      staleTime: Infinity,
+      cacheTime: 30 * 60 * 1000,
+    }
+  );
 
   useEffect(() => {
     const checkItemById = async () => {
@@ -38,8 +61,30 @@ export default function ButtonSection({
     checkItemById();
   }, [id, session]);
 
+  useEffect(() => {
+    if (userLikeData) {
+      const res = checkIsLikeeItem(userLikeData.likes, Number(id));
+      setIsLiked(res);
+    }
+  }, [userLikeData]);
+
   return (
     <ButtonCon>
+      <LikeButtonCon>
+        <LikeButton
+          isliked={isLiked.toString()}
+          onClick={() => {
+            if (session) {
+              UsersLikesInfoUpdate.mutate({
+                userId: session.user.id,
+                itemId: Number(id),
+              });
+            }
+          }}
+        >
+          <IoHeartSharp />
+        </LikeButton>
+      </LikeButtonCon>
       {isDateSelected ? (
         <ButtonOption2>
           <button
@@ -92,9 +137,35 @@ export default function ButtonSection({
 const ButtonCon = styled.div`
   margin-top: 30px;
   width: 100%;
+  display: flex;
+  align-items: center;
+`;
+
+const LikeButtonCon = styled.div`
+  margin-right: 8px;
+  border: 1px solid rgba(210, 210, 210, 1);
+  border-radius: 4px;
+`;
+const LikeButton = styled.button<{ isliked: string }>`
+  padding: 6px 6px;
+  border: none;
+  background-color: rgba(0, 0, 0, 0);
+  font-size: 2.2rem;
+  color: ${(props) =>
+    props.isliked === "true" ? "rgb(253, 70, 108)" : "rgba(210, 210, 210, 1)"};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  &:hover {
+    color: ${(props) =>
+      props.isliked === "true" ? "rgb(253, 0, 108)" : "rgba(190, 190, 190, 1)"};
+  }
 `;
 
 const ButtonOption1 = styled.div`
+  flex-grow: 1;
   button {
     cursor: pointer;
     width: 100%;
@@ -116,6 +187,7 @@ const ButtonOption1 = styled.div`
 `;
 
 const ButtonOption2 = styled.div`
+  flex-grow: 1;
   display: flex;
   justify-content: space-between;
 

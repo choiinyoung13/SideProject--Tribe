@@ -43,8 +43,10 @@ export default function ItemCard({
   const { UsersLikesInfoUpdate } = useUserInfoMutations();
 
   useEffect(() => {
-    const res = checkIsLikeeItem(userLikeData, id);
-    setIsLiked(res);
+    if (userLikeData) {
+      const res = checkIsLikeeItem(userLikeData, id);
+      setIsLiked(res);
+    }
   }, [id, setIsLiked, userLikeData]);
 
   return (
