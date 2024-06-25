@@ -1,85 +1,52 @@
-import styled from "styled-components";
-import ItemCard from "./ItemCard";
-import { fetchItemsPerPage } from "../../config/api/items/fetchItems";
-import { useQuery } from "react-query";
-import { useAuth } from "../../hooks/useAuth";
-import { fetchCartItems } from "../../config/api/cart/fetchCartItems";
-import { QUERY_KEYS } from "../../config/constants/queryKeys";
-import loadingIcon from "../../assets/images/logo/ball-triangle.svg";
-import { useCallback, useEffect, useState } from "react";
-import { useInView } from "react-intersection-observer";
-import { fetchUserLikesInfo } from "../../config/api/user/fetchUserInfo";
+import styled from 'styled-components'
+import ItemCard from './ItemCard'
+import { useQuery } from 'react-query'
+import { useAuth } from '../../hooks/useAuth'
+import { fetchCartItems } from '../../config/api/cart/fetchCartItems'
+import { QUERY_KEYS } from '../../config/constants/queryKeys'
+import loadingIcon from '../../assets/images/logo/ball-triangle.svg'
+import { fetchUserLikesInfo } from '../../config/api/user/fetchUserInfo'
+import { useLocation } from 'react-router-dom'
+import { useItems } from '../../hooks/useItem'
 
 interface CartItemType {
-  itemId: number;
-  quantity: number;
-}
-
-type BadgeType = "hot" | "fast";
-
-interface ItemType {
-  id: number;
-  title: string;
-  imgurl: string;
-  originalprice: number;
-  badge: BadgeType[];
-  discount: number;
+  itemId: number
+  quantity: number
 }
 
 export default function ItemListCon() {
-  const { session } = useAuth();
-  const [itemData, setItemData] = useState<ItemType[]>([]);
-  const [pageParam, setPageParam] = useState(0);
-  const [hasMore, setHasMore] = useState(true);
-  const [loading, setLoading] = useState(false);
-  const { ref, inView } = useInView({
-    threshold: 0.5,
-  });
+  const { session } = useAuth()
+  const location = useLocation()
+  const queryParams = new URLSearchParams(location.search)
+  const tabValue = Number(queryParams.get('tab'))
 
-  const { data: userLikeData } = useQuery(
+  const { itemData, loading, hasMore, ref } = useItems(tabValue)
+
+  const { data: userLikeData, isLoading: userInfoLoading } = useQuery(
     QUERY_KEYS.USERS,
-    () => {
-      if (session) return fetchUserLikesInfo(session?.user.id);
-    },
+    () => session && fetchUserLikesInfo(session.user.id),
     {
       enabled: !!session,
       staleTime: Infinity,
       cacheTime: 30 * 60 * 1000,
     }
-  );
+  )
 
   const { data: cartData, isLoading: cartLoading } = useQuery(
     QUERY_KEYS.CART_ITEMS,
-    () => fetchCartItems(session!.user.id),
+    () => session && fetchCartItems(session.user.id),
     {
       enabled: !!session,
       staleTime: Infinity,
       cacheTime: 30 * 60 * 1000,
     }
-  );
+  )
 
-  const fetchItems = useCallback(async () => {
-    setLoading(true);
-    const response = await fetchItemsPerPage(pageParam);
-    setItemData((prev) => [...prev, ...response.items]);
-    setPageParam(
-      response.nextCursor !== null ? response.nextCursor : pageParam
-    );
-    setHasMore(response.nextCursor !== null);
-    setLoading(false);
-  }, [pageParam]);
-
-  useEffect(() => {
-    if (inView && hasMore && !loading) {
-      fetchItems();
-    }
-  }, [inView, fetchItems, hasMore, loading]);
-
-  const cartItems: CartItemType[] = cartData ? cartData.items : [];
+  const cartItems: CartItemType[] = cartData ? cartData.items : []
 
   return (
     <>
-      {cartLoading || (itemData.length === 0 && loading) ? (
+      {cartLoading || (itemData.length === 0 && loading) || userInfoLoading ? (
         <ListCon>
           <ListWrapper>
             <LoadingScreen>
@@ -92,7 +59,7 @@ export default function ItemListCon() {
           <ListWrapper>
             {itemData.map(
               ({ id, title, imgurl, originalprice, badge, discount }) => {
-                const isInCart = cartItems.some((item) => item.itemId === id);
+                const isInCart = cartItems.some(item => item.itemId === id)
                 return (
                   <ItemCard
                     key={id}
@@ -105,7 +72,7 @@ export default function ItemListCon() {
                     isInCart={isInCart}
                     userLikeData={userLikeData?.likes}
                   />
-                );
+                )
               }
             )}
           </ListWrapper>
@@ -116,14 +83,14 @@ export default function ItemListCon() {
         </ListCon>
       )}
     </>
-  );
+  )
 }
 
 const LoadingScreen = styled.div`
   position: absolute;
   top: 50%;
   left: 50%;
-  tranform: translateX(-50%);
+  transform: translateX(-50%);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -144,7 +111,7 @@ const LoadingScreen = styled.div`
   @media (max-width: 768px) {
     top: 300px;
     left: 50%;
-    tranform: translateX(0%);
+    transform: translateX(0%);
 
     img {
       width: 90px;
@@ -154,13 +121,13 @@ const LoadingScreen = styled.div`
   @media (max-width: 600px) {
     top: 300px;
     left: 40%;
-    tranform: translateX(0%);
+    transform: translateX(0%);
 
     img {
       width: 80px;
     }
   }
-`;
+`
 
 const ListCon = styled.div`
   width: 100%;
@@ -172,14 +139,14 @@ const ListCon = styled.div`
   @media (max-width: 768px) {
     padding-left: 0px;
   }
-`;
+`
 
 const ListWrapper = styled.div`
   display: flex;
   width: 100%;
   flex-wrap: wrap;
   justify-content: flex-start;
-`;
+`
 
 const LoadingObserver = styled.div`
   width: 100%;
@@ -187,4 +154,4 @@ const LoadingObserver = styled.div`
   justify-content: center;
   align-items: center;
   margin-top: 40px;
-`;
+`

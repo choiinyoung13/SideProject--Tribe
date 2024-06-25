@@ -1,4 +1,5 @@
 import { supabase } from '../../../supabase/supabaseClient'
+import { tabNumberToCategory } from '../../../utill/tabNumberToCategory'
 
 export async function fetchItems() {
   const { data, error } = await supabase.from('items').select('*')
@@ -44,15 +45,20 @@ interface FetchItemsResponse {
 
 export async function fetchItemsPerPage(
   pageParam: number = 0,
-  pageSize: number = 10
+  pageSize: number = 10,
+  tab: number
 ): Promise<FetchItemsResponse> {
   const start = pageParam * pageSize
   const end = start + pageSize - 1
 
-  const { data, error } = await supabase
-    .from('items')
-    .select('*')
-    .range(start, end)
+  let query = supabase.from('items').select('*').range(start, end)
+
+  if (tab != 0) {
+    const category = tabNumberToCategory(tab)
+    query = query.eq('category', `${category}`)
+  }
+
+  const { data, error } = await query
 
   if (error) {
     console.error('Error fetching data:', error)

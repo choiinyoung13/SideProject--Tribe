@@ -2,7 +2,13 @@ import { useLocation } from 'react-router-dom'
 import styled from 'styled-components'
 
 const noFooterSection = (path: string) => {
-  return path === '/' || path === '/about' || path === '/community-feature'
+  return (
+    path === '/' ||
+    path === '/about' ||
+    path === '/community-feature' ||
+    path === '/login' ||
+    path === '/join'
+  )
 }
 
 export default function Footer() {
