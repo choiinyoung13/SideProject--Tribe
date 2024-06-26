@@ -4,9 +4,14 @@ import ItemListCon from "../Item/ItemListCon";
 import { useRecoilState } from "recoil";
 import { filterState } from "../../recoil/atoms/FilterState";
 import { RxCross2 } from "react-icons/rx";
+import { useEffect } from "react";
 
 export default function MainSection() {
   const [filterData, setFilterState] = useRecoilState(filterState);
+
+  useEffect(() => {
+    console.log(filterData);
+  }, [filterData]);
 
   return (
     <>
@@ -95,7 +100,9 @@ const FilterSection = styled.section`
   }
 `;
 
-const ItemSection = styled.section``;
+const ItemSection = styled.section`
+  width: 100%;
+`;
 
 const FilterWrapper = styled.div`
   display: flex;

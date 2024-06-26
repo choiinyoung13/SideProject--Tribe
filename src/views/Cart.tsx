@@ -116,8 +116,6 @@ export default function Cart() {
     return null;
   }
 
-  console.log(cartItems);
-
   return (
     <CartCon>
       <Title>장바구니</Title>

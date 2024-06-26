@@ -13,8 +13,6 @@ function getDataByType(type: string) {
       { title: "size", ko: "사이즈", value: "Small", checked: false },
       { title: "size", ko: "사이즈", value: "Medium", checked: false },
       { title: "size", ko: "사이즈", value: "Large", checked: false },
-      { title: "size", ko: "사이즈", value: "X-Large", checked: false },
-      { title: "size", ko: "사이즈", value: "2X-Large", checked: false },
     ];
   } else if (type === "price") {
     return [
@@ -33,11 +31,8 @@ function getDataByType(type: string) {
       { title: "color", ko: "컬러", value: "보라 계열", checked: false },
       { title: "color", ko: "컬러", value: "흰색 계열", checked: false },
       { title: "color", ko: "컬러", value: "노랑 계열", checked: false },
-      { title: "color", ko: "컬러", value: "블랙 계열", checked: false },
       { title: "color", ko: "컬러", value: "초록 계열", checked: false },
       { title: "color", ko: "컬러", value: "파랑 계열", checked: false },
-      { title: "color", ko: "컬러", value: "파스텔 계열", checked: false },
-      { title: "color", ko: "컬러", value: "빈티지 계열", checked: false },
       { title: "color", ko: "컬러", value: "혼합 컬러", checked: false },
     ];
   }

@@ -2,6 +2,7 @@ import { atom } from "recoil";
 
 type FastOption = "빠른배송" | null;
 type HotOption = "인기상품" | null;
+type likeOption = "찜한상품" | null;
 type SizeOption = "Small" | "Medium" | "Large" | "X-Large" | "2X-Large" | null;
 type PriceOption = "5만원 이하" | "5만원 ~ 10만원 사이" | "10만원 이상" | null;
 type ColorOption =
@@ -20,6 +21,7 @@ type ColorOption =
 interface FilterState {
   fast: FastOption;
   hot: HotOption;
+  like: likeOption;
   size: SizeOption;
   price: PriceOption;
   color: ColorOption;
@@ -30,6 +32,7 @@ export const filterState = atom<FilterState>({
   default: {
     fast: null,
     hot: null,
+    like: null,
     size: null,
     price: null,
     color: null,

@@ -1,26 +1,40 @@
-import styled from 'styled-components'
-import ItemCard from './ItemCard'
-import { useQuery } from 'react-query'
-import { useAuth } from '../../hooks/useAuth'
-import { fetchCartItems } from '../../config/api/cart/fetchCartItems'
-import { QUERY_KEYS } from '../../config/constants/queryKeys'
-import loadingIcon from '../../assets/images/logo/ball-triangle.svg'
-import { fetchUserLikesInfo } from '../../config/api/user/fetchUserInfo'
-import { useLocation } from 'react-router-dom'
-import { useItems } from '../../hooks/useItem'
+import styled from "styled-components";
+import ItemCard from "./ItemCard";
+import { useQuery } from "react-query";
+import { useAuth } from "../../hooks/useAuth";
+import { fetchCartItems } from "../../config/api/cart/fetchCartItems";
+import { QUERY_KEYS } from "../../config/constants/queryKeys";
+import loadingIcon from "../../assets/images/logo/ball-triangle.svg";
+import { fetchUserLikesInfo } from "../../config/api/user/fetchUserInfo";
+import { useLocation } from "react-router-dom";
+import { useItems } from "../../hooks/useItem";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { sortState } from "../../recoil/atoms/SortState";
+import { useEffect } from "react";
+import {
+  sortHighestDiscountRate,
+  sortHighestPrice,
+  sortItmeByFilterObj,
+  sortLowestId,
+  sortLowestPrice,
+} from "../../utill/itemSort";
+import { filterState } from "../../recoil/atoms/FilterState";
+import { sortedItemsState } from "../../recoil/atoms/SortedItemsState";
 
 interface CartItemType {
-  itemId: number
-  quantity: number
+  itemId: number;
+  quantity: number;
 }
 
 export default function ItemListCon() {
-  const { session } = useAuth()
-  const location = useLocation()
-  const queryParams = new URLSearchParams(location.search)
-  const tabValue = Number(queryParams.get('tab'))
-
-  const { itemData, loading, hasMore, ref } = useItems(tabValue)
+  const { session } = useAuth();
+  const location = useLocation();
+  const sortValue = useRecoilValue(sortState);
+  const queryParams = new URLSearchParams(location.search);
+  const filterData = useRecoilValue(filterState);
+  const [sortedItems, setSortedItems] = useRecoilState(sortedItemsState);
+  const tabValue = Number(queryParams.get("tab"));
+  const { itemData, loading, hasMore, ref } = useItems(tabValue);
 
   const { data: userLikeData, isLoading: userInfoLoading } = useQuery(
     QUERY_KEYS.USERS,
@@ -30,7 +44,7 @@ export default function ItemListCon() {
       staleTime: Infinity,
       cacheTime: 30 * 60 * 1000,
     }
-  )
+  );
 
   const { data: cartData, isLoading: cartLoading } = useQuery(
     QUERY_KEYS.CART_ITEMS,
@@ -40,9 +54,29 @@ export default function ItemListCon() {
       staleTime: Infinity,
       cacheTime: 30 * 60 * 1000,
     }
-  )
+  );
 
-  const cartItems: CartItemType[] = cartData ? cartData.items : []
+  useEffect(() => {
+    const fetchFilteredAndSortedItems = async () => {
+      let filteredItems = await sortItmeByFilterObj([...itemData], filterData);
+
+      if (sortValue === "추천순") {
+        filteredItems = sortLowestId(filteredItems);
+      } else if (sortValue === "낮은가격순") {
+        filteredItems = sortLowestPrice(filteredItems);
+      } else if (sortValue === "높은가격순") {
+        filteredItems = sortHighestPrice(filteredItems);
+      } else if (sortValue === "할인률순") {
+        filteredItems = sortHighestDiscountRate(filteredItems);
+      }
+
+      setSortedItems(filteredItems);
+    };
+
+    fetchFilteredAndSortedItems();
+  }, [sortValue, filterData, itemData]);
+
+  const cartItems: CartItemType[] = cartData ? cartData.items : [];
 
   return (
     <>
@@ -57,9 +91,9 @@ export default function ItemListCon() {
       ) : (
         <ListCon>
           <ListWrapper>
-            {itemData.map(
+            {sortedItems.map(
               ({ id, title, imgurl, originalprice, badge, discount }) => {
-                const isInCart = cartItems.some(item => item.itemId === id)
+                const isInCart = cartItems.some((item) => item.itemId === id);
                 return (
                   <ItemCard
                     key={id}
@@ -72,18 +106,18 @@ export default function ItemListCon() {
                     isInCart={isInCart}
                     userLikeData={userLikeData?.likes}
                   />
-                )
+                );
               }
             )}
           </ListWrapper>
           <LoadingObserver ref={ref}>
             {loading && <img src={loadingIcon} alt="loading" />}
-            {!hasMore && <div>No more flowers</div>}
+            {!hasMore && <div></div>}
           </LoadingObserver>
         </ListCon>
       )}
     </>
-  )
+  );
 }
 
 const LoadingScreen = styled.div`
@@ -127,7 +161,7 @@ const LoadingScreen = styled.div`
       width: 80px;
     }
   }
-`
+`;
 
 const ListCon = styled.div`
   width: 100%;
@@ -139,14 +173,14 @@ const ListCon = styled.div`
   @media (max-width: 768px) {
     padding-left: 0px;
   }
-`
+`;
 
 const ListWrapper = styled.div`
   display: flex;
   width: 100%;
   flex-wrap: wrap;
   justify-content: flex-start;
-`
+`;
 
 const LoadingObserver = styled.div`
   width: 100%;
@@ -154,4 +188,4 @@ const LoadingObserver = styled.div`
   justify-content: center;
   align-items: center;
   margin-top: 40px;
-`
+`;
