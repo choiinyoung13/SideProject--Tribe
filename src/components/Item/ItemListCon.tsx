@@ -191,7 +191,7 @@ const LoadingObserver = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 40px;
+  margin-top: -10px;
 `
 
 const Empty = styled.div`

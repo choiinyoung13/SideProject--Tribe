@@ -1,9 +1,9 @@
-import styled from "styled-components";
-import error_image from "../assets/images/error_web_1.jpg";
-import { useNavigate } from "react-router-dom";
+import styled from 'styled-components'
+import error_image from '../assets/images/error_web_1.jpg'
+import { useNavigate } from 'react-router-dom'
 
 export default function Error() {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   return (
     <ErrorCon>
@@ -18,22 +18,23 @@ export default function Error() {
         </Desc>
         <Button
           onClick={() => {
-            navigate("/");
+            navigate('/')
           }}
         >
           Go back
         </Button>
       </TextCon>
     </ErrorCon>
-  );
+  )
 }
 
 const ErrorCon = styled.div`
   margin-top: 120px; // nav 높이
+  margin-bottom: 20px; // nav 높이
   display: flex;
   align-items: center;
   justify-content: center;
-`;
+`
 const ImgCon = styled.div`
   width: 45%;
   min-width: 600px;
@@ -50,7 +51,7 @@ const ImgCon = styled.div`
   @media (max-width: 1250px) {
     display: none;
   }
-`;
+`
 const TextCon = styled.div`
   width: 55%;
   height: calc(100vh - 120px);
@@ -61,7 +62,7 @@ const TextCon = styled.div`
     align-items: center;
     width: 100%;
   }
-`;
+`
 
 const Title = styled.div`
   font-size: 12rem;
@@ -72,14 +73,14 @@ const Title = styled.div`
   @media (max-width: 600px) {
     font-size: 8rem;
   }
-`;
+`
 const Desc = styled.div`
   @media (max-width: 1250px) {
     display: flex;
     flex-direction: column;
     align-items: center;
   }
-`;
+`
 const DescH = styled.div`
   font-size: 3rem;
   font-weight: 500;
@@ -88,7 +89,7 @@ const DescH = styled.div`
   @media (max-width: 600px) {
     font-size: 1.8rem;
   }
-`;
+`
 const DescB = styled.div`
   font-size: 1.5rem;
   font-weight: 400;
@@ -97,7 +98,7 @@ const DescB = styled.div`
   @media (max-width: 600px) {
     font-size: 1.2rem;
   }
-`;
+`
 const Button = styled.button`
   width: 200px;
   cursor: pointer;
@@ -110,4 +111,4 @@ const Button = styled.button`
     width: 170px;
     font-size: 1.5rem;
   }
-`;
+`

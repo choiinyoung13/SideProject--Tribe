@@ -1,39 +1,39 @@
-import React, { useState } from "react";
-import styled from "styled-components";
-import ImageSection from "../components/ProductDetail/ImageSection";
-import TextSection from "../components/ProductDetail/TextSection";
-import { useParams } from "react-router-dom";
-import { useQuery } from "react-query";
-import { fetchItemById } from "../config/api/items/fetchItems";
-import loadingIcon from "../assets/images/logo/ball-triangle.svg";
+import React, { useState } from 'react'
+import styled from 'styled-components'
+import ImageSection from '../components/ProductDetail/ImageSection'
+import TextSection from '../components/ProductDetail/TextSection'
+import { useParams } from 'react-router-dom'
+import { useQuery } from 'react-query'
+import { fetchItemById } from '../config/api/items/fetchItems'
+import loadingIcon from '../assets/images/logo/ball-triangle.svg'
 
 export default function ProductDetail() {
-  const [isDateSelected, setIsDateSelected] = useState(false);
-  const [additionalOptionsPrice, setAdditionalOptionsPrice] = useState(0);
-  const { id } = useParams<{ id: string }>();
+  const [isDateSelected, setIsDateSelected] = useState(false)
+  const [additionalOptionsPrice, setAdditionalOptionsPrice] = useState(0)
+  const { id } = useParams<{ id: string }>()
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedValue = event.target.value;
-    if (selectedValue === "default") {
-      setAdditionalOptionsPrice(0);
-    } else if (selectedValue === "편지로 마음 담기 (+2,500원)") {
-      setAdditionalOptionsPrice(2500);
-    } else if (selectedValue === "커브 라운드 화병 (+13,500원)") {
-      setAdditionalOptionsPrice(13500);
-    } else if (selectedValue === "미니 세라믹 화병 (+14,500원)") {
-      setAdditionalOptionsPrice(14500);
+    const selectedValue = event.target.value
+    if (selectedValue === 'default') {
+      setAdditionalOptionsPrice(0)
+    } else if (selectedValue === '편지로 마음 담기 (+2,500원)') {
+      setAdditionalOptionsPrice(2500)
+    } else if (selectedValue === '커브 라운드 화병 (+13,500원)') {
+      setAdditionalOptionsPrice(13500)
+    } else if (selectedValue === '미니 세라믹 화병 (+14,500원)') {
+      setAdditionalOptionsPrice(14500)
     }
-  };
+  }
 
   const { data, error, isLoading } = useQuery(
-    "items" + id,
+    'items' + id,
     () => fetchItemById(Number(id)),
     {
       enabled: !!id,
       staleTime: Infinity,
       cacheTime: 30 * 60 * 1000,
     }
-  );
+  )
 
   if (isLoading)
     return (
@@ -42,9 +42,9 @@ export default function ProductDetail() {
           <img src={loadingIcon} alt="" />
         </LoadingIcon>
       </LoadingPage>
-    );
+    )
 
-  if (error) return <div>Error...</div>;
+  if (error) return <div>Error...</div>
 
   if (data)
     return (
@@ -60,7 +60,7 @@ export default function ProductDetail() {
           />
         </DetailWrapper>
       </DetailCon>
-    );
+    )
 }
 const LoadingPage = styled.div`
   margin-top: 120px;
@@ -69,7 +69,7 @@ const LoadingPage = styled.div`
   display: flex;
   justify-content: center:
   align-items: center;
-`;
+`
 const LoadingIcon = styled.div`
   display: flex;
   justify-content: center:
@@ -80,17 +80,17 @@ const LoadingIcon = styled.div`
   img {
     width: 100%;
   }
-`;
+`
 
 const DetailCon = styled.div`
   width: 90%;
-  margin: 120px auto 0px;
+  margin: 120px auto 40px;
 
   @media (max-width: 1024px) {
     margin: 0px;
     width: 100%;
   }
-`;
+`
 const DetailWrapper = styled.div`
   display: flex;
   width: 85%;
@@ -100,4 +100,4 @@ const DetailWrapper = styled.div`
     width: 100%;
     flex-direction: column;
   }
-`;
+`
