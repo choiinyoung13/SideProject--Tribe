@@ -1,50 +1,50 @@
-import { useLocation } from "react-router-dom";
-import styled from "styled-components";
-import { MdKeyboardArrowRight } from "react-icons/md";
-import useWindowWidth from "../../hooks/useWindowWidth";
-import { useState } from "react";
+import { useLocation } from 'react-router-dom'
+import styled from 'styled-components'
+import { MdKeyboardArrowRight } from 'react-icons/md'
+import useWindowWidth from '../../hooks/useWindowWidth'
+import { useState } from 'react'
 
 const noFooterSection = (path: string) => {
   return (
-    path === "/" ||
-    path === "/about" ||
-    path === "/community-feature" ||
-    path === "/login" ||
-    path === "/join"
-  );
-};
+    path === '/' ||
+    path === '/about' ||
+    path === '/community-feature' ||
+    path === '/login' ||
+    236 + path === '/join'
+  )
+}
 
 export default function Footer() {
-  const location = useLocation();
-  const path = location.pathname;
-  const isNoFooterSection = noFooterSection(path);
-  const windowWidth = useWindowWidth();
+  const location = useLocation()
+  const path = location.pathname
+  const isNoFooterSection = noFooterSection(path)
+  const windowWidth = useWindowWidth()
   const [openSections, setOpenSections] = useState({
     customerService: false,
     companyInfo: false,
     otherInfo: false,
     additionalInfo: false,
-  });
+  })
 
   type Section =
-    | "customerService"
-    | "companyInfo"
-    | "otherInfo"
-    | "additionalInfo";
+    | 'customerService'
+    | 'companyInfo'
+    | 'otherInfo'
+    | 'additionalInfo'
 
   const toggleSection = (section: Section) => {
-    setOpenSections((prevState) => ({
+    setOpenSections(prevState => ({
       ...prevState,
       [section]: !prevState[section],
-    }));
-  };
+    }))
+  }
 
   return (
     <>
       {windowWidth <= 1024 ? (
         <FooterCon isnofootersection={isNoFooterSection}>
           <ToggleSection>
-            <ToggleHeader onClick={() => toggleSection("customerService")}>
+            <ToggleHeader onClick={() => toggleSection('customerService')}>
               고객센터 <MdKeyboardArrowRight />
             </ToggleHeader>
             {openSections.customerService && (
@@ -61,7 +61,7 @@ export default function Footer() {
             )}
           </ToggleSection>
           <ToggleSection>
-            <ToggleHeader onClick={() => toggleSection("companyInfo")}>
+            <ToggleHeader onClick={() => toggleSection('companyInfo')}>
               회사 정보 <MdKeyboardArrowRight />
             </ToggleHeader>
             {openSections.companyInfo && (
@@ -80,7 +80,7 @@ export default function Footer() {
             )}
           </ToggleSection>
           <ToggleSection>
-            <ToggleHeader onClick={() => toggleSection("otherInfo")}>
+            <ToggleHeader onClick={() => toggleSection('otherInfo')}>
               기타 정보 <MdKeyboardArrowRight />
             </ToggleHeader>
             {openSections.otherInfo && (
@@ -131,13 +131,12 @@ export default function Footer() {
         </FooterCon>
       )}
     </>
-  );
+  )
 }
 
 const FooterCon = styled.div<{ isnofootersection: boolean }>`
   width: 100%;
-  margin-top: 70px;
-  display: ${(props) => (props.isnofootersection ? "none" : "flex")};
+  display: ${props => (props.isnofootersection ? 'none' : 'flex')};
   flex-direction: column;
   justify-content: center;
   align-items: start;
@@ -148,7 +147,7 @@ const FooterCon = styled.div<{ isnofootersection: boolean }>`
   @media (max-width: 1024px) {
     padding: 20px 20px 0 20px;
   }
-`;
+`
 
 const ToggleSection = styled.div`
   width: 100%;
@@ -160,7 +159,7 @@ const ToggleSection = styled.div`
     border: none;
     padding-bottom: 4px;
   }
-`;
+`
 
 const ToggleHeader = styled.div`
   display: flex;
@@ -176,7 +175,7 @@ const ToggleHeader = styled.div`
   @media (max-width: 1024px) {
     font-size: 0.8rem;
   }
-`;
+`
 
 const CustomerServiceDetails = styled.div`
   padding: 10px;
@@ -185,31 +184,31 @@ const CustomerServiceDetails = styled.div`
   font-size: 0.8rem;
   font-weight: 300;
   line-height: 28px;
-`;
+`
 
 const CompanyInfoDetails = styled.div`
   padding: 10px;
   background-color: rgba(30, 30, 30, 1);
   color: rgba(210, 210, 210, 1);
   line-height: 26px;
-`;
+`
 
 const OtherInfoDetails = styled.div`
   padding: 10px;
   background-color: rgba(30, 30, 30, 1);
   color: rgba(210, 210, 210, 1);
   font-size: 0.8rem;
-`;
+`
 
 const TitleCon = styled.div`
   display: flex;
   align-items: center;
-`;
+`
 
 const Title = styled.div`
   font-size: 1.2rem;
   font-weight: 600;
-`;
+`
 
 const SubTitle = styled.div`
   font-size: 0.8rem;
@@ -217,7 +216,7 @@ const SubTitle = styled.div`
   border-left: 1px solid rgba(210, 210, 210, 1);
   margin-left: 10px;
   padding-left: 10px;
-`;
+`
 
 const CustomerCenterInfo = styled.div`
   width: 100%;
@@ -225,17 +224,17 @@ const CustomerCenterInfo = styled.div`
   align-items: center;
   justify-content: space-between;
   margin-top: 18px;
-`;
+`
 
 const CustomerCenterLeft = styled.div`
   display: flex;
   align-items: center;
-`;
+`
 
 const CustomerCenterRight = styled.div`
   font-size: 0.8rem;
   font-weight: 400;
-`;
+`
 
 const CustomerCenterButton = styled.div`
   display: flex;
@@ -243,21 +242,21 @@ const CustomerCenterButton = styled.div`
   align-items: center;
   border: 1px solid rgba(210, 210, 210, 1);
   padding: 9px;
-`;
+`
 
 const CustomerCenterText = styled.div`
   font-size: 0.8rem;
   font-weight: 400;
   margin-left: 12px;
-`;
+`
 
 const Text1 = styled.div`
   margin-bottom: 4px;
-`;
+`
 
-const Text2 = styled.div``;
+const Text2 = styled.div``
 
-const CustomerCenterOtherDesc = styled.div``;
+const CustomerCenterOtherDesc = styled.div``
 
 const CompanyInfo = styled.div`
   margin-top: 18px;
@@ -265,7 +264,7 @@ const CompanyInfo = styled.div`
   width: 100%;
   justify-content: space-between;
   font-size: 0.9rem;
-`;
+`
 
 const CompanyInfoLeft = styled.div`
   font-weight: 300;
@@ -277,7 +276,7 @@ const CompanyInfoLeft = styled.div`
   @media (max-width: 1200px) {
     font-size: 0.7rem;
   }
-`;
+`
 
 const CompanyInfoRight = styled.div`
   display: flex;
@@ -285,14 +284,14 @@ const CompanyInfoRight = styled.div`
   @media (max-width: 1400px) {
     font-size: 0.8rem;
   }
-`;
+`
 
 const OtherInfo = styled.div`
   margin-top: 18px;
   font-size: 0.7rem;
   font-weight: 300;
-`;
+`
 
 const Space = styled.div`
   width: 10px;
-`;
+`

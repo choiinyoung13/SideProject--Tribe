@@ -1,17 +1,17 @@
-import styled from "styled-components";
-import ItemFilterCon from "../Filter/ItemFilterCon";
-import ItemListCon from "../Item/ItemListCon";
-import { useRecoilState } from "recoil";
-import { filterState } from "../../recoil/atoms/FilterState";
-import { RxCross2 } from "react-icons/rx";
-import { useEffect } from "react";
+import styled from 'styled-components'
+import ItemFilterCon from '../Filter/ItemFilterCon'
+import ItemListCon from '../Item/ItemListCon'
+import { useRecoilState } from 'recoil'
+import { filterState } from '../../recoil/atoms/FilterState'
+import { RxCross2 } from 'react-icons/rx'
+import { useEffect } from 'react'
 
 export default function MainSection() {
-  const [filterData, setFilterState] = useRecoilState(filterState);
+  const [filterData, setFilterState] = useRecoilState(filterState)
 
   useEffect(() => {
-    console.log(filterData);
-  }, [filterData]);
+    console.log(filterData)
+  }, [filterData])
 
   return (
     <>
@@ -21,7 +21,7 @@ export default function MainSection() {
             <ItemFilterCon />
           </FilterSection>
           <ItemSection>
-            {Object.values(filterData).some((value) => value !== null) && (
+            {Object.values(filterData).some(value => value !== null) && (
               <FilterWrapper>
                 {Object.values(filterData).map((data, i) => {
                   if (data !== null) {
@@ -32,42 +32,42 @@ export default function MainSection() {
                           <RxCross2
                             onClick={() => {
                               const storedFilter =
-                                localStorage.getItem("filter");
+                                localStorage.getItem('filter')
                               if (storedFilter !== null) {
-                                const dataArray = JSON.parse(storedFilter);
+                                const dataArray = JSON.parse(storedFilter)
                                 const filteredDataArray = dataArray.filter(
                                   (obj: object) => {
-                                    console.log(Object.values(obj)[0]);
-                                    console.log(data);
+                                    console.log(Object.values(obj)[0])
+                                    console.log(data)
 
-                                    return Object.values(obj)[0] !== data;
+                                    return Object.values(obj)[0] !== data
                                   }
-                                );
+                                )
 
                                 localStorage.setItem(
-                                  "filter",
+                                  'filter',
                                   JSON.stringify(filteredDataArray)
-                                );
+                                )
                               }
 
-                              const entries = Object.entries(filterData);
-                              entries.forEach((entry) => {
+                              const entries = Object.entries(filterData)
+                              entries.forEach(entry => {
                                 if (entry[1] === data) {
-                                  entry[1] = null;
+                                  entry[1] = null
                                 }
-                              });
-                              const newFilterObj = Object.fromEntries(entries);
-                              setFilterState((prev) => ({
+                              })
+                              const newFilterObj = Object.fromEntries(entries)
+                              setFilterState(prev => ({
                                 ...prev,
                                 ...newFilterObj,
-                              }));
+                              }))
                             }}
                           />
                         </FilterCancelIcon>
                       </FilterText>
-                    );
+                    )
                   }
-                  return null;
+                  return null
                 })}
               </FilterWrapper>
             )}
@@ -76,14 +76,14 @@ export default function MainSection() {
         </ShopMainWrapper>
       </ShopMain>
     </>
-  );
+  )
 }
 
-const ShopMain = styled.div``;
+const ShopMain = styled.div``
 
 const FilterSection = styled.section`
   min-width: 210px;
-  max-height: 460px;
+  height: 100%;
   position: sticky;
   top: 30px;
 
@@ -98,11 +98,11 @@ const FilterSection = styled.section`
   @media (max-width: 600px) {
     display: none;
   }
-`;
+`
 
 const ItemSection = styled.section`
   width: 100%;
-`;
+`
 
 const FilterWrapper = styled.div`
   display: flex;
@@ -121,7 +121,7 @@ const FilterWrapper = styled.div`
   @media (max-width: 930px) {
     display: none;
   }
-`;
+`
 
 const FilterText = styled.div`
   display: flex;
@@ -133,7 +133,7 @@ const FilterText = styled.div`
   border-radius: 8px;
   color: rgba(70, 70, 70, 1);
   font-size: 0.9rem;
-`;
+`
 
 const FilterTitle = styled.div`
   display: flex;
@@ -146,14 +146,14 @@ const FilterTitle = styled.div`
   @media (max-width: 980px) {
     font-size: 0.7rem;
   }
-`;
+`
 
 const FilterCancelIcon = styled.div`
   display: flex;
   align-items: center;
   margin-left: 4px;
   padding-top: 2px;
-`;
+`
 
 const ShopMainWrapper = styled.div`
   display: flex;
@@ -167,4 +167,4 @@ const ShopMainWrapper = styled.div`
   @media (max-width: 600px) {
     padding: 30px 20px;
   }
-`;
+`

@@ -16,20 +16,15 @@ export default function Shop() {
 }
 
 const ShopCon = styled.div`
-  position: relative;
-  top: 115px;
+  margin-top: 115px;
   width: 100%;
   z-index: 97;
 
   @media (max-width: 1024px) {
-    top: 90px;
+    margin-top: 90px;
   }
 
   @media (max-width: 768px) {
-    top: 0px;
-  }
-
-  @media (max-width: 600px) {
-    top: 0px;
+    margin-top: 0px;
   }
 `
