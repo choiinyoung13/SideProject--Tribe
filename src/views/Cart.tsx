@@ -14,6 +14,7 @@ import { fetchCartItems } from "../config/api/cart/fetchCartItems";
 import { fetchItemById } from "../config/api/items/fetchItems";
 import { QUERY_KEYS } from "../config/constants/queryKeys";
 import { checkAllCartItemReceivingDate } from "../config/api/cart/checkCartItemReceivingDate";
+import loadingIcon from "../assets/images/logo/ball-triangle.svg";
 
 interface CartItem {
   itemId: number;
@@ -46,6 +47,7 @@ export default function Cart() {
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState<DetailedCartItem[]>([]);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [isCartDetailComplete, setIsCartDetailComplete] = useState(false);
   const { session } = useAuth();
   const [allItemChecked, setAllItemChecked] = useState(false);
   const [allitemhasReceivingDate, setAllitemhasReceivingDate] = useState(false);
@@ -83,11 +85,15 @@ export default function Cart() {
     data: cartData,
     error,
     isLoading,
-  } = useQuery(QUERY_KEYS.CART_ITEMS, () => fetchCartItems(session!.user.id), {
-    enabled: !!session,
-    staleTime: Infinity,
-    cacheTime: 30 * 60 * 1000,
-  });
+  } = useQuery(
+    QUERY_KEYS.CART_ITEMS,
+    () => session && fetchCartItems(session.user.id),
+    {
+      enabled: !!session,
+      staleTime: Infinity,
+      cacheTime: 30 * 60 * 1000,
+    }
+  );
 
   useEffect(() => {
     const fetchDetailedCartItems = async () => {
@@ -101,6 +107,7 @@ export default function Cart() {
 
         const detailedItems = await Promise.all(detailedItemsPromises);
         setCartItems(detailedItems);
+        setIsCartDetailComplete(true);
       }
     };
 
@@ -112,8 +119,14 @@ export default function Cart() {
     return <div>Error loading cart data</div>;
   }
 
-  if (isLoading) {
-    return null;
+  if (isLoading || !isCartDetailComplete) {
+    return (
+      <LoadingPage>
+        <LoadingIcon>
+          <img src={loadingIcon} alt="" />
+        </LoadingIcon>
+      </LoadingPage>
+    );
   }
 
   return (
@@ -151,7 +164,9 @@ export default function Cart() {
           </CheckHeaderRight>
         </CheckHeader>
       )}
-      {cartItems.length > 0 ? (
+      {cartItems.length === 0 ? (
+        <EmptyCart />
+      ) : (
         <ItemCon>
           <CartItem
             type="header"
@@ -180,8 +195,6 @@ export default function Cart() {
             />
           ))}
         </ItemCon>
-      ) : (
-        <EmptyCart />
       )}
 
       <ItemSubButtonCon>
@@ -219,7 +232,7 @@ export default function Cart() {
       <ButtonCon>
         <button
           onClick={() => {
-            navigate("/shop"); // 변수명 수정
+            navigate("/shop");
           }}
         >
           {cartItems.length > 0 ? "계속 쇼핑하기" : "쇼핑하러 가기"}
@@ -238,7 +251,6 @@ export default function Cart() {
           <button>수령일을 선택해주세요</button>
         ) : null}
       </ButtonCon>
-      <Footer />
     </CartCon>
   );
 }
@@ -246,7 +258,7 @@ export default function Cart() {
 const CartCon = styled.div`
   position: relative;
   width: 75%;
-  margin: 150px auto;
+  margin: 150px auto 10px;
 
   @media (max-width: 1024px) {
     width: 90%;
@@ -375,6 +387,7 @@ const ButtonCon = styled.div`
   display: flex;
   justify-content: end;
   margin-top: 50px;
+  padding-bottom: 50px;
 
   @media (max-width: 1024px) {
     margin-top: 20px;
@@ -416,11 +429,18 @@ const ButtonCon = styled.div`
     }
   }
 `;
-const Footer = styled.div`
-  width: 100%;
-  height: 100px;
 
-  @media (max-width: 600px) {
-    height: 0px;
+const LoadingPage = styled.div`
+  margin-top: 120px;
+  width: 100%;
+  height: 700px;
+`;
+const LoadingIcon = styled.div`
+  margin: 0 auto;
+  padding-top: 260px;
+  width: 150px;
+
+  img {
+    width: 100%;
   }
 `;

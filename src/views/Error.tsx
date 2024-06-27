@@ -29,8 +29,7 @@ export default function Error() {
 }
 
 const ErrorCon = styled.div`
-  position: relative;
-  top: 120px; // nav 높이
+  margin-top: 120px; // nav 높이
   display: flex;
   align-items: center;
   justify-content: center;

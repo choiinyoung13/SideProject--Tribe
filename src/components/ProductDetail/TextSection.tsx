@@ -1,40 +1,40 @@
-import React, { useState } from 'react'
-import styled from 'styled-components'
-import PriceInfo from '../../components/ProductDetail/PriceInfo'
-import ProductInfo from '../../components/ProductDetail/ProductInfo'
-import DatePickerSection from '../../components/ProductDetail/DatePickerSection'
-import OptionsSection from '../../components/ProductDetail/OptionSection'
-import TotalPriceSection from '../../components/ProductDetail/TotalPriceSection'
-import ButtonSection from '../../components/ProductDetail/ButtonSection'
+import React, { useState } from "react";
+import styled from "styled-components";
+import PriceInfo from "../../components/ProductDetail/PriceInfo";
+import ProductInfo from "../../components/ProductDetail/ProductInfo";
+import DatePickerSection from "../../components/ProductDetail/DatePickerSection";
+import OptionsSection from "../../components/ProductDetail/OptionSection";
+import TotalPriceSection from "../../components/ProductDetail/TotalPriceSection";
+import ButtonSection from "../../components/ProductDetail/ButtonSection";
 
-type BadgeType = 'hot' | 'fast'
+type BadgeType = "hot" | "fast";
 
 interface TextSectionProps {
-  additionalOptionsPrice: number
-  handleSelectChange: (event: React.ChangeEvent<HTMLSelectElement>) => void
-  isDateSelected: boolean
-  setIsDateSelected: React.Dispatch<React.SetStateAction<boolean>>
+  additionalOptionsPrice: number;
+  handleSelectChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+  isDateSelected: boolean;
+  setIsDateSelected: React.Dispatch<React.SetStateAction<boolean>>;
   productInfo: {
-    id: number
-    title: string
-    imgurl: string
-    originalprice: number
-    badge: BadgeType[]
-    discount: number
-    category: string
-    size: string
-    origin: string
-    classification: string
-    deliveryperiod: number
-  }
+    id: number;
+    title: string;
+    imgurl: string;
+    originalprice: number;
+    badge: BadgeType[];
+    discount: number;
+    category: string;
+    size: string;
+    origin: string;
+    classification: string;
+    deliveryperiod: number;
+  };
 }
 
 interface OrderInfo {
-  itemId: number
-  quantity: number
-  receivingDate: number
-  option: string
-  checked: boolean
+  itemId: number;
+  quantity: number;
+  receivingDate: number;
+  option: string;
+  checked: boolean;
 }
 
 export default function TextSection({
@@ -52,14 +52,14 @@ export default function TextSection({
     origin,
     classification,
     deliveryperiod,
-  } = productInfo
+  } = productInfo;
   const [orderInfo, setOrderInfo] = useState<OrderInfo>({
     itemId: productInfo.id,
     quantity: 1,
     receivingDate: 0,
-    option: '',
+    option: "",
     checked: false,
-  })
+  });
 
   return (
     <TextSectionCon>
@@ -89,26 +89,25 @@ export default function TextSection({
       />
       <ButtonSection isDateSelected={isDateSelected} orderInfo={orderInfo} />
     </TextSectionCon>
-  )
+  );
 }
 
 const TextSectionCon = styled.section`
-  width: 41%;
-  min-width: 520px;
-  padding: 14px 0px 0px 60px;
-  border-left: 1px solid rgba(150, 150, 150, 1);
+  width: 50%;
+  padding: 26px 0px 26px 60px;
+  border-left: 1px solid rgba(50, 50, 50, 1);
+  margin-left: 60px;
 
   @media (max-width: 1024px) {
     width: 100%;
-    min-width: 100%;
-    padding: 30px;
+    padding: 40px 40px 0px 40px;
     border-left: none;
+    margin-left: 0px;
   }
 
   @media (max-width: 600px) {
     width: 100%;
-    min-width: 100%;
     padding: 20px;
     border-left: none;
   }
-`
+`;
