@@ -71,7 +71,6 @@ export default function Join() {
                   alert('이메일 중복 확인해 주세요.')
                   return
                 }
-
                 handleSignUp(email, password)
               } catch {
                 alert(errorMessage)
