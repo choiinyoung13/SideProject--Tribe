@@ -136,6 +136,7 @@ export default function Footer() {
 
 const FooterCon = styled.div<{ isnofootersection: boolean }>`
   width: 100%;
+  min-width: 1130px;
   display: ${props => (props.isnofootersection ? 'none' : 'flex')};
   flex-direction: column;
   justify-content: center;
@@ -146,6 +147,7 @@ const FooterCon = styled.div<{ isnofootersection: boolean }>`
 
   @media (max-width: 1024px) {
     padding: 20px 20px 0 20px;
+    min-width: 100%;
   }
 `
 

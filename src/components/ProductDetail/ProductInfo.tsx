@@ -59,9 +59,11 @@ const Title = styled.div`
 const InfoWrapper = styled.div`
   margin: 30px 0px 40px;
   display: flex;
+
   justify-content: space-between;
   width: 100%;
-  min-width: 520px;
+  max-width: 730px;
+
   display: flex;
   overflow-x: auto;
 
@@ -81,10 +83,6 @@ const InfoWrapper = styled.div`
   scrollbar-width: thin;
   scrollbar-color: rgba(210, 210, 210, 1) #fff;
 
-  @media (max-width: 1920px) {
-    min-width: 440px;
-  }
-
   @media (max-width: 1024px) {
     width: 90%;
     margin: 30px auto 0px;
@@ -103,17 +101,17 @@ const Info = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 4px 40px;
+  padding: 4px 60px;
   border-left: 1px solid rgba(90, 90, 90, 1);
   flex-shrink: 0;
 
   &:first-of-type {
     border: none;
-    padding: 4px 40px 4px 20px;
+    padding: 4px 60px 4px 40px;
   }
 
   &:last-of-type {
-    padding: 4px 20px 4px 40px;
+    padding: 4px 40px 4px 40px;
   }
 
   @media (max-width: 1024px) {
