@@ -105,7 +105,7 @@ export default function ButtonSection({
                 navigate('/cart')
               }}
             >
-              장바구니에 들어있어요!
+              장바구니에 있어요!
             </button>
           ) : (
             <button
@@ -225,6 +225,9 @@ const ButtonOption2 = styled.div`
 
     @media (max-width: 600px) {
       font-size: 0.9rem;
+      &:last-of-type {
+        font-size: 0.8rem;
+      }
     }
   }
 `
