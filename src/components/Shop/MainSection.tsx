@@ -165,6 +165,6 @@ const ShopMainWrapper = styled.div`
   }
 
   @media (max-width: 600px) {
-    padding: 30px 20px;
+    padding: 30px 12px;
   }
 `

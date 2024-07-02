@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import PriceInfo from '../../components/ProductDetail/PriceInfo'
 import ProductInfo from '../../components/ProductDetail/ProductInfo'
@@ -57,9 +57,13 @@ export default function TextSection({
     itemId: productInfo.id,
     quantity: 1,
     receivingDate: 0,
-    option: '',
+    option: '-',
     checked: false,
   })
+
+  useEffect(() => {
+    console.log(orderInfo)
+  }, [orderInfo])
 
   return (
     <TextSectionCon>

@@ -113,19 +113,18 @@ export default function ButtonSection({
               onClick={() => {
                 if (!session) {
                   alert('로그인 후 사용 가능한 기능입니다.')
-                  return
+                } else {
+                  addItemToCartMutation.mutate({
+                    userId: session.user.id,
+                    itemId: orderInfo.itemId,
+                    quantity: orderInfo.quantity,
+                    receivingDate: orderInfo.receivingDate,
+                    option: orderInfo.option,
+                    checked: orderInfo.checked,
+                  })
+                  alert('장바구니에 추가 되었습니다. 감사합니다.')
+                  navigate('/shop')
                 }
-
-                addItemToCartMutation.mutate({
-                  userId: session!.user.id,
-                  itemId: orderInfo.itemId,
-                  quantity: orderInfo.quantity,
-                  receivingDate: orderInfo.receivingDate,
-                  option: orderInfo.option,
-                  checked: orderInfo.checked,
-                })
-                alert('장바구니에 추가 되었습니다. 감사합니다.')
-                navigate('/shop')
               }}
             >
               장바구니에 담기

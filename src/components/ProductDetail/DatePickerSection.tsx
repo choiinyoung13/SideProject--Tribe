@@ -46,7 +46,7 @@ const DatePickerWrapper = styled.div`
   width: 100%;
 
   @media (max-width: 1024px) {
-    margin: 35px 0;
+    margin: 36px 0 35px;
   }
 
   @media (max-width: 600px) {

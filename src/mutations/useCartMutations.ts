@@ -108,6 +108,7 @@ export function useCartMutations() {
       }),
     {
       onSuccess: () => {
+        console.log('완료')
         queryClient.invalidateQueries(QUERY_KEYS.CART_ITEMS)
       },
     }

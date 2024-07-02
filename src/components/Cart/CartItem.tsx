@@ -1,34 +1,34 @@
-import { useEffect } from "react";
-import styled from "styled-components";
-import CountButton from "../Common/CountButton";
-import formatNumberWithCommas from "../../utill/formatNumberWithCommas";
-import { UseMutationResult } from "react-query";
-import { useCartMutations } from "../../mutations/useCartMutations";
-import { optionToPrice } from "../../utill/optionToPrice";
-import FutureDatePicker from "../Common/DatePicker";
+import { useEffect } from 'react'
+import styled from 'styled-components'
+import CountButton from '../Common/CountButton'
+import formatNumberWithCommas from '../../utill/formatNumberWithCommas'
+import { UseMutationResult } from 'react-query'
+import { useCartMutations } from '../../mutations/useCartMutations'
+import { optionToPrice } from '../../utill/optionToPrice'
+import FutureDatePicker from '../Common/DatePicker'
 
 interface ToggleCartItemStatusArgs {
-  cartId: string;
-  itemId: number;
+  cartId: string
+  itemId: number
 }
 
 interface CartItemPropsType {
-  type?: string;
-  title?: string;
-  imgUrl?: string;
-  price?: number;
-  option?: string;
-  receivingDate?: number;
-  checked?: boolean;
-  setTotalPrice?: React.Dispatch<React.SetStateAction<number>>;
-  cartId?: string;
-  itemId?: number;
-  mutation?: UseMutationResult<void, unknown, ToggleCartItemStatusArgs>;
-  allItemChecked?: boolean;
-  setAllItemChecked?: React.Dispatch<React.SetStateAction<boolean>>;
-  handleItemCheckedChange?: (itemId: number, checked: boolean) => void;
-  quantity?: number;
-  deliveryperiod?: number;
+  type?: string
+  title?: string
+  imgUrl?: string
+  price?: number
+  option?: string
+  receivingDate?: number
+  checked?: boolean
+  setTotalPrice?: React.Dispatch<React.SetStateAction<number>>
+  cartId?: string
+  itemId?: number
+  mutation?: UseMutationResult<void, unknown, ToggleCartItemStatusArgs>
+  allItemChecked?: boolean
+  setAllItemChecked?: React.Dispatch<React.SetStateAction<boolean>>
+  handleItemCheckedChange?: (itemId: number, checked: boolean) => void
+  quantity?: number
+  deliveryperiod?: number
 }
 
 export default function CartItem({
@@ -49,21 +49,21 @@ export default function CartItem({
   deliveryperiod,
 }: CartItemPropsType) {
   const { toggleCartItemStatusMutation, toggleAllCartItemStatusMutation } =
-    useCartMutations();
+    useCartMutations()
 
   useEffect(() => {
     if (price && quantity && setTotalPrice) {
-      setTotalPrice((prev) => prev + price * quantity);
+      setTotalPrice(prev => prev + price * quantity)
     }
 
     return () => {
       if (price && quantity && setTotalPrice) {
-        setTotalPrice((prev) => prev - price * quantity);
+        setTotalPrice(prev => prev - price * quantity)
       }
-    };
-  }, [quantity, price, setTotalPrice]);
+    }
+  }, [quantity, price, setTotalPrice])
 
-  if (type === "header" && cartId && setAllItemChecked) {
+  if (type === 'header' && cartId && setAllItemChecked) {
     return (
       <ItemContentCon className="header">
         <ItemContent>
@@ -72,14 +72,14 @@ export default function CartItem({
               type="checkbox"
               checked={allItemChecked}
               onClick={() => {
-                setAllItemChecked((prev) => {
-                  const newValue = !prev;
+                setAllItemChecked(prev => {
+                  const newValue = !prev
                   toggleAllCartItemStatusMutation.mutate({
                     cartId,
                     allItemChecked: newValue,
-                  });
-                  return newValue;
-                });
+                  })
+                  return newValue
+                })
               }}
             />
           </CheckBox>
@@ -91,7 +91,7 @@ export default function CartItem({
           <OrderPrice className="header">주문금액</OrderPrice>
         </ItemContent>
       </ItemContentCon>
-    );
+    )
   } else if (
     title &&
     imgUrl &&
@@ -110,9 +110,9 @@ export default function CartItem({
               type="checkbox"
               checked={checked}
               onChange={() => {
-                toggleCartItemStatusMutation.mutate({ cartId, itemId });
+                toggleCartItemStatusMutation.mutate({ cartId, itemId })
                 if (handleItemCheckedChange) {
-                  handleItemCheckedChange(itemId, !checked);
+                  handleItemCheckedChange(itemId, !checked)
                 }
               }}
             />
@@ -135,13 +135,13 @@ export default function CartItem({
                 daysOffset={deliveryperiod}
                 receivingDate={receivingDate}
                 itemId={itemId}
-                type={"cartItem"}
+                type={'cartItem'}
               />
             </DatePicker>
           </ReceivingDate>
           <Amount>
             <CountButton
-              type={"cart"}
+              type={'cart'}
               cartId={cartId}
               itemId={itemId}
               quantity={quantity}
@@ -153,10 +153,10 @@ export default function CartItem({
           </OrderPrice>
         </ItemContent>
       </ItemContentCon>
-    );
+    )
   }
 
-  return null;
+  return null
 }
 
 const ItemContentCon = styled.div`
@@ -169,7 +169,7 @@ const ItemContentCon = styled.div`
   @media (max-width: 600px) {
     font-size: 0.8rem;
   }
-`;
+`
 
 const ItemContent = styled.div`
   display: flex;
@@ -194,7 +194,7 @@ const ItemContent = styled.div`
     align-items: center;
     position: relative;
   }
-`;
+`
 
 const CheckBox = styled.div`
   display: flex;
@@ -223,7 +223,7 @@ const CheckBox = styled.div`
       height: 15px;
     }
   }
-`;
+`
 
 const ProductInfo = styled.div`
   display: flex;
@@ -243,7 +243,7 @@ const ProductInfo = styled.div`
     padding: 8px;
     align-items: center;
   }
-`;
+`
 const ProductImg = styled.div`
   flex-grow: 1;
   flex-basis: 15%;
@@ -268,7 +268,7 @@ const ProductImg = styled.div`
       min-width: 70px;
     }
   }
-`;
+`
 
 const ProductText = styled.div`
   flex-grow: 7;
@@ -282,7 +282,7 @@ const ProductText = styled.div`
   @media (max-width: 600px) {
     margin-left: 0;
   }
-`;
+`
 const ProductTextTitle = styled.div`
   font-size: 1.1rem;
   font-weight: 500;
@@ -304,7 +304,7 @@ const ProductTextTitle = styled.div`
     font-size: 0.7rem;
     margin-bottom: 7px;
   }
-`;
+`
 const ProductTextPrice = styled.div`
   font-size: 0.9rem;
   margin-bottom: 12px;
@@ -315,7 +315,7 @@ const ProductTextPrice = styled.div`
     font-size: 0.7rem;
     margin-bottom: 7px;
   }
-`;
+`
 const ProductTextOption = styled.div`
   font-size: 0.9rem;
   padding-left: 2px;
@@ -331,7 +331,7 @@ const ProductTextOption = styled.div`
   @media (max-width: 600px) {
     font-size: 0.7rem;
   }
-`;
+`
 
 const Amount = styled.div`
   display: flex;
@@ -351,7 +351,7 @@ const Amount = styled.div`
     padding: 8px;
     flex-basis: auto;
   }
-`;
+`
 const OrderPrice = styled.div`
   display: flex;
   justify-content: center;
@@ -372,7 +372,7 @@ const OrderPrice = styled.div`
   @media (max-width: 768px) {
     display: none;
   }
-`;
+`
 const ReceivingDate = styled.div`
   display: flex;
   justify-content: center;
@@ -394,16 +394,16 @@ const ReceivingDate = styled.div`
     flex-basis: 10%;
     min-width: 40px;
   }
-`;
+`
 
 const DatePicker = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   width: 90%;
-`;
+`
 
 const Required = styled.span`
   color: rgb(223, 33, 19);
   font-size: 1rem;
-`;
+`

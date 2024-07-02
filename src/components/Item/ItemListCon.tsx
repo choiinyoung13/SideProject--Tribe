@@ -114,7 +114,10 @@ export default function ItemListCon() {
               )
             )}
           </ListWrapper>
-          <LoadingObserver ref={ref}>
+          <LoadingObserver
+            ref={ref}
+            isfirstfetch={String(sortedItems.length === 0)}
+          >
             {loading && <img src={loadingIcon} alt="loading" />}
             {!hasMore && <div></div>}
           </LoadingObserver>
@@ -186,12 +189,16 @@ const ListWrapper = styled.div`
   justify-content: flex-start;
 `
 
-const LoadingObserver = styled.div`
+const LoadingObserver = styled.div<{ isfirstfetch: string }>`
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: -10px;
+  margin-top: ${props => (props.isfirstfetch === 'true' ? '-100px' : '0px')};
+
+  @media (max-width: 600px) {
+    margin-top: ${props => (props.isfirstfetch === 'true' ? '-300px' : '0px')};
+  }
 `
 
 const Empty = styled.div`

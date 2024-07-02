@@ -61,7 +61,6 @@ export default function FutureDatePicker({
         })
 
         if (res) {
-          console.log(res)
           setIsReceivingDateExsisted(res)
         }
       }
@@ -78,6 +77,8 @@ export default function FutureDatePicker({
         newReceivingDate: Number(formatDateToYYYYMMDD(date)),
       })
     }
+
+    console.log(date)
 
     setSelectedDate(date)
     if (setOrderInfo)

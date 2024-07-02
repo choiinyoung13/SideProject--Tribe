@@ -9,7 +9,7 @@ import { priceCalculation } from '../utill/priceCalculation'
 import EmptyCart from '../components/Cart/EmptyCart'
 import { useAuth } from '../hooks/useAuth'
 import { useCartMutations } from '../mutations/useCartMutations'
-import { useQuery } from 'react-query'
+import { UseQueryResult, useQuery } from 'react-query'
 import { fetchCartItems } from '../config/api/cart/fetchCartItems'
 import { fetchItemById } from '../config/api/items/fetchItems'
 import { QUERY_KEYS } from '../config/constants/queryKeys'
@@ -40,6 +40,10 @@ interface ItemDetails {
 
 interface DetailedCartItem extends CartItem {
   details: ItemDetails
+}
+
+interface CartItemsResponse {
+  items: CartItem[]
 }
 
 export default function Cart() {
@@ -85,9 +89,14 @@ export default function Cart() {
     data: cartData,
     error,
     isLoading,
-  } = useQuery(
+  }: UseQueryResult<CartItemsResponse> = useQuery(
     QUERY_KEYS.CART_ITEMS,
-    () => session && fetchCartItems(session.user.id),
+    () => {
+      if (session) {
+        return fetchCartItems(session.user.id)
+      }
+      return Promise.resolve({ items: [] })
+    },
     {
       enabled: !!session,
       staleTime: Infinity,
@@ -380,6 +389,10 @@ const DetailDesc = styled.div`
 
   @media (max-width: 600px) {
     font-size: 0.8rem;
+  }
+
+  @media (max-width: 400px) {
+    font-size: 0.7rem;
   }
 `
 
