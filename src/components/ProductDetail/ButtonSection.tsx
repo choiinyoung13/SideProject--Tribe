@@ -1,72 +1,72 @@
-import { useNavigate, useParams } from "react-router-dom";
-import styled from "styled-components";
-import { useCartMutations } from "../../mutations/useCartMutations";
-import { hasCheckedItemInCartByID } from "../../config/api/cart/hasCheckedItemsInCart ";
-import { useAuth } from "../../hooks/useAuth";
-import { useEffect, useState } from "react";
-import { IoHeartSharp } from "react-icons/io5";
-import { useQuery } from "react-query";
-import { fetchUserLikesInfo } from "../../config/api/user/fetchUserInfo";
-import { QUERY_KEYS } from "../../config/constants/queryKeys";
-import { useUserInfoMutations } from "../../mutations/useUserInfoMutation";
+import { useNavigate, useParams } from 'react-router-dom'
+import styled from 'styled-components'
+import { useCartMutations } from '../../mutations/useCartMutations'
+import { hasCheckedItemInCartByID } from '../../config/api/cart/hasCheckedItemsInCart '
+import { useAuth } from '../../hooks/useAuth'
+import { useEffect, useState } from 'react'
+import { IoHeartSharp } from 'react-icons/io5'
+import { useQuery } from 'react-query'
+import { fetchUserLikesInfo } from '../../config/api/user/fetchUserInfo'
+import { QUERY_KEYS } from '../../config/constants/queryKeys'
+import { useUserInfoMutations } from '../../mutations/useUserInfoMutation'
 
 interface OrderInfo {
-  itemId: number;
-  quantity: number;
-  receivingDate: number;
-  option: string;
-  checked: boolean;
+  itemId: number
+  quantity: number
+  receivingDate: number
+  option: string
+  checked: boolean
 }
 
 interface ButtonSectionProps {
-  isDateSelected: boolean;
-  orderInfo: OrderInfo;
+  isDateSelected: boolean
+  orderInfo: OrderInfo
 }
 
 const checkIsLikeeItem = (likeDatas: number[], itemId: number): boolean => {
-  return likeDatas.some((item) => item === itemId);
-};
+  return likeDatas.some(item => item === itemId)
+}
 
 export default function ButtonSection({
   isDateSelected,
   orderInfo,
 }: ButtonSectionProps) {
-  const { addItemToCartMutation } = useCartMutations();
-  const navigate = useNavigate();
-  const { id } = useParams();
-  const { session } = useAuth();
-  const [isInCart, setIsInCart] = useState(false);
-  const [isLiked, setIsLiked] = useState(false);
-  const { UsersLikesInfoUpdate } = useUserInfoMutations();
+  const { addItemToCartMutation } = useCartMutations()
+  const navigate = useNavigate()
+  const { id } = useParams()
+  const { session } = useAuth()
+  const [isInCart, setIsInCart] = useState(false)
+  const [isLiked, setIsLiked] = useState(false)
+  const { UsersLikesInfoUpdate } = useUserInfoMutations()
 
   const { data: userLikeData } = useQuery(
     QUERY_KEYS.USERS,
     () => {
-      if (session) return fetchUserLikesInfo(session?.user.id);
+      if (session) return fetchUserLikesInfo(session?.user.id)
     },
     {
       enabled: !!session,
       staleTime: Infinity,
       cacheTime: 30 * 60 * 1000,
     }
-  );
+  )
 
   useEffect(() => {
     const checkItemById = async () => {
       if (session) {
-        const res = await hasCheckedItemInCartByID(session.user.id, Number(id));
-        setIsInCart(res);
+        const res = await hasCheckedItemInCartByID(session.user.id, Number(id))
+        setIsInCart(res)
       }
-    };
-    checkItemById();
-  }, [id, session]);
+    }
+    checkItemById()
+  }, [id, session])
 
   useEffect(() => {
     if (userLikeData) {
-      const res = checkIsLikeeItem(userLikeData.likes, Number(id));
-      setIsLiked(res);
+      const res = checkIsLikeeItem(userLikeData.likes, Number(id))
+      setIsLiked(res)
     }
-  }, [userLikeData]);
+  }, [userLikeData])
 
   return (
     <ButtonCon>
@@ -78,7 +78,9 @@ export default function ButtonSection({
               UsersLikesInfoUpdate.mutate({
                 userId: session.user.id,
                 itemId: Number(id),
-              });
+              })
+            } else {
+              alert('로그인 후 사용 가능한 기능입니다.')
             }
           }}
         >
@@ -90,8 +92,8 @@ export default function ButtonSection({
           <button
             type="button"
             onClick={() => {
-              alert("구매해주셔서 감사합니다");
-              navigate("/shop");
+              alert('구매해주셔서 감사합니다')
+              navigate('/shop')
             }}
           >
             바로 구매
@@ -100,7 +102,7 @@ export default function ButtonSection({
             <button
               type="button"
               onClick={() => {
-                navigate("/cart");
+                navigate('/cart')
               }}
             >
               장바구니에 들어있어요!
@@ -109,6 +111,11 @@ export default function ButtonSection({
             <button
               type="button"
               onClick={() => {
+                if (!session) {
+                  alert('로그인 후 사용 가능한 기능입니다.')
+                  return
+                }
+
                 addItemToCartMutation.mutate({
                   userId: session!.user.id,
                   itemId: orderInfo.itemId,
@@ -116,9 +123,9 @@ export default function ButtonSection({
                   receivingDate: orderInfo.receivingDate,
                   option: orderInfo.option,
                   checked: orderInfo.checked,
-                });
-                alert("장바구니에 추가 되었습니다. 감사합니다.");
-                navigate("/shop");
+                })
+                alert('장바구니에 추가 되었습니다. 감사합니다.')
+                navigate('/shop')
               }}
             >
               장바구니에 담기
@@ -131,7 +138,7 @@ export default function ButtonSection({
         </ButtonOption1>
       )}
     </ButtonCon>
-  );
+  )
 }
 
 const ButtonCon = styled.div`
@@ -139,30 +146,30 @@ const ButtonCon = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
-`;
+`
 
 const LikeButtonCon = styled.div`
   margin-right: 8px;
   border: 1px solid rgba(210, 210, 210, 1);
   border-radius: 4px;
-`;
+`
 const LikeButton = styled.button<{ isliked: string }>`
   padding: 6px 6px;
   border: none;
   background-color: rgba(0, 0, 0, 0);
   font-size: 2.2rem;
-  color: ${(props) =>
-    props.isliked === "true" ? "rgb(253, 70, 108)" : "rgba(210, 210, 210, 1)"};
+  color: ${props =>
+    props.isliked === 'true' ? 'rgb(253, 70, 108)' : 'rgba(210, 210, 210, 1)'};
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
 
   &:hover {
-    color: ${(props) =>
-      props.isliked === "true" ? "rgb(253, 0, 108)" : "rgba(190, 190, 190, 1)"};
+    color: ${props =>
+      props.isliked === 'true' ? 'rgb(253, 0, 108)' : 'rgba(190, 190, 190, 1)'};
   }
-`;
+`
 
 const ButtonOption1 = styled.div`
   flex-grow: 1;
@@ -184,7 +191,7 @@ const ButtonOption1 = styled.div`
       font-size: 0.9rem;
     }
   }
-`;
+`
 
 const ButtonOption2 = styled.div`
   flex-grow: 1;
@@ -220,4 +227,4 @@ const ButtonOption2 = styled.div`
       font-size: 0.9rem;
     }
   }
-`;
+`
