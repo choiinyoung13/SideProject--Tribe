@@ -1,7 +1,7 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 interface ImageSectionProps {
-  image: string;
+  image: string
 }
 
 export default function ImageSection({ image }: ImageSectionProps) {
@@ -11,7 +11,7 @@ export default function ImageSection({ image }: ImageSectionProps) {
         <img src={image} alt="" draggable={false} />
       </ImgWrapper>
     </ImgSection>
-  );
+  )
 }
 
 const ImgSection = styled.section`
@@ -25,9 +25,10 @@ const ImgSection = styled.section`
 
   @media (max-width: 600px) {
     width: 100%;
+    min-width: 100%;
     padding: 0px;
   }
-`;
+`
 
 const ImgWrapper = styled.section`
   width: 100%;
@@ -42,4 +43,4 @@ const ImgWrapper = styled.section`
       max-width: 100%;
     }
   }
-`;
+`

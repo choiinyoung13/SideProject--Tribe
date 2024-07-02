@@ -63,7 +63,7 @@ export default function ProductDetail() {
     )
 }
 const LoadingPage = styled.div`
-  margin-top: 120px;
+  margin-top: 100px;
   height: 710px;
   width: 100%;
   display: flex;
