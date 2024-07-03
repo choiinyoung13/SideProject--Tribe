@@ -139,132 +139,133 @@ export default function Cart() {
     )
   }
 
-  return (
-    <CartCon>
-      <Title>장바구니</Title>
-      {windowWidth < 1024 && (
-        <CheckHeader>
-          <CheckHeaderLeft>
-            <div>
-              <input
-                type="checkbox"
-                checked={allItemChecked}
-                onClick={() => {
-                  const cartId = session!.user.id
+  if (isCartDetailComplete)
+    return (
+      <CartCon>
+        <Title>장바구니</Title>
+        {windowWidth < 1024 && (
+          <CheckHeader>
+            <CheckHeaderLeft>
+              <div>
+                <input
+                  type="checkbox"
+                  checked={allItemChecked}
+                  onClick={() => {
+                    const cartId = session!.user.id
 
-                  setAllItemChecked(prev => {
-                    const newValue = !prev
-                    toggleAllCartItemStatusMutation.mutate({
-                      cartId,
-                      allItemChecked: newValue,
+                    setAllItemChecked(prev => {
+                      const newValue = !prev
+                      toggleAllCartItemStatusMutation.mutate({
+                        cartId,
+                        allItemChecked: newValue,
+                      })
+                      return newValue
                     })
-                    return newValue
-                  })
-                }}
-              />
-            </div>
-            <div>
-              전체선택 ({countCheckItemAmount(cartItems)}/{cartItems.length})
-            </div>
-          </CheckHeaderLeft>
-          <CheckHeaderRight
-            onClick={() => {
-              if (session) deleteCartItemMutation.mutate(session.user.id)
-            }}
-          >
-            선택삭제
-          </CheckHeaderRight>
-        </CheckHeader>
-      )}
-      {cartItems.length === 0 ? (
-        <EmptyCart />
-      ) : (
-        <ItemCon>
-          <CartItem
-            type="header"
-            cartId={session?.user.id}
-            allItemChecked={allItemChecked}
-            setAllItemChecked={setAllItemChecked}
-          />
-          {cartItems.map((cartItem, i) => (
-            <CartItem
-              key={i}
-              title={cartItem.details.title}
-              imgUrl={cartItem.details.imgurl}
-              price={priceCalculation(
-                cartItem.details.originalprice,
-                cartItem.details.discount
-              )}
-              option={cartItem.option}
-              checked={cartItem.checked}
-              receivingDate={cartItem.receivingDate}
-              setTotalPrice={setTotalPrice}
-              cartId={session?.user.id}
-              itemId={cartItem.itemId}
-              handleItemCheckedChange={handleItemCheckedChange}
-              quantity={cartItem.quantity}
-              deliveryperiod={cartItem.details.deliveryperiod}
-            />
-          ))}
-        </ItemCon>
-      )}
-
-      <ItemSubButtonCon>
-        {cartItems.length > 0 ? (
-          <ButtonWrapper>
-            <Button
-              colortype="white"
-              hover={false.toString()}
+                  }}
+                />
+              </div>
+              <div>
+                전체선택 ({countCheckItemAmount(cartItems)}/{cartItems.length})
+              </div>
+            </CheckHeaderLeft>
+            <CheckHeaderRight
               onClick={() => {
                 if (session) deleteCartItemMutation.mutate(session.user.id)
               }}
             >
-              선택상품 삭제
-            </Button>
-            <Button
-              colortype="white"
-              hover={false.toString()}
-              onClick={() => {
-                alert('품절 상품이 없습니다')
-              }}
-            >
-              품절상품 삭제
-            </Button>
-          </ButtonWrapper>
-        ) : (
-          <div></div>
+              선택삭제
+            </CheckHeaderRight>
+          </CheckHeader>
         )}
-        <DetailDesc>
-          선택 가능한 수령일는 제품 배송기간에 따라 달라집니다.
-        </DetailDesc>
-      </ItemSubButtonCon>
-      <PriceConWrapper>
-        <TotalPriceSection totalPrice={totalPrice} />
-      </PriceConWrapper>
-      <ButtonCon>
-        <button
-          onClick={() => {
-            navigate('/shop')
-          }}
-        >
-          {cartItems.length > 0 ? '계속 쇼핑하기' : '쇼핑하러 가기'}
-        </button>
-        {cartItems.length > 0 && !allitemhasReceivingDate ? (
+        {cartItems.length === 0 ? (
+          <EmptyCart />
+        ) : (
+          <ItemCon>
+            <CartItem
+              type="header"
+              cartId={session?.user.id}
+              allItemChecked={allItemChecked}
+              setAllItemChecked={setAllItemChecked}
+            />
+            {cartItems.map((cartItem, i) => (
+              <CartItem
+                key={i}
+                title={cartItem.details.title}
+                imgUrl={cartItem.details.imgurl}
+                price={priceCalculation(
+                  cartItem.details.originalprice,
+                  cartItem.details.discount
+                )}
+                option={cartItem.option}
+                checked={cartItem.checked}
+                receivingDate={cartItem.receivingDate}
+                setTotalPrice={setTotalPrice}
+                cartId={session?.user.id}
+                itemId={cartItem.itemId}
+                handleItemCheckedChange={handleItemCheckedChange}
+                quantity={cartItem.quantity}
+                deliveryperiod={cartItem.details.deliveryperiod}
+              />
+            ))}
+          </ItemCon>
+        )}
+
+        <ItemSubButtonCon>
+          {cartItems.length > 0 ? (
+            <ButtonWrapper>
+              <Button
+                colortype="white"
+                hover={false.toString()}
+                onClick={() => {
+                  if (session) deleteCartItemMutation.mutate(session.user.id)
+                }}
+              >
+                선택상품 삭제
+              </Button>
+              <Button
+                colortype="white"
+                hover={false.toString()}
+                onClick={() => {
+                  alert('품절 상품이 없습니다')
+                }}
+              >
+                품절상품 삭제
+              </Button>
+            </ButtonWrapper>
+          ) : (
+            <div></div>
+          )}
+          <DetailDesc>
+            선택 가능한 수령일는 제품 배송기간에 따라 달라집니다.
+          </DetailDesc>
+        </ItemSubButtonCon>
+        <PriceConWrapper>
+          <TotalPriceSection totalPrice={totalPrice} />
+        </PriceConWrapper>
+        <ButtonCon>
           <button
             onClick={() => {
-              alert('구매해주셔서 감사합니다')
               navigate('/shop')
-              deleteAllCartItemMutation.mutate(session!.user.id)
             }}
           >
-            결제하기
+            {cartItems.length > 0 ? '계속 쇼핑하기' : '쇼핑하러 가기'}
           </button>
-        ) : cartItems.length > 0 && allitemhasReceivingDate ? (
-          <button>수령일을 선택해주세요</button>
-        ) : null}
-      </ButtonCon>
-    </CartCon>
-  )
+          {cartItems.length > 0 && !allitemhasReceivingDate ? (
+            <button
+              onClick={() => {
+                alert('구매해주셔서 감사합니다')
+                navigate('/shop')
+                deleteAllCartItemMutation.mutate(session!.user.id)
+              }}
+            >
+              결제하기
+            </button>
+          ) : cartItems.length > 0 && allitemhasReceivingDate ? (
+            <button>수령일을 선택해주세요</button>
+          ) : null}
+        </ButtonCon>
+      </CartCon>
+    )
 }
 
 const CartCon = styled.div`
