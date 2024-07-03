@@ -428,7 +428,6 @@ const ButtonCon = styled.div`
       border: 1px solid rgba(150, 150, 150, 1);
 
       @media (max-width: 600px) {
-        margin-right: 0;
         margin-bottom: 10px;
       }
     }
@@ -438,6 +437,10 @@ const ButtonCon = styled.div`
       color: #fff;
       border: none;
       margin-left: 14px;
+
+      @media (max-width: 600px) {
+        margin-left: 0px;
+      }
     }
 
     @media (max-width: 600px) {
