@@ -1,15 +1,8 @@
 import { supabase } from '../../../supabase/supabaseClient'
-
-interface CartItem {
-  itemId: number
-  quantity: number
-  receivingDate: number
-  checked: boolean
-  option: string
-}
+import CartItemType from '../../../types/CartItemType'
 
 interface CartData {
-  items: CartItem[]
+  items: CartItemType[]
 }
 
 export const fetchCartItems = async (userId: string): Promise<CartData> => {

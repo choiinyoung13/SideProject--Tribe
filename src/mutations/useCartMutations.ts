@@ -12,6 +12,7 @@ import { QUERY_KEYS } from '../config/constants/queryKeys'
 import { hasCheckedItemsInCart } from '../config/api/cart/hasCheckedItemsInCart '
 import { addItemToCart } from '../config/api/cart/addItemToCart'
 import { updateCartItemReceivingDate } from '../config/api/cart/updateCartItemReceivingDate'
+import { CartItemTypeWithUserId } from '../types/CartItemType'
 
 export function useCartMutations() {
   const queryClient = useQueryClient()
@@ -80,31 +81,32 @@ export function useCartMutations() {
     }
   )
 
-  interface CartItemType {
-    userId: string
-    itemId: number
-    quantity: number
-    receivingDate: number
-    option: string
-    checked: boolean
-  }
-
   const addItemToCartMutation = useMutation(
     ({
       userId,
-      itemId,
-      quantity,
-      receivingDate,
+      title,
+      imgUrl,
+      originalPrice,
+      discount,
       option,
       checked,
-    }: CartItemType) =>
+      receivingDate,
+      itemId,
+      quantity,
+      deliveryPeriod,
+    }: CartItemTypeWithUserId) =>
       addItemToCart({
         userId,
-        itemId,
-        quantity,
-        receivingDate,
+        title,
+        imgUrl,
+        originalPrice,
+        discount,
         option,
         checked,
+        receivingDate,
+        itemId,
+        quantity,
+        deliveryPeriod,
       }),
     {
       onSuccess: () => {

@@ -1,23 +1,16 @@
-import React, { useState } from "react";
-import styled from "styled-components";
-import CountButton from "../Common/CountButton";
-import formatNumberWithCommas from "../../utill/formatNumberWithCommas";
-import { priceCalculation } from "../../utill/priceCalculation";
-import { SHIPPING_COST } from "../../config/constants/constants";
-
-interface OrderInfo {
-  itemId: number;
-  quantity: number;
-  receivingDate: number;
-  option: string;
-  checked: boolean;
-}
+import React, { useState } from 'react'
+import styled from 'styled-components'
+import CountButton from '../Common/CountButton'
+import formatNumberWithCommas from '../../utill/formatNumberWithCommas'
+import { priceCalculation } from '../../utill/priceCalculation'
+import { SHIPPING_COST } from '../../config/constants/constants'
+import { CartItemType } from '../../types/CartItemType'
 
 interface TotalPriceSectionProps {
-  additionalOptionsPrice: number;
-  originalprice: number;
-  discount: number;
-  setOrderInfo: React.Dispatch<React.SetStateAction<OrderInfo>>;
+  additionalOptionsPrice: number
+  originalprice: number
+  discount: number
+  setOrderInfo: React.Dispatch<React.SetStateAction<CartItemType>>
 }
 
 export default function TotalPriceSection({
@@ -26,7 +19,7 @@ export default function TotalPriceSection({
   discount,
   setOrderInfo,
 }: TotalPriceSectionProps) {
-  const [count, setCount] = useState(1);
+  const [count, setCount] = useState(1)
 
   return (
     <TotalPriceCon>
@@ -36,8 +29,8 @@ export default function TotalPriceSection({
           <MainProduct>용기가 필요할 땐, 푸에고 장미</MainProduct>
           <div>
             <CountButton
-              type={"productDetail"}
-              cartId={""}
+              type={'productDetail'}
+              cartId={''}
               itemId={0}
               quantity={1}
               setCount={setCount}
@@ -64,10 +57,10 @@ export default function TotalPriceSection({
         </TotalPriceText>
       </PriceInfoBox>
     </TotalPriceCon>
-  );
+  )
 }
 
-const TotalPriceCon = styled.div``;
+const TotalPriceCon = styled.div``
 
 const TotalPriceTitle = styled.span`
   display: block;
@@ -82,7 +75,7 @@ const TotalPriceTitle = styled.span`
   @media (max-width: 600px) {
     font-size: 0.9rem;
   }
-`;
+`
 
 const DeliveryPriceText = styled.div`
   display: flex;
@@ -101,7 +94,7 @@ const DeliveryPriceText = styled.div`
     font-size: 0.9rem;
     padding: 0px 6px;
   }
-`;
+`
 
 const TotalPriceText = styled.div`
   display: flex;
@@ -118,13 +111,13 @@ const TotalPriceText = styled.div`
     font-size: 0.9rem;
     padding: 0px 6px;
   }
-`;
+`
 
 const PriceInfoBox = styled.div`
   width: 100%;
   background-color: rgba(240, 240, 240, 1);
   padding: 20px 14px 26px;
-`;
+`
 
 const MainProductPrice = styled.div`
   display: flex;
@@ -133,7 +126,7 @@ const MainProductPrice = styled.div`
   width: 100%;
   background-color: #fff;
   padding: 10px;
-`;
+`
 
 const MainProduct = styled.div`
   @media (max-width: 1024px) {
@@ -143,4 +136,4 @@ const MainProduct = styled.div`
   @media (max-width: 600px) {
     font-size: 0.9rem;
   }
-`;
+`

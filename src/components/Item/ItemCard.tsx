@@ -24,6 +24,7 @@ interface ItemCardPropsType {
   discount: number
   isInCart: boolean
   userLikeData: number[]
+  deliveryPeriod: number
 }
 
 export default function ItemCard({
@@ -35,6 +36,7 @@ export default function ItemCard({
   discount,
   isInCart,
   userLikeData,
+  deliveryPeriod,
 }: ItemCardPropsType) {
   const navigate = useNavigate()
   const { session } = useAuth()
@@ -82,11 +84,16 @@ export default function ItemCard({
             }
             addItemToCartMutation.mutate({
               userId: session.user.id,
-              itemId: id,
-              quantity: 1,
-              receivingDate: 0,
+              title: title,
+              imgUrl: imgurl,
+              originalPrice: originalprice,
+              discount: discount,
               option: '-',
               checked: false,
+              receivingDate: 0,
+              itemId: id,
+              quantity: 1,
+              deliveryPeriod: deliveryPeriod,
             })
           }}
         >

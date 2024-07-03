@@ -1,19 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
 import FutureDatePicker from '../Common/DatePicker'
-
-interface OrderInfo {
-  itemId: number
-  quantity: number
-  receivingDate: number
-  option: string
-  checked: boolean
-  type?: string
-}
+import { CartItemType } from '../../types/CartItemType'
 
 interface DatePickerSectionProps {
   setIsDateSelected: React.Dispatch<React.SetStateAction<boolean>>
-  setOrderInfo: React.Dispatch<React.SetStateAction<OrderInfo>>
+  setOrderInfo: React.Dispatch<React.SetStateAction<CartItemType>>
   deliveryperiod: number
   isDateSelected: boolean
 }

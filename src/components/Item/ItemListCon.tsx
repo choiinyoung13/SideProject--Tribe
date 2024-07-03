@@ -20,11 +20,7 @@ import {
 } from '../../utill/itemSort'
 import { filterState } from '../../recoil/atoms/FilterState'
 import { sortedItemsState } from '../../recoil/atoms/SortedItemsState'
-
-interface CartItemType {
-  itemId: number
-  quantity: number
-}
+import { CartItemType } from '../../types/CartItemType'
 
 export default function ItemListCon() {
   const { session } = useAuth()
@@ -95,7 +91,15 @@ export default function ItemListCon() {
               <Empty>해당하는 제품이 없습니다.</Empty>
             ) : (
               sortedItems.map(
-                ({ id, title, imgurl, originalprice, badge, discount }) => {
+                ({
+                  id,
+                  title,
+                  imgurl,
+                  originalprice,
+                  badge,
+                  discount,
+                  deliveryperiod,
+                }) => {
                   const isInCart = cartItems.some(item => item.itemId === id)
                   return (
                     <ItemCard
@@ -108,6 +112,7 @@ export default function ItemListCon() {
                       discount={discount}
                       isInCart={isInCart}
                       userLikeData={userLikeData?.likes}
+                      deliveryPeriod={deliveryperiod}
                     />
                   )
                 }

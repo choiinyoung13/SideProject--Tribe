@@ -6,6 +6,7 @@ import DatePickerSection from '../../components/ProductDetail/DatePickerSection'
 import OptionsSection from '../../components/ProductDetail/OptionSection'
 import TotalPriceSection from '../../components/ProductDetail/TotalPriceSection'
 import ButtonSection from '../../components/ProductDetail/ButtonSection'
+import { CartItemType } from '../../types/CartItemType'
 
 type BadgeType = 'hot' | 'fast'
 
@@ -29,14 +30,6 @@ interface TextSectionProps {
   }
 }
 
-interface OrderInfo {
-  itemId: number
-  quantity: number
-  receivingDate: number
-  option: string
-  checked: boolean
-}
-
 export default function TextSection({
   additionalOptionsPrice,
   handleSelectChange,
@@ -46,6 +39,7 @@ export default function TextSection({
 }: TextSectionProps) {
   const {
     title,
+    imgurl,
     originalprice,
     discount,
     size,
@@ -53,12 +47,17 @@ export default function TextSection({
     classification,
     deliveryperiod,
   } = productInfo
-  const [orderInfo, setOrderInfo] = useState<OrderInfo>({
+  const [orderInfo, setOrderInfo] = useState<CartItemType>({
     itemId: productInfo.id,
-    quantity: 1,
-    receivingDate: 0,
+    title: title,
+    imgUrl: imgurl,
+    originalPrice: originalprice,
+    discount: discount,
     option: '-',
     checked: false,
+    receivingDate: 0,
+    quantity: 1,
+    deliveryPeriod: deliveryperiod,
   })
 
   useEffect(() => {

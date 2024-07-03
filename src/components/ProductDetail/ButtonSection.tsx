@@ -9,18 +9,11 @@ import { useQuery } from 'react-query'
 import { fetchUserLikesInfo } from '../../config/api/user/fetchUserInfo'
 import { QUERY_KEYS } from '../../config/constants/queryKeys'
 import { useUserInfoMutations } from '../../mutations/useUserInfoMutation'
-
-interface OrderInfo {
-  itemId: number
-  quantity: number
-  receivingDate: number
-  option: string
-  checked: boolean
-}
+import { CartItemType } from '../../types/CartItemType'
 
 interface ButtonSectionProps {
   isDateSelected: boolean
-  orderInfo: OrderInfo
+  orderInfo: CartItemType
 }
 
 const checkIsLikeeItem = (likeDatas: number[], itemId: number): boolean => {
@@ -115,12 +108,17 @@ export default function ButtonSection({
                   alert('로그인 후 사용 가능한 기능입니다.')
                 } else {
                   addItemToCartMutation.mutate({
-                    userId: session.user.id,
-                    itemId: orderInfo.itemId,
-                    quantity: orderInfo.quantity,
-                    receivingDate: orderInfo.receivingDate,
+                    title: orderInfo.title,
+                    imgUrl: orderInfo.imgUrl,
+                    originalPrice: orderInfo.originalPrice,
+                    discount: orderInfo.discount,
                     option: orderInfo.option,
                     checked: orderInfo.checked,
+                    receivingDate: orderInfo.receivingDate,
+                    itemId: orderInfo.itemId,
+                    quantity: orderInfo.quantity,
+                    userId: session.user.id,
+                    deliveryPeriod: orderInfo.deliveryPeriod,
                   })
                   alert('장바구니에 추가 되었습니다. 감사합니다.')
                   navigate('/shop')

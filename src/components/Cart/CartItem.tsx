@@ -26,7 +26,6 @@ interface CartItemPropsType {
   mutation?: UseMutationResult<void, unknown, ToggleCartItemStatusArgs>
   allItemChecked?: boolean
   setAllItemChecked?: React.Dispatch<React.SetStateAction<boolean>>
-  handleItemCheckedChange?: (itemId: number, checked: boolean) => void
   quantity?: number
   deliveryperiod?: number
 }
@@ -44,7 +43,6 @@ export default function CartItem({
   itemId,
   allItemChecked,
   setAllItemChecked,
-  handleItemCheckedChange,
   quantity,
   deliveryperiod,
 }: CartItemPropsType) {
@@ -111,9 +109,6 @@ export default function CartItem({
               checked={checked}
               onChange={() => {
                 toggleCartItemStatusMutation.mutate({ cartId, itemId })
-                if (handleItemCheckedChange) {
-                  handleItemCheckedChange(itemId, !checked)
-                }
               }}
             />
           </CheckBox>

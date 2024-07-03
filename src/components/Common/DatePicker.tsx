@@ -10,19 +10,12 @@ import { formatDateToYYYYMMDD } from '../../utill/formatDateToYYYYMMDD'
 import { useAuth } from '../../hooks/useAuth'
 import { useCartMutations } from '../../mutations/useCartMutations'
 import { checkCartItemReceivingDateById } from '../../config/api/cart/checkCartItemReceivingDate'
-
-interface OrderInfo {
-  itemId: number
-  quantity: number
-  receivingDate: number
-  option: string
-  checked: boolean
-}
+import { CartItemType } from '../../types/CartItemType'
 
 interface FutureDatePickerProps {
   daysOffset: number
   setIsDateSelected?: React.Dispatch<React.SetStateAction<boolean>>
-  setOrderInfo?: React.Dispatch<React.SetStateAction<OrderInfo>>
+  setOrderInfo?: React.Dispatch<React.SetStateAction<CartItemType>>
   receivingDate?: number
   itemId?: number
   isDateSelected?: boolean

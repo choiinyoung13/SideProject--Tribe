@@ -1,18 +1,11 @@
-import React from "react";
-import styled from "styled-components";
-import { PiFlowerLight } from "react-icons/pi";
-
-interface OrderInfo {
-  itemId: number;
-  quantity: number;
-  receivingDate: number;
-  option: string;
-  checked: boolean;
-}
+import React from 'react'
+import styled from 'styled-components'
+import { PiFlowerLight } from 'react-icons/pi'
+import { CartItemType } from '../../types/CartItemType'
 
 interface OptionsSectionProps {
-  handleSelectChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
-  setOrderInfo: React.Dispatch<React.SetStateAction<OrderInfo>>;
+  handleSelectChange: (event: React.ChangeEvent<HTMLSelectElement>) => void
+  setOrderInfo: React.Dispatch<React.SetStateAction<CartItemType>>
 }
 
 export default function OptionsSection({
@@ -32,9 +25,9 @@ export default function OptionsSection({
         <select
           name=""
           id=""
-          onChange={(e) => {
-            handleSelectChange(e);
-            setOrderInfo((prev) => ({ ...prev, option: e.target.value }));
+          onChange={e => {
+            handleSelectChange(e)
+            setOrderInfo(prev => ({ ...prev, option: e.target.value }))
           }}
         >
           <option value="-">기본 화병 (+0원)</option>
@@ -50,7 +43,7 @@ export default function OptionsSection({
         </select>
       </SelectWrapper>
     </OptionCon>
-  );
+  )
 }
 
 const OptionCon = styled.div`
@@ -63,7 +56,7 @@ const OptionCon = styled.div`
   @media (max-width: 600px) {
     margin: 35px 0;
   }
-`;
+`
 
 const OptionTitle = styled.div`
   font-size: 1.1rem;
@@ -89,7 +82,7 @@ const OptionTitle = styled.div`
       font-size: 0.8rem;
     }
   }
-`;
+`
 
 const SelectWrapper = styled.div`
   display: flex;
@@ -115,7 +108,7 @@ const SelectWrapper = styled.div`
       font-size: 0.8rem;
     }
   }
-`;
+`
 
 const FlowerIcon = styled.div`
   padding-top: 2px;
@@ -131,4 +124,4 @@ const FlowerIcon = styled.div`
     padding-top: 0px;
     font-size: 1.3rem;
   }
-`;
+`

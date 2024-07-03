@@ -11,48 +11,20 @@ import { useAuth } from '../hooks/useAuth'
 import { useCartMutations } from '../mutations/useCartMutations'
 import { UseQueryResult, useQuery } from 'react-query'
 import { fetchCartItems } from '../config/api/cart/fetchCartItems'
-import { fetchItemById } from '../config/api/items/fetchItems'
 import { QUERY_KEYS } from '../config/constants/queryKeys'
 import { checkAllCartItemReceivingDate } from '../config/api/cart/checkCartItemReceivingDate'
 import loadingIcon from '../assets/images/logo/ball-triangle.svg'
 import { countCheckItemAmount } from '../utill/countCheckItemAmount'
-
-interface CartItem {
-  itemId: number
-  quantity: number
-  receivingDate: number
-  checked: boolean
-  option: string
-}
-
-interface ItemDetails {
-  id: number
-  imgurl: string
-  title: string
-  originalprice: number
-  discount: number
-  badge: string[]
-  category: string
-  classification: string
-  deliveryperiod: number
-  origin: string
-  size: string
-}
-
-interface DetailedCartItem extends CartItem {
-  details: ItemDetails
-}
+import { CartItemType } from '../types/CartItemType'
 
 interface CartItemsResponse {
-  items: CartItem[]
+  items: CartItemType[]
 }
 
 export default function Cart() {
   const windowWidth = useWindowWidth()
   const navigate = useNavigate()
-  const [cartItems, setCartItems] = useState<DetailedCartItem[]>([])
   const [totalPrice, setTotalPrice] = useState(0)
-  const [isCartDetailComplete, setIsCartDetailComplete] = useState(false)
   const { session } = useAuth()
   const [allItemChecked, setAllItemChecked] = useState(false)
   const [allitemhasReceivingDate, setAllitemhasReceivingDate] = useState(false)
@@ -61,30 +33,6 @@ export default function Cart() {
     deleteAllCartItemMutation,
     toggleAllCartItemStatusMutation,
   } = useCartMutations()
-
-  useEffect(() => {
-    const allChecked = cartItems.every(item => item.checked)
-    setAllItemChecked(allChecked)
-
-    const ReceivingDate = async () => {
-      if (session) {
-        const res = await checkAllCartItemReceivingDate({
-          cartId: session.user.id,
-        })
-        setAllitemhasReceivingDate(res)
-      }
-    }
-
-    ReceivingDate()
-  }, [cartItems, session])
-
-  const handleItemCheckedChange = (itemId: number, checked: boolean) => {
-    setCartItems(prevItems =>
-      prevItems.map(item =>
-        item.itemId === itemId ? { ...item, checked } : item
-      )
-    )
-  }
 
   const {
     data: cartData,
@@ -106,30 +54,27 @@ export default function Cart() {
   )
 
   useEffect(() => {
-    const fetchDetailedCartItems = async () => {
-      if (cartData) {
-        const detailedItemsPromises = cartData.items.map(
-          async (cartItem: CartItem) => {
-            const itemDetails = await fetchItemById(cartItem.itemId)
-            return { ...cartItem, details: itemDetails }
-          }
-        )
+    if (cartData && session) {
+      const allChecked = cartData.items.every(item => item.checked)
+      setAllItemChecked(allChecked)
 
-        const detailedItems = await Promise.all(detailedItemsPromises)
-        setCartItems(detailedItems)
-        setIsCartDetailComplete(true)
+      const ReceivingDate = async () => {
+        const res = await checkAllCartItemReceivingDate({
+          cartId: session.user.id,
+        })
+        setAllitemhasReceivingDate(res)
       }
-    }
 
-    fetchDetailedCartItems()
-  }, [cartData])
+      ReceivingDate()
+    }
+  }, [cartData, session])
 
   if (error) {
     console.error(error)
     return <div>Error loading cart data</div>
   }
 
-  if (isLoading || !isCartDetailComplete) {
+  if (isLoading) {
     return (
       <LoadingPage>
         <LoadingIcon>
@@ -139,8 +84,8 @@ export default function Cart() {
     )
   }
 
-  if (isCartDetailComplete)
-    return (
+  return (
+    cartData && (
       <CartCon>
         <Title>장바구니</Title>
         {windowWidth < 1024 && (
@@ -165,7 +110,8 @@ export default function Cart() {
                 />
               </div>
               <div>
-                전체선택 ({countCheckItemAmount(cartItems)}/{cartItems.length})
+                전체선택 ({countCheckItemAmount(cartData.items)}/
+                {cartData.items.length})
               </div>
             </CheckHeaderLeft>
             <CheckHeaderRight
@@ -177,7 +123,7 @@ export default function Cart() {
             </CheckHeaderRight>
           </CheckHeader>
         )}
-        {cartItems.length === 0 ? (
+        {cartData.items.length === 0 ? (
           <EmptyCart />
         ) : (
           <ItemCon>
@@ -187,14 +133,14 @@ export default function Cart() {
               allItemChecked={allItemChecked}
               setAllItemChecked={setAllItemChecked}
             />
-            {cartItems.map((cartItem, i) => (
+            {cartData.items.map((cartItem, i) => (
               <CartItem
                 key={i}
-                title={cartItem.details.title}
-                imgUrl={cartItem.details.imgurl}
+                title={cartItem.title}
+                imgUrl={cartItem.imgUrl}
                 price={priceCalculation(
-                  cartItem.details.originalprice,
-                  cartItem.details.discount
+                  cartItem.originalPrice,
+                  cartItem.discount
                 )}
                 option={cartItem.option}
                 checked={cartItem.checked}
@@ -202,16 +148,15 @@ export default function Cart() {
                 setTotalPrice={setTotalPrice}
                 cartId={session?.user.id}
                 itemId={cartItem.itemId}
-                handleItemCheckedChange={handleItemCheckedChange}
                 quantity={cartItem.quantity}
-                deliveryperiod={cartItem.details.deliveryperiod}
+                deliveryperiod={cartItem.deliveryPeriod}
               />
             ))}
           </ItemCon>
         )}
 
         <ItemSubButtonCon>
-          {cartItems.length > 0 ? (
+          {cartData.items.length > 0 ? (
             <ButtonWrapper>
               <Button
                 colortype="white"
@@ -248,9 +193,9 @@ export default function Cart() {
               navigate('/shop')
             }}
           >
-            {cartItems.length > 0 ? '계속 쇼핑하기' : '쇼핑하러 가기'}
+            {cartData.items.length > 0 ? '계속 쇼핑하기' : '쇼핑하러 가기'}
           </button>
-          {cartItems.length > 0 && !allitemhasReceivingDate ? (
+          {cartData.items.length > 0 && !allitemhasReceivingDate ? (
             <button
               onClick={() => {
                 alert('구매해주셔서 감사합니다')
@@ -260,12 +205,13 @@ export default function Cart() {
             >
               결제하기
             </button>
-          ) : cartItems.length > 0 && allitemhasReceivingDate ? (
+          ) : cartData.items.length > 0 && allitemhasReceivingDate ? (
             <button>수령일을 선택해주세요</button>
           ) : null}
         </ButtonCon>
       </CartCon>
     )
+  )
 }
 
 const CartCon = styled.div`
@@ -324,6 +270,7 @@ const CheckHeaderLeft = styled.div`
     }
   }
 `
+
 const CheckHeaderRight = styled.div`
   cursor: pointer;
 
