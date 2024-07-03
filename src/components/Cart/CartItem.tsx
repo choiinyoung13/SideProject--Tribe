@@ -390,8 +390,14 @@ const ReceivingDate = styled.div`
   }
 
   @media (max-width: 600px) {
+    flex-grow: 2;
+    flex-basis: 30%;
+    min-width: 40px;
+  }
+
+  @media (max-width: 530px) {
     flex-grow: 1;
-    flex-basis: 10%;
+    flex-basis: 22%;
     min-width: 40px;
   }
 `

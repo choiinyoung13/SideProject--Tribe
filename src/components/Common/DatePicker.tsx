@@ -10,9 +10,6 @@ import { formatDateToYYYYMMDD } from '../../utill/formatDateToYYYYMMDD'
 import { useAuth } from '../../hooks/useAuth'
 import { useCartMutations } from '../../mutations/useCartMutations'
 import { checkCartItemReceivingDateById } from '../../config/api/cart/checkCartItemReceivingDate'
-import Modal from 'react-modal'
-import { useRecoilState } from 'recoil'
-import { ModileCartCalendarModalState } from '../../recoil/atoms/ModileCartCalendarModalState'
 
 interface OrderInfo {
   itemId: number
@@ -32,8 +29,6 @@ interface FutureDatePickerProps {
   type?: string
 }
 
-Modal.setAppElement('#root')
-
 export default function FutureDatePicker({
   daysOffset,
   setIsDateSelected,
@@ -41,12 +36,8 @@ export default function FutureDatePicker({
   receivingDate,
   itemId,
   isDateSelected,
-  type,
 }: FutureDatePickerProps) {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
-  const [isModalOpen, setIsModalOpen] = useRecoilState(
-    ModileCartCalendarModalState
-  )
   const { session } = useAuth()
   const windowWidth = useWindowWidth()
   const { updateCartItemReceivingDateMutation } = useCartMutations()
@@ -77,9 +68,7 @@ export default function FutureDatePicker({
         newReceivingDate: Number(formatDateToYYYYMMDD(date)),
       })
     }
-
     console.log(date)
-
     setSelectedDate(date)
     if (setOrderInfo)
       setOrderInfo(prev => ({
@@ -87,7 +76,6 @@ export default function FutureDatePicker({
         receivingDate: Number(formatDateToYYYYMMDD(date!)),
       }))
     if (setIsDateSelected) setIsDateSelected(true)
-    setIsModalOpen(false)
   }
 
   const calculateMinDate = () => {
@@ -96,75 +84,45 @@ export default function FutureDatePicker({
     return today
   }
 
+  useEffect(() => {
+    console.log(isReceivingDateExsisted)
+  }, [isReceivingDateExsisted])
+
+  useEffect(() => {
+    console.log(isReceivingDateExsisted)
+  }, [isReceivingDateExsisted])
+
   return (
     <DatePickerCon>
       <DataPickerLabel>
         <DatePickerIcon
           isreceivingdateexsisted={isReceivingDateExsisted}
           isdateselected={isDateSelected}
-          onClick={() => {
-            if (type === 'cartItem' && windowWidth <= 600) {
-              setIsModalOpen(true)
-            }
-          }}
         >
           <AiOutlineCalendar />
         </DatePickerIcon>
         <Space />
-        {(type !== 'cartItem' || windowWidth > 600) && (
-          <DatePicker
-            wrapperClassName="dp-full-width-wrapper"
-            className="dp-full-width"
-            selected={selectedDate}
-            onChange={handleDateChange}
-            minDate={calculateMinDate()}
-            dateFormat="yyyy-MM-dd"
-            value={
-              receivingDate ? formatDateFromNumber(receivingDate) : undefined
-            }
-            placeholderText={'수령일을 선택해주세요'}
-            customInput={
-              <input
-                style={{
-                  fontSize: windowWidth <= 600 ? '0.8rem' : '0.9rem',
-                  padding: '4px 4px 6px 4px',
-                }}
-              />
-            }
-          />
-        )}
-      </DataPickerLabel>
-      <Modal
-        isOpen={isModalOpen}
-        onRequestClose={() => setIsModalOpen(prev => !prev)}
-        style={{
-          content: {
-            top: '50%',
-            left: '50%',
-            right: 'auto',
-            bottom: 'auto',
-            marginRight: '-50%',
-            transform: 'translate(-50%, -50%)',
-            padding: '0px',
-            borderRadius: '14px',
-            zIndex: 10005,
-            minHeight: '100px',
-          },
-          overlay: {
-            backgroundColor: 'rgba(0, 0, 0, 0.2)',
-            zIndex: 10004,
-          },
-        }}
-      >
         <DatePicker
+          wrapperClassName="dp-full-width-wrapper"
+          className="dp-full-width"
           selected={selectedDate}
           onChange={handleDateChange}
           minDate={calculateMinDate()}
           dateFormat="yyyy-MM-dd"
-          inline
-          portalId="root"
+          value={
+            receivingDate ? formatDateFromNumber(receivingDate) : undefined
+          }
+          placeholderText={'수령일을 선택해주세요'}
+          customInput={
+            <input
+              style={{
+                fontSize: windowWidth <= 600 ? '0.8rem' : '0.9rem',
+                padding: '4px 4px 6px 4px',
+              }}
+            />
+          }
         />
-      </Modal>
+      </DataPickerLabel>
     </DatePickerCon>
   )
 }
@@ -202,6 +160,10 @@ const DatePickerIcon = styled.div<{
       : props.isreceivingdateexsisted
       ? 'rgb(18, 202, 147)'
       : 'rgb(223, 33, 19)'};
+
+  @media (max-width: 530px) {
+    position: absolute;
+  }
 
   @media (max-width: 500px) {
     font-size: 1.3rem;

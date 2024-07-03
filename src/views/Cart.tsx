@@ -404,6 +404,7 @@ const ButtonCon = styled.div`
 
   @media (max-width: 1024px) {
     margin-top: 20px;
+    padding-bottom: 0px;
   }
 
   @media (max-width: 600px) {

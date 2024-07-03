@@ -90,6 +90,11 @@ const DetailCon = styled.div`
     margin: 0px;
     width: 100%;
   }
+
+  @media (max-width: 600px) {
+    margin-top: 40px;
+    width: 100%;
+  }
 `
 const DetailWrapper = styled.div`
   display: flex;

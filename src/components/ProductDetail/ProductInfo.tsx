@@ -59,6 +59,7 @@ const Title = styled.div`
 const InfoWrapper = styled.div`
   margin: 30px 0px 40px;
   display: flex;
+  padding-bottom: 2px;
 
   justify-content: space-between;
   width: 100%;
@@ -91,7 +92,13 @@ const InfoWrapper = styled.div`
 
   @media (max-width: 600px) {
     width: 100%;
-    min-width: 200px;
+    min-width: 330px;
+    scrollbar-color: rgba(210, 210, 210, 0) #fff;
+  }
+
+  @media (max-width: 350px) {
+    width: 100%;
+    min-width: 100%;
     scrollbar-color: rgba(210, 210, 210, 0) #fff;
   }
 `
@@ -123,18 +130,27 @@ const Info = styled.div`
   @media (max-width: 600px) {
     margin: 0px;
     align-items: center;
-    padding: 0px;
+    padding: 10px;
     border-left: 1px solid rgba(90, 90, 90, 0.3);
-    flex-grow: 3;
 
     &:first-of-type {
-      padding-right: 18px;
+      padding: 0px;
       border: none;
       flex-grow: 1;
     }
 
+    &:nth-child(2) {
+      padding: 0px;
+      flex-grow: 1;
+    }
+
+    &:nth-child(3) {
+      padding: 0px;
+      flex-grow: 1;
+    }
+
     &:last-of-type {
-      padding-left: 18px;
+      padding: 0px 0px 0px 8px;
       flex-grow: 0.5;
     }
   }
