@@ -15,6 +15,7 @@ import { fetchItemById } from '../config/api/items/fetchItems'
 import { QUERY_KEYS } from '../config/constants/queryKeys'
 import { checkAllCartItemReceivingDate } from '../config/api/cart/checkCartItemReceivingDate'
 import loadingIcon from '../assets/images/logo/ball-triangle.svg'
+import { countCheckItemAmount } from '../utill/countCheckItemAmount'
 
 interface CartItem {
   itemId: number
@@ -162,7 +163,9 @@ export default function Cart() {
                 }}
               />
             </div>
-            <div>전체선택 (1/2)</div>
+            <div>
+              전체선택 ({countCheckItemAmount(cartItems)}/{cartItems.length})
+            </div>
           </CheckHeaderLeft>
           <CheckHeaderRight
             onClick={() => {
@@ -423,7 +426,6 @@ const ButtonCon = styled.div`
     &:first-of-type {
       background-color: #fff;
       border: 1px solid rgba(150, 150, 150, 1);
-      margin-right: 14px;
 
       @media (max-width: 600px) {
         margin-right: 0;
@@ -435,6 +437,7 @@ const ButtonCon = styled.div`
       background-color: rgba(20, 20, 20, 1);
       color: #fff;
       border: none;
+      margin-left: 14px;
     }
 
     @media (max-width: 600px) {

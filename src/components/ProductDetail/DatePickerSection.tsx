@@ -8,6 +8,7 @@ interface OrderInfo {
   receivingDate: number
   option: string
   checked: boolean
+  type?: string
 }
 
 interface DatePickerSectionProps {
@@ -35,6 +36,7 @@ export default function DatePickerSection({
           setIsDateSelected={setIsDateSelected}
           setOrderInfo={setOrderInfo}
           isDateSelected={isDateSelected}
+          type={'productDetail'}
         />
       </DatePicker>
     </DatePickerWrapper>

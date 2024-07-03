@@ -36,6 +36,7 @@ export default function FutureDatePicker({
   receivingDate,
   itemId,
   isDateSelected,
+  type,
 }: FutureDatePickerProps) {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
   const { session } = useAuth()
@@ -98,13 +99,14 @@ export default function FutureDatePicker({
         <DatePickerIcon
           isreceivingdateexsisted={isReceivingDateExsisted}
           isdateselected={isDateSelected}
+          datepickertype={type}
         >
           <AiOutlineCalendar />
         </DatePickerIcon>
         <Space />
         <DatePicker
           wrapperClassName="dp-full-width-wrapper"
-          className="dp-full-width"
+          className={`dp-full-width ${type}`}
           selected={selectedDate}
           onChange={handleDateChange}
           minDate={calculateMinDate()}
@@ -150,6 +152,7 @@ const Space = styled.div`
 const DatePickerIcon = styled.div<{
   isreceivingdateexsisted: boolean
   isdateselected: boolean | undefined
+  datepickertype: string | undefined
 }>`
   cursor: pointer;
   color: ${props =>
@@ -162,7 +165,8 @@ const DatePickerIcon = styled.div<{
       : 'rgb(223, 33, 19)'};
 
   @media (max-width: 530px) {
-    position: absolute;
+    position: ${props =>
+      props.datepickertype === 'productDetail' ? 'block' : 'absolute'};
   }
 
   @media (max-width: 500px) {

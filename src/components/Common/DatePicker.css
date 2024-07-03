@@ -18,5 +18,9 @@
 @media (max-width: 530px) {
   .dp-full-width {
     visibility: hidden;
+
+    &.productDetail {
+      visibility: visible;
+    }
   }
 }
