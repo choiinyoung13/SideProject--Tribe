@@ -16,7 +16,7 @@ interface FutureDatePickerProps {
   daysOffset: number
   setIsDateSelected?: React.Dispatch<React.SetStateAction<boolean>>
   setOrderInfo?: React.Dispatch<React.SetStateAction<CartItemType>>
-  receivingDate?: number
+  receivingDate: number
   itemId?: number
   isDateSelected?: boolean
   type?: string
@@ -104,9 +104,7 @@ export default function FutureDatePicker({
           onChange={handleDateChange}
           minDate={calculateMinDate()}
           dateFormat="yyyy-MM-dd"
-          value={
-            receivingDate ? formatDateFromNumber(receivingDate) : undefined
-          }
+          value={receivingDate !== 0 ? formatDateFromNumber(receivingDate) : ''}
           placeholderText={'수령일을 선택해주세요'}
           customInput={
             <input

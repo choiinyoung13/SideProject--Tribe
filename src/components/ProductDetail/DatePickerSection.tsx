@@ -8,6 +8,7 @@ interface DatePickerSectionProps {
   setOrderInfo: React.Dispatch<React.SetStateAction<CartItemType>>
   deliveryperiod: number
   isDateSelected: boolean
+  receivingDate: number
 }
 
 export default function DatePickerSection({
@@ -15,6 +16,7 @@ export default function DatePickerSection({
   setOrderInfo,
   deliveryperiod,
   isDateSelected,
+  receivingDate,
 }: DatePickerSectionProps) {
   return (
     <DatePickerWrapper>
@@ -29,6 +31,7 @@ export default function DatePickerSection({
           setOrderInfo={setOrderInfo}
           isDateSelected={isDateSelected}
           type={'productDetail'}
+          receivingDate={receivingDate}
         />
       </DatePicker>
     </DatePickerWrapper>

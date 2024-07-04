@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import CountButton from '../Common/CountButton'
 import formatNumberWithCommas from '../../utill/formatNumberWithCommas'
@@ -48,6 +48,15 @@ export default function CartItem({
 }: CartItemPropsType) {
   const { toggleCartItemStatusMutation, toggleAllCartItemStatusMutation } =
     useCartMutations()
+  const [isDateSelected, setIsDateSelected] = useState(false)
+
+  useEffect(() => {
+    if (receivingDate === 0) {
+      setIsDateSelected(false)
+    } else {
+      setIsDateSelected(true)
+    }
+  }, [receivingDate])
 
   useEffect(() => {
     if (price && quantity && setTotalPrice) {
@@ -98,7 +107,8 @@ export default function CartItem({
     cartId &&
     itemId &&
     quantity &&
-    deliveryperiod
+    deliveryperiod &&
+    receivingDate != undefined
   ) {
     return (
       <ItemContentCon>
@@ -131,6 +141,8 @@ export default function CartItem({
                 receivingDate={receivingDate}
                 itemId={itemId}
                 type={'cartItem'}
+                isDateSelected={isDateSelected}
+                setIsDateSelected={setIsDateSelected}
               />
             </DatePicker>
           </ReceivingDate>
