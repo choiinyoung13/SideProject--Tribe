@@ -1,5 +1,5 @@
 import { supabase } from '../../../supabase/supabaseClient'
-import CartItemType from '../../../types/CartItemType'
+import { CartItemType } from '../../../types/CartItemType'
 
 interface CartData {
   items: CartItemType[]
