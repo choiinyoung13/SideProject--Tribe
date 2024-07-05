@@ -60,10 +60,6 @@ export default function TextSection({
     deliveryPeriod: deliveryperiod,
   })
 
-  useEffect(() => {
-    console.log(orderInfo)
-  }, [orderInfo])
-
   return (
     <TextSectionCon>
       <PriceInfo originalprice={originalprice} discount={discount} />

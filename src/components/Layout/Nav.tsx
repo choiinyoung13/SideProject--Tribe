@@ -19,26 +19,13 @@ export default function Nav() {
   const queryClient = useQueryClient()
   const [cartState, setCartState] = useState(false)
 
-  const { refetch } = useQuery(
+  const { data } = useQuery(
     QUERY_KEYS.CART_ITEMS,
     () => fetchCartItems(session!.user.id),
     {
       enabled: !!session,
-      onSuccess: data => {
-        if (data && data.items.length > 0) {
-          setCartState(true)
-        } else {
-          setCartState(false)
-        }
-      },
     }
   )
-
-  useEffect(() => {
-    if (session) {
-      refetch()
-    }
-  }, [session, refetch])
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen)
@@ -50,6 +37,14 @@ export default function Nav() {
     queryClient.invalidateQueries(QUERY_KEYS.CART_ITEMS)
     toggleMenu()
   }
+
+  useEffect(() => {
+    if (data && data.items.length > 0) {
+      setCartState(true)
+    } else {
+      setCartState(false)
+    }
+  }, [data])
 
   return (
     <>

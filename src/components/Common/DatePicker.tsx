@@ -62,7 +62,6 @@ export default function FutureDatePicker({
         newReceivingDate: Number(formatDateToYYYYMMDD(date)),
       })
     }
-    console.log(date)
     setSelectedDate(date)
     if (setOrderInfo)
       setOrderInfo(prev => ({
@@ -77,14 +76,6 @@ export default function FutureDatePicker({
     today.setDate(today.getDate() + daysOffset)
     return today
   }
-
-  useEffect(() => {
-    console.log(isReceivingDateExsisted)
-  }, [isReceivingDateExsisted])
-
-  useEffect(() => {
-    console.log(isReceivingDateExsisted)
-  }, [isReceivingDateExsisted])
 
   return (
     <DatePickerCon>

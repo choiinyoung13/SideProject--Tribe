@@ -13,9 +13,11 @@ import { hasCheckedItemsInCart } from '../config/api/cart/hasCheckedItemsInCart 
 import { addItemToCart } from '../config/api/cart/addItemToCart'
 import { updateCartItemReceivingDate } from '../config/api/cart/updateCartItemReceivingDate'
 import { CartItemTypeWithUserId } from '../types/CartItemType'
+import { useNavigate } from 'react-router-dom'
 
 export function useCartMutations() {
   const queryClient = useQueryClient()
+  const navigate = useNavigate()
 
   /******* deleteCartItemMutation  ********/
   const deleteCartItemMutation = useMutation(
@@ -111,6 +113,12 @@ export function useCartMutations() {
     {
       onSuccess: () => {
         queryClient.invalidateQueries(QUERY_KEYS.CART_ITEMS)
+        console.log('upload 완료')
+        alert('장바구니에 추가 되었습니다. 감사합니다.')
+        navigate('/shop')
+      },
+      onError: error => {
+        console.error('Error updating item:', error)
       },
     }
   )

@@ -12,7 +12,6 @@ import { useCartMutations } from '../mutations/useCartMutations'
 import { UseQueryResult, useQuery } from 'react-query'
 import { fetchCartItems } from '../config/api/cart/fetchCartItems'
 import { QUERY_KEYS } from '../config/constants/queryKeys'
-import { checkAllCartItemReceivingDate } from '../config/api/cart/checkCartItemReceivingDate'
 import loadingIcon from '../assets/images/logo/ball-triangle.svg'
 import { countCheckItemAmount } from '../utill/countCheckItemAmount'
 import { CartItemType } from '../types/CartItemType'
@@ -27,7 +26,9 @@ export default function Cart() {
   const [totalPrice, setTotalPrice] = useState(0)
   const { session } = useAuth()
   const [allItemChecked, setAllItemChecked] = useState(false)
-  const [allitemhasReceivingDate, setAllitemhasReceivingDate] = useState(false)
+  const [isAllItemReceivingDateSelected, setIsAllItemReceivingDateSelected] =
+    useState(false)
+
   const {
     deleteCartItemMutation,
     deleteAllCartItemMutation,
@@ -44,7 +45,6 @@ export default function Cart() {
       if (session) {
         return fetchCartItems(session.user.id)
       }
-      return Promise.resolve({ items: [] })
     },
     {
       enabled: !!session,
@@ -54,18 +54,14 @@ export default function Cart() {
   )
 
   useEffect(() => {
-    if (cartData && session) {
-      const allChecked = cartData.items.every(item => item.checked)
-      setAllItemChecked(allChecked)
+    if (cartData && cartData.items.length > 0 && session) {
+      const isAllItmeSelected = cartData.items.every(item => item.checked)
+      setAllItemChecked(isAllItmeSelected)
 
-      const ReceivingDate = async () => {
-        const res = await checkAllCartItemReceivingDate({
-          cartId: session.user.id,
-        })
-        setAllitemhasReceivingDate(res)
-      }
-
-      ReceivingDate()
+      const isAllItemReceivingDateSelected = cartData.items.some(
+        (item: CartItemType) => item.receivingDate !== 0
+      )
+      setIsAllItemReceivingDateSelected(isAllItemReceivingDateSelected)
     }
   }, [cartData, session])
 
@@ -95,7 +91,7 @@ export default function Cart() {
                 <input
                   type="checkbox"
                   checked={allItemChecked}
-                  onClick={() => {
+                  onChange={() => {
                     const cartId = session!.user.id
 
                     setAllItemChecked(prev => {
@@ -195,7 +191,7 @@ export default function Cart() {
           >
             {cartData.items.length > 0 ? '계속 쇼핑하기' : '쇼핑하러 가기'}
           </button>
-          {cartData.items.length > 0 && !allitemhasReceivingDate ? (
+          {cartData.items.length > 0 && isAllItemReceivingDateSelected ? (
             <button
               onClick={() => {
                 alert('구매해주셔서 감사합니다')
@@ -205,7 +201,7 @@ export default function Cart() {
             >
               결제하기
             </button>
-          ) : cartData.items.length > 0 && allitemhasReceivingDate ? (
+          ) : cartData.items.length > 0 && !isAllItemReceivingDateSelected ? (
             <button>수령일을 선택해주세요</button>
           ) : null}
         </ButtonCon>

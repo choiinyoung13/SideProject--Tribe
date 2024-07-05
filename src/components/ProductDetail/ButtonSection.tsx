@@ -120,8 +120,6 @@ export default function ButtonSection({
                     userId: session.user.id,
                     deliveryPeriod: orderInfo.deliveryPeriod,
                   })
-                  alert('장바구니에 추가 되었습니다. 감사합니다.')
-                  navigate('/shop')
                 }
               }}
             >

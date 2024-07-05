@@ -4,14 +4,9 @@ import ItemListCon from '../Item/ItemListCon'
 import { useRecoilState } from 'recoil'
 import { filterState } from '../../recoil/atoms/FilterState'
 import { RxCross2 } from 'react-icons/rx'
-import { useEffect } from 'react'
 
 export default function MainSection() {
   const [filterData, setFilterState] = useRecoilState(filterState)
-
-  useEffect(() => {
-    console.log(filterData)
-  }, [filterData])
 
   return (
     <>
@@ -37,9 +32,6 @@ export default function MainSection() {
                                 const dataArray = JSON.parse(storedFilter)
                                 const filteredDataArray = dataArray.filter(
                                   (obj: object) => {
-                                    console.log(Object.values(obj)[0])
-                                    console.log(data)
-
                                     return Object.values(obj)[0] !== data
                                   }
                                 )
