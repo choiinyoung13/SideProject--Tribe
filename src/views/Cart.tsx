@@ -58,10 +58,11 @@ export default function Cart() {
       const isAllItmeSelected = cartData.items.every(item => item.checked)
       setAllItemChecked(isAllItmeSelected)
 
-      const isAllItemReceivingDateSelected = cartData.items.some(
+      const isAllItemReceivingDateSelected = cartData.items.every(
         (item: CartItemType) => item.receivingDate !== 0
       )
       setIsAllItemReceivingDateSelected(isAllItemReceivingDateSelected)
+      console.log(isAllItemReceivingDateSelected)
     }
   }, [cartData, session])
 
