@@ -9,18 +9,26 @@ import useWindowHeight from "../hooks/useWindowHeight";
 import { Link } from "react-router-dom";
 import { RiInstagramFill } from "react-icons/ri";
 import { FaSquareFacebook, FaYoutube } from "react-icons/fa6";
+import loadingIcon from "../assets/images/logo/ball-triangle.svg";
+import { useState } from "react";
 
 export default function About() {
   const windowWidth = useWindowWidth();
   const windowHeight = useWindowHeight();
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   if (windowWidth <= 600) {
     return <MobileHome />;
   }
 
   return (
-    <HomeCon>
-      <Section>
+    <AboutCon>
+      {!isImageLoaded && (
+        <Loading>
+          <img src={loadingIcon} alt="Loading..." />
+        </Loading>
+      )}
+      <Section style={{ display: isImageLoaded ? "block" : "none" }}>
         <TextBox windowheight={windowHeight}>
           <TextNumber>" 002</TextNumber>
           <TextContentCon>
@@ -70,12 +78,14 @@ export default function About() {
         }
         alt=""
         draggable="false"
+        onLoad={() => setIsImageLoaded(true)}
+        style={{ display: isImageLoaded ? "block" : "none" }}
       />
-    </HomeCon>
+    </AboutCon>
   );
 }
 
-const HomeCon = styled.div`
+const AboutCon = styled.div`
   width: 100%;
   height: 100vh;
   overflow: hidden;
@@ -197,5 +207,22 @@ const SocialLinks = styled.div`
   }
 
   @media (max-width: 600px) {
+  }
+`;
+
+const Loading = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 100; /* Make sure it appears above other content */
+  background-color: #fff; /* Optional: add a background color */
+
+  img {
+    width: 10%; /* Adjust size as needed */
   }
 `;

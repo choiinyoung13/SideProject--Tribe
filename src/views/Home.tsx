@@ -8,17 +8,19 @@ import { Link } from "react-router-dom";
 import MobileHome from "./MobileHome";
 import useWindowHeight from "../hooks/useWindowHeight";
 import Button from "../components/Common/Button";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useHandleSignIn } from "../hooks/usehandleSignIn";
+import loadingIcon from "../assets/images/logo/ball-triangle.svg";
 
 export default function Home() {
   const windowWidth = useWindowWidth();
   const windowHeight = useWindowHeight();
   const { handleAuthRedirect } = useHandleSignIn();
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   useEffect(() => {
     handleAuthRedirect();
-  }, []);
+  }, [handleAuthRedirect]);
 
   if (windowWidth <= 600) {
     return <MobileHome />;
@@ -26,7 +28,12 @@ export default function Home() {
 
   return (
     <HomeCon>
-      <Section>
+      {!isImageLoaded && (
+        <Loading>
+          <img src={loadingIcon} alt="Loading..." />
+        </Loading>
+      )}
+      <Section style={{ display: isImageLoaded ? "block" : "none" }}>
         <TextBox windowheight={windowHeight}>
           <TextNumber>" 001</TextNumber>
           <TextContentCon>
@@ -72,6 +79,8 @@ export default function Home() {
         }
         alt=""
         draggable="false"
+        onLoad={() => setIsImageLoaded(true)}
+        style={{ display: isImageLoaded ? "block" : "none" }}
       />
     </HomeCon>
   );
@@ -168,5 +177,22 @@ const ButtonCon = styled.div`
     button {
       font-size: 0.9rem;
     }
+  }
+`;
+
+const Loading = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 100; /* Make sure it appears above other content */
+  background-color: #fff; /* Optional: add a background color */
+
+  img {
+    width: 10%; /* Adjust size as needed */
   }
 `;

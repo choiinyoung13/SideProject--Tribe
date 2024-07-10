@@ -10,11 +10,13 @@ import InfinityMarquee from "../components/Common/Marquee";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import Button from "../components/Common/Button";
+import loadingIcon from "../assets/images/logo/ball-triangle.svg";
 
 export default function CommunityFeatures() {
   const windowWidth = useWindowWidth();
   const windowHeight = useWindowHeight();
   const [isOnMouse, setIsOnMouse] = useState(false);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   if (windowWidth <= 600) {
     return <MobileHome />;
@@ -22,7 +24,12 @@ export default function CommunityFeatures() {
 
   return (
     <HomeCon>
-      <Section>
+      {!isImageLoaded && (
+        <Loading>
+          <img src={loadingIcon} alt="Loading..." />
+        </Loading>
+      )}
+      <Section style={{ display: isImageLoaded ? "block" : "none" }}>
         <HoverableCon
           windowheight={windowHeight}
           onMouseOver={() => setIsOnMouse(true)}
@@ -94,6 +101,8 @@ export default function CommunityFeatures() {
         }
         alt=""
         draggable="false"
+        onLoad={() => setIsImageLoaded(true)}
+        style={{ display: isImageLoaded ? "block" : "none" }}
       />
     </HomeCon>
   );
@@ -301,5 +310,22 @@ const ButtonCon = styled.div`
   }
 
   @media (max-width: 600px) {
+  }
+`;
+
+const Loading = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 100; /* Make sure it appears above other content */
+  background-color: #fff; /* Optional: add a background color */
+
+  img {
+    width: 10%; /* Adjust size as needed */
   }
 `;
