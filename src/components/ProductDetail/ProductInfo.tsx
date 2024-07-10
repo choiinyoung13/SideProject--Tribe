@@ -1,11 +1,11 @@
-import styled from 'styled-components'
+import styled from "styled-components";
 
 interface ProductInfoPropsType {
-  title: string
-  size: string
-  origin: string
-  classification: string
-  deliveryPeriod: number
+  title: string;
+  size: string;
+  origin: string;
+  classification: string;
+  deliveryPeriod: number;
 }
 
 export default function ProductInfo({
@@ -37,7 +37,7 @@ export default function ProductInfo({
         </Info>
       </InfoWrapper>
     </>
-  )
+  );
 }
 
 const Title = styled.div`
@@ -54,7 +54,7 @@ const Title = styled.div`
     font-size: 1rem;
     margin-top: 10px;
   }
-`
+`;
 
 const InfoWrapper = styled.div`
   margin: 30px 0px 40px;
@@ -101,7 +101,7 @@ const InfoWrapper = styled.div`
     min-width: 100%;
     scrollbar-color: rgba(210, 210, 210, 0) #fff;
   }
-`
+`;
 
 const Info = styled.div`
   display: flex;
@@ -122,7 +122,7 @@ const Info = styled.div`
   }
 
   @media (max-width: 1024px) {
-    margin: 0px;
+    margin: 14px 0;
     align-items: center;
     flex-grow: 1;
   }
@@ -154,7 +154,7 @@ const Info = styled.div`
       flex-grow: 0.5;
     }
   }
-`
+`;
 
 const InfoKey = styled.div`
   font-size: 0.8rem;
@@ -168,7 +168,7 @@ const InfoKey = styled.div`
   @media (max-width: 600px) {
     font-size: 0.8rem;
   }
-`
+`;
 
 const InfoValue = styled.div`
   font-size: 1rem;
@@ -185,4 +185,4 @@ const InfoValue = styled.div`
     font-size: 0.8rem;
     font-weight: 600;
   }
-`
+`;
