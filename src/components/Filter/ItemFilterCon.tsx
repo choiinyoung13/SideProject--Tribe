@@ -3,6 +3,7 @@ import Badge from "../Common/Badge";
 import ItemFilter from "./ItemFilter";
 import { useSetRecoilState } from "recoil";
 import { filterState } from "../../recoil/atoms/FilterState";
+import { useAuth } from "../../hooks/useAuth";
 
 interface FilterItem {
   [key: string]: string;
@@ -10,6 +11,7 @@ interface FilterItem {
 
 export default function ItemFilterCon() {
   const setFilterState = useSetRecoilState(filterState);
+  const { session } = useAuth();
 
   const handleBadgeClick = (badgeType: string, badgeLabel: string) => {
     const storedFilter = localStorage.getItem("filter");
@@ -55,7 +57,15 @@ export default function ItemFilterCon() {
         <BadgeWrapper onClick={() => handleBadgeClick("hot", "인기상품")}>
           <Badge badgeType="hot" />
         </BadgeWrapper>
-        <BadgeWrapper onClick={() => handleBadgeClick("like", "찜한상품")}>
+        <BadgeWrapper
+          onClick={() => {
+            if (!session) {
+              alert("로그인 후 사용 가능한 기능입니다.");
+              return;
+            }
+            handleBadgeClick("like", "찜한상품");
+          }}
+        >
           <Badge badgeType="like" />
         </BadgeWrapper>
       </BadgeFilterCon>
