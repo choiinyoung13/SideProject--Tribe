@@ -4,6 +4,7 @@ import google_logo from "../assets/images/logo/logo_google.png";
 import kakao_logo from "../assets/images/logo/logo_kakao.png";
 import login_image from "../assets/images/logo/login_web_1.jpg";
 import useWindowWidth from "../hooks/useWindowWidth";
+import loadingIcon from "../assets/images/logo/ball-triangle.svg";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useHandleSignIn } from "../hooks/usehandleSignIn";
@@ -13,6 +14,7 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { handleSignIn, signInWithOAuth, errorMessage } = useHandleSignIn();
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   return (
     <LoginCon>
@@ -82,7 +84,17 @@ export default function Login() {
       </FormCon>
       {windowWidth >= 1920 && (
         <ImgCon>
-          <img src={login_image} alt="" />
+          {!isImageLoaded && (
+            <Loading>
+              <img src={loadingIcon} alt="Loading..." />
+            </Loading>
+          )}
+          <img
+            src={login_image}
+            alt=""
+            onLoad={() => setIsImageLoaded(true)}
+            style={{ display: isImageLoaded ? "block" : "none" }}
+          />
         </ImgCon>
       )}
     </LoginCon>
@@ -140,6 +152,7 @@ const FormWrapper = styled.div`
     min-width: 100%;
   }
 `;
+
 const FormTitle = styled.h2`
   font-size: 1.8rem;
   font-weight: bold;
@@ -266,5 +279,17 @@ const ImgCon = styled.div`
   img {
     width: 100%;
     height: 100vh;
+  }
+`;
+
+const Loading = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100dvh;
+  width: 100%;
+
+  img {
+    width: 15%;
   }
 `;

@@ -1,23 +1,23 @@
-import styled from 'styled-components'
-import { Link, useLocation } from 'react-router-dom'
-import { useEffect, useState } from 'react'
-import { FaBars, FaTimes } from 'react-icons/fa'
-import { ImInfo } from 'react-icons/im'
-import tribe_logo from '../../assets/images/logo/logo_tribe.png'
-import usewindowWidth from '../../hooks/useWindowWidth'
-import { useAuth } from '../../hooks/useAuth'
-import { fetchCartItems } from '../../config/api/cart/fetchCartItems'
-import { useQuery, useQueryClient } from 'react-query'
-import { QUERY_KEYS } from '../../config/constants/queryKeys'
+import styled from "styled-components";
+import { Link, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { FaBars, FaTimes } from "react-icons/fa";
+import { ImInfo } from "react-icons/im";
+import tribe_logo from "../../assets/images/logo/logo_tribe.png";
+import usewindowWidth from "../../hooks/useWindowWidth";
+import { useAuth } from "../../hooks/useAuth";
+import { fetchCartItems } from "../../config/api/cart/fetchCartItems";
+import { useQuery, useQueryClient } from "react-query";
+import { QUERY_KEYS } from "../../config/constants/queryKeys";
 
 export default function Nav() {
-  const [menuOpen, setMenuOpen] = useState(false)
-  const location = useLocation()
-  const windowwidth = usewindowWidth()
-  const pantname = location.pathname.slice(1)
-  const { session, signOut } = useAuth()
-  const queryClient = useQueryClient()
-  const [cartState, setCartState] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false);
+  const location = useLocation();
+  const windowwidth = usewindowWidth();
+  const pantname = location.pathname.slice(1);
+  const { session, signOut } = useAuth();
+  const queryClient = useQueryClient();
+  const [cartState, setCartState] = useState(false);
 
   const { data } = useQuery(
     QUERY_KEYS.CART_ITEMS,
@@ -25,26 +25,26 @@ export default function Nav() {
     {
       enabled: !!session,
     }
-  )
+  );
 
-  const toggleMenu = () => {
-    setMenuOpen(!menuOpen)
-  }
+  const toggleMenu = (state: boolean) => {
+    setMenuOpen(state);
+  };
 
   const handleLogout = async () => {
-    await signOut()
-    setCartState(false)
-    queryClient.invalidateQueries(QUERY_KEYS.CART_ITEMS)
-    toggleMenu()
-  }
+    await signOut();
+    setCartState(false);
+    queryClient.invalidateQueries(QUERY_KEYS.CART_ITEMS);
+    toggleMenu(false);
+  };
 
   useEffect(() => {
     if (data && data.items.length > 0) {
-      setCartState(true)
+      setCartState(true);
     } else {
-      setCartState(false)
+      setCartState(false);
     }
-  }, [data])
+  }, [data]);
 
   return (
     <>
@@ -64,79 +64,115 @@ export default function Nav() {
           <Logo>
             <img src={tribe_logo} alt="" />
           </Logo>
-          <NavLinks className={menuOpen ? 'open' : ''}>
-            <Link to={'/'}>
+          <NavLinks className={menuOpen ? "open" : ""}>
+            <Link to={"/"}>
               <li>HOME</li>
             </Link>
-            <Link to={'/shop'}>
+            <Link to={"/shop"}>
               <li>SHOP</li>
             </Link>
-            <Link to={'/community'}>
+            <Link to={"/community"}>
               <li>COMMUNITY</li>
             </Link>
           </NavLinks>
         </NavLeft>
         <NavRight>
           {session ? (
-            <Link to={'/'} onClick={handleLogout}>
+            <Link to={"/"} onClick={handleLogout}>
               <li>LOGOUT</li>
             </Link>
           ) : (
-            <Link to={'/login'} onClick={toggleMenu}>
+            <Link
+              to={"/login"}
+              onClick={() => {
+                toggleMenu(false);
+              }}
+            >
               <li>LOGIN</li>
             </Link>
           )}
-          <Link to={session ? '/cart' : '/login'}>
+          <Link to={session ? "/cart" : "/login"}>
             <PointerWrapper>
               <li>CART</li>
               {session?.user.id && <Pointer cartstate={cartState.toString()} />}
             </PointerWrapper>
           </Link>
         </NavRight>
-        <HamburgerMenu onClick={toggleMenu}>
+        <HamburgerMenu
+          onClick={() => {
+            toggleMenu(true);
+          }}
+        >
           {menuOpen ? <FaTimes /> : <FaBars />}
         </HamburgerMenu>
         {menuOpen && (
           <MobileMenu>
-            <Link to={'/'} onClick={toggleMenu}>
+            <Link
+              to={"/"}
+              onClick={() => {
+                toggleMenu(false);
+              }}
+            >
               <li>HOME</li>
             </Link>
-            <Link to={'/shop'} onClick={toggleMenu}>
+            <Link
+              to={"/shop"}
+              onClick={() => {
+                toggleMenu(false);
+              }}
+            >
               <li>SHOP</li>
             </Link>
-            <Link to={'/community'} onClick={toggleMenu}>
+            <Link
+              to={"/community"}
+              onClick={() => {
+                toggleMenu(false);
+              }}
+            >
               <li>COMMUNITY</li>
             </Link>
             {session ? (
               <Link
-                to={'/'}
+                to={"/"}
                 onClick={() => {
-                  toggleMenu()
-                  signOut()
-                  queryClient.invalidateQueries('@cartData')
+                  () => {
+                    toggleMenu(false);
+                  };
+                  signOut();
+                  queryClient.invalidateQueries("@cartData");
                 }}
               >
                 <li>LOGOUT</li>
               </Link>
             ) : (
-              <Link to={'/login'} onClick={toggleMenu}>
+              <Link
+                to={"/login"}
+                onClick={() => {
+                  toggleMenu(false);
+                }}
+              >
                 <li>LOGIN</li>
               </Link>
             )}
 
-            <Link to={session ? '/cart' : '/login'} onClick={toggleMenu}>
+            <Link
+              to={session ? "/cart" : "/login"}
+              onClick={() => {
+                toggleMenu(false);
+              }}
+            >
               <li>CART</li>
             </Link>
           </MobileMenu>
         )}
       </NavCon>
     </>
-  )
+  );
 }
 
 interface NavProps {
-  pantname: string
-  windowwidth: number
+  pantname: string;
+  windowwidth: number;
 }
 
 const NavCon = styled.nav<NavProps>`
@@ -149,14 +185,14 @@ const NavCon = styled.nav<NavProps>`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: ${props =>
-    props.pantname === 'login' ||
-    props.pantname === 'join' ||
-    props.pantname === 'about' ||
-    props.pantname === 'community-feature' ||
-    props.pantname === ''
-      ? 'rgba(0,0,0,0)'
-      : 'rgba(255,255,255,1)'};
+  background-color: ${(props) =>
+    props.pantname === "login" ||
+    props.pantname === "join" ||
+    props.pantname === "about" ||
+    props.pantname === "community-feature" ||
+    props.pantname === ""
+      ? "rgba(0,0,0,0)"
+      : "rgba(255,255,255,1)"};
 
   @media (max-width: 1024px) {
     height: 90px;
@@ -176,7 +212,7 @@ const NavCon = styled.nav<NavProps>`
     height: 60px;
     width: 100%;
   }
-`
+`;
 
 const NavLeft = styled.div`
   display: flex;
@@ -185,7 +221,7 @@ const NavLeft = styled.div`
   @media (max-width: 600px) {
     align-items: start;
   }
-`
+`;
 
 const Logo = styled.div`
   width: 22px;
@@ -200,7 +236,7 @@ const Logo = styled.div`
   @media (max-width: 1024px) {
     margin-right: 0px;
   }
-`
+`;
 
 const NavLinks = styled.ul`
   display: flex;
@@ -248,7 +284,7 @@ const NavLinks = styled.ul`
       }
     }
   }
-`
+`;
 
 const NavRight = styled.ul`
   display: flex;
@@ -271,7 +307,7 @@ const NavRight = styled.ul`
   @media (max-width: 768px) {
     display: none;
   }
-`
+`;
 
 const HamburgerMenu = styled.div`
   display: none;
@@ -282,7 +318,7 @@ const HamburgerMenu = styled.div`
     align-items: center;
     font-size: 1.4rem;
   }
-`
+`;
 
 const MobileMenu = styled.ul`
   display: none;
@@ -317,7 +353,7 @@ const MobileMenu = styled.ul`
   @media (max-width: 600px) {
     min-width: 375px;
   }
-`
+`;
 
 const Option = styled.div`
   width: 100%;
@@ -328,7 +364,7 @@ const Option = styled.div`
   color: #fff;
   padding: 14px 18px 14px 20px;
   font-size: 0.9rem;
-`
+`;
 
 const OptionLeft = styled.div`
   display: flex;
@@ -337,12 +373,12 @@ const OptionLeft = styled.div`
   span {
     margin-left: 12px;
   }
-`
+`;
 
 const OptionRight = styled.div`
   display: flex;
   align-items: center;
-`
+`;
 
 const OptionButton = styled.div`
   background-color: #fff;
@@ -351,14 +387,14 @@ const OptionButton = styled.div`
   font-size: 0.75rem;
   font-weight: 600;
   border-radius: 14px;
-`
+`;
 
 const PointerWrapper = styled.div`
   position: relative;
-`
+`;
 
 const Pointer = styled.span<{ cartstate: string }>`
-  display: ${props => (props.cartstate === 'true' ? 'block' : 'none')};
+  display: ${(props) => (props.cartstate === "true" ? "block" : "none")};
   width: 9px;
   height: 9px;
   background-color: rgba(241, 28, 63, 0.877);
@@ -366,4 +402,4 @@ const Pointer = styled.span<{ cartstate: string }>`
   right: -4px;
   top: -4px;
   border-radius: 50%;
-`
+`;

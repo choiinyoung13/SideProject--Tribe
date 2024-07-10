@@ -1,41 +1,43 @@
-import styled from 'styled-components'
-import Input from '../components/Common/Input'
-import { AiOutlinePlus } from 'react-icons/ai'
-import join_image from '../assets/images/join_web_1.jpg'
-import useWindowWidth from '../hooks/useWindowWidth'
-import { useEffect, useState } from 'react'
-import { useHandleSignUp } from '../hooks/usehandleSignUp'
-import { checkEmailExists } from '../utill/checkEmailExists'
+import styled from "styled-components";
+import Input from "../components/Common/Input";
+import loadingIcon from "../assets/images/logo/ball-triangle.svg";
+import { AiOutlinePlus } from "react-icons/ai";
+import join_image from "../assets/images/join_web_1.jpg";
+import useWindowWidth from "../hooks/useWindowWidth";
+import { useEffect, useState } from "react";
+import { useHandleSignUp } from "../hooks/usehandleSignUp";
+import { checkEmailExists } from "../utill/checkEmailExists";
 
 export default function Join() {
-  const windowWidth = useWindowWidth()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const [isIdValid, setIsIdValid] = useState(true)
-  const [isPasswordValid, setIsPasswordValid] = useState(true)
-  const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(false)
-  const [isEmailExists, setIsEmailExists] = useState(false)
-  const [ischeckRedundancyOpened, setIscheckRedundancyOpened] = useState(false)
-  const { handleSignUp, errorMessage } = useHandleSignUp()
+  const windowWidth = useWindowWidth();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [isIdValid, setIsIdValid] = useState(true);
+  const [isPasswordValid, setIsPasswordValid] = useState(true);
+  const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(false);
+  const [isEmailExists, setIsEmailExists] = useState(false);
+  const [ischeckRedundancyOpened, setIscheckRedundancyOpened] = useState(false);
+  const { handleSignUp, errorMessage } = useHandleSignUp();
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   useEffect(() => {
-    if (email === '') {
-      setIsIdValid(true)
+    if (email === "") {
+      setIsIdValid(true);
     }
-  }, [email])
+  }, [email]);
 
   useEffect(() => {
     if (password !== confirmPassword) {
-      setIsConfirmPasswordValid(false)
+      setIsConfirmPasswordValid(false);
     } else if (password === confirmPassword) {
-      setIsConfirmPasswordValid(true)
+      setIsConfirmPasswordValid(true);
     }
 
-    if (confirmPassword === '') {
-      setIsConfirmPasswordValid(false)
+    if (confirmPassword === "") {
+      setIsConfirmPasswordValid(false);
     }
-  }, [password, confirmPassword])
+  }, [password, confirmPassword]);
 
   return (
     <JoinCon>
@@ -44,36 +46,36 @@ export default function Join() {
           <FormTitle>Tribe 회원가입</FormTitle>
           <Form
             action=""
-            onSubmit={e => {
-              e.preventDefault()
+            onSubmit={(e) => {
+              e.preventDefault();
               try {
                 if (!isIdValid) {
-                  alert('올바른 아이디 형식으로 적어 주세요')
-                  return
+                  alert("올바른 아이디 형식으로 적어 주세요");
+                  return;
                 }
 
                 if (!isPasswordValid) {
-                  alert('올바른 비밀번호 형식으로 적어 주세요')
-                  return
+                  alert("올바른 비밀번호 형식으로 적어 주세요");
+                  return;
                 }
 
                 if (!isConfirmPasswordValid) {
-                  alert('비밀번호 일치하지 않습니다 확인해 주세요.')
-                  return
+                  alert("비밀번호 일치하지 않습니다 확인해 주세요.");
+                  return;
                 }
 
                 if (isEmailExists) {
-                  alert('이미 가입한 이메일 계정입니다.')
-                  return
+                  alert("이미 가입한 이메일 계정입니다.");
+                  return;
                 }
 
                 if (!ischeckRedundancyOpened) {
-                  alert('이메일 중복 확인해 주세요.')
-                  return
+                  alert("이메일 중복 확인해 주세요.");
+                  return;
                 }
-                handleSignUp(email, password)
+                handleSignUp(email, password);
               } catch {
-                alert(errorMessage)
+                alert(errorMessage);
               }
             }}
           >
@@ -90,9 +92,9 @@ export default function Join() {
                 type="button"
                 onClick={async () => {
                   if (isIdValid && email.length > 0) {
-                    await setIscheckRedundancyOpened(true)
-                    const result = await checkEmailExists(email)
-                    setIsEmailExists(result)
+                    await setIscheckRedundancyOpened(true);
+                    const result = await checkEmailExists(email);
+                    setIsEmailExists(result);
                   }
                 }}
               >
@@ -105,15 +107,15 @@ export default function Join() {
                   <div>
                     <CheckRedundancy isemailexists={isEmailExists.toString()}>
                       {isEmailExists
-                        ? '이미 가입한 이메일입니다.'
-                        : '사용 가능한 이메일입니다.'}
+                        ? "이미 가입한 이메일입니다."
+                        : "사용 가능한 이메일입니다."}
                     </CheckRedundancy>
                   </div>
                 )}
                 {!ischeckRedundancyOpened && (
                   <div>
                     {isIdValid ? (
-                      '@앞 4~12자/영문 소문자, 숫자 가능 (중복확인 필수)'
+                      "@앞 4~12자/영문 소문자, 숫자 가능 (중복확인 필수)"
                     ) : (
                       <WarningText>올바른 이메일 형식이 아닙니다.</WarningText>
                     )}
@@ -140,7 +142,7 @@ export default function Join() {
                 {!isPasswordValid && password.length >= 1 ? (
                   <WarningText>올바른 비밀번호 형식이 아닙니다.</WarningText>
                 ) : !isConfirmPasswordValid && confirmPassword.length === 0 ? (
-                  '6~20자/영문 대문자. 소문자, 숫자, 특수문자 중 2가지 이상 조합'
+                  "6~20자/영문 대문자. 소문자, 숫자, 특수문자 중 2가지 이상 조합"
                 ) : !isConfirmPasswordValid && confirmPassword.length >= 1 ? (
                   <WarningText>비밀번호가 일치하지 않습니다.</WarningText>
                 ) : (
@@ -154,7 +156,7 @@ export default function Join() {
               <AgreeWrapper>
                 <input type="checkbox" required />
                 <label htmlFor="">
-                  {' '}
+                  {" "}
                   [필수]만 14세 이상이며 모두 동의합니다.
                 </label>
               </AgreeWrapper>
@@ -164,7 +166,7 @@ export default function Join() {
               <AgreeWrapper>
                 <input type="checkbox" required />
                 <label htmlFor="">
-                  {' '}
+                  {" "}
                   [선택]광고성 정보 수신에 모두 동의합니다.
                 </label>
               </AgreeWrapper>
@@ -176,26 +178,36 @@ export default function Join() {
       </FormCon>
       {windowWidth === 1920 && (
         <ImgCon>
-          <img src={join_image} alt="" />
+          {!isImageLoaded && (
+            <Loading>
+              <img src={loadingIcon} alt="Loading..." />
+            </Loading>
+          )}
+          <img
+            src={join_image}
+            alt=""
+            onLoad={() => setIsImageLoaded(true)}
+            style={{ display: isImageLoaded ? "block" : "none" }}
+          />
         </ImgCon>
       )}
     </JoinCon>
-  )
+  );
 }
 
 const JoinCon = styled.div`
   width: 100%;
   display: flex;
-`
+`;
 
 interface FormConType {
-  windowwidth: number
+  windowwidth: number;
 }
 
 const FormCon = styled.div<FormConType>`
-  width: ${props => (props.windowwidth === 1920 ? '50%' : '100%')};
+  width: ${(props) => (props.windowwidth === 1920 ? "50%" : "100%")};
   height: 100vh;
-  over-flow: hidden;
+  overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -209,7 +221,16 @@ const FormCon = styled.div<FormConType>`
       margin-bottom: 10px;
     }
   }
-`
+
+  @media (max-width: 600px) {
+    form {
+      input {
+        margin-bottom: 10px;
+      }
+    }
+  }
+`;
+
 const FormWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -230,9 +251,9 @@ const FormWrapper = styled.div`
       margin-bottom: 10px;
     }
   }
-`
+`;
 
-const Form = styled.form``
+const Form = styled.form``;
 
 const FormTitle = styled.h2`
   font-size: 1.8rem;
@@ -245,7 +266,7 @@ const FormTitle = styled.h2`
     margin: 0 auto 30px;
     padding-left: 10px;
   }
-`
+`;
 const IdInputCon = styled.div`
   width: 100%;
   display: flex;
@@ -277,7 +298,7 @@ const IdInputCon = styled.div`
       margin-left: 6px;
     }
   }
-`
+`;
 
 const PasswordInputCon = styled.div`
   input {
@@ -293,7 +314,7 @@ const PasswordInputCon = styled.div`
       width: 80%;
     }
   }
-`
+`;
 
 const HelperTextCon = styled.div`
   width: 100%;
@@ -305,11 +326,11 @@ const HelperTextCon = styled.div`
     margin-bottom: 40px;
     padding-left: 10px;
   }
-`
+`;
 
 const IdHelperText = styled.p`
   font-size: 0.9rem;
-  color: 'rgba(90, 90, 90, 1)';
+  color: "rgba(90, 90, 90, 1)";
   margin: 6px 0 40px;
 
   @media (max-width: 600px) {
@@ -317,7 +338,7 @@ const IdHelperText = styled.p`
     width: 85%;
     margin: 0 auto;
   }
-`
+`;
 
 const PasswordHelperText = styled.p`
   font-size: 0.9rem;
@@ -329,19 +350,19 @@ const PasswordHelperText = styled.p`
     width: 85%;
     margin: 0 auto;
   }
-`
+`;
 
 const WarningText = styled.span`
   color: red;
-`
+`;
 
 const ValidText = styled.span`
   color: green;
-`
+`;
 
 const CheckRedundancy = styled.span<{ isemailexists: string }>`
-  color: ${props => (props.isemailexists === 'true' ? 'red' : 'green')};
-`
+  color: ${(props) => (props.isemailexists === "true" ? "red" : "green")};
+`;
 
 const AgreeCon = styled.div`
   display: flex;
@@ -352,9 +373,9 @@ const AgreeCon = styled.div`
 
   @media (max-width: 600px) {
     width: 80%;
-    margin: 0 auto;
+    margin: 10px auto;
   }
-`
+`;
 
 const AgreeWrapper = styled.div`
   input {
@@ -366,11 +387,19 @@ const AgreeWrapper = styled.div`
   }
 
   @media (max-width: 600px) {
+    display: flex;
+
+    input {
+      width: 10px;
+      margin: 0 14px 0 0;
+    }
+
     label {
       font-size: 0.8rem;
     }
   }
-`
+`;
+
 const JoinBtn = styled.button`
   color: #fff;
   background-color: rgba(20, 20, 20, 1);
@@ -387,15 +416,27 @@ const JoinBtn = styled.button`
     width: 80%;
     margin: 20px auto 0;
   }
-`
+`;
 
 const ImgCon = styled.div`
   width: 50%;
   height: 100vh;
-  over-flow: hidden;
+  overflow: hidden;
 
   img {
     width: 100%;
     height: 100vh;
   }
-`
+`;
+
+const Loading = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100dvh;
+  width: 100%;
+
+  img {
+    width: 15%;
+  }
+`;
