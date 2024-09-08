@@ -70,7 +70,7 @@ const CategoryWrapper = styled.div`
 
 const CategoryList = styled.ul`
   display: flex;
-  padding: 30px 60px 0px;
+  padding: 10px 60px 0px;
   font-size: 1rem;
   min-width: 900px;
 

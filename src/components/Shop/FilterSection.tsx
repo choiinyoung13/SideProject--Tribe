@@ -167,7 +167,7 @@ const FilterCon = styled.div`
   align-items: center;
   font-size: 1.4rem;
   color: rgba(90, 90, 90, 1);
-  padding-top: 6px;
+  padding-bottom: 12px;
   margin-right: 76px;
 
   @media (max-width: 1024px) {
