@@ -10,7 +10,6 @@ import { fetchUserLikesInfo } from "../../config/api/user/fetchUserInfo";
 import { useLocation } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { sortState } from "../../recoil/atoms/SortState";
-
 import {
   sortHighestDiscountRate,
   sortHighestPrice,
@@ -69,18 +68,20 @@ export default function ItemListCon() {
     }
   );
 
+  // InView 설정
   const [ref, inView] = useInView({
-    threshold: 1.0,
-    triggerOnce: true, // 한 번만 트리거되도록 설정
-    initialInView: false, // 초기 상태를 뷰포트 밖에 있도록 설정
+    threshold: 1.0, // 뷰포트에서 100% 보일 때 트리거
+    triggerOnce: false, // 여러 번 트리거 가능
   });
 
+  // 패칭 관련 useEffect
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
     }
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
+  // 필터 및 정렬 적용 useEffect
   useEffect(() => {
     const fetchFilteredAndSortedItems = async () => {
       if (data) {
