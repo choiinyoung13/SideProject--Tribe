@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import styled from "styled-components";
 import ItemCard from "./ItemCard";
 import { useQuery, useInfiniteQuery } from "react-query";
@@ -22,6 +22,7 @@ import { filterState } from "../../recoil/atoms/FilterState";
 import { sortedItemsState } from "../../recoil/atoms/SortedItemsState";
 import { CartItemType } from "../../types/CartItemType";
 import { fetchItemsPerPage } from "../../config/api/items/fetchItems";
+import { useInView } from "react-intersection-observer";
 
 export default function ItemListCon() {
   const { session } = useAuth();
@@ -63,28 +64,16 @@ export default function ItemListCon() {
     }
   );
 
-  const observerRef = useRef<HTMLDivElement | null>(null);
+  const [ref, inView] = useInView({
+    threshold: 1.0, // 뷰포트에서 100% 보일 때 트리거
+    triggerOnce: false, // 여러 번 트리거 가능
+  });
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
-          fetchNextPage();
-        }
-      },
-      { threshold: 1.0 }
-    );
-
-    if (observerRef.current) {
-      observer.observe(observerRef.current);
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
     }
-
-    return () => {
-      if (observerRef.current) {
-        observer.unobserve(observerRef.current);
-      }
-    };
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   useEffect(() => {
     const fetchFilteredAndSortedItems = async () => {
@@ -156,7 +145,7 @@ export default function ItemListCon() {
               )
             )}
           </ListWrapper>
-          <LoadingObserver ref={observerRef}>
+          <LoadingObserver ref={ref}>
             {isLoading && <img src={loadingIcon} alt="loading" />}
           </LoadingObserver>
         </ListCon>
