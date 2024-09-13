@@ -32,9 +32,9 @@ export default function ItemListCon() {
   const [sortedItems, setSortedItems] = useRecoilState(sortedItemsState);
   const tabValue = Number(queryParams.get("tab"));
 
-  // InView 설정
+  // IntersectionObserver 설정
   const [ref, inView] = useInView({
-    threshold: 1.0, // 뷰포트에서 100% 보일 때 트리거
+    threshold: 0.5,
     triggerOnce: false, // 여러 번 트리거 가능
   });
 
@@ -49,7 +49,7 @@ export default function ItemListCon() {
           }
           return undefined; // 더 이상 페이지가 없을 경우 패칭 중단
         },
-        staleTime: Infinity,
+        staleTime: 5 * 60 * 1000,
         cacheTime: 30 * 60 * 1000,
       }
     );
@@ -74,8 +74,9 @@ export default function ItemListCon() {
     }
   );
 
-  // 패칭 관련 useEffect
+  // 패칭 관련 useEffect (첫 감지 이후에만 패칭)
   useEffect(() => {
+    console.log(inView);
     if (inView && hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
     }
@@ -117,47 +118,41 @@ export default function ItemListCon() {
         <LoadingScreen>
           <img src={loadingIcon} alt="loading" />
         </LoadingScreen>
+      ) : data && sortedItems.length === 0 ? (
+        <Empty>해당하는 제품이 없습니다.</Empty>
       ) : (
         <ListCon>
           <ListWrapper>
-            {sortedItems.length === 0 ? (
-              <Empty>해당하는 제품이 없습니다.</Empty>
-            ) : (
-              <>
-                {sortedItems.map(
-                  ({
-                    id,
-                    title,
-                    imgurl,
-                    originalprice,
-                    badge,
-                    discount,
-                    deliveryperiod,
-                  }) => {
-                    const isInCart = cartItems.some(
-                      (item) => item.itemId === id
-                    );
-                    return (
-                      <ItemCard
-                        key={id}
-                        id={id}
-                        title={title}
-                        imgurl={imgurl}
-                        originalprice={originalprice}
-                        badge={badge}
-                        discount={discount}
-                        isInCart={isInCart}
-                        userLikeData={userLikeData?.likes}
-                        deliveryPeriod={deliveryperiod}
-                      />
-                    );
-                  }
-                )}
-                <LoadingObserver ref={ref}>
-                  {isLoading && <img src={loadingIcon} alt="loading" />}
-                </LoadingObserver>
-              </>
+            {sortedItems.map(
+              ({
+                id,
+                title,
+                imgurl,
+                originalprice,
+                badge,
+                discount,
+                deliveryperiod,
+              }) => {
+                const isInCart = cartItems.some((item) => item.itemId === id);
+                return (
+                  <ItemCard
+                    key={id}
+                    id={id}
+                    title={title}
+                    imgurl={imgurl}
+                    originalprice={originalprice}
+                    badge={badge}
+                    discount={discount}
+                    isInCart={isInCart}
+                    userLikeData={userLikeData?.likes}
+                    deliveryPeriod={deliveryperiod}
+                  />
+                );
+              }
             )}
+            <LoadingObserver ref={ref}>
+              {isLoading && <img src={loadingIcon} alt="loading" />}
+            </LoadingObserver>
           </ListWrapper>
         </ListCon>
       )}
