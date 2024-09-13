@@ -158,7 +158,6 @@ export default function ItemListCon() {
           </ListWrapper>
           <LoadingObserver ref={observerRef}>
             {isLoading && <img src={loadingIcon} alt="loading" />}
-            {!hasNextPage && <div></div>}
           </LoadingObserver>
         </ListCon>
       )}
@@ -217,6 +216,7 @@ const ListWrapper = styled.div`
 
 const LoadingObserver = styled.div`
   width: 100%;
+  height: 30px;
   display: flex;
   justify-content: center;
   align-items: center;
