@@ -10,6 +10,7 @@ import { useCartMutations } from "../../mutations/useCartMutations";
 import { useEffect, useState } from "react";
 import { useUserInfoMutations } from "../../mutations/useUserInfoMutation";
 import defaultImage from "../../assets/images/shop_item/default-image.png";
+import { motion } from "framer-motion";
 
 type BadgeType = "hot" | "fast";
 
@@ -106,12 +107,19 @@ export default function ItemCard({
         </OptionButtonWrapper>
       )}
       <ImgBox>
-        <img
-          src={imgurl ? imgurl : defaultImage}
-          alt="item image"
-          draggable="false"
-          onLoad={() => setIsImageLoaded(true)}
-        />
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isImageLoaded ? 1 : 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <img
+            src={imgurl ? imgurl : defaultImage}
+            alt="item image"
+            draggable="false"
+            onLoad={() => setIsImageLoaded(true)}
+            style={{ display: isImageLoaded ? "block" : "none" }}
+          />
+        </motion.div>
       </ImgBox>
       {isImageLoaded && (
         <TextBox>
