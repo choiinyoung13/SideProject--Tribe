@@ -38,7 +38,12 @@ export default function ItemListCon() {
       ["items", tabValue],
       ({ pageParam = 0 }) => fetchItemsPerPage(pageParam, 10, tabValue),
       {
-        getNextPageParam: (lastPage) => lastPage.nextCursor || undefined,
+        getNextPageParam: (lastPage) => {
+          if (lastPage.nextCursor) {
+            return lastPage.nextCursor; // 다음 페이지가 있을 경우에만 패칭
+          }
+          return undefined; // 더 이상 페이지가 없을 경우 패칭 중단
+        },
         staleTime: Infinity,
         cacheTime: 30 * 60 * 1000,
       }
@@ -65,8 +70,9 @@ export default function ItemListCon() {
   );
 
   const [ref, inView] = useInView({
-    threshold: 1.0, // 뷰포트에서 100% 보일 때 트리거
-    triggerOnce: false, // 여러 번 트리거 가능
+    threshold: 1.0,
+    triggerOnce: true, // 한 번만 트리거되도록 설정
+    initialInView: false, // 초기 상태를 뷰포트 밖에 있도록 설정
   });
 
   useEffect(() => {
