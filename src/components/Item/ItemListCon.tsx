@@ -144,10 +144,10 @@ export default function ItemListCon() {
                 }
               )
             )}
+            <LoadingObserver ref={ref}>
+              {isLoading && <img src={loadingIcon} alt="loading" />}
+            </LoadingObserver>
           </ListWrapper>
-          <LoadingObserver ref={ref}>
-            {isLoading && <img src={loadingIcon} alt="loading" />}
-          </LoadingObserver>
         </ListCon>
       )}
     </>
