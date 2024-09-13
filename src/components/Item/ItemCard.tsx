@@ -60,49 +60,51 @@ export default function ItemCard({
         navigate(`/product/${id}`);
       }}
     >
-      <OptionButtonWrapper>
-        <LikeButton
-          isliked={isLiked.toString()}
-          onClick={(e) => {
-            e.stopPropagation();
-            if (!session) {
-              navigate("/login");
-              return;
-            }
-            UsersLikesInfoUpdate.mutate({
-              userId: session.user.id,
-              itemId: id,
-            });
-          }}
-        >
-          <IoMdHeart />
-        </LikeButton>
-        <CartButton
-          isincart={isInCart.toString()}
-          onClick={(e) => {
-            e.stopPropagation();
-            if (!session) {
-              navigate("/login");
-              return;
-            }
-            addItemToCartMutation.mutate({
-              userId: session.user.id,
-              title: title,
-              imgUrl: imgurl,
-              originalPrice: originalprice,
-              discount: discount,
-              option: "-",
-              checked: false,
-              receivingDate: 0,
-              itemId: id,
-              quantity: 1,
-              deliveryPeriod: deliveryPeriod,
-            });
-          }}
-        >
-          <PiShoppingCartFill />
-        </CartButton>
-      </OptionButtonWrapper>
+      {isImageLoaded && (
+        <OptionButtonWrapper>
+          <LikeButton
+            isliked={isLiked.toString()}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (!session) {
+                navigate("/login");
+                return;
+              }
+              UsersLikesInfoUpdate.mutate({
+                userId: session.user.id,
+                itemId: id,
+              });
+            }}
+          >
+            <IoMdHeart />
+          </LikeButton>
+          <CartButton
+            isincart={isInCart.toString()}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (!session) {
+                navigate("/login");
+                return;
+              }
+              addItemToCartMutation.mutate({
+                userId: session.user.id,
+                title: title,
+                imgUrl: imgurl,
+                originalPrice: originalprice,
+                discount: discount,
+                option: "-",
+                checked: false,
+                receivingDate: 0,
+                itemId: id,
+                quantity: 1,
+                deliveryPeriod: deliveryPeriod,
+              });
+            }}
+          >
+            <PiShoppingCartFill />
+          </CartButton>
+        </OptionButtonWrapper>
+      )}
       <ImgBox>
         <img
           src={imgurl ? imgurl : defaultImage}
