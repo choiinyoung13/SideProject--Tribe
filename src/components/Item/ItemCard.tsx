@@ -40,6 +40,7 @@ export default function ItemCard({
   userLikeData,
   deliveryPeriod,
 }: ItemCardPropsType) {
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
   const navigate = useNavigate();
   const { session } = useAuth();
   const [isLiked, setIsLiked] = useState(false);
@@ -107,26 +108,33 @@ export default function ItemCard({
           src={imgurl ? imgurl : defaultImage}
           alt="item image"
           draggable="false"
+          onLoad={() => setIsImageLoaded(true)}
         />
       </ImgBox>
-      <TextBox>
-        <ItemTitle>
-          <Title>{title}</Title>
-          <BadgeWrapper>
-            {badge.map((badgeType: "hot" | "fast", i: number) => {
-              return <Badge key={i} badgeType={badgeType} />;
-            })}
-          </BadgeWrapper>
-        </ItemTitle>
-        <OriginalPrice>{formatNumberWithCommas(originalprice)}원</OriginalPrice>
-        <PriceDetail>
-          <Discount>{discount}%</Discount>
-          <DiscountedPrice>
-            {formatNumberWithCommas(priceCalculation(originalprice, discount))}
-            원
-          </DiscountedPrice>
-        </PriceDetail>
-      </TextBox>
+      {isImageLoaded && (
+        <TextBox>
+          <ItemTitle>
+            <Title>{title}</Title>
+            <BadgeWrapper>
+              {badge.map((badgeType: "hot" | "fast", i: number) => {
+                return <Badge key={i} badgeType={badgeType} />;
+              })}
+            </BadgeWrapper>
+          </ItemTitle>
+          <OriginalPrice>
+            {formatNumberWithCommas(originalprice)}원
+          </OriginalPrice>
+          <PriceDetail>
+            <Discount>{discount}%</Discount>
+            <DiscountedPrice>
+              {formatNumberWithCommas(
+                priceCalculation(originalprice, discount)
+              )}
+              원
+            </DiscountedPrice>
+          </PriceDetail>
+        </TextBox>
+      )}
     </Card>
   );
 }
