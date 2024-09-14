@@ -46,8 +46,8 @@ export default function ItemListCon() {
       ({ pageParam = 0 }) => fetchItemsPerPage(pageParam, 10, tabValue),
       {
         getNextPageParam: lastPage => lastPage.nextCursor || undefined,
-        staleTime: Infinity,
-        cacheTime: 30 * 60 * 1000,
+        staleTime: 0,
+        cacheTime: 0,
       }
     )
 
@@ -92,7 +92,7 @@ export default function ItemListCon() {
     if (inView && hasNextPage && !isFetchingNextPage) {
       fetchNextPage()
     }
-  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage])
+  }, [inView])
 
   useEffect(() => {
     const fetchFilteredAndSortedItems = async () => {
@@ -237,6 +237,7 @@ const ListWrapper = styled.div`
 const LoadingObserver = styled.div`
   width: 100%;
   height: 30px;
+  background-color: red;
   display: flex;
   justify-content: center;
   align-items: center;
