@@ -114,21 +114,12 @@ export function useCartMutations() {
     {
       onSuccess: () => {
         queryClient.invalidateQueries(QUERY_KEYS.CART_ITEMS)
-        console.log('upload 완료')
         Swal.fire({
-          text: '로그인 후 사용 가능한 기능입니다.',
-          icon: 'warning',
-          showCancelButton: true,
+          text: '장바구니에 추가되었습니다.',
+          icon: 'success',
           confirmButtonColor: '#1E1E1E',
-          cancelButtonColor: '#1E1E1E',
-          confirmButtonText: '로그인',
-          cancelButtonText: '닫기',
+          confirmButtonText: '확인',
           scrollbarPadding: false,
-        }).then(result => {
-          if (result.isConfirmed) {
-            // 로그인 버튼을 눌렀을 때 이동할 URL
-            navigate('/login')
-          }
         })
       },
       onError: error => {
