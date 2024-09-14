@@ -14,9 +14,11 @@ import { addItemToCart } from '../config/api/cart/addItemToCart'
 import { updateCartItemReceivingDate } from '../config/api/cart/updateCartItemReceivingDate'
 import { CartItemTypeWithUserId } from '../types/CartItemType'
 import Swal from 'sweetalert2'
+import { useNavigate } from 'react-router-dom'
 
 export function useCartMutations() {
   const queryClient = useQueryClient()
+  const navigate = useNavigate()
 
   /******* deleteCartItemMutation  ********/
   const deleteCartItemMutation = useMutation(
@@ -118,6 +120,14 @@ export function useCartMutations() {
           confirmButtonColor: '#1E1E1E',
           confirmButtonText: '확인',
           scrollbarPadding: false,
+        }).then(() => {
+          const path = window.location.pathname
+          const hasProduct = path.includes('/product')
+
+          if (hasProduct) {
+            // 상사페이지에서 장바구니 추가를 했다면 성공 후 shop 페이지로 redirect
+            navigate('/shop')
+          }
         })
       },
       onError: error => {
