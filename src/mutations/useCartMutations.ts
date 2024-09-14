@@ -13,12 +13,10 @@ import { hasCheckedItemsInCart } from '../config/api/cart/hasCheckedItemsInCart 
 import { addItemToCart } from '../config/api/cart/addItemToCart'
 import { updateCartItemReceivingDate } from '../config/api/cart/updateCartItemReceivingDate'
 import { CartItemTypeWithUserId } from '../types/CartItemType'
-import { useNavigate } from 'react-router-dom'
 import Swal from 'sweetalert2'
 
 export function useCartMutations() {
   const queryClient = useQueryClient()
-  const navigate = useNavigate()
 
   /******* deleteCartItemMutation  ********/
   const deleteCartItemMutation = useMutation(
