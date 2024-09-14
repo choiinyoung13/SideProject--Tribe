@@ -1,9 +1,15 @@
+import { useEffect } from 'react'
 import BannerSection from '../components/Shop/BannerSection'
 import HeaderSection from '../components/Shop/HeaderSection'
 import MainSection from '../components/Shop/MainSection'
 import styled from 'styled-components'
 
 export default function Shop() {
+  useEffect(() => {
+    // 마운트될 때 페이지를 최상단으로 스크롤
+    window.scrollTo(0, 0)
+  }, [])
+
   return (
     <>
       <BannerSection />

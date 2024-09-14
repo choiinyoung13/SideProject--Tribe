@@ -46,8 +46,8 @@ export default function ItemListCon() {
       ({ pageParam = 0 }) => fetchItemsPerPage(pageParam, 10, tabValue),
       {
         getNextPageParam: lastPage => lastPage.nextCursor || undefined,
-        staleTime: 0,
-        cacheTime: 0,
+        staleTime: Infinity,
+        cacheTime: 30 * 60 * 1000,
       }
     )
 
