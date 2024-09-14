@@ -48,6 +48,7 @@ export default function ItemListCon() {
         getNextPageParam: lastPage => lastPage.nextCursor || undefined,
         staleTime: 0,
         cacheTime: 0,
+        keepPreviousData: true,
       }
     )
 
@@ -72,21 +73,27 @@ export default function ItemListCon() {
   )
 
   const handleItemsRendered = useCallback(() => {
-    if (listWrapperRef.current) {
+    if (isDataReady && sortedItems.length > 0 && listWrapperRef.current) {
       const observer = new IntersectionObserver(
         entries => {
           if (entries[0].isIntersecting) {
             setTimeout(() => {
               setShowLoadingObserver(true)
-            }, 100) // 약간의 지연을 추가하여 확실히 아이템 카드가 보이도록 함
+            }, 100)
             observer.disconnect()
           }
         },
-        { threshold: 0.1 } // 10%만 보여도 충분히 렌더링된 것으로 간주
+        { threshold: 0.1 }
       )
       observer.observe(listWrapperRef.current)
     }
-  }, [])
+  }, [isDataReady, sortedItems])
+
+  useEffect(() => {
+    setIsDataReady(false)
+    setSortedItems([])
+    setShowLoadingObserver(false)
+  }, [tabValue])
 
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
