@@ -14,6 +14,7 @@ import { addItemToCart } from '../config/api/cart/addItemToCart'
 import { updateCartItemReceivingDate } from '../config/api/cart/updateCartItemReceivingDate'
 import { CartItemTypeWithUserId } from '../types/CartItemType'
 import { useNavigate } from 'react-router-dom'
+import Swal from 'sweetalert2'
 
 export function useCartMutations() {
   const queryClient = useQueryClient()
@@ -114,8 +115,21 @@ export function useCartMutations() {
       onSuccess: () => {
         queryClient.invalidateQueries(QUERY_KEYS.CART_ITEMS)
         console.log('upload 완료')
-        alert('장바구니에 추가 되었습니다. 감사합니다.')
-        navigate('/shop')
+        Swal.fire({
+          text: '로그인 후 사용 가능한 기능입니다.',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#1E1E1E',
+          cancelButtonColor: '#1E1E1E',
+          confirmButtonText: '로그인',
+          cancelButtonText: '닫기',
+          scrollbarPadding: false,
+        }).then(result => {
+          if (result.isConfirmed) {
+            // 로그인 버튼을 눌렀을 때 이동할 URL
+            navigate('/login')
+          }
+        })
       },
       onError: error => {
         console.error('Error updating item:', error)

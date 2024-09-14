@@ -71,6 +71,9 @@ export default function Nav() {
             <Link to={'/shop'}>
               <li>SHOP</li>
             </Link>
+            <Link to={'/community'}>
+              <li>COMMUNITY</li>
+            </Link>
             {/* <Link to={'/community'}>
               <li>COMMUNITY</li>
             </Link> */}

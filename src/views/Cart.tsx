@@ -15,6 +15,7 @@ import { QUERY_KEYS } from '../config/constants/queryKeys'
 import loadingIcon from '../assets/images/logo/ball-triangle.svg'
 import { countCheckItemAmount } from '../utill/countCheckItemAmount'
 import { CartItemType } from '../types/CartItemType'
+import Swal from 'sweetalert2'
 
 interface CartItemsResponse {
   items: CartItemType[]
@@ -168,7 +169,13 @@ export default function Cart() {
                 colortype="white"
                 hover={false.toString()}
                 onClick={() => {
-                  alert('품절 상품이 없습니다')
+                  Swal.fire({
+                    text: '품절 상품이 없습니다.',
+                    icon: 'warning',
+                    confirmButtonColor: '#1E1E1E',
+                    confirmButtonText: '확인',
+                    scrollbarPadding: false,
+                  })
                 }}
               >
                 품절상품 삭제
@@ -195,8 +202,18 @@ export default function Cart() {
           {cartData.items.length > 0 && isAllItemReceivingDateSelected ? (
             <button
               onClick={() => {
-                alert('구매해주셔서 감사합니다')
-                navigate('/shop')
+                Swal.fire({
+                  text: '구매해주셔서 감사합니다.',
+                  icon: 'success',
+                  confirmButtonColor: '#1E1E1E',
+                  confirmButtonText: '확인',
+                  scrollbarPadding: false,
+                }).then(result => {
+                  if (result.isConfirmed) {
+                    // 확인 버튼을 눌렀을 때 이동할 URL
+                    navigate('/shop')
+                  }
+                })
                 deleteAllCartItemMutation.mutate(session!.user.id)
               }}
             >

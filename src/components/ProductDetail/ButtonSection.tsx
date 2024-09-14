@@ -10,6 +10,7 @@ import { fetchUserLikesInfo } from '../../config/api/user/fetchUserInfo'
 import { QUERY_KEYS } from '../../config/constants/queryKeys'
 import { useUserInfoMutations } from '../../mutations/useUserInfoMutation'
 import { CartItemType } from '../../types/CartItemType'
+import Swal from 'sweetalert2'
 
 interface ButtonSectionProps {
   isDateSelected: boolean
@@ -73,7 +74,21 @@ export default function ButtonSection({
                 itemId: Number(id),
               })
             } else {
-              alert('로그인 후 사용 가능한 기능입니다.')
+              Swal.fire({
+                text: '로그인 후 사용 가능한 기능입니다.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#1E1E1E',
+                cancelButtonColor: '#1E1E1E',
+                confirmButtonText: '로그인',
+                cancelButtonText: '닫기',
+                scrollbarPadding: false,
+              }).then(result => {
+                if (result.isConfirmed) {
+                  // 로그인 버튼을 눌렀을 때 이동할 URL
+                  navigate('/login')
+                }
+              })
             }
           }}
         >
@@ -85,8 +100,18 @@ export default function ButtonSection({
           <button
             type="button"
             onClick={() => {
-              alert('구매해주셔서 감사합니다')
-              navigate('/shop')
+              Swal.fire({
+                text: '구매해주셔서 감사합니다.',
+                icon: 'success',
+                confirmButtonColor: '#1E1E1E',
+                confirmButtonText: '확인',
+                scrollbarPadding: false,
+              }).then(result => {
+                if (result.isConfirmed) {
+                  // 확인 버튼을 눌렀을 때 이동할 URL
+                  navigate('/shop')
+                }
+              })
             }}
           >
             바로 구매
@@ -105,7 +130,21 @@ export default function ButtonSection({
               type="button"
               onClick={() => {
                 if (!session) {
-                  alert('로그인 후 사용 가능한 기능입니다.')
+                  Swal.fire({
+                    text: '로그인 후 사용 가능한 기능입니다.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#1E1E1E',
+                    cancelButtonColor: '#1E1E1E',
+                    confirmButtonText: '로그인',
+                    cancelButtonText: '닫기',
+                    scrollbarPadding: false,
+                  }).then(result => {
+                    if (result.isConfirmed) {
+                      // 로그인 버튼을 눌렀을 때 이동할 URL
+                      navigate('/login')
+                    }
+                  })
                 } else {
                   addItemToCartMutation.mutate({
                     title: orderInfo.title,
