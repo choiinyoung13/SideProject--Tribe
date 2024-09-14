@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef, useCallback } from 'react'
 import styled from 'styled-components'
 import ItemCard from './ItemCard'
 import { useQuery, useInfiniteQuery } from 'react-query'
@@ -31,7 +31,9 @@ export default function ItemListCon() {
   const filterData = useRecoilValue(filterState)
   const [sortedItems, setSortedItems] = useRecoilState(sortedItemsState)
   const [isDataReady, setIsDataReady] = useState(false)
+  const [showLoadingObserver, setShowLoadingObserver] = useState(false)
   const tabValue = Number(queryParams.get('tab'))
+  const listWrapperRef = useRef(null)
 
   const [ref, inView] = useInView({
     threshold: 0.3,
@@ -69,6 +71,23 @@ export default function ItemListCon() {
     }
   )
 
+  const handleItemsRendered = useCallback(() => {
+    if (listWrapperRef.current) {
+      const observer = new IntersectionObserver(
+        entries => {
+          if (entries[0].isIntersecting) {
+            setTimeout(() => {
+              setShowLoadingObserver(true)
+            }, 100) // 약간의 지연을 추가하여 확실히 아이템 카드가 보이도록 함
+            observer.disconnect()
+          }
+        },
+        { threshold: 0.1 } // 10%만 보여도 충분히 렌더링된 것으로 간주
+      )
+      observer.observe(listWrapperRef.current)
+    }
+  }, [])
+
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
       fetchNextPage()
@@ -103,6 +122,12 @@ export default function ItemListCon() {
     }
   }, [sortValue, filterData, data, setSortedItems])
 
+  useEffect(() => {
+    if (isDataReady && sortedItems.length > 0) {
+      handleItemsRendered()
+    }
+  }, [isDataReady, sortedItems, handleItemsRendered])
+
   const cartItems: CartItemType[] = cartData ? cartData.items : []
 
   const isInitialLoading = isLoading || cartLoading || userInfoLoading
@@ -115,7 +140,7 @@ export default function ItemListCon() {
         </LoadingScreen>
       ) : (
         <ListCon>
-          <ListWrapper>
+          <ListWrapper ref={listWrapperRef}>
             {isDataReady &&
               (sortedItems.length !== 0 ? (
                 sortedItems.map(
@@ -148,12 +173,12 @@ export default function ItemListCon() {
               ) : (
                 <Empty>해당하는 제품이 없습니다.</Empty>
               ))}
-            {isDataReady && hasNextPage && sortedItems.length !== 0 && (
-              <LoadingObserver ref={ref}>
-                {isFetchingNextPage && <img src={loadingIcon} alt="loading" />}
-              </LoadingObserver>
-            )}
           </ListWrapper>
+          {showLoadingObserver && hasNextPage && sortedItems.length !== 0 && (
+            <LoadingObserver ref={ref}>
+              {isFetchingNextPage && <img src={loadingIcon} alt="loading" />}
+            </LoadingObserver>
+          )}
         </ListCon>
       )}
     </>
@@ -212,7 +237,6 @@ const ListWrapper = styled.div`
 const LoadingObserver = styled.div`
   width: 100%;
   height: 30px;
-  background-color: red;
   display: flex;
   justify-content: center;
   align-items: center;
