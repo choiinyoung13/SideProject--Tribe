@@ -1,35 +1,32 @@
-import styled from "styled-components";
-import community_feature_image from "../assets/images/communityFeature/communityFeature_web.jpg";
-import community_feature_full from "../assets/images/communityFeature/communityFeature_web_full.jpg";
-import community_feature_tablet1 from "../assets/images/communityFeature/communityFeature_tablet(horizontal).jpg";
-import community_feature_tablet2 from "../assets/images/communityFeature/communityFeature_tablet(vertical).jpg";
-import useWindowWidth from "../hooks/useWindowWidth";
-import MobileHome from "./MobileHome";
-import useWindowHeight from "../hooks/useWindowHeight";
-import InfinityMarquee from "../components/Common/Marquee";
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import Button from "../components/Common/Button";
-import loadingIcon from "../assets/images/logo/ball-triangle.svg";
+import styled from 'styled-components'
+import community_feature_full from '../assets/images/communityFeature/communityFeature_web_full.jpg'
+import useWindowWidth from '../hooks/useWindowWidth'
+import MobileHome from './MobileHome'
+import useWindowHeight from '../hooks/useWindowHeight'
+import InfinityMarquee from '../components/Common/Marquee'
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
+import Button from '../components/Common/Button'
+import loadingIcon from '../assets/images/logo/ball-triangle.svg'
 
 export default function CommunityFeatures() {
-  const windowWidth = useWindowWidth();
-  const windowHeight = useWindowHeight();
-  const [isOnMouse, setIsOnMouse] = useState(false);
-  const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const windowWidth = useWindowWidth()
+  const windowHeight = useWindowHeight()
+  const [isOnMouse, setIsOnMouse] = useState(false)
+  const [isImageLoaded, setIsImageLoaded] = useState(false)
 
   if (windowWidth <= 600) {
-    return <MobileHome />;
+    return <MobileHome />
   }
 
   return (
-    <HomeCon>
+    <CommunityFeaturesCon>
       {!isImageLoaded && (
         <Loading>
           <img src={loadingIcon} alt="Loading..." />
         </Loading>
       )}
-      <Section style={{ display: isImageLoaded ? "block" : "none" }}>
+      <Section style={{ display: isImageLoaded ? 'block' : 'none' }}>
         <HoverableCon
           windowheight={windowHeight}
           onMouseOver={() => setIsOnMouse(true)}
@@ -52,10 +49,10 @@ export default function CommunityFeatures() {
                   사용자의 도움을 받을 수 있습니다.
                 </p>
                 <ButtonCon>
-                  <Link to={"/community"}>
+                  <Link to={'/community'}>
                     <Button
                       colortype="black"
-                      btntype={"link"}
+                      btntype={'link'}
                       hover={true.toString()}
                     >
                       커뮤니티 이용하기
@@ -64,6 +61,7 @@ export default function CommunityFeatures() {
                 </ButtonCon>
               </TextContentCon>
             </TextBox>
+            <Devider />
             <TextBox>
               <TextNumber>" 004</TextNumber>
               <TextContentCon>
@@ -74,10 +72,10 @@ export default function CommunityFeatures() {
                   식물에 대한 열정을 공유할 수 있습니다.
                 </p>
                 <ButtonCon>
-                  <Link to={"/community-guide"}>
+                  <Link to={'/community-guide'}>
                     <Button
                       colortype="black"
-                      btntype={"link"}
+                      btntype={'link'}
                       hover={true.toString()}
                     >
                       커뮤니티 가이드라인
@@ -89,40 +87,44 @@ export default function CommunityFeatures() {
           </DetailText>
         </HoverableCon>
       </Section>
-      <Img
-        src={
-          windowHeight >= 1080
-            ? community_feature_full
-            : windowWidth <= 768
-            ? community_feature_tablet2
-            : windowWidth <= 1024
-            ? community_feature_tablet1
-            : community_feature_image
-        }
-        alt=""
-        draggable="false"
-        onLoad={() => setIsImageLoaded(true)}
-        style={{ display: isImageLoaded ? "block" : "none" }}
-      />
-    </HomeCon>
-  );
+      <ImgSection>
+        <Img
+          src={community_feature_full}
+          alt=""
+          draggable="false"
+          onLoad={() => setIsImageLoaded(true)}
+          style={{ display: isImageLoaded ? 'block' : 'none' }}
+        />
+      </ImgSection>
+    </CommunityFeaturesCon>
+  )
 }
 
-const HomeCon = styled.div`
+const CommunityFeaturesCon = styled.div`
   width: 100%;
   height: 100vh;
   position: relative;
-  overflow: hidden;
-`;
+  background-color: #ebebed;
+`
 
-const Img = styled.img`
+const ImgSection = styled.div`
   position: fixed;
   z-index: 1;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-`;
+  left: 50%;
+  bottom: 30px;
+  transform: translateX(-50%);
+  width: 100dvw;
+  height: 100dvh;
+`
+
+const Img = styled.img`
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  object-fit: cover;
+  object-position: center;
+`
 
 const Section = styled.section`
   position: fixed;
@@ -131,10 +133,10 @@ const Section = styled.section`
   right: 0;
   top: 0;
   bottom: 0;
-`;
+`
 
 interface HoverableConPropsType {
-  windowheight: number;
+  windowheight: number
 }
 
 const HoverableCon = styled.div<HoverableConPropsType>`
@@ -144,103 +146,62 @@ const HoverableCon = styled.div<HoverableConPropsType>`
   position: absolute;
   top: 170px;
   width: 100%;
-  height: ${(props) => (props.windowheight >= 1050 ? "440px" : "290px")};
-`;
+  height: ${props => (props.windowheight >= 1050 ? '440px' : '290px')};
+`
 
 interface TextConProps {
-  isonmouse: string;
+  isonmouse: string
 }
 
 const TextCon = styled.div<TextConProps>`
   width: 100%;
   min-width: 1800px;
-  z-index: ${(props) => (props.isonmouse === "true" ? "98" : "100")};
-  background-color: #fff;
-  opacity: ${(props) => (props.isonmouse === "true" ? "0" : "1")};
-`;
+  z-index: ${props => (props.isonmouse === 'true' ? '98' : '100')};
+  background-color: rgba(0, 0, 0, 0);
+  opacity: ${props => (props.isonmouse === 'true' ? '0' : '1')};
+`
 
 interface DetailTextProps {
-  isonmouse: string;
-  windowheight: number;
+  isonmouse: string
+  windowheight: number
 }
 
 const DetailText = styled.div<DetailTextProps>`
   position: absolute;
-  top: ${(props) => (props.windowheight >= 1050 ? "18%" : "10%")};
-  left: 18%;
+  top: ${props => (props.windowheight >= 1050 ? '18%' : '10%')};
+  left: 0;
   z-index: 99;
-  width: 70%;
+  width: 80%;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   justify-content: space-around;
-  opacity: ${(props) => (props.isonmouse === "true" ? "1" : "0")};
+  opacity: ${props => (props.isonmouse === 'true' ? '1' : '0')};
   transition: opacity 0.1s ease;
-
-  @media (max-width: 1024px) {
-    width: 80%;
-    left: 10%;
-    top: 10%;
-    flex-direction: column;
-  }
-
-  @media (max-width: 768px) {
-    width: 80%;
-    left: 10%;
-    top: 10%;
-    flex-direction: column;
-  }
-`;
+`
 
 const TextBox = styled.div`
-  position: absolute;
-  top: 0px;
-  left: 0px;
   display: flex;
-  width: 46%;
-  min-width: 620px;
+  width: 520px;
+  min-width: 350px;
 
   &:nth-child(1) {
-    border-right: 1px solid rgba(20, 20, 20, 1);
   }
 
   &:nth-child(2) {
-    left: 620px;
-    padding-left: 60px;
   }
 
   @media (max-width: 1024px) {
-    width: 44%;
-    min-width: 360px;
-
-    &:nth-child(1) {
-      border-right: none;
-    }
-
-    &:nth-child(2) {
-      left: 460px;
-      padding-left: 0px;
-    }
+    min-width: 320px;
   }
+`
 
-  @media (max-width: 768px) {
-    width: 100%;
-    min-width: 500px;
-    left: 10px;
-
-    &:nth-child(1) {
-      border-right: none;
-      top: -60px;
-    }
-
-    &:nth-child(2) {
-      padding-left: 0px;
-      left: 10px;
-      top: 200px;
-    }
-  }
-
-  @media (max-width: 600px) {
-  }
-`;
+const Devider = styled.div`
+  background-color: rgba(30, 30, 30, 1);
+  height: 246px;
+  width: 1px;
+  margin: 0 80px;
+`
 
 const TextNumber = styled.span`
   font-size: 1.7rem;
@@ -259,16 +220,16 @@ const TextNumber = styled.span`
 
   @media (max-width: 600px) {
   }
-`;
+`
 
 const TextContentCon = styled.div`
   font-size: 1.1rem;
   font-weight: 300;
   line-height: 38px;
-  max-width: 430px;
 
-  @media (max-width: 1024px) {
+  @media (max-width: 1350px) {
     font-size: 0.9rem;
+    line-height: 34px;
   }
 
   @media (max-width: 768px) {
@@ -277,27 +238,23 @@ const TextContentCon = styled.div`
 
   @media (max-width: 600px) {
   }
-`;
+`
 
 const ButtonCon = styled.div`
   display: flex;
   margin-top: 50px;
 
   button {
+    width: 224px;
     border: none;
     border-radius: 2px;
     transition: color 0.3s ease;
   }
 
-  a {
-    &:first-of-type {
-      margin-right: 40px;
-    }
-  }
-
   @media (max-width: 1024px) {
     button {
       font-size: 0.9rem;
+      width: 210px;
     }
   }
 
@@ -311,7 +268,7 @@ const ButtonCon = styled.div`
 
   @media (max-width: 600px) {
   }
-`;
+`
 
 const Loading = styled.div`
   display: flex;
@@ -328,4 +285,4 @@ const Loading = styled.div`
   img {
     width: 10%; /* Adjust size as needed */
   }
-`;
+`

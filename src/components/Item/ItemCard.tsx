@@ -1,33 +1,34 @@
-import styled from "styled-components";
-import Badge from "../Common/Badge";
-import { useNavigate } from "react-router-dom";
-import { priceCalculation } from "../../utill/priceCalculation";
-import formatNumberWithCommas from "../../utill/formatNumberWithCommas";
-import { IoMdHeart } from "react-icons/io";
-import { useAuth } from "../../hooks/useAuth";
-import { PiShoppingCartFill } from "react-icons/pi";
-import { useCartMutations } from "../../mutations/useCartMutations";
-import { useEffect, useState } from "react";
-import { useUserInfoMutations } from "../../mutations/useUserInfoMutation";
-import defaultImage from "../../assets/images/shop_item/default-image.png";
-import { motion } from "framer-motion";
+import styled from 'styled-components'
+import Badge from '../Common/Badge'
+import { useNavigate } from 'react-router-dom'
+import { priceCalculation } from '../../utill/priceCalculation'
+import formatNumberWithCommas from '../../utill/formatNumberWithCommas'
+import { IoMdHeart } from 'react-icons/io'
+import { useAuth } from '../../hooks/useAuth'
+import { PiShoppingCartFill } from 'react-icons/pi'
+import { useCartMutations } from '../../mutations/useCartMutations'
+import { useEffect, useState } from 'react'
+import { useUserInfoMutations } from '../../mutations/useUserInfoMutation'
+import defaultImage from '../../assets/images/shop_item/default-image.png'
+import { motion } from 'framer-motion'
+import Swal from 'sweetalert2'
 
-type BadgeType = "hot" | "fast";
+type BadgeType = 'hot' | 'fast'
 
 const checkIsLikeeItem = (likeDatas: number[], itemId: number): boolean => {
-  return likeDatas.some((item) => item === itemId);
-};
+  return likeDatas.some(item => item === itemId)
+}
 
 interface ItemCardPropsType {
-  id: number;
-  title: string;
-  imgurl: string;
-  originalprice: number;
-  badge: BadgeType[];
-  discount: number;
-  isInCart: boolean;
-  userLikeData: number[];
-  deliveryPeriod: number;
+  id: number
+  title: string
+  imgurl: string
+  originalprice: number
+  badge: BadgeType[]
+  discount: number
+  isInCart: boolean
+  userLikeData: number[]
+  deliveryPeriod: number
 }
 
 export default function ItemCard({
@@ -41,51 +42,79 @@ export default function ItemCard({
   userLikeData,
   deliveryPeriod,
 }: ItemCardPropsType) {
-  const [isImageLoaded, setIsImageLoaded] = useState(false);
-  const navigate = useNavigate();
-  const { session } = useAuth();
-  const [isLiked, setIsLiked] = useState(false);
-  const { addItemToCartMutation } = useCartMutations();
-  const { UsersLikesInfoUpdate } = useUserInfoMutations();
+  const [isImageLoaded, setIsImageLoaded] = useState(false)
+  const navigate = useNavigate()
+  const { session } = useAuth()
+  const [isLiked, setIsLiked] = useState(false)
+  const { addItemToCartMutation } = useCartMutations()
+  const { UsersLikesInfoUpdate } = useUserInfoMutations()
 
   useEffect(() => {
     if (userLikeData) {
-      const res = checkIsLikeeItem(userLikeData, id);
-      setIsLiked(res);
+      const res = checkIsLikeeItem(userLikeData, id)
+      setIsLiked(res)
     }
-  }, [id, setIsLiked, userLikeData]);
+  }, [id, setIsLiked, userLikeData])
 
   return (
     <Card
       onClick={() => {
-        navigate(`/product/${id}`);
+        navigate(`/product/${id}`)
       }}
     >
       {isImageLoaded && (
         <OptionButtonWrapper>
           <LikeButton
             isliked={isLiked.toString()}
-            onClick={(e) => {
-              e.stopPropagation();
+            onClick={e => {
+              e.stopPropagation()
               if (!session) {
-                navigate("/login");
-                return;
+                Swal.fire({
+                  text: '로그인 후 사용 가능한 기능입니다.',
+                  icon: 'warning',
+                  showCancelButton: true,
+                  confirmButtonColor: '#1E1E1E',
+                  cancelButtonColor: '#1E1E1E',
+                  confirmButtonText: '로그인',
+                  cancelButtonText: '닫기',
+                  scrollbarPadding: false,
+                }).then(result => {
+                  if (result.isConfirmed) {
+                    // 로그인 버튼을 눌렀을 때 이동할 URL
+                    navigate('/login')
+                  }
+                })
+                return
               }
               UsersLikesInfoUpdate.mutate({
                 userId: session.user.id,
                 itemId: id,
-              });
+              })
             }}
           >
             <IoMdHeart />
           </LikeButton>
           <CartButton
             isincart={isInCart.toString()}
-            onClick={(e) => {
-              e.stopPropagation();
+            onClick={e => {
+              e.stopPropagation()
               if (!session) {
-                navigate("/login");
-                return;
+                Swal.fire({
+                  text: '로그인 후 사용 가능한 기능입니다.',
+                  icon: 'warning',
+                  showCancelButton: true,
+                  confirmButtonColor: '#1E1E1E',
+                  cancelButtonColor: '#1E1E1E',
+                  confirmButtonText: '로그인',
+                  cancelButtonText: '닫기',
+                  scrollbarPadding: false,
+                }).then(result => {
+                  if (result.isConfirmed) {
+                    // 로그인 버튼을 눌렀을 때 이동할 URL
+                    navigate('/login')
+                  }
+                })
+                return
               }
               addItemToCartMutation.mutate({
                 userId: session.user.id,
@@ -93,13 +122,13 @@ export default function ItemCard({
                 imgUrl: imgurl,
                 originalPrice: originalprice,
                 discount: discount,
-                option: "-",
+                option: '-',
                 checked: false,
                 receivingDate: 0,
                 itemId: id,
                 quantity: 1,
                 deliveryPeriod: deliveryPeriod,
-              });
+              })
             }}
           >
             <PiShoppingCartFill />
@@ -117,7 +146,7 @@ export default function ItemCard({
             alt="item image"
             draggable="false"
             onLoad={() => setIsImageLoaded(true)}
-            style={{ display: isImageLoaded ? "block" : "none" }}
+            style={{ display: isImageLoaded ? 'block' : 'none' }}
           />
         </motion.div>
       </ImgBox>
@@ -126,8 +155,8 @@ export default function ItemCard({
           <ItemTitle>
             <Title>{title}</Title>
             <BadgeWrapper>
-              {badge.map((badgeType: "hot" | "fast", i: number) => {
-                return <Badge key={i} badgeType={badgeType} />;
+              {badge.map((badgeType: 'hot' | 'fast', i: number) => {
+                return <Badge key={i} badgeType={badgeType} />
               })}
             </BadgeWrapper>
           </ItemTitle>
@@ -146,7 +175,7 @@ export default function ItemCard({
         </TextBox>
       )}
     </Card>
-  );
+  )
 }
 
 const Card = styled.div`
@@ -169,7 +198,7 @@ const Card = styled.div`
 
   @media (max-width: 600px) {
   }
-`;
+`
 
 const OptionButtonWrapper = styled.div`
   position: absolute;
@@ -228,32 +257,32 @@ const OptionButtonWrapper = styled.div`
   @media (max-width: 365px) {
     display: none;
   }
-`;
+`
 
 const CartButton = styled.span<{ isincart: string }>`
-  color: ${(props) =>
-    props.isincart === "true" ? "rgba(50,50,50,1)" : "rgba(210, 210, 210, 1)"};
+  color: ${props =>
+    props.isincart === 'true' ? 'rgba(50,50,50,1)' : 'rgba(210, 210, 210, 1)'};
 
   &:hover {
-    ${(props) =>
-      props.isincart === "true" ? "" : "color: rgba(180, 180, 180, 1)"};
+    ${props =>
+      props.isincart === 'true' ? '' : 'color: rgba(180, 180, 180, 1)'};
   }
-`;
+`
 
 const LikeButton = styled.span<{ isliked: string }>`
   margin-right: 6px;
-  color: ${(props) =>
-    props.isliked === "true" ? "rgb(253, 70, 108)" : "rgba(210, 210, 210, 1)"};
+  color: ${props =>
+    props.isliked === 'true' ? 'rgb(253, 70, 108)' : 'rgba(210, 210, 210, 1)'};
 
   &:hover {
-    color: ${(props) =>
-      props.isliked === "true" ? "rgb(253, 0, 108)" : "rgba(190, 190, 190, 1)"};
+    color: ${props =>
+      props.isliked === 'true' ? 'rgb(253, 0, 108)' : 'rgba(190, 190, 190, 1)'};
   }
 
   @media (max-width: 400px) {
     margin-right: 4px;
   }
-`;
+`
 
 const ImgBox = styled.div`
   width: 100%;
@@ -263,7 +292,7 @@ const ImgBox = styled.div`
   img {
     width: 100%;
   }
-`;
+`
 
 const TextBox = styled.div`
   margin-top: 10px;
@@ -273,7 +302,7 @@ const TextBox = styled.div`
     margin-top: 8px;
     padding: 8px 8px 8px 2px;
   }
-`;
+`
 
 const ItemTitle = styled.div`
   font-size: 1rem;
@@ -296,14 +325,14 @@ const ItemTitle = styled.div`
     font-size: 0.7rem;
     margin-bottom: 10px;
   }
-`;
+`
 
 const Title = styled.span`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   padding-bottom: 2px;
-`;
+`
 
 const OriginalPrice = styled.div`
   text-decoration: line-through;
@@ -315,12 +344,12 @@ const OriginalPrice = styled.div`
   @media (max-width: 440px) {
     font-size: 0.7rem;
   }
-`;
+`
 
 const PriceDetail = styled.div`
   display: flex;
   align-items: center;
-`;
+`
 
 const Discount = styled.div`
   font-size: 0.8rem;
@@ -333,7 +362,7 @@ const Discount = styled.div`
     margin-right: 6px;
     padding-top: 1.5px;
   }
-`;
+`
 
 const DiscountedPrice = styled.div`
   font-weight: 600;
@@ -341,7 +370,7 @@ const DiscountedPrice = styled.div`
   @media (max-width: 440px) {
     font-size: 0.75rem;
   }
-`;
+`
 
 const BadgeWrapper = styled.div`
   margin-top: 10px;
@@ -358,4 +387,4 @@ const BadgeWrapper = styled.div`
   @media (max-width: 440px) {
     margin-top: 7px;
   }
-`;
+`

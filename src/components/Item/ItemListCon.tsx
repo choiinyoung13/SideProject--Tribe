@@ -194,9 +194,7 @@ export default function ItemListCon() {
               ))}
           </ListWrapper>
           {showLoadingObserver && hasNextPage && sortedItems.length !== 0 && (
-            <LoadingObserver ref={ref}>
-              {isFetchingNextPage && <img src={loadingIcon} alt="loading" />}
-            </LoadingObserver>
+            <LoadingObserver ref={ref}></LoadingObserver>
           )}
         </ListCon>
       )}

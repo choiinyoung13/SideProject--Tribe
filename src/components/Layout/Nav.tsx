@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { FaBars, FaTimes } from 'react-icons/fa'
 import { ImInfo } from 'react-icons/im'
@@ -9,6 +9,7 @@ import { useAuth } from '../../hooks/useAuth'
 import { fetchCartItems } from '../../config/api/cart/fetchCartItems'
 import { useQuery, useQueryClient } from 'react-query'
 import { QUERY_KEYS } from '../../config/constants/queryKeys'
+import Swal from 'sweetalert2'
 
 export default function Nav() {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -18,6 +19,7 @@ export default function Nav() {
   const { session, signOut } = useAuth()
   const queryClient = useQueryClient()
   const [cartState, setCartState] = useState(false)
+  const navigate = useNavigate()
 
   const { data } = useQuery(
     QUERY_KEYS.CART_ITEMS,
@@ -94,7 +96,30 @@ export default function Nav() {
               <li>LOGIN</li>
             </Link>
           )}
-          <Link to={session ? '/cart' : '/login'}>
+          <Link
+            to={'#'}
+            onClick={() => {
+              if (!session) {
+                Swal.fire({
+                  text: '로그인 후 사용 가능한 기능입니다.',
+                  icon: 'warning',
+                  showCancelButton: true,
+                  confirmButtonColor: '#1E1E1E',
+                  cancelButtonColor: '#1E1E1E',
+                  confirmButtonText: '로그인',
+                  cancelButtonText: '닫기',
+                  scrollbarPadding: false,
+                }).then(result => {
+                  if (result.isConfirmed) {
+                    // 로그인 버튼을 눌렀을 때 이동할 URL
+                    navigate('/login')
+                  }
+                })
+              } else {
+                navigate('/cart')
+              }
+            }}
+          >
             <PointerWrapper>
               <li>CART</li>
               {session?.user.id && <Pointer cartstate={cartState.toString()} />}
