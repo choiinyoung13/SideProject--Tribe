@@ -77,7 +77,9 @@ export default function ItemListCon() {
       const observer = new IntersectionObserver(
         (entries) => {
           if (entries[0].isIntersecting) {
-            setShowLoadingObserver(true);
+            setTimeout(() => {
+              setShowLoadingObserver(true);
+            }, 200);
             observer.disconnect();
           }
         },
@@ -89,7 +91,7 @@ export default function ItemListCon() {
         if (observer) observer.disconnect();
       };
     }
-  }, [isDataReady, sortedItems]);
+  }, [isDataReady, sortedItems.length]);
 
   useEffect(() => {
     setIsDataReady(false);
@@ -103,11 +105,11 @@ export default function ItemListCon() {
     }
   }, [inView]);
 
-  useEffect(() => {
-    console.log(`showLoadingObserver: ${showLoadingObserver}`);
-    console.log(`hasNextPage: ${hasNextPage}`);
-    console.log(`sortedItems: ${sortedItems.length}`);
-  }, [showLoadingObserver, hasNextPage, sortedItems]);
+  // useEffect(() => {
+  //   console.log(`showLoadingObserver: ${showLoadingObserver}`);
+  //   console.log(`hasNextPage: ${hasNextPage}`);
+  //   console.log(`sortedItems: ${sortedItems.length}`);
+  // }, [showLoadingObserver, hasNextPage, sortedItems]);
 
   useEffect(() => {
     const fetchFilteredAndSortedItems = async () => {
@@ -138,10 +140,14 @@ export default function ItemListCon() {
   }, [sortValue, filterData, data, setSortedItems]);
 
   useEffect(() => {
+    console.log(`isDataReady: ${isDataReady}`);
+    console.log(`sortedItems: ${sortedItems.length}`);
+
     if (isDataReady && sortedItems.length > 0) {
+      console.log("handleItemsRendered를 부를 준비 완료");
       handleItemsRendered();
     }
-  }, [isDataReady, sortedItems, handleItemsRendered]);
+  }, [isDataReady, sortedItems]);
 
   const cartItems: CartItemType[] = cartData ? cartData.items : [];
 
