@@ -138,6 +138,7 @@ export default function ItemListCon() {
   useEffect(() => {
     console.log(`isDataReady: ${isDataReady}`);
     console.log(`sortedItems: ${sortedItems.length}`);
+    console.log(`listWrapperRef: ${listWrapperRef.current}`);
 
     if (isDataReady && sortedItems.length > 0 && listWrapperRef.current) {
       handleItemsRendered();
