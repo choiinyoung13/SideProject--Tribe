@@ -74,12 +74,13 @@ export default function ItemListCon() {
 
   const handleItemsRendered = useCallback(() => {
     if (isDataReady && sortedItems.length > 0 && listWrapperRef.current) {
+      console.log("handleItemsRendered 호출");
       const observer = new IntersectionObserver(
         (entries) => {
           if (entries[0].isIntersecting) {
             setTimeout(() => {
               setShowLoadingObserver(true);
-            }, 200);
+            }, 300);
             observer.disconnect();
           }
         },
@@ -142,7 +143,6 @@ export default function ItemListCon() {
     console.log(`sortedItems: ${sortedItems.length}`);
 
     if (isDataReady && sortedItems.length > 0) {
-      console.log("handleItemsRendered를 부를 준비 완료");
       handleItemsRendered();
     }
   }, [isDataReady, sortedItems]);
