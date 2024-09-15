@@ -1,10 +1,4 @@
-import {
-  useEffect,
-  useState,
-  useRef,
-  // useCallback,
-  useLayoutEffect,
-} from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import styled from "styled-components";
 import ItemCard from "./ItemCard";
 import { useQuery, useInfiniteQuery } from "react-query";
@@ -78,7 +72,7 @@ export default function ItemListCon() {
     }
   );
 
-  useLayoutEffect(() => {
+  const handleItemsRendered = useCallback(() => {
     console.log("handleItemsRendered 호출1");
     console.log(`isDataReady : ${isDataReady}`);
     console.log(`sortedItems : ${sortedItems.length}`);
@@ -89,9 +83,7 @@ export default function ItemListCon() {
       const observer = new IntersectionObserver(
         (entries) => {
           if (entries[0].isIntersecting) {
-            setTimeout(() => {
-              setShowLoadingObserver(true);
-            }, 300);
+            setShowLoadingObserver(true);
             observer.disconnect();
           }
         },
@@ -116,12 +108,6 @@ export default function ItemListCon() {
       fetchNextPage();
     }
   }, [inView]);
-
-  // useEffect(() => {
-  //   console.log(`showLoadingObserver: ${showLoadingObserver}`);
-  //   console.log(`hasNextPage: ${hasNextPage}`);
-  //   console.log(`sortedItems: ${sortedItems.length}`);
-  // }, [showLoadingObserver, hasNextPage, sortedItems]);
 
   useEffect(() => {
     if (data) {
@@ -149,14 +135,14 @@ export default function ItemListCon() {
     }
   }, [sortValue, filterData, data, setSortedItems]);
 
-  // useEffect(() => {
-  //   console.log(`isDataReady: ${isDataReady}`);
-  //   console.log(`sortedItems: ${sortedItems.length}`);
+  useEffect(() => {
+    console.log(`isDataReady: ${isDataReady}`);
+    console.log(`sortedItems: ${sortedItems.length}`);
 
-  //   if (isDataReady && sortedItems.length > 0) {
-  //     handleItemsRendered();
-  //   }
-  // }, [isDataReady, sortedItems]);
+    if (isDataReady && sortedItems.length > 0 && listWrapperRef.current) {
+      handleItemsRendered();
+    }
+  }, [isDataReady, sortedItems, listWrapperRef.current]);
 
   const cartItems: CartItemType[] = cartData ? cartData.items : [];
 
