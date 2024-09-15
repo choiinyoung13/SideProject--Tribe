@@ -1,4 +1,10 @@
-import { useEffect, useState, useRef, useCallback } from "react";
+import {
+  useEffect,
+  useState,
+  useRef,
+  // useCallback,
+  useLayoutEffect,
+} from "react";
 import styled from "styled-components";
 import ItemCard from "./ItemCard";
 import { useQuery, useInfiniteQuery } from "react-query";
@@ -72,7 +78,7 @@ export default function ItemListCon() {
     }
   );
 
-  const handleItemsRendered = useCallback(() => {
+  useLayoutEffect(() => {
     console.log("handleItemsRendered 호출1");
     console.log(`isDataReady : ${isDataReady}`);
     console.log(`sortedItems : ${sortedItems.length}`);
@@ -143,14 +149,14 @@ export default function ItemListCon() {
     }
   }, [sortValue, filterData, data, setSortedItems]);
 
-  useEffect(() => {
-    console.log(`isDataReady: ${isDataReady}`);
-    console.log(`sortedItems: ${sortedItems.length}`);
+  // useEffect(() => {
+  //   console.log(`isDataReady: ${isDataReady}`);
+  //   console.log(`sortedItems: ${sortedItems.length}`);
 
-    if (isDataReady && sortedItems.length > 0) {
-      handleItemsRendered();
-    }
-  }, [isDataReady, sortedItems]);
+  //   if (isDataReady && sortedItems.length > 0) {
+  //     handleItemsRendered();
+  //   }
+  // }, [isDataReady, sortedItems]);
 
   const cartItems: CartItemType[] = cartData ? cartData.items : [];
 
