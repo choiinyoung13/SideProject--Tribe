@@ -73,8 +73,13 @@ export default function ItemListCon() {
   );
 
   const handleItemsRendered = useCallback(() => {
+    console.log("handleItemsRendered 호출1");
+    console.log(`isDataReady : ${isDataReady}`);
+    console.log(`sortedItems : ${sortedItems.length}`);
+    console.log(`listWrapperRef : ${listWrapperRef.current}`);
+
     if (isDataReady && sortedItems.length > 0 && listWrapperRef.current) {
-      console.log("handleItemsRendered 호출");
+      console.log("handleItemsRendered 호출2");
       const observer = new IntersectionObserver(
         (entries) => {
           if (entries[0].isIntersecting) {
