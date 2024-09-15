@@ -1,4 +1,10 @@
-import { useEffect, useState, useRef, useCallback } from "react";
+import {
+  useEffect,
+  useState,
+  useRef,
+  useCallback,
+  useLayoutEffect,
+} from "react";
 import styled from "styled-components";
 import ItemCard from "./ItemCard";
 import { useQuery, useInfiniteQuery } from "react-query";
@@ -135,17 +141,13 @@ export default function ItemListCon() {
     }
   }, [sortValue, filterData, data, setSortedItems]);
 
-  useEffect(() => {
-    // console.log(`isDataReady: ${isDataReady}`);
-    // console.log(`sortedItems: ${sortedItems.length}`);
-    // console.log(`listWrapperRef: ${listWrapperRef.current}`);
-
+  useLayoutEffect(() => {
     if (!listWrapperRef.current) {
       console.log("listWrapperRef.current가 아직 null입니다.");
     } else {
       handleItemsRendered();
     }
-  }, [isDataReady, sortedItems.length, listWrapperRef.current]);
+  }, [isDataReady, sortedItems.length]);
 
   const cartItems: CartItemType[] = cartData ? cartData.items : [];
 
