@@ -1,56 +1,56 @@
-import { useEffect, useState, useRef, useCallback } from 'react'
-import styled from 'styled-components'
-import ItemCard from './ItemCard'
-import { useQuery, useInfiniteQuery } from 'react-query'
-import { useAuth } from '../../hooks/useAuth'
-import { fetchCartItems } from '../../config/api/cart/fetchCartItems'
-import { QUERY_KEYS } from '../../config/constants/queryKeys'
-import loadingIcon from '../../assets/images/logo/ball-triangle.svg'
-import { fetchUserLikesInfo } from '../../config/api/user/fetchUserInfo'
-import { useLocation } from 'react-router-dom'
-import { useRecoilState, useRecoilValue } from 'recoil'
-import { sortState } from '../../recoil/atoms/SortState'
+import { useEffect, useState, useRef, useCallback } from "react";
+import styled from "styled-components";
+import ItemCard from "./ItemCard";
+import { useQuery, useInfiniteQuery } from "react-query";
+import { useAuth } from "../../hooks/useAuth";
+import { fetchCartItems } from "../../config/api/cart/fetchCartItems";
+import { QUERY_KEYS } from "../../config/constants/queryKeys";
+import loadingIcon from "../../assets/images/logo/ball-triangle.svg";
+import { fetchUserLikesInfo } from "../../config/api/user/fetchUserInfo";
+import { useLocation } from "react-router-dom";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { sortState } from "../../recoil/atoms/SortState";
 import {
   sortHighestDiscountRate,
   sortHighestPrice,
   sortItmeByFilterObj,
   sortLowestId,
   sortLowestPrice,
-} from '../../utill/itemSort'
-import { filterState } from '../../recoil/atoms/FilterState'
-import { sortedItemsState } from '../../recoil/atoms/SortedItemsState'
-import { CartItemType } from '../../types/CartItemType'
-import { fetchItemsPerPage } from '../../config/api/items/fetchItems'
-import { useInView } from 'react-intersection-observer'
+} from "../../utill/itemSort";
+import { filterState } from "../../recoil/atoms/FilterState";
+import { sortedItemsState } from "../../recoil/atoms/SortedItemsState";
+import { CartItemType } from "../../types/CartItemType";
+import { fetchItemsPerPage } from "../../config/api/items/fetchItems";
+import { useInView } from "react-intersection-observer";
 
 export default function ItemListCon() {
-  const { session } = useAuth()
-  const location = useLocation()
-  const sortValue = useRecoilValue(sortState)
-  const queryParams = new URLSearchParams(location.search)
-  const filterData = useRecoilValue(filterState)
-  const [sortedItems, setSortedItems] = useRecoilState(sortedItemsState)
-  const [isDataReady, setIsDataReady] = useState(false)
-  const [showLoadingObserver, setShowLoadingObserver] = useState(false)
-  const tabValue = Number(queryParams.get('tab'))
-  const listWrapperRef = useRef(null)
+  const { session } = useAuth();
+  const location = useLocation();
+  const sortValue = useRecoilValue(sortState);
+  const queryParams = new URLSearchParams(location.search);
+  const filterData = useRecoilValue(filterState);
+  const [sortedItems, setSortedItems] = useRecoilState(sortedItemsState);
+  const [isDataReady, setIsDataReady] = useState(false);
+  const [showLoadingObserver, setShowLoadingObserver] = useState(false);
+  const tabValue = Number(queryParams.get("tab"));
+  const listWrapperRef = useRef(null);
 
   const [ref, inView] = useInView({
     threshold: 0.3,
     triggerOnce: false,
-  })
+  });
 
   const { data, fetchNextPage, hasNextPage, isLoading, isFetchingNextPage } =
     useInfiniteQuery(
-      ['items', tabValue],
+      ["items", tabValue],
       ({ pageParam = 0 }) => fetchItemsPerPage(pageParam, 10, tabValue),
       {
-        getNextPageParam: lastPage => lastPage.nextCursor || undefined,
+        getNextPageParam: (lastPage) => lastPage.nextCursor || undefined,
         staleTime: 0,
         cacheTime: 0,
         keepPreviousData: true,
       }
-    )
+    );
 
   const { data: userLikeData, isLoading: userInfoLoading } = useQuery(
     QUERY_KEYS.USERS,
@@ -60,7 +60,7 @@ export default function ItemListCon() {
       staleTime: Infinity,
       cacheTime: 30 * 60 * 1000,
     }
-  )
+  );
 
   const { data: cartData, isLoading: cartLoading } = useQuery(
     QUERY_KEYS.CART_ITEMS,
@@ -70,74 +70,78 @@ export default function ItemListCon() {
       staleTime: Infinity,
       cacheTime: 30 * 60 * 1000,
     }
-  )
+  );
 
   const handleItemsRendered = useCallback(() => {
     if (isDataReady && sortedItems.length > 0 && listWrapperRef.current) {
       const observer = new IntersectionObserver(
-        entries => {
+        (entries) => {
           if (entries[0].isIntersecting) {
             setTimeout(() => {
-              setShowLoadingObserver(true)
-            }, 100)
-            observer.disconnect()
+              setShowLoadingObserver(true);
+            }, 100);
+            observer.disconnect();
           }
         },
         { threshold: 0.1 }
-      )
-      observer.observe(listWrapperRef.current)
+      );
+      observer.observe(listWrapperRef.current);
+
+      return () => {
+        if (observer) observer.disconnect();
+      };
     }
-  }, [isDataReady, sortedItems])
+  }, [isDataReady, sortedItems]);
 
   useEffect(() => {
-    setIsDataReady(false)
-    setSortedItems([])
-    setShowLoadingObserver(false)
-  }, [tabValue])
+    setIsDataReady(false);
+    setSortedItems([]);
+    setShowLoadingObserver(false);
+  }, [tabValue]);
 
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
-      fetchNextPage()
+      fetchNextPage();
     }
-  }, [inView])
+  }, [inView]);
 
   useEffect(() => {
     const fetchFilteredAndSortedItems = async () => {
       if (data) {
         let filteredItems = await sortItmeByFilterObj(
-          data.pages.flatMap(page => page.items),
+          data.pages.flatMap((page) => page.items),
           filterData
-        )
+        );
 
-        if (sortValue === '추천순') {
-          filteredItems = sortLowestId(filteredItems)
-        } else if (sortValue === '낮은가격순') {
-          filteredItems = sortLowestPrice(filteredItems)
-        } else if (sortValue === '높은가격순') {
-          filteredItems = sortHighestPrice(filteredItems)
-        } else if (sortValue === '할인률순') {
-          filteredItems = sortHighestDiscountRate(filteredItems)
+        if (sortValue === "추천순") {
+          filteredItems = sortLowestId(filteredItems);
+        } else if (sortValue === "낮은가격순") {
+          filteredItems = sortLowestPrice(filteredItems);
+        } else if (sortValue === "높은가격순") {
+          filteredItems = sortHighestPrice(filteredItems);
+        } else if (sortValue === "할인률순") {
+          filteredItems = sortHighestDiscountRate(filteredItems);
         }
 
-        setSortedItems(filteredItems)
-        setIsDataReady(true)
+        setSortedItems(filteredItems);
+        setIsDataReady(true);
       }
-    }
+    };
 
     if (data) {
-      fetchFilteredAndSortedItems()
+      fetchFilteredAndSortedItems();
     }
-  }, [sortValue, filterData, data, setSortedItems])
+  }, [sortValue, filterData, data, setSortedItems]);
 
   useEffect(() => {
     if (isDataReady && sortedItems.length > 0) {
-      handleItemsRendered()
+      handleItemsRendered();
     }
-  }, [isDataReady, sortedItems, handleItemsRendered])
+  }, [isDataReady, sortedItems, handleItemsRendered]);
 
-  const cartItems: CartItemType[] = cartData ? cartData.items : []
+  const cartItems: CartItemType[] = cartData ? cartData.items : [];
 
-  const isInitialLoading = isLoading || cartLoading || userInfoLoading
+  const isInitialLoading = isLoading || cartLoading || userInfoLoading;
 
   return (
     <>
@@ -160,7 +164,9 @@ export default function ItemListCon() {
                     discount,
                     deliveryperiod,
                   }) => {
-                    const isInCart = cartItems.some(item => item.itemId === id)
+                    const isInCart = cartItems.some(
+                      (item) => item.itemId === id
+                    );
                     return (
                       <ItemCard
                         key={id}
@@ -174,7 +180,7 @@ export default function ItemListCon() {
                         userLikeData={userLikeData?.likes}
                         deliveryPeriod={deliveryperiod}
                       />
-                    )
+                    );
                   }
                 )
               ) : (
@@ -189,7 +195,7 @@ export default function ItemListCon() {
         </ListCon>
       )}
     </>
-  )
+  );
 }
 
 const LoadingScreen = styled.div`
@@ -220,7 +226,7 @@ const LoadingScreen = styled.div`
       width: 80px;
     }
   }
-`
+`;
 
 const ListCon = styled.div`
   width: 100%;
@@ -232,22 +238,23 @@ const ListCon = styled.div`
   @media (max-width: 768px) {
     padding-left: 0px;
   }
-`
+`;
 
 const ListWrapper = styled.div`
   display: flex;
   width: 100%;
   flex-wrap: wrap;
   justify-content: flex-start;
-`
+`;
 
 const LoadingObserver = styled.div`
   width: 100%;
   height: 30px;
+  background-color: red;
   display: flex;
   justify-content: center;
   align-items: center;
-`
+`;
 
 const Empty = styled.div`
   width: 100%;
@@ -260,4 +267,4 @@ const Empty = styled.div`
   @media (max-width: 600px) {
     font-size: 1rem;
   }
-`
+`;
