@@ -141,13 +141,16 @@ export default function ItemListCon() {
     }
   }, [sortValue, filterData, data, setSortedItems]);
 
+  const isDataFullyLoaded =
+    session && !isLoading && !userInfoLoading && !cartLoading;
+
   useLayoutEffect(() => {
-    if (!listWrapperRef.current) {
+    if (!isDataFullyLoaded || !listWrapperRef.current) {
       console.log("listWrapperRef.current가 아직 null입니다.");
     } else {
       handleItemsRendered();
     }
-  }, [isDataReady, sortedItems.length]);
+  }, [isDataReady, sortedItems.length, isDataFullyLoaded]);
 
   const cartItems: CartItemType[] = cartData ? cartData.items : [];
 
