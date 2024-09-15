@@ -136,14 +136,16 @@ export default function ItemListCon() {
   }, [sortValue, filterData, data, setSortedItems]);
 
   useEffect(() => {
-    console.log(`isDataReady: ${isDataReady}`);
-    console.log(`sortedItems: ${sortedItems.length}`);
-    console.log(`listWrapperRef: ${listWrapperRef.current}`);
+    // console.log(`isDataReady: ${isDataReady}`);
+    // console.log(`sortedItems: ${sortedItems.length}`);
+    // console.log(`listWrapperRef: ${listWrapperRef.current}`);
 
-    if (isDataReady && sortedItems.length > 0 && listWrapperRef.current) {
+    if (!listWrapperRef.current) {
+      console.log("listWrapperRef.current가 아직 null입니다.");
+    } else {
       handleItemsRendered();
     }
-  }, [isDataReady, sortedItems, listWrapperRef.current]);
+  }, [isDataReady, sortedItems.length, listWrapperRef.current]);
 
   const cartItems: CartItemType[] = cartData ? cartData.items : [];
 
