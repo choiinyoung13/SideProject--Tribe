@@ -263,7 +263,6 @@ const ListWrapper = styled.div`
 const LoadingObserver = styled.div`
   width: 100%;
   height: 30px;
-  background-color: red;
   display: flex;
   justify-content: center;
   align-items: center;
