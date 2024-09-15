@@ -106,6 +106,12 @@ export default function ItemListCon() {
   }, [inView]);
 
   useEffect(() => {
+    console.log(`showLoadingObserver: ${showLoadingObserver}`);
+    console.log(`hasNextPage: ${hasNextPage}`);
+    console.log(`sortedItems: ${sortedItems.length}`);
+  }, [showLoadingObserver, hasNextPage, sortedItems]);
+
+  useEffect(() => {
     const fetchFilteredAndSortedItems = async () => {
       if (data) {
         let filteredItems = await sortItmeByFilterObj(
