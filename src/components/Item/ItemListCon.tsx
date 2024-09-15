@@ -112,8 +112,8 @@ export default function ItemListCon() {
   // }, [showLoadingObserver, hasNextPage, sortedItems]);
 
   useEffect(() => {
-    const fetchFilteredAndSortedItems = async () => {
-      if (data) {
+    if (data) {
+      const fetchFilteredAndSortedItems = async () => {
         let filteredItems = await sortItmeByFilterObj(
           data.pages.flatMap((page) => page.items),
           filterData
@@ -129,12 +129,10 @@ export default function ItemListCon() {
           filteredItems = sortHighestDiscountRate(filteredItems);
         }
 
-        setSortedItems(filteredItems);
-        setIsDataReady(true);
-      }
-    };
+        await setSortedItems(filteredItems);
+        await setIsDataReady(true);
+      };
 
-    if (data) {
       fetchFilteredAndSortedItems();
     }
   }, [sortValue, filterData, data, setSortedItems]);
