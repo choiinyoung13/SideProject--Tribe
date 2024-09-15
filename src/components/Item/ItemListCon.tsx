@@ -102,6 +102,7 @@ export default function ItemListCon() {
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
+      setShowLoadingObserver(true); // inView일 때 로딩 옵저버 활성화
     }
   }, [inView]);
 
@@ -141,6 +142,7 @@ export default function ItemListCon() {
 
   useEffect(() => {
     if (isDataReady && sortedItems.length > 0) {
+      setShowLoadingObserver(true); // 데이터가 준비되면 로딩 옵저버 활성화
       handleItemsRendered();
     }
   }, [isDataReady, sortedItems, handleItemsRendered]);
