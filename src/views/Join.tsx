@@ -1,10 +1,14 @@
+import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import Input from '../components/Common/Input'
 import loadingIcon from '../assets/images/logo/ball-triangle.svg'
-import { AiOutlinePlus } from 'react-icons/ai'
+import {
+  AiOutlineEye,
+  AiOutlineEyeInvisible,
+  AiOutlinePlus,
+} from 'react-icons/ai'
 import join_image from '../assets/images/join_web_1.jpg'
 import useWindowWidth from '../hooks/useWindowWidth'
-import { useEffect, useState } from 'react'
 import { useHandleSignUp } from '../hooks/usehandleSignUp'
 import { checkEmailExists } from '../utill/checkEmailExists'
 import Swal from 'sweetalert2'
@@ -15,18 +19,14 @@ export default function Join() {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [isIdValid, setIsIdValid] = useState(true)
-  const [isPasswordValid, setIsPasswordValid] = useState(true)
+  const [isPasswordValid, setIsPasswordValid] = useState(false)
   const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(false)
   const [isEmailExists, setIsEmailExists] = useState(false)
   const [ischeckRedundancyOpened, setIscheckRedundancyOpened] = useState(false)
+  const [isRequiredChecked, setIsRequiredChecked] = useState(false)
   const { handleSignUp, errorMessage } = useHandleSignUp()
   const [isImageLoaded, setIsImageLoaded] = useState(false)
-
-  useEffect(() => {
-    if (email === '') {
-      setIsIdValid(true)
-    }
-  }, [email])
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false) // 비밀번호 보이기 상태 관리
 
   useEffect(() => {
     if (password !== confirmPassword) {
@@ -47,68 +47,123 @@ export default function Join() {
           <FormTitle>Tribe 회원가입</FormTitle>
           <Form
             action=""
-            onSubmit={e => {
+            onSubmit={async e => {
               e.preventDefault()
+
+              // 이메일 입력 유무 검사
+              if (!email.trim()) {
+                Swal.fire({
+                  text: '사용하실 이메일을 입력해주세요.',
+                  icon: 'warning',
+                  confirmButtonColor: '#1E1E1E',
+                  confirmButtonText: '확인',
+                  scrollbarPadding: false,
+                })
+                return
+              }
+
+              // 이메일 유효성 검사
+              if (!isIdValid) {
+                Swal.fire({
+                  text: '올바른 이메일 형식으로 입력해주세요.',
+                  icon: 'warning',
+                  confirmButtonColor: '#1E1E1E',
+                  confirmButtonText: '확인',
+                  scrollbarPadding: false,
+                })
+                return
+              }
+
+              // 이메일 중복 확인
+              if (!ischeckRedundancyOpened) {
+                Swal.fire({
+                  text: '이메일 중복 확인해 주세요.',
+                  icon: 'warning',
+                  confirmButtonColor: '#1E1E1E',
+                  confirmButtonText: '확인',
+                  scrollbarPadding: false,
+                })
+                return
+              }
+
+              if (isEmailExists) {
+                Swal.fire({
+                  text: '이미 가입한 이메일 계정입니다.',
+                  icon: 'warning',
+                  confirmButtonColor: '#1E1E1E',
+                  confirmButtonText: '확인',
+                  scrollbarPadding: false,
+                })
+                return
+              }
+
+              // 이메일 입력 유무 검사
+              if (!password.trim()) {
+                Swal.fire({
+                  text: '사용하실 비밀번호를 입력해주세요.',
+                  icon: 'warning',
+                  confirmButtonColor: '#1E1E1E',
+                  confirmButtonText: '확인',
+                  scrollbarPadding: false,
+                })
+                return
+              }
+
+              // 비밀번호 유효성 검사
+              if (!isPasswordValid) {
+                Swal.fire({
+                  text: '올바른 비밀번호 형식으로 입력해주세요.',
+                  icon: 'warning',
+                  confirmButtonColor: '#1E1E1E',
+                  confirmButtonText: '확인',
+                  scrollbarPadding: false,
+                })
+                return
+              }
+
+              // 비밀번호 확인 우뮤 검사
+              if (!confirmPassword.trim()) {
+                Swal.fire({
+                  text: '확인을 위해 비밀번호를 재입력해주세요.',
+                  icon: 'warning',
+                  confirmButtonColor: '#1E1E1E',
+                  confirmButtonText: '확인',
+                  scrollbarPadding: false,
+                })
+                return
+              }
+
+              // 비밀번호 확인 요휴성 검사
+              if (!isConfirmPasswordValid) {
+                Swal.fire({
+                  text: '비밀번호가 일치하지 않습니다. 확인해 주세요.',
+                  icon: 'warning',
+                  confirmButtonColor: '#1E1E1E',
+                  confirmButtonText: '확인',
+                  scrollbarPadding: false,
+                })
+                return
+              }
+
+              // 필수 동의 체크박스 검사
+              if (!isRequiredChecked) {
+                Swal.fire({
+                  text: '필수 약관에 동의해 주세요.',
+                  icon: 'warning',
+                  confirmButtonColor: '#1E1E1E',
+                  confirmButtonText: '확인',
+                  scrollbarPadding: false,
+                })
+                return
+              }
+
+              // 회원가입 처리
               try {
-                if (!isIdValid) {
-                  Swal.fire({
-                    text: '올바른 아이디 형식으로 적어 주세요',
-                    icon: 'error',
-                    confirmButtonColor: '#1E1E1E',
-                    confirmButtonText: '확인',
-                    scrollbarPadding: false,
-                  })
-                  return
-                }
-
-                if (!isPasswordValid) {
-                  Swal.fire({
-                    text: '올바른 비밀번호 형식으로 적어 주세요',
-                    icon: 'error',
-                    confirmButtonColor: '#1E1E1E',
-                    confirmButtonText: '확인',
-                    scrollbarPadding: false,
-                  })
-                  return
-                }
-
-                if (!isConfirmPasswordValid) {
-                  Swal.fire({
-                    text: '비밀번호 일치하지 않습니다 확인해 주세요.',
-                    icon: 'error',
-                    confirmButtonColor: '#1E1E1E',
-                    confirmButtonText: '확인',
-                    scrollbarPadding: false,
-                  })
-                  return
-                }
-
-                if (isEmailExists) {
-                  Swal.fire({
-                    text: '이미 가입한 이메일 계정입니다.',
-                    icon: 'error',
-                    confirmButtonColor: '#1E1E1E',
-                    confirmButtonText: '확인',
-                    scrollbarPadding: false,
-                  })
-                  return
-                }
-
-                if (!ischeckRedundancyOpened) {
-                  Swal.fire({
-                    text: '이메일 중복 확인해 주세요.',
-                    icon: 'error',
-                    confirmButtonColor: '#1E1E1E',
-                    confirmButtonText: '확인',
-                    scrollbarPadding: false,
-                  })
-                  return
-                }
-                handleSignUp(email, password)
-              } catch {
+                await handleSignUp(email, password)
+              } catch (error) {
                 Swal.fire({
                   text: `${errorMessage}`,
-                  icon: 'error',
+                  icon: 'warning',
                   confirmButtonColor: '#1E1E1E',
                   confirmButtonText: '확인',
                   scrollbarPadding: false,
@@ -116,6 +171,7 @@ export default function Join() {
               }
             }}
           >
+            {/* 이메일 입력 및 중복 확인 */}
             <IdInputCon>
               <Input
                 type="text"
@@ -138,8 +194,9 @@ export default function Join() {
                 중복확인
               </button>
             </IdInputCon>
+
             <HelperTextCon>
-              <IdHelperText>
+              <HelperText>
                 {ischeckRedundancyOpened && (
                   <div>
                     <CheckRedundancy isemailexists={isEmailExists.toString()}>
@@ -149,70 +206,112 @@ export default function Join() {
                     </CheckRedundancy>
                   </div>
                 )}
-                {!ischeckRedundancyOpened && (
-                  <div>
-                    {isIdValid ? (
-                      '@앞 4~12자/영문 소문자, 숫자 가능 (중복확인 필수)'
-                    ) : (
-                      <WarningText>올바른 이메일 형식이 아닙니다.</WarningText>
-                    )}
+                {!ischeckRedundancyOpened && email === '' && (
+                  <div>@앞 4~12자/영문 소문자, 숫자 가능 (중복확인 필수)</div>
+                )}
+                {!ischeckRedundancyOpened && email && isIdValid && (
+                  <div style={{ color: 'rgb(0, 101, 196)' }}>
+                    올바른 이메일 형식입니다, 중복확인을 해주세요.
                   </div>
                 )}
-              </IdHelperText>
-            </HelperTextCon>
-            <PasswordInputCon>
-              <Input
-                setPassword={setPassword}
-                type="password"
-                placeholder="비밀번호를 입력해주세요."
-                password={password}
-                setIsPasswordValid={setIsPasswordValid}
-              />
-              <Input
-                setConfirmPassword={setConfirmPassword}
-                type="password"
-                placeholder="비밀번호 확인을 위해 다시 입력해주세요."
-              />
-            </PasswordInputCon>
-            <HelperTextCon>
-              <PasswordHelperText>
-                {!isPasswordValid && password.length >= 1 ? (
-                  <WarningText>올바른 비밀번호 형식이 아닙니다.</WarningText>
-                ) : !isConfirmPasswordValid && confirmPassword.length === 0 ? (
-                  '6~20자/영문 대문자. 소문자, 숫자, 특수문자 중 2가지 이상 조합'
-                ) : !isConfirmPasswordValid && confirmPassword.length >= 1 ? (
-                  <WarningText>비밀번호가 일치하지 않습니다.</WarningText>
-                ) : (
-                  <ValidText>비밀번호가 일치합니다.</ValidText>
+                {!ischeckRedundancyOpened && email && !isIdValid && (
+                  <WarningText>올바른 이메일 형식이 아닙니다.</WarningText>
                 )}
-              </PasswordHelperText>
+              </HelperText>
+            </HelperTextCon>
+
+            {/* 비밀번호 입력 */}
+            <PasswordInputCon>
+              <InputWrapper>
+                <Input
+                  setPassword={setPassword}
+                  type="password"
+                  placeholder="비밀번호를 입력해주세요."
+                  password={password}
+                  setIsPasswordValid={setIsPasswordValid}
+                />
+              </InputWrapper>
+
+              {/* 비밀번호 확인 입력 및 아이콘 */}
+              <InputWrapper>
+                <Input
+                  setConfirmPassword={setConfirmPassword}
+                  type={isPasswordVisible ? 'text' : 'password'} // 상태에 따라 type 변경
+                  placeholder="비밀번호 확인을 위해 다시 입력해주세요."
+                />
+                {/* 눈 모양 아이콘 */}
+                <EyeIcon onClick={() => setIsPasswordVisible(prev => !prev)}>
+                  {isPasswordVisible ? (
+                    <AiOutlineEyeInvisible />
+                  ) : (
+                    <AiOutlineEye />
+                  )}
+                </EyeIcon>
+              </InputWrapper>
+            </PasswordInputCon>
+
+            <HelperTextCon>
+              {/* 비밀번호 조건 안내 및 유효성/일치 확인 메시지 */}
+              {!password.trim() && (
+                <HelperText>
+                  6~20자/영문 대문자. 소문자, 숫자, 특수문자 중 2가지 이상 조합
+                </HelperText>
+              )}
+
+              {/* 우선순위: 비밀번호 형식이 잘못된 경우만 표시 */}
+              {password && !isPasswordValid && (
+                <WarningText>올바른 비밀번호 형식이 아닙니다.</WarningText>
+              )}
+
+              {/* 비밀번호 형식이 올바를 때만 일치 여부 확인 */}
+              {password.trim() &&
+                isPasswordValid &&
+                confirmPassword &&
+                !isConfirmPasswordValid && (
+                  <WarningText>비밀번호가 일치하지 않습니다.</WarningText>
+                )}
+
+              {/* 비밀번호가 올바르고 비밀번호 확인란이 비어 있을 때 */}
+              {isPasswordValid && !confirmPassword && (
+                <HelperText style={{ color: 'rgb(0, 101, 196)' }}>
+                  올바른 비밀번호 형식입니다.
+                </HelperText>
+              )}
+
+              {/* 비밀번호가 올바르고 비밀번호 확인도 일치할 때 */}
+              {isPasswordValid && isConfirmPasswordValid && confirmPassword && (
+                <ValidText>비밀번호가 일치합니다.</ValidText>
+              )}
             </HelperTextCon>
 
             <hr />
+
+            {/* 필수 약관 동의 */}
             <AgreeCon>
               <AgreeWrapper>
-                <input type="checkbox" required />
-                <label htmlFor="">
-                  {' '}
-                  [필수]만 14세 이상이며 모두 동의합니다.
-                </label>
+                <input
+                  type="checkbox"
+                  checked={isRequiredChecked}
+                  onChange={e => setIsRequiredChecked(e.target.checked)}
+                />
+                <label>[필수]만 14세 이상이며 모두 동의합니다.</label>
               </AgreeWrapper>
               <AiOutlinePlus />
             </AgreeCon>
+
             <AgreeCon>
               <AgreeWrapper>
-                <input type="checkbox" required />
-                <label htmlFor="">
-                  {' '}
-                  [선택]광고성 정보 수신에 모두 동의합니다.
-                </label>
+                <input type="checkbox" />
+                <label>[선택]광고성 정보 수신에 모두 동의합니다.</label>
               </AgreeWrapper>
               <AiOutlinePlus />
             </AgreeCon>
+
             <JoinBtn type="submit">가입하기</JoinBtn>
           </Form>
         </FormWrapper>
       </FormCon>
+
       {windowWidth === 1920 && (
         <ImgCon>
           {!isImageLoaded && (
@@ -273,7 +372,7 @@ const FormWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: start;
-  min-width: 410px;
+  min-width: 476px;
 
   hr {
     width: 100%;
@@ -338,18 +437,34 @@ const IdInputCon = styled.div`
 `
 
 const PasswordInputCon = styled.div`
+  width: 100%;
+`
+const InputWrapper = styled.div`
+  position: relative;
+  width: 100%;
   input {
     width: 100%;
   }
 
   @media (max-width: 600px) {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 100%;
     input {
       width: 80%;
     }
+  }
+`
+
+const EyeIcon = styled.div`
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-70%);
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: #000;
+
+  @media (max-width: 600px) {
+    right: 60px;
   }
 `
 
@@ -365,22 +480,10 @@ const HelperTextCon = styled.div`
   }
 `
 
-const IdHelperText = styled.p`
+const HelperText = styled.p`
   font-size: 0.9rem;
-  color: 'rgba(90, 90, 90, 1)';
-  margin: 6px 0 40px;
-
-  @media (max-width: 600px) {
-    font-size: 0.7rem;
-    width: 85%;
-    margin: 0 auto;
-  }
-`
-
-const PasswordHelperText = styled.p`
-  font-size: 0.9rem;
-  color: rgba(90, 90, 90, 1);
-  margin: 6px 0 40px;
+  color: rgba(90, 90, 90, 1); /* 비밀번호 조건 텍스트와 동일한 색상 */
+  margin: 6px 0 35px;
 
   @media (max-width: 600px) {
     font-size: 0.7rem;
@@ -391,10 +494,26 @@ const PasswordHelperText = styled.p`
 
 const WarningText = styled.span`
   color: red;
+  font-size: 0.9rem;
+  margin: 6px 0 35px;
+
+  @media (max-width: 600px) {
+    font-size: 0.7rem;
+    width: 85%;
+    margin: 0 auto;
+  }
 `
 
 const ValidText = styled.span`
   color: green;
+  font-size: 0.9rem;
+  margin: 6px 0 35px;
+
+  @media (max-width: 600px) {
+    font-size: 0.7rem;
+    width: 85%;
+    margin: 0 auto;
+  }
 `
 
 const CheckRedundancy = styled.span<{ isemailexists: string }>`
