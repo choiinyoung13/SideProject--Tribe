@@ -83,7 +83,8 @@ const CommunityCon = styled.div`
   width: 100%;
   height: calc(100vh - 100px);
   margin-top: 100px;
-  border-top: 1px solid rgba(230, 230, 230, 1);
+  box-shadow: inset 1px 1px 5px rgba(0, 0, 0, 0.1);
+
   background-color: #f4f4f4;
 
   @media (max-width: 768px) {
@@ -98,6 +99,7 @@ const Sidebar = styled.div`
   padding: 26px;
   background-color: #ffffff;
   border-right: 1px solid #e1e1e1;
+  box-shadow: inset 1px 1px 5px rgba(0, 0, 0, 0.1);
 
   @media (max-width: 768px) {
     width: 100%;
@@ -221,6 +223,7 @@ const RightSidebar = styled.div`
   padding: 26px;
   background-color: #ffffff;
   border-left: 1px solid #e1e1e1;
+  box-shadow: inset 1px 1px 5px rgba(0, 0, 0, 0.1);
 
   @media (max-width: 1024px) {
     display: none;
