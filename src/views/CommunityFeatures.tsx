@@ -61,7 +61,7 @@ export default function CommunityFeatures() {
                 </ButtonCon>
               </TextContentCon>
             </TextBox>
-            <Devider />
+
             <TextBox>
               <TextNumber>" 004</TextNumber>
               <TextContentCon>
@@ -178,29 +178,29 @@ const DetailText = styled.div<DetailTextProps>`
   justify-content: space-around;
   opacity: ${props => (props.isonmouse === 'true' ? '1' : '0')};
   transition: opacity 0.1s ease;
+
+  @media (max-width: 970px) {
+    flex-direction: column;
+    gap: 60px;
+  }
 `
 
 const TextBox = styled.div`
   display: flex;
   width: 520px;
-  min-width: 350px;
 
   &:nth-child(1) {
+    margin-right: 60px;
+    min-width: 350px;
   }
 
   &:nth-child(2) {
+    min-width: 360px;
   }
 
-  @media (max-width: 1024px) {
-    min-width: 320px;
+  @media (max-width: 970px) {
+    width: 100%;
   }
-`
-
-const Devider = styled.div`
-  background-color: rgba(30, 30, 30, 1);
-  height: 246px;
-  width: 1px;
-  margin: 0 80px;
 `
 
 const TextNumber = styled.span`
@@ -232,11 +232,13 @@ const TextContentCon = styled.div`
     line-height: 34px;
   }
 
-  @media (max-width: 768px) {
-    max-width: 500px;
+  @media (max-width: 970px) {
+    width: 100%;
+    line-height: 30px;
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: 768px) {
+    max-width: 500px;
   }
 `
 
@@ -245,7 +247,6 @@ const ButtonCon = styled.div`
   margin-top: 50px;
 
   button {
-    width: 224px;
     border: none;
     border-radius: 2px;
     transition: color 0.3s ease;
@@ -254,8 +255,11 @@ const ButtonCon = styled.div`
   @media (max-width: 1024px) {
     button {
       font-size: 0.9rem;
-      width: 210px;
     }
+  }
+
+  @media (max-width: 970px) {
+    margin-top: 20px;
   }
 
   @media (max-width: 768px) {
@@ -264,9 +268,6 @@ const ButtonCon = styled.div`
     button {
       font-size: 0.8rem;
     }
-  }
-
-  @media (max-width: 600px) {
   }
 `
 
