@@ -9,8 +9,9 @@ const noFooterSection = (path: string) => {
     path === '/' ||
     path === '/about' ||
     path === '/community-feature' ||
+    path === '/community' ||
     path === '/login' ||
-    236 + path === '/join'
+    path === '/join'
   )
 }
 

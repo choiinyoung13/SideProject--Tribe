@@ -151,14 +151,14 @@ export default function Nav() {
             >
               <li>SHOP</li>
             </Link>
-            {/* <Link
+            <Link
               to={'/community'}
               onClick={() => {
                 toggleMenu(false)
               }}
             >
               <li>COMMUNITY</li>
-            </Link> */}
+            </Link>
             {session ? (
               <Link
                 to={'/'}
