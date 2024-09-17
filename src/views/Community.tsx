@@ -5,6 +5,7 @@ import profile1 from '../assets/images/community/fake_profile/1.jpg'
 import profile2 from '../assets/images/community/fake_profile/2.jpg'
 import profile3 from '../assets/images/community/fake_profile/3.jpg'
 import PostListCon from '../components/Community/PostListCon'
+import RealTimeKeywords from '../components/Community/RealTimeKeywords'
 
 export default function Community() {
   const location = useLocation()
@@ -60,11 +61,7 @@ export default function Community() {
         <WidgetWrapper>
           <WidgetTitle>실시간 인기 키워드</WidgetTitle>
           <Widget>
-            <WidgetItem>1. 몬스테라</WidgetItem>
-            <WidgetItem>2. 다육이 물주기 팁</WidgetItem>
-            <WidgetItem>3. 식물 병충해 방지</WidgetItem>
-            <WidgetItem>4. 키우기 쉬운 식물</WidgetItem>
-            <WidgetItem>5. 하젤 장미</WidgetItem>
+            <RealTimeKeywords />
           </Widget>
         </WidgetWrapper>
         <WidgetWrapper>
@@ -234,32 +231,6 @@ const Feed = styled.div`
   margin-top: 20px;
 `
 
-const PostCard = styled.div`
-  background-color: #ffffff;
-  padding: 20px;
-  margin-bottom: 15px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-`
-
-const PostHeader = styled.div`
-  font-weight: bold;
-  margin-bottom: 10px;
-  color: #333;
-  font-size: 1.1rem;
-`
-
-const PostBody = styled.div`
-  font-size: 1rem;
-  color: #555;
-  margin-bottom: 10px;
-`
-
-const PostFooter = styled.div`
-  font-size: 0.8rem;
-  color: #aaa;
-`
-
 // 오른쪽 사이드바
 const RightSidebar = styled.div`
   width: 350px;
@@ -312,7 +283,7 @@ const WidgetWrapper = styled.div`
 `
 
 const WidgetTitle = styled.div`
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: bold;
   margin-bottom: 10px;
 `
@@ -374,6 +345,7 @@ const FollowRecommendLeft = styled.div`
   align-items: center;
 `
 const FollowRecommendRight = styled.div``
+
 const FollowBtn = styled.button`
   background-color: #141414;
   color: rgba(255, 255, 255, 1);
