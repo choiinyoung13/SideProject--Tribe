@@ -2,16 +2,16 @@ import styled from 'styled-components'
 import { BiSortAlt2 } from 'react-icons/bi'
 import { IoSearch } from 'react-icons/io5'
 import { useRecoilState } from 'recoil'
-import { sortState } from '../../recoil/atoms/SortState'
 import useWindowWidth from '../../hooks/useWindowWidth'
 import SearchItemModal from '../Modal/SearchItemModal'
 import { useState, useEffect, useCallback, useRef } from 'react'
 import throttle from 'lodash/throttle'
 import WebSortModal from '../Modal/WebSortModal'
+import { shopSortState } from '../../recoil/atoms/SortState'
 
 export default function FilterSection() {
   const windowWidth = useWindowWidth()
-  const [sortDataState] = useRecoilState(sortState)
+  const [sortDataState] = useRecoilState(shopSortState)
   const [inputModalOpened, setInputModalOpened] = useState(false)
   const [sortModalOpened, setSortModalOpenedState] = useState(false)
   const [searchData, setSearchData] = useState('')
@@ -104,8 +104,6 @@ export default function FilterSection() {
             </SearchInputWrapper>
             <SortIcon>
               <BiSortAlt2
-                color="rgba(140,140,140,1)"
-                size={27}
                 cursor={'pointer'}
                 onClick={() => {
                   setSortModalOpenedState(prev => !prev)
@@ -130,7 +128,7 @@ export default function FilterSection() {
             >
               <SortType>{sortDataState}</SortType>
               <SortIcon>
-                <BiSortAlt2 color="rgba(80,80,80,1)" />
+                <BiSortAlt2 />
                 {sortModalOpened && (
                   <SortModal ref={sortModalRef}>
                     <WebSortModal
@@ -267,8 +265,12 @@ const SortModal = styled.div`
   z-index: 10000;
 `
 
-const SortType = styled.span``
+const SortType = styled.span`
+  display: inline-block;
+  margin-bottom: 1px;
+`
 
 const SortIcon = styled.div`
   position: relative;
+  font-size: 1.4rem;
 `

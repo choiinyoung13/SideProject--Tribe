@@ -1,12 +1,9 @@
 import styled from 'styled-components'
-import Badge from '../Common/Badge'
 import { useNavigate } from 'react-router-dom'
-import { priceCalculation } from '../../utill/priceCalculation'
-import formatNumberWithCommas from '../../utill/formatNumberWithCommas'
 import { useState } from 'react'
-
 import defaultImage from '../../assets/images/shop_item/default-image.png'
 import { motion } from 'framer-motion'
+import { IoMdHeart } from 'react-icons/io'
 
 type BadgeType = 'hot' | 'fast'
 
@@ -22,14 +19,7 @@ interface ItemCardPropsType {
   deliveryPeriod: number
 }
 
-export default function PostCard({
-  id,
-  title,
-  imgurl,
-  originalprice,
-  badge,
-  discount,
-}: ItemCardPropsType) {
+export default function PostCard({ id, imgurl }: ItemCardPropsType) {
   const [isImageLoaded, setIsImageLoaded] = useState(false)
   const navigate = useNavigate()
 
@@ -56,26 +46,22 @@ export default function PostCard({
       </ImgBox>
       {isImageLoaded && (
         <TextBox>
-          <ItemTitle>
-            <Title>{title}</Title>
-            <BadgeWrapper>
-              {badge.map((badgeType: 'hot' | 'fast', i: number) => {
-                return <Badge key={i} badgeType={badgeType} />
-              })}
-            </BadgeWrapper>
-          </ItemTitle>
-          <OriginalPrice>
-            {formatNumberWithCommas(originalprice)}원
-          </OriginalPrice>
-          <PriceDetail>
-            <Discount>{discount}%</Discount>
-            <DiscountedPrice>
-              {formatNumberWithCommas(
-                priceCalculation(originalprice, discount)
-              )}
-              원
-            </DiscountedPrice>
-          </PriceDetail>
+          <TextHeader>
+            <PostCategory>[정보]</PostCategory>
+            <Title>채광 안 좋은 집에서도 키울 수 있는 식물 리스트</Title>
+          </TextHeader>
+          <PostText>
+            <TextLeft>
+              <Profile>
+                <ProfileImg src={imgurl} />
+                <Username>dlsdud156</Username>
+              </Profile>
+            </TextLeft>
+            <TextRight>
+              <IoMdHeart />
+              <span>3.4k</span>
+            </TextRight>
+          </PostText>
         </TextBox>
       )}
     </Card>
@@ -85,7 +71,6 @@ export default function PostCard({
 const Card = styled.div`
   position: relative;
   width: calc(25% - 15px);
-  cursor: pointer;
 
   @media (max-width: 1600px) {
     width: calc(33.33% - 13.5px);
@@ -96,94 +81,11 @@ const Card = styled.div`
   }
 `
 
-const OptionButtonWrapper = styled.div`
-  position: absolute;
-  right: 30px;
-  bottom: 30px;
-  font-size: 1.7rem;
-
-  @media (max-width: 1900px) {
-    font-size: 1.6rem;
-  }
-
-  @media (max-width: 1680px) {
-    font-size: 1.5rem;
-  }
-
-  @media (max-width: 1120px) {
-    font-size: 1.3rem;
-  }
-
-  @media (max-width: 1024px) {
-    font-size: 1.6rem;
-  }
-
-  @media (max-width: 860px) {
-    font-size: 1.4rem;
-  }
-
-  @media (max-width: 810px) {
-    font-size: 1.1rem;
-  }
-
-  @media (max-width: 768px) {
-    font-size: 1.6rem;
-  }
-
-  @media (max-width: 600px) {
-    font-size: 1.5rem;
-  }
-
-  @media (max-width: 490px) {
-    right: 25px;
-    bottom: 30px;
-    font-size: 1.1rem;
-  }
-
-  @media (max-width: 400px) {
-    font-size: 1.1rem;
-  }
-
-  @media (max-width: 390px) {
-    right: 24px;
-    bottom: 32px;
-    font-size: 0.9rem;
-  }
-
-  @media (max-width: 365px) {
-    display: none;
-  }
-`
-
-const CartButton = styled.span<{ isincart: string }>`
-  color: ${props =>
-    props.isincart === 'true' ? 'rgba(50,50,50,1)' : 'rgba(210, 210, 210, 1)'};
-
-  &:hover {
-    ${props =>
-      props.isincart === 'true' ? '' : 'color: rgba(180, 180, 180, 1)'};
-  }
-`
-
-const LikeButton = styled.span<{ isliked: string }>`
-  margin-right: 6px;
-  color: ${props =>
-    props.isliked === 'true' ? 'rgb(253, 70, 108)' : 'rgba(210, 210, 210, 1)'};
-
-  &:hover {
-    color: ${props =>
-      props.isliked === 'true' ? 'rgb(253, 0, 108)' : 'rgba(190, 190, 190, 1)'};
-  }
-
-  @media (max-width: 400px) {
-    margin-right: 4px;
-  }
-`
-
 const ImgBox = styled.div`
   width: 100%;
   border-radius: 20px;
   overflow: hidden;
+  cursor: pointer;
 
   img {
     width: 100%;
@@ -200,87 +102,68 @@ const TextBox = styled.div`
   }
 `
 
-const ItemTitle = styled.div`
-  font-size: 1rem;
-  font-weight: 600;
-  margin-bottom: 13px;
+const TextHeader = styled.div`
   display: flex;
-  flex-direction: column;
-  min-width: 200px;
-
-  @media (max-width: 1024px) {
-    min-width: 180px;
-  }
-
-  @media (max-width: 480px) {
-    font-size: 0.8rem;
-    min-width: 150px;
-  }
-
-  @media (max-width: 440px) {
-    font-size: 0.7rem;
-    margin-bottom: 10px;
-  }
+`
+const PostCategory = styled.div`
+  flex-shrink: 0;
+  margin-right: 4px;
 `
 
-const Title = styled.span`
+const PostText = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+`
+
+const Title = styled.div`
+  width: 280px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   padding-bottom: 2px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
 `
 
-const OriginalPrice = styled.div`
-  text-decoration: line-through;
-  text-decoration-color: rgba(120, 120, 120, 1);
-  font-size: 0.8rem;
-  color: rgba(120, 120, 120, 1);
-  margin-bottom: 6px;
-
-  @media (max-width: 440px) {
-    font-size: 0.7rem;
-  }
+const Profile = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
 `
-
-const PriceDetail = styled.div`
+const ProfileImg = styled.img`
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+`
+const Username = styled.div`
+  font-size: 0.9rem;
+  color: rgba(50, 50, 50, 1);
+  margin-left: 6px;
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`
+const TextLeft = styled.div`
   display: flex;
   align-items: center;
 `
-
-const Discount = styled.div`
-  font-size: 0.8rem;
-  color: rgb(223, 33, 19);
-  margin-right: 8px;
-  padding-top: 3.5px;
-
-  @media (max-width: 440px) {
-    font-size: 0.7rem;
-    margin-right: 6px;
-    padding-top: 1.5px;
-  }
-`
-
-const DiscountedPrice = styled.div`
-  font-weight: 600;
-
-  @media (max-width: 440px) {
-    font-size: 0.75rem;
-  }
-`
-
-const BadgeWrapper = styled.div`
-  margin-top: 10px;
+const TextRight = styled.div`
   display: flex;
+  align-items: center;
+  font-size: 1rem;
+  color: rgba(190, 190, 190, 1);
+  margin-top: 1px;
+  cursor: pointer;
 
-  div {
-    margin-right: 6px;
-
-    &:last-of-type {
-      margin-right: 0px;
-    }
-  }
-
-  @media (max-width: 440px) {
-    margin-top: 7px;
+  span {
+    font-size: 0.9rem;
+    color: rgba(50, 50, 50, 1);
+    margin-left: 3px;
+    margin-bottom: 1px;
   }
 `

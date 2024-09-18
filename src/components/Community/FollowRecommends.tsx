@@ -57,24 +57,28 @@ const FollowRecommend = styled.div`
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   transition: background-color 0.3s ease;
   cursor: pointer;
+
+  &:hover {
+    background-color: rgba(240, 240, 240, 1);
+  }
 `
 const Profile = styled.img`
-  width: 43px;
-  height: 43px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
   border: 1px soild rgba(240, 240, 240, 1);
 `
 const TextSection = styled.div`
-  width: 150px;
+  width: 140px;
   margin-left: 8px;
 `
 const UserName = styled.div`
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: bold;
   color: rgba(30, 30, 30, 1);
 `
 const Description = styled.div`
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: thin;
   margin-top: 6px;
   margin-bottom: 6px;
@@ -101,7 +105,7 @@ const FollowBtn = styled.button`
   align-items: center;
   width: 26px;
   height: 26px;
-  padding-bottom: 2px;
+  padding-bottom: 3px;
 
   &:hover {
     background-color: rgba(50, 50, 50, 1);

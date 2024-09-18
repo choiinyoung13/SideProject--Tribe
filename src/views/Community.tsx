@@ -4,6 +4,7 @@ import { Link, useLocation } from 'react-router-dom'
 import PostListCon from '../components/Community/PostListCon'
 import RealTimeKeywords from '../components/Community/RealTimeKeywords'
 import FollowRecommends from '../components/Community/FollowRecommends'
+import SortButton from '../components/Community/SortButton'
 
 export default function Community() {
   const location = useLocation()
@@ -11,11 +12,12 @@ export default function Community() {
   const tab = searchParams.get('tab')
 
   const categories = [
-    { id: 1, title: '전체', count: 218 },
+    { id: 1, title: '전체', count: 309 },
     { id: 2, title: '잡담', count: 54 },
     { id: 3, title: '이벤트', count: 101 },
     { id: 4, title: '질문', count: 108 },
     { id: 5, title: '나눔', count: 60 },
+    { id: 6, title: '정보', count: 91 },
   ]
 
   return (
@@ -39,22 +41,26 @@ export default function Community() {
         })}
       </Sidebar>
       <MainContent>
-        <PostInputWrapper>
-          <PostInput placeholder="새로운 글을 작성하세요... (식물 정보, 질문 등)" />
-          <PostButton>글쓰기</PostButton>
-        </PostInputWrapper>
+        <MainContentHeader>
+          <HeaderLeft>
+            <InputWrapper>
+              <SearchIcon>
+                <IoSearch />
+              </SearchIcon>
+              <Input placeholder="궁금한 키워드 입력" />
+            </InputWrapper>
+          </HeaderLeft>
+          <HeaderRight>
+            <SortButton />
+            <PostButton>글쓰기</PostButton>
+          </HeaderRight>
+        </MainContentHeader>
         <Feed>
           <PostListCon />
         </Feed>
       </MainContent>
 
       <RightSidebar>
-        <InputWrapper>
-          <SearchIcon>
-            <IoSearch />
-          </SearchIcon>
-          <Input placeholder="식물 관련 키워드 입력" />
-        </InputWrapper>
         <WidgetWrapper>
           <WidgetTitle>실시간 인기 키워드</WidgetTitle>
           <Widget>
@@ -141,50 +147,84 @@ const MainContent = styled.div`
   }
 `
 
-const PostInputWrapper = styled.div`
+const MainContentHeader = styled.div`
   display: flex;
+  justify-content: end;
   align-items: center;
   margin-bottom: 20px;
+  width: 100%;
+`
+
+const HeaderLeft = styled.div`
+  display: flex;
+  align-items: center;
+  flex: 8;
+  margin-right: 20px;
 
   @media (max-width: 768px) {
-    flex-direction: column;
-    align-items: stretch;
+    margin-right: 12px;
   }
 `
 
-const PostInput = styled.textarea`
-  width: 100%;
-  height: 80px;
-  padding: 10px;
-  border: 1px solid #e1e1e1;
-  border-radius: 8px;
-  resize: none;
-  font-size: 1rem;
-  outline: none;
+const HeaderRight = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  flex: 1;
+`
 
-  @media (max-width: 768px) {
-    height: 100px;
+const InputWrapper = styled.div`
+  position: relative;
+  width: 100%;
+`
+
+const SearchIcon = styled.div`
+  font-size: 1rem;
+  color: rgba(150, 150, 150, 1);
+  position: absolute;
+  top: 50%;
+  transform: translateY(-45%);
+  left: 13px;
+`
+
+const Input = styled.input`
+  width: 100%;
+  background-color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 14px 10px 36px;
+  font-size: 0.9rem;
+
+  &:focus {
+    outline: none;
+  }
+
+  &::placeholder {
+    color: rgba(150, 150, 150, 1);
   }
 `
 
 const PostButton = styled.button`
-  width: 90px;
-  margin-left: 10px;
-  padding: 10px 20px;
+  width: 70px;
+  padding: 6px 10px;
   background-color: #141414;
+  font-size: 0.85rem;
   color: #ffffff;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  margin-left: 16px;
 
   &:hover {
     background-color: #242424;
   }
 
+  @media (max-width: 1919px) {
+    margin-left: 26px;
+  }
+
   @media (max-width: 768px) {
-    margin-left: 0;
-    margin-top: 10px;
-    width: 100%;
+    margin-left: 12px;
   }
 `
 
@@ -203,37 +243,6 @@ const RightSidebar = styled.div`
 
   @media (max-width: 1024px) {
     display: none;
-  }
-`
-
-const InputWrapper = styled.div`
-  position: relative;
-  margin-bottom: 20px;
-`
-
-const SearchIcon = styled.div`
-  font-size: 1rem;
-  color: rgba(150, 150, 150, 1);
-  position: absolute;
-  top: 50%;
-  transform: translateY(-45%);
-  left: 13px;
-`
-
-const Input = styled.input`
-  width: 100%;
-  background-color: #f4f4f4;
-  border: none;
-  border-radius: 6px;
-  padding: 10px 14px 10px 36px;
-  font-size: 0.9rem;
-
-  &:focus {
-    outline: none;
-  }
-
-  &::placeholder {
-    color: rgba(150, 150, 150, 1);
   }
 `
 

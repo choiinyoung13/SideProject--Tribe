@@ -1,20 +1,19 @@
-import { useRef } from 'react'
 import { useRecoilState } from 'recoil'
+import { useRef } from 'react'
 import styled from 'styled-components'
-import { shopSortState } from '../../recoil/atoms/SortState'
+import { communitySortState } from '../../recoil/atoms/SortState'
 
-interface WebSortModalProps {
+interface SortModalProps {
   className?: string
   setSortModalOpenedState: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export default function WebSortModal({
+export default function SortModal({
   className,
   setSortModalOpenedState,
-}: WebSortModalProps) {
-  const [sortDataState, setSortDataState] = useRecoilState(shopSortState)
-
-  const sortDatas = useRef(['추천순', '낮은가격순', '높은가격순', '할인률순'])
+}: SortModalProps) {
+  const [sortDataState, setSortDataState] = useRecoilState(communitySortState)
+  const sortDatas = useRef(['인기순', '최신순'])
 
   return (
     <>

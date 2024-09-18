@@ -15,7 +15,6 @@ import loadingIcon from '../../assets/images/logo/ball-triangle.svg'
 import { fetchUserLikesInfo } from '../../config/api/user/fetchUserInfo'
 import { useLocation } from 'react-router-dom'
 import { useRecoilState, useRecoilValue } from 'recoil'
-import { sortState } from '../../recoil/atoms/SortState'
 import {
   sortHighestDiscountRate,
   sortHighestPrice,
@@ -28,11 +27,12 @@ import { sortedItemsState } from '../../recoil/atoms/SortedItemsState'
 import { CartItemType } from '../../types/CartItemType'
 import { fetchItemsPerPage } from '../../config/api/items/fetchItems'
 import { useInView } from 'react-intersection-observer'
+import { communitySortState } from '../../recoil/atoms/SortState'
 
 export default function PostListCon() {
   const { session } = useAuth()
   const location = useLocation()
-  const sortValue = useRecoilValue(sortState)
+  const sortValue = useRecoilValue(communitySortState)
   const queryParams = new URLSearchParams(location.search)
   const filterData = useRecoilValue(filterState)
   const [sortedItems, setSortedItems] = useRecoilState(sortedItemsState)

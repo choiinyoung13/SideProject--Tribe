@@ -1,6 +1,13 @@
-import { atom } from "recoil";
+import { atom } from 'recoil'
 
-export const sortState = atom({
-  key: "sortState",
-  default: "추천순",
-});
+// shop sort
+export const shopSortState = atom({
+  key: 'shopSortState',
+  default: '추천순',
+})
+
+// community sort
+export const communitySortState = atom({
+  key: 'communitySortState',
+  default: '인기순',
+})
