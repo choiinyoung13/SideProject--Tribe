@@ -5,11 +5,19 @@ import PostListCon from '../components/Community/PostListCon'
 import RealTimeKeywords from '../components/Community/RealTimeKeywords'
 import FollowRecommends from '../components/Community/FollowRecommends'
 import SortButton from '../components/Community/SortButton'
+import useWindowWidth from '../hooks/useWindowWidth'
+import { FaChevronDown } from 'react-icons/fa'
+import { useState } from 'react'
+import PostModal from '../components/Community/PostModal' // PostModal 컴포넌트 추가
 
 export default function Community() {
   const location = useLocation()
   const searchParams = new URLSearchParams(location.search)
   const tab = searchParams.get('tab')
+  const windowWidth = useWindowWidth()
+
+  // 모달 상태 관리
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   const categories = [
     { id: 1, title: '전체', count: 309 },
@@ -20,26 +28,54 @@ export default function Community() {
     { id: 6, title: '정보', count: 91 },
   ]
 
+  // 모달 열기 함수
+  const openModal = () => {
+    setIsModalOpen(true)
+  }
+
+  // 모달 닫기 함수
+  const closeModal = () => {
+    setIsModalOpen(false)
+  }
+
   return (
     <CommunityCon>
-      <Sidebar>
-        {categories.map(cat => {
-          return (
-            <Link
-              to={
-                cat.title === '전체'
-                  ? '/community'
-                  : `/community?tab=${cat.id - 1}`
-              }
-              key={cat.id}
-            >
-              <NavItem isActive={Number(tab) === cat.id - 1}>
-                {cat.title}({cat.count})
-              </NavItem>
-            </Link>
-          )
-        })}
-      </Sidebar>
+      {windowWidth >= 768 ? (
+        <Sidebar>
+          {categories.map(cat => {
+            return (
+              <Link
+                to={
+                  cat.title === '전체'
+                    ? '/community'
+                    : `/community?tab=${cat.id - 1}`
+                }
+                key={cat.id}
+              >
+                <NavItem isActive={Number(tab) === cat.id - 1}>
+                  {cat.title}({cat.count})
+                </NavItem>
+              </Link>
+            )
+          })}
+        </Sidebar>
+      ) : (
+        <SelectSection>
+          <Select>
+            {categories.map(category => {
+              return (
+                <option>
+                  {category.title}
+                  {`(${category.count})`}
+                </option>
+              )
+            })}
+          </Select>
+          <DownIcon>
+            <FaChevronDown />
+          </DownIcon>
+        </SelectSection>
+      )}
       <MainContent>
         <MainContentHeader>
           <HeaderLeft>
@@ -52,14 +88,14 @@ export default function Community() {
           </HeaderLeft>
           <HeaderRight>
             <SortButton />
-            <PostButton>글쓰기</PostButton>
+            <PostButton onClick={openModal}>글쓰기</PostButton>{' '}
+            {/* 모달 열기 */}
           </HeaderRight>
         </MainContentHeader>
         <Feed>
           <PostListCon />
         </Feed>
       </MainContent>
-
       <RightSidebar>
         <WidgetWrapper>
           <WidgetTitle>실시간 인기 키워드</WidgetTitle>
@@ -74,6 +110,8 @@ export default function Community() {
           </Widget>
         </WidgetWrapper>
       </RightSidebar>
+      {/* 글쓰기 모달 */}
+      {isModalOpen && <PostModal onClose={closeModal} />} {/* 모달 컴포넌트 */}
     </CommunityCon>
   )
 }
@@ -107,6 +145,34 @@ const Sidebar = styled.div`
     border-right: none;
     border-bottom: 1px solid #e1e1e1;
   }
+`
+
+const SelectSection = styled.div`
+  position: relative;
+  width: 100%;
+  padding: 0 10px;
+`
+const Select = styled.select`
+  width: 100%;
+  background-color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px 10px 10px;
+  margin-top: 10px;
+  appearance: none;
+
+  &:focus {
+    outline: none;
+  }
+`
+
+const DownIcon = styled.div`
+  position: absolute;
+  top: 50%;
+  transform: translateY(-20%);
+  right: 20px;
+  color: rgba(50, 50, 50, 1);
+  font-size: 0.9rem;
 `
 
 interface NavItemProps {
