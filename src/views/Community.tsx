@@ -1,11 +1,9 @@
 import styled from 'styled-components'
 import { IoSearch } from 'react-icons/io5'
 import { Link, useLocation } from 'react-router-dom'
-import profile1 from '../assets/images/community/fake_profile/1.jpg'
-import profile2 from '../assets/images/community/fake_profile/2.jpg'
-import profile3 from '../assets/images/community/fake_profile/3.jpg'
 import PostListCon from '../components/Community/PostListCon'
 import RealTimeKeywords from '../components/Community/RealTimeKeywords'
+import FollowRecommends from '../components/Community/FollowRecommends'
 
 export default function Community() {
   const location = useLocation()
@@ -40,7 +38,6 @@ export default function Community() {
           )
         })}
       </Sidebar>
-
       <MainContent>
         <PostInputWrapper>
           <PostInput placeholder="새로운 글을 작성하세요... (식물 정보, 질문 등)" />
@@ -67,42 +64,7 @@ export default function Community() {
         <WidgetWrapper>
           <WidgetTitle>이웃 추천</WidgetTitle>
           <Widget>
-            <FollowRecommend>
-              <FollowRecommendLeft>
-                <Profile src={profile1} />
-                <TextSection>
-                  <UserName>dlsdud156</UserName>
-                  <Description>풀과 달, 식물과 제철 그리고 고양이</Description>
-                </TextSection>
-              </FollowRecommendLeft>
-              <FollowRecommendRight>
-                <FollowBtn>팔로잉</FollowBtn>
-              </FollowRecommendRight>
-            </FollowRecommend>
-            <FollowRecommend>
-              <FollowRecommendLeft>
-                <Profile src={profile2} />
-                <TextSection>
-                  <UserName>chldls153</UserName>
-                  <Description>풀과 달, 식물과 제철 그리고 고양이</Description>
-                </TextSection>
-              </FollowRecommendLeft>
-              <FollowRecommendRight>
-                <FollowBtn>팔로잉</FollowBtn>
-              </FollowRecommendRight>
-            </FollowRecommend>
-            <FollowRecommend>
-              <FollowRecommendLeft>
-                <Profile src={profile3} />
-                <TextSection>
-                  <UserName>alscjf448</UserName>
-                  <Description>풀과 달, 식물과 제철 그리고 고양이</Description>
-                </TextSection>
-              </FollowRecommendLeft>
-              <FollowRecommendRight>
-                <FollowBtn>팔로잉</FollowBtn>
-              </FollowRecommendRight>
-            </FollowRecommend>
+            <FollowRecommends />
           </Widget>
         </WidgetWrapper>
       </RightSidebar>
@@ -128,7 +90,7 @@ const CommunityCon = styled.div`
 
 // 왼쪽 사이드바
 const Sidebar = styled.div`
-  width: 250px;
+  width: 200px;
   padding: 30px;
   background-color: #ffffff;
   border-right: 1px solid #e1e1e1;
@@ -285,77 +247,9 @@ const WidgetWrapper = styled.div`
 const WidgetTitle = styled.div`
   font-size: 1.1rem;
   font-weight: bold;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 `
 
 const Widget = styled.div`
   margin-top: 14px;
-`
-
-const WidgetItem = styled.div`
-  padding: 16px 0;
-  font-size: 0.9rem;
-  color: #333;
-  border-bottom: 1px solid #e1e1e1;
-  cursor: pointer;
-
-  &:last-child {
-    border-bottom: none;
-    padding: 14px 0 2px 0;
-  }
-
-  &:hover {
-    color: #1e90ff;
-  }
-`
-
-const FollowRecommend = styled.div`
-  margin-top: 26px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-`
-const Profile = styled.img`
-  width: 43px;
-  height: 43px;
-  border-radius: 50%;
-`
-const TextSection = styled.div`
-  width: 150px;
-  margin-left: 8px;
-`
-const UserName = styled.div`
-  font-size: 0.9rem;
-  font-weight: bold;
-  color: rgba(30, 30, 30, 1);
-`
-const Description = styled.div`
-  font-size: 0.7rem;
-  font-weight: thin;
-  margin-top: 6px;
-  margin-bottom: 6px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-`
-
-const FollowRecommendLeft = styled.div`
-  display: flex;
-  align-items: center;
-`
-const FollowRecommendRight = styled.div``
-
-const FollowBtn = styled.button`
-  background-color: #141414;
-  color: rgba(255, 255, 255, 1);
-  border: none;
-  border-radius: 6px;
-  padding: 6px 10px;
-  font-size: 0.75rem;
-  cursor: pointer;
-
-  &:hover {
-    background-color: rgba(50, 50, 50, 1);
-  }
 `

@@ -93,9 +93,10 @@ const KeywordCard = styled.div`
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   transition: background-color 0.3s ease;
+  cursor: pointer;
 
   &:hover {
-    background-color: #f0f8ff;
+    background-color: rgba(240, 240, 240, 1);
   }
 `
 
