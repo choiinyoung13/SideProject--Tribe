@@ -9,7 +9,6 @@ import styled from 'styled-components'
 import PostCard from './PostCard'
 import { useQuery, useInfiniteQuery } from 'react-query'
 import { useAuth } from '../../hooks/useAuth'
-import { fetchCartItems } from '../../config/api/cart/fetchCartItems'
 import { QUERY_KEYS } from '../../config/constants/queryKeys'
 import loadingIcon from '../../assets/images/logo/ball-triangle.svg'
 import { fetchUserLikesInfo } from '../../config/api/user/fetchUserInfo'
@@ -24,7 +23,6 @@ import {
 } from '../../utill/itemSort'
 import { filterState } from '../../recoil/atoms/FilterState'
 import { sortedItemsState } from '../../recoil/atoms/SortedItemsState'
-import { CartItemType } from '../../types/CartItemType'
 import { fetchItemsPerPage } from '../../config/api/items/fetchItems'
 import { useInView } from 'react-intersection-observer'
 import { communitySortState } from '../../recoil/atoms/SortState'
@@ -61,16 +59,6 @@ export default function PostListCon() {
   const { data: userLikeData, isLoading: userInfoLoading } = useQuery(
     QUERY_KEYS.USERS,
     () => session && fetchUserLikesInfo(session.user.id),
-    {
-      enabled: !!session,
-      staleTime: Infinity,
-      cacheTime: 30 * 60 * 1000,
-    }
-  )
-
-  const { data: cartData, isLoading: cartLoading } = useQuery(
-    QUERY_KEYS.CART_ITEMS,
-    () => session && fetchCartItems(session.user.id),
     {
       enabled: !!session,
       staleTime: Infinity,
@@ -135,21 +123,15 @@ export default function PostListCon() {
     }
   }, [sortValue, filterData, data, setSortedItems])
 
-  const isDataFullyLoaded = session
-    ? !isLoading && !userInfoLoading && !cartLoading && session
-    : !isLoading && !userInfoLoading && !cartLoading
-
   useLayoutEffect(() => {
-    if (!isDataFullyLoaded || !listWrapperRef.current) {
+    if (!listWrapperRef.current) {
       console.log('listWrapperRef.current가 아직 null입니다.')
     } else {
       handleItemsRendered()
     }
-  }, [isDataReady, sortedItems.length, isDataFullyLoaded])
+  }, [isDataReady, sortedItems.length])
 
-  const cartItems: CartItemType[] = cartData ? cartData.items : []
-
-  const isInitialLoading = isLoading || cartLoading || userInfoLoading
+  const isInitialLoading = isLoading || userInfoLoading
 
   return (
     <>
@@ -162,33 +144,17 @@ export default function PostListCon() {
           <ListWrapper ref={listWrapperRef}>
             {isDataReady &&
               (sortedItems.length !== 0 ? (
-                sortedItems.map(
-                  ({
-                    id,
-                    title,
-                    imgurl,
-                    originalprice,
-                    badge,
-                    discount,
-                    deliveryperiod,
-                  }) => {
-                    const isInCart = cartItems.some(item => item.itemId === id)
-                    return (
-                      <PostCard
-                        key={id}
-                        id={id}
-                        title={title}
-                        imgurl={imgurl}
-                        originalprice={originalprice}
-                        badge={badge}
-                        discount={discount}
-                        isInCart={isInCart}
-                        userLikeData={userLikeData?.likes}
-                        deliveryPeriod={deliveryperiod}
-                      />
-                    )
-                  }
-                )
+                sortedItems.map(({ id, title, imgurl }) => {
+                  return (
+                    <PostCard
+                      key={id}
+                      id={id}
+                      title={title}
+                      imgurl={imgurl}
+                      userLikeData={userLikeData?.likes}
+                    />
+                  )
+                })
               ) : (
                 <Empty>해당하는 제품이 없습니다.</Empty>
               ))}

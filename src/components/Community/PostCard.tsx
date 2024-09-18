@@ -1,70 +1,66 @@
 import styled from 'styled-components'
-import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import defaultImage from '../../assets/images/shop_item/default-image.png'
 import { motion } from 'framer-motion'
 import { IoMdHeart } from 'react-icons/io'
-
-type BadgeType = 'hot' | 'fast'
+import PostDetailModal from './PostDetailModal'
 
 interface ItemCardPropsType {
   id: number
   title: string
   imgurl: string
-  originalprice: number
-  badge: BadgeType[]
-  discount: number
-  isInCart: boolean
   userLikeData: number[]
-  deliveryPeriod: number
 }
 
 export default function PostCard({ id, imgurl }: ItemCardPropsType) {
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const [isImageLoaded, setIsImageLoaded] = useState(false)
-  const navigate = useNavigate()
+
+  const handleCardClick = () => {
+    setIsModalOpen(true)
+  }
 
   return (
-    <Card
-      onClick={() => {
-        navigate(`/product/${id}`)
-      }}
-    >
-      <ImgBox>
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: isImageLoaded ? 1 : 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <img
-            src={imgurl ? imgurl : defaultImage}
-            alt="item image"
-            draggable="false"
-            onLoad={() => setIsImageLoaded(true)}
-            style={{ display: isImageLoaded ? 'block' : 'none' }}
-          />
-        </motion.div>
-      </ImgBox>
-      {isImageLoaded && (
-        <TextBox>
-          <TextHeader>
-            <PostCategory>[정보]</PostCategory>
-            <Title>채광 안 좋은 집에서도 키울 수 있는 식물 리스트</Title>
-          </TextHeader>
-          <PostText>
-            <TextLeft>
-              <Profile>
-                <ProfileImg src={imgurl} />
-                <Username>dlsdud156</Username>
-              </Profile>
-            </TextLeft>
-            <TextRight>
-              <IoMdHeart />
-              <span>3.4k</span>
-            </TextRight>
-          </PostText>
-        </TextBox>
-      )}
-    </Card>
+    <>
+      {isModalOpen && <PostDetailModal onClose={() => setIsModalOpen(false)} />}
+      <Card onClick={handleCardClick}>
+        <ImgBox>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: isImageLoaded ? 1 : 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <img
+              src={imgurl ? imgurl : defaultImage}
+              alt="item image"
+              draggable="false"
+              onLoad={() => setIsImageLoaded(true)}
+              style={{ display: isImageLoaded ? 'block' : 'none' }}
+            />
+          </motion.div>
+        </ImgBox>
+        {isImageLoaded && (
+          <TextBox>
+            <TextHeader>
+              <PostCategory>[정보]</PostCategory>
+              <Title>채광 안 좋은 집에서도 키울 수 있는 식물 리스트</Title>
+            </TextHeader>
+            <PostText>
+              <TextLeft>
+                <Profile>
+                  <ProfileImg src={imgurl} />
+                  <Username>dlsdud156</Username>
+                </Profile>
+              </TextLeft>
+              <TextRight>
+                <IoMdHeart />
+                <span>3.4k</span>
+              </TextRight>
+            </PostText>
+          </TextBox>
+        )}
+      </Card>
+    </>
   )
 }
 

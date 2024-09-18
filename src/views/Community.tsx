@@ -302,7 +302,7 @@ const Feed = styled.div`
 // 오른쪽 사이드바
 const RightSidebar = styled.div`
   width: 350px;
-  padding: 30px;
+  padding: 30px 22px;
   background-color: #ffffff;
   border-left: 1px solid #e1e1e1;
   box-shadow: inset 1px 1px 5px rgba(0, 0, 0, 0.1);

@@ -123,8 +123,8 @@ export default function PostModal({ onClose }: { onClose: () => void }) {
 
         {/* 하단 저장 및 취소 버튼 */}
         <ModalFooter>
-          <CancelButton onClick={onClose}>취소</CancelButton>
           <SaveButton onClick={() => console.log('저장')}>저장</SaveButton>
+          <CancelButton onClick={onClose}>취소</CancelButton>
         </ModalFooter>
       </ModalContent>
     </ModalOverlay>
@@ -189,6 +189,7 @@ const TextArea = styled.textarea`
   height: 150px;
   padding: 10px;
   margin-bottom: 20px;
+  resize: none;
 `
 
 const ImagePreviewContainer = styled.div`
@@ -258,7 +259,7 @@ const CancelButton = styled.button`
   background-color: #ccc;
   color: #fff;
   padding: 10px 20px;
-  margin-right: 10px;
+  margin-left: 10px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
