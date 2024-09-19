@@ -3,6 +3,7 @@ import { useState } from 'react'
 import defaultImage from '../../assets/images/shop_item/default-image.png'
 import { motion } from 'framer-motion'
 import { IoMdHeart } from 'react-icons/io'
+import { FaCommentDots } from 'react-icons/fa'
 import PostDetailModal from './PostDetailModal'
 
 interface ItemCardPropsType {
@@ -53,8 +54,14 @@ export default function PostCard({ id, imgurl }: ItemCardPropsType) {
                 </Profile>
               </TextLeft>
               <TextRight>
-                <IoMdHeart />
-                <span>3.4k</span>
+                <HeartIcon>
+                  <IoMdHeart />
+                  <span>3.4k</span>
+                </HeartIcon>
+                <CommentIcon>
+                  <FaCommentDots />
+                  <span>8</span>
+                </CommentIcon>
               </TextRight>
             </PostText>
           </TextBox>
@@ -96,6 +103,10 @@ const TextBox = styled.div`
     margin-top: 8px;
     padding: 8px 8px 8px 2px;
   }
+
+  @media (max-width: 450px) {
+    margin-top: 6px;
+  }
 `
 
 const TextHeader = styled.div`
@@ -104,6 +115,14 @@ const TextHeader = styled.div`
 const PostCategory = styled.div`
   flex-shrink: 0;
   margin-right: 4px;
+
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 450px) {
+    font-size: 0.8rem;
+  }
 `
 
 const PostText = styled.div`
@@ -111,6 +130,14 @@ const PostText = styled.div`
   align-items: center;
   justify-content: space-between;
   margin-top: 10px;
+
+  @media (max-width: 768px) {
+    margin-top: 8px;
+  }
+
+  @media (max-width: 450px) {
+    margin-top: 4px;
+  }
 `
 
 const Title = styled.div`
@@ -122,6 +149,14 @@ const Title = styled.div`
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
+
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 450px) {
+    font-size: 0.8rem;
+  }
 `
 
 const Profile = styled.div`
@@ -134,6 +169,16 @@ const ProfileImg = styled.img`
   width: 24px;
   height: 24px;
   border-radius: 50%;
+
+  @media (max-width: 450px) {
+    width: 22px;
+    height: 22px;
+  }
+
+  @media (max-width: 375px) {
+    width: 18px;
+    height: 18px;
+  }
 `
 const Username = styled.div`
   font-size: 0.9rem;
@@ -143,6 +188,18 @@ const Username = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+
+  @media (max-width: 1350px) {
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 450px) {
+    font-size: 0.8rem;
+  }
+
+  @media (max-width: 375px) {
+    font-size: 0.75rem;
+  }
 `
 const TextLeft = styled.div`
   display: flex;
@@ -151,7 +208,7 @@ const TextLeft = styled.div`
 const TextRight = styled.div`
   display: flex;
   align-items: center;
-  font-size: 1rem;
+  font-size: 1 rem;
   color: rgba(190, 190, 190, 1);
   margin-top: 1px;
   cursor: pointer;
@@ -159,7 +216,36 @@ const TextRight = styled.div`
   span {
     font-size: 0.9rem;
     color: rgba(50, 50, 50, 1);
-    margin-left: 3px;
+    margin-left: 4px;
     margin-bottom: 1px;
+  }
+
+  @media (max-width: 450px) {
+    font-size: 0.8rem;
+
+    span {
+      font-size: 0.7rem;
+      margin-left: 3px;
+    }
+  }
+`
+
+const HeartIcon = styled.div`
+  display: flex;
+  align-items: center;
+  margin-left: 12px;
+
+  @media (max-width: 450px) {
+    margin-left: 8px;
+  }
+`
+const CommentIcon = styled.div`
+  color: rgba(50, 50, 50, 1);
+  display: flex;
+  align-items: center;
+  margin-left: 12px;
+
+  @media (max-width: 450px) {
+    margin-left: 8px;
   }
 `
