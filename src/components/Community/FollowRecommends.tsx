@@ -1,7 +1,7 @@
-import styled from 'styled-components'
-import profile1 from '../../assets/images/community/fake_profile/1.jpg'
-import profile2 from '../../assets/images/community/fake_profile/2.jpg'
-import profile3 from '../../assets/images/community/fake_profile/3.jpg'
+import styled from "styled-components";
+import profile1 from "../../assets/images/community/fake_profile/1.jpg";
+import profile2 from "../../assets/images/community/fake_profile/2.jpg";
+import profile3 from "../../assets/images/community/fake_profile/3.jpg";
 
 export default function FollowRecommends() {
   return (
@@ -43,7 +43,7 @@ export default function FollowRecommends() {
         </FollowRecommendRight>
       </FollowRecommend>
     </>
-  )
+  );
 }
 
 const FollowRecommend = styled.div`
@@ -61,22 +61,26 @@ const FollowRecommend = styled.div`
   &:hover {
     background-color: rgba(240, 240, 240, 1);
   }
-`
+
+  &:first-of-type {
+    margin-top: 0px;
+  }
+`;
 const Profile = styled.img`
   width: 42px;
   height: 42px;
   border-radius: 50%;
   border: 1px soild rgba(240, 240, 240, 1);
-`
+`;
 const TextSection = styled.div`
   width: 140px;
   margin-left: 8px;
-`
+`;
 const UserName = styled.div`
   font-size: 0.85rem;
   font-weight: bold;
   color: rgba(30, 30, 30, 1);
-`
+`;
 const Description = styled.div`
   font-size: 0.75rem;
   font-weight: thin;
@@ -85,13 +89,13 @@ const Description = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-`
+`;
 
 const FollowRecommendLeft = styled.div`
   display: flex;
   align-items: center;
-`
-const FollowRecommendRight = styled.div``
+`;
+const FollowRecommendRight = styled.div``;
 
 const FollowBtn = styled.button`
   background-color: #141414;
@@ -110,4 +114,4 @@ const FollowBtn = styled.button`
   &:hover {
     background-color: rgba(50, 50, 50, 1);
   }
-`
+`;

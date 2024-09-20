@@ -96,15 +96,19 @@ export default function Community() {
       <RightSidebar>
         <WidgetWrapper>
           <WidgetTitle>실시간 인기 키워드</WidgetTitle>
-          <Widget>
-            <RealTimeKeywords />
-          </Widget>
+          <WidgetBack>
+            <Widget>
+              <RealTimeKeywords />
+            </Widget>
+          </WidgetBack>
         </WidgetWrapper>
         <WidgetWrapper>
           <WidgetTitle>이웃 추천</WidgetTitle>
-          <Widget>
-            <FollowRecommends />
-          </Widget>
+          <WidgetBack>
+            <Widget>
+              <FollowRecommends />
+            </Widget>
+          </WidgetBack>
         </WidgetWrapper>
       </RightSidebar>
       {/* 글쓰기 모달 */}
@@ -237,7 +241,9 @@ const MainContent = styled.div`
   flex: 1;
   padding: 20px;
   background-color: #f4f4f4;
-
+  width: 100%;
+  height: fit-content;
+  min-height: 100vh;
   @media (max-width: 768px) {
     padding: 14px 20px 20px 20px;
   }
@@ -327,6 +333,8 @@ const PostButton = styled.button`
 // 게시글 피드
 const Feed = styled.div`
   margin-top: 20px;
+  width: 100%;
+  height: 100%;
 `;
 
 // 오른쪽 사이드바
@@ -346,18 +354,20 @@ const RightSidebar = styled.div`
 `;
 
 const WidgetWrapper = styled.div`
+  margin-bottom: 40px;
+`;
+
+const WidgetBack = styled.div`
   background-color: #f4f4f4;
   padding: 17px;
-  margin-bottom: 20px;
   border-radius: 6px;
 `;
 
 const WidgetTitle = styled.div`
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   font-weight: bold;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
+  margin-left: 4px;
 `;
 
-const Widget = styled.div`
-  margin-top: 14px;
-`;
+const Widget = styled.div``;

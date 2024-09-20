@@ -1,25 +1,23 @@
-import styled from 'styled-components'
-import { useState } from 'react'
-import defaultImage from '../../assets/images/shop_item/default-image.png'
-import { motion } from 'framer-motion'
-import { IoMdHeart } from 'react-icons/io'
-import { FaCommentDots } from 'react-icons/fa'
-import PostDetailModal from './PostDetailModal'
+import styled from "styled-components";
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { IoMdHeart } from "react-icons/io";
+import { FaCommentDots } from "react-icons/fa";
+import PostDetailModal from "./PostDetailModal";
+import { PostType } from "../../types/PostType";
+import default_profile from "../../assets/images/community/fake_profile/default_profile.jpg";
 
-interface ItemCardPropsType {
-  id: number
-  title: string
-  imgurl: string
-  userLikeData: number[]
+interface PostCardProps {
+  post: PostType;
 }
 
-export default function PostCard({ imgurl }: ItemCardPropsType) {
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [isImageLoaded, setIsImageLoaded] = useState(false)
+export default function PostCard({ post }: PostCardProps) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   const handleCardClick = () => {
-    setIsModalOpen(true)
-  }
+    setIsModalOpen(true);
+  };
 
   return (
     <>
@@ -32,11 +30,11 @@ export default function PostCard({ imgurl }: ItemCardPropsType) {
             transition={{ duration: 0.5 }}
           >
             <img
-              src={imgurl ? imgurl : defaultImage}
-              alt="item image"
+              src={post.img_urls[0]}
+              alt="post image"
               draggable="false"
               onLoad={() => setIsImageLoaded(true)}
-              style={{ display: isImageLoaded ? 'block' : 'none' }}
+              style={{ display: isImageLoaded ? "block" : "none" }}
             />
           </motion.div>
         </ImgBox>
@@ -49,18 +47,18 @@ export default function PostCard({ imgurl }: ItemCardPropsType) {
             <PostText>
               <TextLeft>
                 <Profile>
-                  <ProfileImg src={imgurl} />
+                  <ProfileImg src={default_profile} />
                   <Username>dlsdud156</Username>
                 </Profile>
               </TextLeft>
               <TextRight>
                 <HeartIcon>
                   <IoMdHeart />
-                  <span>3.4k</span>
+                  <span>{post.liked ? post.liked : 0}</span>
                 </HeartIcon>
                 <CommentIcon>
                   <FaCommentDots />
-                  <span>8</span>
+                  <span>{post.comments ? post.comments.length : 0}</span>
                 </CommentIcon>
               </TextRight>
             </PostText>
@@ -68,7 +66,7 @@ export default function PostCard({ imgurl }: ItemCardPropsType) {
         )}
       </Card>
     </>
-  )
+  );
 }
 
 const Card = styled.div`
@@ -82,7 +80,7 @@ const Card = styled.div`
   @media (max-width: 1300px) {
     width: calc(50% - 10.5px);
   }
-`
+`;
 
 const ImgBox = styled.div`
   width: 100%;
@@ -93,7 +91,7 @@ const ImgBox = styled.div`
   img {
     width: 100%;
   }
-`
+`;
 
 const TextBox = styled.div`
   margin-top: 10px;
@@ -107,11 +105,11 @@ const TextBox = styled.div`
   @media (max-width: 450px) {
     margin-top: 6px;
   }
-`
+`;
 
 const TextHeader = styled.div`
   display: flex;
-`
+`;
 const PostCategory = styled.div`
   flex-shrink: 0;
   margin-right: 4px;
@@ -123,7 +121,7 @@ const PostCategory = styled.div`
   @media (max-width: 450px) {
     font-size: 0.8rem;
   }
-`
+`;
 
 const PostText = styled.div`
   display: flex;
@@ -138,7 +136,7 @@ const PostText = styled.div`
   @media (max-width: 450px) {
     margin-top: 4px;
   }
-`
+`;
 
 const Title = styled.div`
   width: 280px;
@@ -157,14 +155,14 @@ const Title = styled.div`
   @media (max-width: 450px) {
     font-size: 0.8rem;
   }
-`
+`;
 
 const Profile = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
   cursor: pointer;
-`
+`;
 const ProfileImg = styled.img`
   width: 24px;
   height: 24px;
@@ -179,7 +177,7 @@ const ProfileImg = styled.img`
     width: 18px;
     height: 18px;
   }
-`
+`;
 const Username = styled.div`
   font-size: 0.9rem;
   color: rgba(50, 50, 50, 1);
@@ -200,11 +198,11 @@ const Username = styled.div`
   @media (max-width: 375px) {
     font-size: 0.75rem;
   }
-`
+`;
 const TextLeft = styled.div`
   display: flex;
   align-items: center;
-`
+`;
 const TextRight = styled.div`
   display: flex;
   align-items: center;
@@ -228,7 +226,7 @@ const TextRight = styled.div`
       margin-left: 3px;
     }
   }
-`
+`;
 
 const HeartIcon = styled.div`
   display: flex;
@@ -238,7 +236,7 @@ const HeartIcon = styled.div`
   @media (max-width: 450px) {
     margin-left: 8px;
   }
-`
+`;
 const CommentIcon = styled.div`
   color: rgba(50, 50, 50, 1);
   display: flex;
@@ -248,4 +246,4 @@ const CommentIcon = styled.div`
   @media (max-width: 450px) {
     margin-left: 8px;
   }
-`
+`;
