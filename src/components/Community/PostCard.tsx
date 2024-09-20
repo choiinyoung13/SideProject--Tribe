@@ -13,7 +13,7 @@ interface ItemCardPropsType {
   userLikeData: number[]
 }
 
-export default function PostCard({ id, imgurl }: ItemCardPropsType) {
+export default function PostCard({ imgurl }: ItemCardPropsType) {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isImageLoaded, setIsImageLoaded] = useState(false)
 
