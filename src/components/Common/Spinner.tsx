@@ -13,8 +13,8 @@ const spin = keyframes`
 // 스피너 스타일 컴포넌트
 const SpinnerWrapper = styled.div`
   display: inline-block;
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   border: 4px solid rgba(255, 255, 255, 0.2);
   border-top-color: rgba(255, 255, 255, 1); /* 스피너 상단 색상 */
   border-radius: 50%;

@@ -391,17 +391,16 @@ interface ImagePreviewProps {
 
 const ImagePreviewContainer = styled.div<ImagePreviewProps>`
   display: flex;
+  justify-content: space-between;
   margin-top: ${(props) => (props.isImageExisted ? "20px" : "0px")};
 `;
 
 const CoverImageWrapper = styled.div`
+  flex: 2;
   position: relative;
-  margin-right: 16px;
-  margin-left: 3px;
-  width: 200px;
-  height: 200px;
+  width: 60%;
+  height: 60%;
   overflow: hidden;
-  border: 2px solid #007bff;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -427,22 +426,22 @@ const Label = styled.div`
 `;
 
 const AdditionalImagesWrapper = styled.div`
+  flex: 3;
   display: flex;
+  gap: 10px;
   flex-wrap: wrap;
-  gap: 16px;
-  max-width: calc(100% - 200px);
+  width: 100%;
+  padding-left: 10px;
 `;
 
 const ImageWrapper = styled.div`
+  flex-basis: calc(33.33% - 7px);
   position: relative;
-  width: 100px;
-  height: 100px;
 `;
 
 const AdditionalImage = styled.img`
   width: 100%;
   height: 100%;
-  object-fit: cover;
 `;
 
 const RemoveButton = styled.button`
@@ -473,7 +472,7 @@ const CancelButton = styled.button`
   border-radius: 4px;
   cursor: pointer;
   width: 66px;
-  height: 50px;
+  height: 46px;
   font-size: 1rem;
 
   &:hover {
@@ -489,7 +488,7 @@ const SaveButton = styled.button`
   border-radius: 4px;
   cursor: pointer;
   width: 66px;
-  height: 50px;
+  height: 46px;
   font-size: 1rem;
 
   &:hover {
