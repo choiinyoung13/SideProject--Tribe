@@ -41,8 +41,8 @@ export default function PostCard({ post }: PostCardProps) {
         {isImageLoaded && (
           <TextBox>
             <TextHeader>
-              <PostCategory>[정보]</PostCategory>
-              <Title>채광 안 좋은 집에서도 키울 수 있는 식물 리스트</Title>
+              <PostCategory>[{post.category}]</PostCategory>
+              <Title>{post.title}</Title>
             </TextHeader>
             <PostText>
               <TextLeft>

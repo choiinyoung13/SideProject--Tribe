@@ -183,7 +183,7 @@ const Comments = styled.div`
   display: flex;
   align-items: center;
   font-size: 1.2rem;
-  margin-left: 36px;
+  margin-left: 28px;
   svg {
     margin-top: 1px;
     margin-right: 6px;

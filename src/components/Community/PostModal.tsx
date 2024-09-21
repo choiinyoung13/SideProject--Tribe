@@ -2,17 +2,56 @@ import React, { useState, useRef } from "react";
 import styled from "styled-components";
 import { IoCloseSharp } from "react-icons/io5";
 import Swal from "sweetalert2";
-import { supabase } from "../../supabase/supabaseClient";
-import { useRecoilState } from "recoil";
-import { PostState } from "../../recoil/atoms/PostState";
+import tribeLogo from "../../assets/images/logo/logo-tribe.png";
+import { uploadImagesToStorageAndGetUrl } from "../../config/api/post/uploadImagesToStorageAndGetUrl";
+import { useMutation, useQueryClient } from "react-query";
+import { insertPost } from "../../config/api/post/insertPost";
+import Spinner from "../Common/Spinner";
+
+const categories = ["잡담", "이벤트", "질문", "나눔", "정보", "기타"];
 
 export default function PostModal({ onClose }: { onClose: () => void }) {
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
   const [images, setImages] = useState<File[]>([]); // 여러 이미지 상태 관리
-  const [posts, setPosts] = useRecoilState(PostState);
-  const [isStorageLoading, setIsStorageLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [category, setCategory] = useState<string>("");
+  const queryClient = useQueryClient();
+
+  // insertPost mutation
+  const { mutate } = useMutation(insertPost, {
+    onSuccess: () => {
+      Swal.fire({
+        text: "게시글이 작성 되었습니다.",
+        icon: "success",
+        confirmButtonColor: "#1E1E1E",
+        confirmButtonText: "확인",
+        scrollbarPadding: false,
+      });
+
+      // 게시글이 성공적으로 저장되면, 기존 게시글 목록 쿼리를 무효화하고 새로 가져옴
+      queryClient.invalidateQueries({ queryKey: ["posts"], exact: false });
+
+      // 모달 닫기
+      onClose();
+
+      // 폼 초기화
+      setTitle("");
+      setContent("");
+      setCategory("");
+      setImages([]);
+    },
+    onError: (error) => {
+      console.error("게시글 저장 오류:", error);
+      Swal.fire({
+        text: "게시글 저장 중 오류가 발생했습니다.",
+        icon: "error",
+        confirmButtonColor: "#1E1E1E",
+        confirmButtonText: "확인",
+        scrollbarPadding: false,
+      });
+    },
+  });
 
   // Ref를 사용하여 파일 입력 트리거
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -21,7 +60,12 @@ export default function PostModal({ onClose }: { onClose: () => void }) {
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     const files = Array.from(event.dataTransfer.files);
-    if (files.length > 7) {
+
+    // 현재 이미지와 드래그 앤 드롭으로 추가한 이미지의 수 합산
+    const totalImages = images.length + files.length;
+
+    // 이미지 개수가 7개를 초과할 경우 경고 모달 표시
+    if (totalImages > 7) {
       Swal.fire({
         text: "이미지는 최대 7개까지만 입력할 수 있습니다.",
         icon: "warning",
@@ -31,7 +75,9 @@ export default function PostModal({ onClose }: { onClose: () => void }) {
       });
       return;
     }
-    setImages((prev) => [...prev, ...files].slice(0, 7)); // 최대 7개 제한
+
+    // 기존 이미지에 새로 드롭된 파일을 추가하여 상태 업데이트
+    setImages((prev) => [...prev, ...files].slice(0, 7)); // 최대 7개로 자름
   };
 
   // 클릭해서 파일 선택
@@ -44,17 +90,26 @@ export default function PostModal({ onClose }: { onClose: () => void }) {
   // 이미지 업로드 핸들러
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files ? Array.from(e.target.files) : [];
-    if (files.length > 7) {
-      Swal.fire({
-        text: "이미지는 최대 7개까지만 입력할 수 있습니다.",
-        icon: "warning",
-        confirmButtonColor: "#1E1E1E",
-        confirmButtonText: "확인",
-        scrollbarPadding: false,
-      });
-      return;
+    // 새로 선택한 파일이 있으면
+    if (files.length > 0) {
+      // 현재 이미지와 새로 선택한 이미지의 수 합산
+      const totalImages = images.length + files.length;
+
+      // 이미지 개수가 7개를 초과할 경우 경고 모달 표시
+      if (totalImages > 7) {
+        Swal.fire({
+          text: "이미지는 최대 7개까지만 입력할 수 있습니다.",
+          icon: "warning",
+          confirmButtonColor: "#1E1E1E",
+          confirmButtonText: "확인",
+          scrollbarPadding: false,
+        });
+        return;
+      }
+
+      // 기존 이미지에 새로 선택한 파일을 추가하여 상태 업데이트
+      setImages((prev) => [...prev, ...files]);
     }
-    setImages(files);
   };
 
   // 이미지 삭제 처리
@@ -70,45 +125,11 @@ export default function PostModal({ onClose }: { onClose: () => void }) {
     setContent(e.target.value);
   };
 
-  // 이미지 업로드 함수
-  const uploadImages = async (images: File[]) => {
-    setIsStorageLoading(true);
-
-    const uploadedUrls = [];
-    for (let i = 0; i < images.length; i++) {
-      const file = images[i];
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${Date.now()}_${i}.${fileExt}`;
-      const { error } = await supabase.storage
-        .from("tribe posts images")
-        .upload(fileName, file);
-
-      if (error) {
-        console.error("이미지 업로드 오류:", error.message);
-        return;
-      }
-
-      // 업로드된 파일의 경로로 public URL 가져오기
-      const { data } = supabase.storage
-        .from("tribe posts images")
-        .getPublicUrl(fileName);
-      if (data?.publicUrl) {
-        uploadedUrls.push(data.publicUrl);
-      } else {
-        console.error("Public URL을 가져올 수 없습니다.");
-      }
-    }
-
-    setIsStorageLoading(false);
-    return uploadedUrls;
-  };
-
   // 폼 제출 처리
   const handleSubmit = async (e: { preventDefault: () => void }) => {
-    setIsLoading(true);
     e.preventDefault();
 
-    if (!title || !content || images.length === 0) {
+    if (!title || !content || images.length === 0 || !category) {
       Swal.fire({
         text: "모든 필드를 입력해주세요",
         icon: "warning",
@@ -119,39 +140,27 @@ export default function PostModal({ onClose }: { onClose: () => void }) {
       return;
     }
 
-    // 이미지 업로드
-    const uploadedUrls = await uploadImages(images);
+    setIsLoading(true);
 
-    // 게시글 데이터 저장
-    const { data, error } = await supabase
-      .from("posts")
-      .insert([{ title, content, img_urls: uploadedUrls }]);
+    // 이미지 업로드 후, 게시글 저장 요청
+    const uploadedUrls = await uploadImagesToStorageAndGetUrl(images);
+    await mutate({
+      title,
+      content,
+      imgUrls: uploadedUrls,
+      category,
+    });
 
-    if (error) {
-      console.error("게시글 저장 오류:", error);
-      return;
-    }
     setIsLoading(false);
-
-    if (data) {
-      // data가 null이 아닐 때만 posts에 추가
-      setPosts([...data, ...posts]);
-    } else {
-      console.error("삽입된 데이터가 없습니다.");
-    }
-
-    // 모달 닫기
-    onClose();
-
-    // 폼 초기화
-    setTitle("");
-    setContent("");
-    setImages([]);
   };
 
   return (
     <ModalOverlay>
       <ModalContent onSubmit={handleSubmit}>
+        <ModalHeader>
+          <img src={tribeLogo} alt="tribe logo" />
+          <span>Tribe</span>
+        </ModalHeader>
         <ModalBody>
           {/* 드래그 앤 드롭 영역 */}
           <DropZone
@@ -169,6 +178,24 @@ export default function PostModal({ onClose }: { onClose: () => void }) {
               style={{ display: "none" }}
             />
           </DropZone>
+
+          {/* 카테고리 선택 */}
+          <CategorySelectWrapper>
+            <Select
+              onChange={(e) => {
+                setCategory(e.target.value);
+              }}
+            >
+              <option>카테고리를 선택하세요.</option>
+              {categories.map((category, i) => {
+                return (
+                  <option value={category} key={i}>
+                    {category}
+                  </option>
+                );
+              })}
+            </Select>
+          </CategorySelectWrapper>
 
           {/* 제목 입력 */}
           <TitleInput
@@ -189,7 +216,9 @@ export default function PostModal({ onClose }: { onClose: () => void }) {
           </TextEditor>
 
           {/* 이미지 미리보기 */}
-          <ImagePreviewContainer>
+          <ImagePreviewContainer
+            isImageExisted={images.length === 0 ? false : true}
+          >
             {/* 커버 이미지 */}
 
             {images[0] && (
@@ -227,13 +256,16 @@ export default function PostModal({ onClose }: { onClose: () => void }) {
 
         {/* 하단 저장 및 취소 버튼 */}
         <ModalFooter>
-          <SaveButton disabled={isStorageLoading || isLoading} type="submit">
-            {isStorageLoading || isLoading ? "저장중" : "저장"}
+          <SaveButton type="submit" disabled={isLoading}>
+            {isLoading ? (
+              <SpinnerWrapper>
+                <Spinner />
+              </SpinnerWrapper>
+            ) : (
+              "저장"
+            )}
           </SaveButton>
-          <CancelButton
-            disabled={isStorageLoading || isLoading}
-            onClick={onClose}
-          >
+          <CancelButton onClick={onClose} disabled={isLoading}>
             취소
           </CancelButton>
         </ModalFooter>
@@ -265,6 +297,31 @@ const ModalContent = styled.form`
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  overflow: scroll;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  scrollbar-width: none;
+`;
+
+const ModalHeader = styled.div`
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 14px;
+  margin-left: 2px;
+
+  span {
+    margin-left: 8px;
+  }
+
+  img {
+    width: 18px;
+    height: 18px;
+  }
 `;
 
 const ModalBody = styled.div`
@@ -283,6 +340,32 @@ const DropZone = styled.div`
   cursor: pointer;
 `;
 
+const CategorySelectWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  margin-bottom: 20px;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 14px;
+    transform: translateY(-50%);
+    border: solid transparent;
+    border-width: 6px 6px 0;
+    border-top-color: #000;
+    pointer-events: none;
+  }
+`;
+
+const Select = styled.select`
+  width: 100%;
+  font-size: 1rem;
+  padding: 8px 10px;
+  appearance: none;
+  color: rgba(90, 90, 90, 1);
+`;
+
 const TitleInput = styled.input`
   width: 100%;
   padding: 10px;
@@ -299,31 +382,55 @@ const TextArea = styled.textarea`
   width: 100%;
   height: 150px;
   padding: 10px;
-  margin-bottom: 20px;
   resize: none;
 `;
 
-const ImagePreviewContainer = styled.div`
+interface ImagePreviewProps {
+  isImageExisted: boolean;
+}
+
+const ImagePreviewContainer = styled.div<ImagePreviewProps>`
   display: flex;
+  margin-top: ${(props) => (props.isImageExisted ? "20px" : "0px")};
 `;
 
 const CoverImageWrapper = styled.div`
   position: relative;
   margin-right: 16px;
   margin-left: 3px;
+  width: 200px;
+  height: 200px;
+  overflow: hidden;
+  border: 2px solid #007bff;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 `;
 
 const CoverImage = styled.img`
-  width: 200px;
-  height: auto;
-  border: 2px solid #007bff;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+`;
+
+const Label = styled.div`
+  width: 100%;
+  text-align: center;
+  padding: 5px 0;
+  font-size: 0.8rem;
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  bottom: 0;
+  left: 0;
 `;
 
 const AdditionalImagesWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
-  max-width: calc(100% - 200px); /* 커버 이미지 공간 제외 */
+  max-width: calc(100% - 200px);
 `;
 
 const ImageWrapper = styled.div`
@@ -353,14 +460,6 @@ const RemoveButton = styled.button`
   border-radius: 50%;
 `;
 
-const Label = styled.div`
-  width: 100%;
-  text-align: center;
-  margin-top: 5px;
-  font-size: 0.8rem;
-  color: #666;
-`;
-
 const ModalFooter = styled.div`
   display: flex;
   justify-content: flex-end;
@@ -369,11 +468,13 @@ const ModalFooter = styled.div`
 const CancelButton = styled.button`
   background-color: #ccc;
   color: #fff;
-  padding: 10px 20px;
   margin-left: 10px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  width: 66px;
+  height: 50px;
+  font-size: 1rem;
 
   &:hover {
     background-color: #999;
@@ -383,12 +484,19 @@ const CancelButton = styled.button`
 const SaveButton = styled.button`
   background-color: #141414;
   color: #fff;
-  padding: 10px 20px;
+
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  width: 66px;
+  height: 50px;
+  font-size: 1rem;
 
   &:hover {
     background-color: #242424;
   }
+`;
+
+const SpinnerWrapper = styled.div`
+  padding-top: 5px;
 `;
