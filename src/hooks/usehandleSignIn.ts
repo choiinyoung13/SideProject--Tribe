@@ -3,6 +3,7 @@ import { useState } from "react";
 import { makeUserCart } from "../config/api/cart/makeUserCart";
 import { Provider } from "@supabase/supabase-js";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 export const useHandleSignIn = () => {
   const navigate = useNavigate();
@@ -18,7 +19,13 @@ export const useHandleSignIn = () => {
 
       if (error) {
         console.error(error);
-        alert("가입된 계정이 아닙니다.");
+        Swal.fire({
+          text: "가입된 계정이 아닙니다.",
+          icon: "warning",
+          confirmButtonColor: "#1E1E1E",
+          confirmButtonText: "확인",
+          scrollbarPadding: false,
+        });
         return;
       }
       navigate("/");

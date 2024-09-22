@@ -5,7 +5,6 @@ import { IoMdHeart } from "react-icons/io";
 import { FaCommentDots } from "react-icons/fa";
 import PostDetailModal from "./PostDetailModal";
 import { PostType } from "../../types/PostType";
-import default_profile from "../../assets/images/community/fake_profile/default_profile.jpg";
 import { fetchUserInfoByUserId } from "../../config/api/user/fetchUserInfo";
 
 interface PostCardProps {
@@ -64,7 +63,7 @@ export default function PostCard({ post }: PostCardProps) {
                     src={
                       userInfo.avatar_url
                         ? userInfo.avatar_url
-                        : default_profile
+                        : "http://img1.kakaocdn.net/thumb/R640x640.q70/?fname=http://t1.kakaocdn.net/account_images/default_profile.jpeg"
                     }
                   />
                   <Username>{userInfo.email.split("@")[0]}</Username>
