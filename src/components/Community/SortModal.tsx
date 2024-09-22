@@ -2,6 +2,7 @@ import { useRecoilState } from "recoil";
 import { useRef } from "react";
 import styled from "styled-components";
 import { communitySortState } from "../../recoil/atoms/SortState";
+import { useNavigate } from "react-router-dom";
 
 interface SortModalProps {
   className?: string;
@@ -14,6 +15,7 @@ export default function SortModal({
 }: SortModalProps) {
   const [sortDataState, setSortDataState] = useRecoilState(communitySortState);
   const sortDatas = useRef(["최신순", "인기순"]);
+  const navigate = useNavigate();
 
   return (
     <>
@@ -32,6 +34,11 @@ export default function SortModal({
               onClick={() => {
                 setSortDataState(data);
                 setSortModalOpenedState((prev) => !prev);
+                if (data === "인기순") {
+                  navigate("/community?sort=popularity");
+                } else if (data === "최신순") {
+                  navigate("/community");
+                }
               }}
             >
               {data}

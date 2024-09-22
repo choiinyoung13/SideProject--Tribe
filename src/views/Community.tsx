@@ -1,19 +1,23 @@
 import styled from "styled-components";
 import { IoSearch } from "react-icons/io5";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import PostListCon from "../components/Community/PostListCon";
 import RealTimeKeywords from "../components/Community/RealTimeKeywords";
 import FollowRecommends from "../components/Community/FollowRecommends";
 import SortButton from "../components/Community/SortButton";
 import useWindowWidth from "../hooks/useWindowWidth";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PostModal from "../components/Community/PostModal"; // PostModal 컴포넌트 추가
+import { useAuth } from "../hooks/useAuth";
+import Swal from "sweetalert2";
 
 export default function Community() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const tab = searchParams.get("tab");
   const windowWidth = useWindowWidth();
+  const { session } = useAuth();
+  const navigate = useNavigate();
 
   // 모달 상태 관리
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -28,8 +32,30 @@ export default function Community() {
     { id: 7, title: "기타", count: 12 },
   ];
 
+  useEffect(() => {
+    console.log(`session: ${session}`);
+  }, [session]);
+
   // 모달 열기 함수
   const openModal = () => {
+    if (!session) {
+      Swal.fire({
+        text: "로그인 후 사용 가능한 기능입니다.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#1E1E1E",
+        cancelButtonColor: "#1E1E1E",
+        confirmButtonText: "로그인",
+        cancelButtonText: "닫기",
+        scrollbarPadding: false,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // 로그인 버튼을 눌렀을 때 이동할 URL
+          navigate("/login");
+        }
+      });
+      return;
+    }
     setIsModalOpen(true);
   };
 
