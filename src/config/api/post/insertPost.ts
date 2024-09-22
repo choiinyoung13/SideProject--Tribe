@@ -16,7 +16,7 @@ export async function insertPost({
 }) {
   const { data, error } = await supabase
     .from("posts")
-    .insert([{ title, content, img_urls: imgUrls, category, userId }]);
+    .insert([{ title, content, img_urls: imgUrls, category, user: userId }]);
 
   if (error) {
     console.error("게시글 저장 오류:", error);

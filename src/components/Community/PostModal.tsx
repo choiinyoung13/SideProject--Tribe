@@ -145,6 +145,7 @@ export default function PostModal({ onClose }: { onClose: () => void }) {
 
     // 이미지 업로드 후, 게시글 저장 요청
     const uploadedUrls = await uploadImagesToStorageAndGetUrl(images);
+
     await mutate({
       title,
       content,
