@@ -290,7 +290,7 @@ const ModalOverlay = styled.div`
 
 const ModalContent = styled.form`
   width: 600px;
-  max-height: 80vh;
+  max-height: 90vh;
   background-color: #fff;
   border-radius: 8px;
   padding: 20px;
@@ -436,6 +436,7 @@ const AdditionalImagesWrapper = styled.div`
 
 const ImageWrapper = styled.div`
   flex-basis: calc(33.33% - 7px);
+  height: 48%;
   position: relative;
 `;
 

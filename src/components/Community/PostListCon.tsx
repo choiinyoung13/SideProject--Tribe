@@ -1,15 +1,39 @@
 import styled from "styled-components";
 import PostCard from "./PostCard";
 import loadingIcon from "../../assets/images/logo/ball-triangle.svg";
-import { fetchAllPosts } from "../../config/api/post/fecthPosts";
-import { useQuery } from "react-query";
+import { fetchPostsPerPage } from "../../config/api/post/fecthPosts";
+import { useInfiniteQuery } from "react-query";
 import { PostType } from "../../types/PostType";
+import { useInView } from "react-intersection-observer";
+import { useEffect } from "react";
+
+export type FetchPostsResponse = {
+  posts: PostType[];
+  nextCursor: number | null;
+};
 
 export default function PostListCon() {
-  const { data, isLoading } = useQuery<PostType[]>({
-    queryKey: ["posts"], // Query Key
-    queryFn: fetchAllPosts, // 데이터 fetch 함수
+  const { inView, ref } = useInView({
+    threshold: 0.5,
+    initialInView: true,
   });
+
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+    useInfiniteQuery<FetchPostsResponse>(
+      ["posts"],
+      ({ pageParam = 0 }) => fetchPostsPerPage(pageParam, 8),
+      {
+        getNextPageParam: (lastPage) => lastPage.nextCursor || undefined,
+        staleTime: 0,
+        cacheTime: 0,
+      }
+    );
+
+  useEffect(() => {
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [inView]);
 
   if (isLoading) {
     return (
@@ -19,16 +43,25 @@ export default function PostListCon() {
     );
   }
 
+  if (!data) {
+    return null;
+  }
+
   return (
     <>
       <ListCon>
         <ListWrapper>
-          {data?.length === 0 ? (
+          {data.pages.length === 0 ? (
             <Empty>게시물이 없습니다.</Empty>
           ) : (
-            data?.map((post) => {
-              return <PostCard key={post.id} post={post} />;
-            })
+            <>
+              {data?.pages.map((page) =>
+                page.posts.map((post) => {
+                  return <PostCard key={post.id} post={post} />;
+                })
+              )}
+              {hasNextPage && <div ref={ref} />}
+            </>
           )}
         </ListWrapper>
       </ListCon>

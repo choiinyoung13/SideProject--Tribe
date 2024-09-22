@@ -1,46 +1,46 @@
-import { useRecoilState } from 'recoil'
-import { useRef } from 'react'
-import styled from 'styled-components'
-import { communitySortState } from '../../recoil/atoms/SortState'
+import { useRecoilState } from "recoil";
+import { useRef } from "react";
+import styled from "styled-components";
+import { communitySortState } from "../../recoil/atoms/SortState";
 
 interface SortModalProps {
-  className?: string
-  setSortModalOpenedState: React.Dispatch<React.SetStateAction<boolean>>
+  className?: string;
+  setSortModalOpenedState: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function SortModal({
   className,
   setSortModalOpenedState,
 }: SortModalProps) {
-  const [sortDataState, setSortDataState] = useRecoilState(communitySortState)
-  const sortDatas = useRef(['인기순', '최신순'])
+  const [sortDataState, setSortDataState] = useRecoilState(communitySortState);
+  const sortDatas = useRef(["최신순", "인기순"]);
 
   return (
     <>
       <ModalCon
         className={className}
-        onClick={e => {
-          e.stopPropagation()
+        onClick={(e) => {
+          e.stopPropagation();
         }}
       >
         {sortDatas.current.map((data: string, i: number) => {
-          const isActive = sortDataState === data
+          const isActive = sortDataState === data;
           return (
             <ModalText
               key={i}
-              className={isActive ? 'active' : ''}
+              className={isActive ? "active" : ""}
               onClick={() => {
-                setSortDataState(data)
-                setSortModalOpenedState(prev => !prev)
+                setSortDataState(data);
+                setSortModalOpenedState((prev) => !prev);
               }}
             >
               {data}
             </ModalText>
-          )
+          );
         })}
       </ModalCon>
     </>
-  )
+  );
 }
 
 const ModalCon = styled.div`
@@ -52,7 +52,7 @@ const ModalCon = styled.div`
   @media (max-width: 600px) {
     width: 103px;
   }
-`
+`;
 
 const ModalText = styled.div`
   padding: 14px 12px;
@@ -74,7 +74,7 @@ const ModalText = styled.div`
       position: absolute;
       right: 20px;
       top: 15px;
-      content: '';
+      content: "";
       transform: rotate(45deg);
       width: 6px;
       height: 11px;
@@ -91,7 +91,7 @@ const ModalText = styled.div`
         position: absolute;
         right: 16px;
         top: 13px;
-        content: '';
+        content: "";
         transform: rotate(45deg);
         width: 5px;
         height: 9px;
@@ -100,4 +100,4 @@ const ModalText = styled.div`
       }
     }
   }
-`
+`;
