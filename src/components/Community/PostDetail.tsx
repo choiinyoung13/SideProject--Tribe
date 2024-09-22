@@ -5,10 +5,11 @@ import { FaCommentDots } from "react-icons/fa";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
+import "swiper/css/navigation"; // navigation 관련 스타일 추가
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import "dayjs/locale/ko";
-import { Pagination } from "swiper/modules";
+import { Pagination, Navigation } from "swiper/modules"; // Pagination과 Navigation 모듈 추가
 
 // dayjs 상대 시간 플러그인과 한국어 설정
 dayjs.extend(relativeTime);
@@ -92,7 +93,8 @@ export default function PostDetail({ post }: PostDetailProps) {
               pagination={{
                 clickable: true,
               }}
-              modules={[Pagination]} // Pagination 모듈 추가
+              navigation // navigation 활성화
+              modules={[Pagination, Navigation]} // Pagination과 Navigation 모듈 추가
             >
               {post.images.map((image, index) => (
                 <SwiperSlide key={index}>
@@ -242,6 +244,27 @@ const SwiperContainer = styled.div`
   .swiper-pagination-bullet-active {
     background-color: rgba(30, 30, 30, 1);
   }
+
+  /* Navigation 버튼 스타일 */
+  .swiper-button-prev,
+  .swiper-button-next {
+    color: rgba(0, 0, 0, 0.2);
+    transition: color 0.3s ease;
+    font-size: 18px;
+  }
+
+  .swiper-button-prev {
+    margin-left: 14px;
+  }
+
+  .swiper-button-next {
+    margin-right: 14px;
+  }
+
+  .swiper-button-prev:hover,
+  .swiper-button-next:hover {
+    color: rgba(0, 0, 0, 1);
+  }
 `;
 
 const SlideImage = styled.img`
@@ -294,16 +317,25 @@ const CommentButton = styled.button`
 const CommentsSection = styled.div`
   margin-top: 22px;
   width: 100%;
-  height: 100%;
+  height: 596px;
   border-top: 1px solid #e1e8ed;
+  border-bottom: 1px solid #e1e8ed;
   padding-top: 20px;
+
+  overflow-y: scroll;
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 `;
 
 const Comment = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  margin-bottom: 22px;
+  margin-bottom: 27px;
 `;
 
 const CommentLeft = styled.div``;

@@ -31,6 +31,66 @@ const mockPostDetail = {
       text: "이 식물들 꼭 키워보고 싶어요!",
       timestamp: "2024-09-18T14:30:10Z",
     },
+    {
+      id: 1,
+      user: "user123",
+      text: "정말 유용한 정보네요!",
+      timestamp: "2024-09-18T14:32:10Z",
+    },
+    {
+      id: 2,
+      user: "plantlover",
+      text: "이 식물들 꼭 키워보고 싶어요!",
+      timestamp: "2024-09-18T14:30:10Z",
+    },
+    {
+      id: 1,
+      user: "user123",
+      text: "정말 유용한 정보네요!",
+      timestamp: "2024-09-18T14:32:10Z",
+    },
+    {
+      id: 2,
+      user: "plantlover",
+      text: "이 식물들 꼭 키워보고 싶어요!",
+      timestamp: "2024-09-18T14:30:10Z",
+    },
+    {
+      id: 1,
+      user: "user123",
+      text: "정말 유용한 정보네요!",
+      timestamp: "2024-09-18T14:32:10Z",
+    },
+    {
+      id: 2,
+      user: "plantlover",
+      text: "이 식물들 꼭 키워보고 싶어요!",
+      timestamp: "2024-09-18T14:30:10Z",
+    },
+    {
+      id: 1,
+      user: "user123",
+      text: "정말 유용한 정보네요!",
+      timestamp: "2024-09-18T14:32:10Z",
+    },
+    {
+      id: 2,
+      user: "plantlover",
+      text: "이 식물들 꼭 키워보고 싶어요!",
+      timestamp: "2024-09-18T14:30:10Z",
+    },
+    {
+      id: 2,
+      user: "plantlover",
+      text: "이 식물들 꼭 키워보고 싶어요!",
+      timestamp: "2024-09-18T14:30:10Z",
+    },
+    {
+      id: 2,
+      user: "plantlover",
+      text: "이 식물들 꼭 키워보고 싶어요ㅎㅎㅎㅎㅎ",
+      timestamp: "2024-09-18T14:30:10Z",
+    },
   ],
 };
 
