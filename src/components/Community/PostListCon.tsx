@@ -24,8 +24,8 @@ export default function PostListCon() {
       ({ pageParam = 0 }) => fetchPostsPerPage(pageParam, 8),
       {
         getNextPageParam: (lastPage) => lastPage.nextCursor || undefined,
-        staleTime: 0,
-        cacheTime: 0,
+        staleTime: 5 * 60 * 1000,
+        cacheTime: 30 * 60 * 1000,
       }
     );
 

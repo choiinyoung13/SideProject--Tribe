@@ -1,21 +1,18 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { IoMdHeart } from "react-icons/io";
 import { FaCommentDots } from "react-icons/fa";
-import { Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-import SwiperCore from "swiper";
 import "swiper/css";
 import "swiper/css/pagination";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import "dayjs/locale/ko";
+import { Pagination } from "swiper/modules";
 
 // dayjs 상대 시간 플러그인과 한국어 설정
 dayjs.extend(relativeTime);
 dayjs.locale("ko");
-
-SwiperCore.use([Navigation, Pagination]);
 
 // 게시물 상세 데이터를 받는 props 인터페이스
 interface PostDetailProps {
@@ -31,16 +28,26 @@ interface PostDetailProps {
 }
 
 export default function PostDetail({ post }: PostDetailProps) {
-  const [comments, setComments] = useState(post.comments); // 댓글 상태 관리
-  const [newComment, setNewComment] = useState(""); // 새 댓글 입력 상태
+  const [comments, setComments] = useState(post.comments);
+  const [newComment, setNewComment] = useState("");
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [showMoreButton, setShowMoreButton] = useState(false);
+  const textRef = useRef<HTMLSpanElement>(null);
 
-  const currentUser = "currentUser"; // 현재 사용자를 currentUser로 설정
+  const currentUser = "currentUser";
 
-  // 댓글 추가 함수
+  useEffect(() => {
+    if (textRef.current) {
+      setShowMoreButton(
+        textRef.current.scrollHeight > textRef.current.clientHeight
+      );
+    }
+  }, [post.content]);
+
   const handleAddComment = () => {
-    if (newComment.trim() === "") return; // 빈 댓글은 추가하지 않음
+    if (newComment.trim() === "") return;
 
-    const newTimestamp = dayjs().toISOString(); // 새 댓글의 타임스탬프
+    const newTimestamp = dayjs().toISOString();
     const updatedComments = [
       {
         id: comments.length + 1,
@@ -48,10 +55,14 @@ export default function PostDetail({ post }: PostDetailProps) {
         text: newComment,
         timestamp: newTimestamp,
       },
-      ...comments, // 새로운 댓글을 최신 순으로 추가
+      ...comments,
     ];
-    setComments(updatedComments); // 새로운 댓글을 상태에 추가
-    setNewComment(""); // 입력 필드를 초기화
+    setComments(updatedComments);
+    setNewComment("");
+  };
+
+  const handleExpandClick = () => {
+    setIsExpanded(!isExpanded);
   };
 
   return (
@@ -62,36 +73,37 @@ export default function PostDetail({ post }: PostDetailProps) {
           <AuthorName>{post.author}</AuthorName>
         </AuthorInfo>
 
-        {/* 게시물 내용 */}
-        <Content>{post.content}</Content>
+        <ContentWrapper>
+          <Content>
+            <TextContainer>
+              <Text ref={textRef} isExpanded={isExpanded}>
+                {post.content}
+              </Text>
+              {showMoreButton && !isExpanded && (
+                <MoreButton onClick={handleExpandClick}>... 더보기</MoreButton>
+              )}
+            </TextContainer>
+          </Content>
 
-        {/* 이미지 */}
-        <SwiperContainer>
-          <Swiper
-            spaceBetween={10}
-            slidesPerView={1}
-            pagination={{ clickable: true }}
-          >
-            {post.images.map((image, index) => (
-              <SwiperSlide key={index}>
-                <SlideImage src={image} alt={`Slide ${index + 1}`} />
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        </SwiperContainer>
-
-        {/* 좋아요 및 댓글 */}
-        <PostInteractions>
-          <Likes>
-            <IoMdHeart /> <span>{post.likes}</span>
-          </Likes>
-          <Comments>
-            <FaCommentDots /> <span>{comments.length}</span>
-          </Comments>
-        </PostInteractions>
+          <SwiperContainer>
+            <Swiper
+              spaceBetween={10}
+              slidesPerView={1}
+              pagination={{
+                clickable: true,
+              }}
+              modules={[Pagination]} // Pagination 모듈 추가
+            >
+              {post.images.map((image, index) => (
+                <SwiperSlide key={index}>
+                  <SlideImage src={image} alt={`Slide ${index + 1}`} />
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </SwiperContainer>
+        </ContentWrapper>
       </DetailContainer>
 
-      {/* 댓글 입력 및 댓글 리스트 섹션 (우측에 위치) */}
       <CommentSection>
         <CommentInputSection>
           <CommentInput
@@ -103,7 +115,6 @@ export default function PostDetail({ post }: PostDetailProps) {
           <CommentButton onClick={handleAddComment}>작성</CommentButton>
         </CommentInputSection>
 
-        {/* 댓글 섹션 */}
         <CommentsSection>
           {comments.map((comment) => (
             <Comment key={comment.id}>
@@ -115,12 +126,22 @@ export default function PostDetail({ post }: PostDetailProps) {
             </Comment>
           ))}
         </CommentsSection>
+
+        <PostInteractions>
+          <Likes>
+            <IoMdHeart /> <span>{post.likes}</span>
+          </Likes>
+          <Comments>
+            <FaCommentDots /> <span>{comments.length}</span>
+          </Comments>
+        </PostInteractions>
       </CommentSection>
     </Container>
   );
 }
 
 // 스타일 컴포넌트들
+
 const Container = styled.div`
   display: flex;
   justify-content: space-between;
@@ -150,16 +171,165 @@ const AuthorName = styled.div`
   font-size: 1.05rem;
 `;
 
+const ContentWrapper = styled.div`
+  height: 702px;
+  overflow-y: scroll;
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+`;
+
 const Content = styled.div`
-  font-size: 1.05rem;
-  line-height: 30px;
+  font-size: 1rem;
+  line-height: 1.7;
+  margin-bottom: 10px;
+`;
+
+const TextContainer = styled.div`
+  position: relative;
+  display: inline-block;
+`;
+
+interface TextProps {
+  isExpanded: boolean;
+}
+
+const Text = styled.span<TextProps>`
+  display: block;
+  max-height: ${(props) => (props.isExpanded ? "none" : "3.4em")};
+  font-size: 1rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: ${(props) => (props.isExpanded ? "none" : 2)};
+  -webkit-box-orient: vertical;
+  white-space: normal;
+  word-break: break-word;
+`;
+
+const MoreButton = styled.button`
+  position: absolute;
+  right: 5.5px;
+  bottom: 2px;
+  background: #fff;
+  border: none;
+  color: #0059ff;
+  cursor: pointer;
+  padding: 0 0 0 0;
+  font-weight: 400;
+  font-size: 1rem;
+`;
+
+const SwiperContainer = styled.div`
+  margin-top: 20px;
+
+  .swiper-pagination {
+    position: absolute;
+    bottom: 24px;
+    z-index: 10;
+  }
+
+  .swiper-pagination-bullet {
+    background-color: rgba(150, 150, 150, 1);
+    width: 8px;
+    height: 8px;
+    opacity: 1;
+  }
+
+  .swiper-pagination-bullet-active {
+    background-color: rgba(30, 30, 30, 1);
+  }
+`;
+
+const SlideImage = styled.img`
+  width: 100%;
+  height: 620px;
+  object-fit: cover;
+  border-radius: 10px;
+`;
+
+const CommentSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  width: 450px;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-left: 1px solid #e1e8ed;
+`;
+
+const CommentInputSection = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+`;
+
+const CommentInput = styled.input`
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+`;
+
+const CommentButton = styled.button`
+  padding: 10px;
+  background-color: rgba(30, 30, 30, 1);
+  color: white;
+  border: none;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  cursor: pointer;
+  width: 80px;
+  height: 100%;
+
+  &:hover {
+    background-color: rgba(60, 60, 60, 1);
+  }
+`;
+
+const CommentsSection = styled.div`
+  margin-top: 22px;
+  width: 100%;
+  height: 100%;
+  border-top: 1px solid #e1e8ed;
+  padding-top: 20px;
+`;
+
+const Comment = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 22px;
+`;
+
+const CommentLeft = styled.div``;
+
+const CommentUser = styled.div`
+  font-weight: bold;
+  font-size: 0.9rem;
+`;
+
+const CommentText = styled.div`
+  margin-top: 8px;
+  font-size: 0.9rem;
+  color: #555;
+`;
+
+const CommentTime = styled.div`
+  font-size: 0.8rem;
+  color: #aaa;
+  margin-top: 5px;
 `;
 
 const PostInteractions = styled.div`
   display: flex;
   align-items: center;
   justify-content: start;
-  margin: 12px 0 2px;
+  margin: 18px 0 0px;
 
   span {
     font-size: 1rem;
@@ -189,104 +359,4 @@ const Comments = styled.div`
     margin-right: 6px;
     color: rgba(50, 50, 50, 1);
   }
-`;
-
-const SwiperContainer = styled.div`
-  margin-top: 20px;
-
-  .swiper-pagination {
-    margin-bottom: 6px;
-  }
-
-  .swiper-pagination-bullet {
-    background-color: rgba(150, 150, 150, 1);
-    width: 8px;
-    height: 8px;
-    opacity: 1;
-  }
-
-  .swiper-pagination-bullet-active {
-    background-color: rgba(30, 30, 30, 1);
-  }
-`;
-
-const SlideImage = styled.img`
-  width: 100%;
-  height: 576px;
-  object-fit: cover;
-  border-radius: 10px;
-`;
-
-const CommentSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  width: 450px;
-  padding: 20px;
-  background-color: #f8f9fa;
-  border-left: 1px solid #e1e8ed;
-  max-height: 710px;
-`;
-
-const CommentInputSection = styled.div`
-  display: flex;
-  align-items: center;
-  width: 100%;
-`;
-
-const CommentInput = styled.input`
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
-`;
-
-const CommentButton = styled.button`
-  padding: 10px;
-  background-color: rgba(30, 30, 30, 1);
-  color: white;
-  border: none;
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
-  cursor: pointer;
-  width: 80px;
-  height: 100%;
-
-  &:hover {
-    background-color: #0056b3;
-  }
-`;
-
-const CommentsSection = styled.div`
-  margin-top: 22px;
-  width: 100%;
-  border-top: 1px solid #e1e8ed;
-  padding-top: 20px;
-`;
-
-const Comment = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin-bottom: 22px;
-`;
-
-const CommentLeft = styled.div``;
-
-const CommentUser = styled.div`
-  font-weight: bold;
-  font-size: 0.9rem;
-`;
-
-const CommentText = styled.div`
-  margin-top: 8px;
-  font-size: 0.9rem;
-  color: #555;
-`;
-
-const CommentTime = styled.div`
-  font-size: 0.8rem;
-  color: #aaa;
-  margin-top: 5px;
 `;

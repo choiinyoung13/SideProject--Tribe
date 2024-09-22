@@ -1,13 +1,15 @@
 import styled from "styled-components";
 import PostDetail from "./PostDetail";
 import { IoCloseSharp } from "react-icons/io5";
+import { useEffect } from "react";
 
 // Mock 데이터로 게시물 상세 정보를 정의 (5개의 이미지로 가정)
 const mockPostDetail = {
   id: "1",
   author: "dlsdud156",
   authorProfileImage: "https://via.placeholder.com/50",
-  content: "채광이 부족한 환경에서도 잘 자라는 식물들을 소개합니다.",
+  content:
+    "채광이 부족한 환경에서도 잘 자라는 식물들을 소개합니다.채광이 부족한 환경에서도 잘 자라는 식물들을 소개합니다. 채광이 부족한 환경에서도 잘 자라는 식물들을 소개합니다.채광이 부족한 환경에서도 잘 자라는 식물들을 소개합니다. 채광이 부족한 환경에서도 잘 자라는 식물들을 소개합니다.채광이 부족한 환경에서도 잘 자라는 식물들을 소개합니다.가나다라마바사",
   images: [
     "https://via.placeholder.com/600x600",
     "https://via.placeholder.com/600x601",
@@ -33,6 +35,16 @@ const mockPostDetail = {
 };
 
 export default function PostDetailModal({ onClose }: { onClose: () => void }) {
+  useEffect(() => {
+    // 모달이 열릴 때 body 스크롤 비활성화
+    document.body.style.overflow = "hidden";
+
+    // 컴포넌트가 언마운트될 때 (모달이 닫힐 때) 스크롤을 다시 활성화
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, []);
+
   return (
     <ModalOverlay onClick={onClose}>
       <CloseIcon>
@@ -71,21 +83,9 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalContent = styled.div`
-  max-height: 80vh; /* 높이가 커지면 스크롤 처리 */
+  max-height: 83vh; /* 높이가 커지면 스크롤 처리 */
   background-color: #ffffff;
   border-radius: 10px;
   padding: 24px;
   position: relative;
-  overflow-y: scroll; /* 스크롤은 가능하지만, 스크롤바는 숨깁니다 */
-
-  /* 스크롤바 숨기기 (웹킷 브라우저) */
-  ::-webkit-scrollbar {
-    display: none;
-  }
-
-  /* 스크롤바 숨기기 (Firefox) */
-  scrollbar-width: none; /* Firefox에서 스크롤바 숨기기 */
-
-  /* 스크롤바 숨기기 (Edge 및 기타 브라우저) */
-  -ms-overflow-style: none; /* Internet Explorer 및 Edge에서 스크롤바 숨기기 */
 `;

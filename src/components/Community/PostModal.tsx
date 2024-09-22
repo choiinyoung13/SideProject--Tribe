@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import { IoCloseSharp } from "react-icons/io5";
 import Swal from "sweetalert2";
@@ -19,6 +19,16 @@ export default function PostModal({ onClose }: { onClose: () => void }) {
   const [category, setCategory] = useState<string>("");
   const queryClient = useQueryClient();
   const { session } = useAuth();
+
+  useEffect(() => {
+    // 모달이 열릴 때 body 스크롤 비활성화
+    document.body.style.overflow = "hidden";
+
+    // 컴포넌트가 언마운트될 때 (모달이 닫힐 때) 스크롤을 다시 활성화
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, []);
 
   const { mutate } = useMutation(insertPost, {
     onSuccess: () => {
