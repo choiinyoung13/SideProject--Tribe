@@ -6,7 +6,7 @@ import RealTimeKeywords from "../components/Community/RealTimeKeywords";
 import FollowRecommends from "../components/Community/FollowRecommends";
 import SortButton from "../components/Community/SortButton";
 import useWindowWidth from "../hooks/useWindowWidth";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import PostModal from "../components/Community/PostModal"; // PostModal 컴포넌트 추가
 import { useAuth } from "../hooks/useAuth";
 import Swal from "sweetalert2";
@@ -31,10 +31,6 @@ export default function Community() {
     { id: 6, title: "정보", count: 91 },
     { id: 7, title: "기타", count: 12 },
   ];
-
-  useEffect(() => {
-    console.log(`session: ${session}`);
-  }, [session]);
 
   // 모달 열기 함수
   const openModal = () => {

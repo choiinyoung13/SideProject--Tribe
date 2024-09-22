@@ -5,7 +5,7 @@ export type PostType = {
   img_urls: string;
   liked: number | null;
   comments: string[] | null;
-  user: null;
+  user: string;
   category: string;
   created_at: string;
 };

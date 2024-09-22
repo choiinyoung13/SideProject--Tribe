@@ -1,11 +1,12 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { IoMdHeart } from "react-icons/io";
 import { FaCommentDots } from "react-icons/fa";
 import PostDetailModal from "./PostDetailModal";
 import { PostType } from "../../types/PostType";
 import default_profile from "../../assets/images/community/fake_profile/default_profile.jpg";
+import { fetchUserInfoByUserId } from "../../config/api/user/fetchUserInfo";
 
 interface PostCardProps {
   post: PostType;
@@ -14,6 +15,18 @@ interface PostCardProps {
 export default function PostCard({ post }: PostCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const [userInfo, setUserInfo] = useState({
+    email: "",
+    avatar_url: "",
+  });
+
+  useEffect(() => {
+    const getUserInfo = async () => {
+      const result = await fetchUserInfoByUserId(post.user);
+      setUserInfo({ email: result?.email, avatar_url: result?.avatar_url });
+    };
+    getUserInfo();
+  }, []);
 
   const handleCardClick = () => {
     setIsModalOpen(true);
@@ -47,8 +60,14 @@ export default function PostCard({ post }: PostCardProps) {
             <PostText>
               <TextLeft>
                 <Profile>
-                  <ProfileImg src={default_profile} />
-                  <Username>dlsdud156</Username>
+                  <ProfileImg
+                    src={
+                      userInfo.avatar_url
+                        ? userInfo.avatar_url
+                        : default_profile
+                    }
+                  />
+                  <Username>{userInfo.email.split("@")[0]}</Username>
                 </Profile>
               </TextLeft>
               <TextRight>

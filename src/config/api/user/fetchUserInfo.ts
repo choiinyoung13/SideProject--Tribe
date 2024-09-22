@@ -11,6 +11,20 @@ export const fetchUserLikesInfo = async (userId: string) => {
     console.error("Error fetching cart items:", error);
     return;
   }
+  return data;
+};
 
+// userId로 해당 유저의 email과 avatar_url 정보 받아오기
+export const fetchUserInfoByUserId = async (userId: string) => {
+  const { data, error } = await supabase
+    .from("userinfo")
+    .select("email, avatar_url")
+    .eq("id", userId)
+    .single();
+
+  if (error) {
+    console.error("Error fetching cart items:", error);
+    return;
+  }
   return data;
 };

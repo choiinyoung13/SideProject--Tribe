@@ -7,6 +7,7 @@ import { uploadImagesToStorageAndGetUrl } from "../../config/api/post/uploadImag
 import { useMutation, useQueryClient } from "react-query";
 import { insertPost } from "../../config/api/post/insertPost";
 import Spinner from "../Common/Spinner";
+import { useAuth } from "../../hooks/useAuth";
 
 const categories = ["잡담", "이벤트", "질문", "나눔", "정보", "기타"];
 
@@ -17,8 +18,8 @@ export default function PostModal({ onClose }: { onClose: () => void }) {
   const [isLoading, setIsLoading] = useState(false);
   const [category, setCategory] = useState<string>("");
   const queryClient = useQueryClient();
+  const { session } = useAuth();
 
-  // insertPost mutation
   const { mutate } = useMutation(insertPost, {
     onSuccess: () => {
       Swal.fire({
@@ -149,6 +150,7 @@ export default function PostModal({ onClose }: { onClose: () => void }) {
       content,
       imgUrls: uploadedUrls,
       category,
+      userId: session!.user.id,
     });
 
     setIsLoading(false);

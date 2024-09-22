@@ -51,11 +51,11 @@ export default function PostListCon() {
     <>
       <ListCon>
         <ListWrapper>
-          {data.pages.length === 0 ? (
+          {data.pages[0].posts.length === 0 ? (
             <Empty>게시물이 없습니다.</Empty>
           ) : (
             <>
-              {data?.pages.map((page) =>
+              {data.pages.map((page) =>
                 page.posts.map((post) => {
                   return <PostCard key={post.id} post={post} />;
                 })
