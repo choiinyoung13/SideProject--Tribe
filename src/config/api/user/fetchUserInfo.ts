@@ -14,11 +14,11 @@ export const fetchUserLikesInfo = async (userId: string) => {
   return data
 }
 
-// userId로 해당 유저의 email과 avatar_url 정보 받아오기
+// userId로 해당 유저의 email, avatar_url, nickname 정보 받아오기
 export const fetchUserInfoByUserId = async (userId: string) => {
   const { data, error } = await supabase
     .from('userinfo')
-    .select('email, avatar_url')
+    .select('email, avatar_url, nickname')
     .eq('id', userId)
     .single()
 

@@ -12,8 +12,10 @@ interface CommentProps {
     id: string
     user: string
     text: string
-    userProfileUrl: string
     timestamp: string
+    profileUrl?: string
+    username?: string
+    email?: string
   }
 }
 
@@ -23,14 +25,16 @@ export default function Comment({ comment }: CommentProps) {
       <CommentLeft>
         <CommentProfileImage
           src={
-            comment.userProfileUrl
-              ? comment.userProfileUrl
+            comment.profileUrl
+              ? comment.profileUrl
               : 'http://img1.kakaocdn.net/thumb/R640x640.q70/?fname=http://t1.kakaocdn.net/account_images/default_profile.jpeg'
           }
           alt="Comment Profile"
         />
         <CommentLeftText>
-          <CommentUser>{comment.user}</CommentUser>
+          <CommentUser>
+            {comment.username ? comment.username : comment.email?.split('@')[0]}
+          </CommentUser>
           <CommentText>{comment.text}</CommentText>
         </CommentLeftText>
       </CommentLeft>
@@ -44,6 +48,19 @@ const CommentCon = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 27px;
+`
+
+const Loading = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    width: 60px;
+    height: auto;
+  }
 `
 
 const CommentProfileImage = styled.img`

@@ -14,6 +14,8 @@ import { PostType } from '../../types/PostType'
 import { insertComment } from '../../config/api/post/insertComment'
 import { useAuth } from '../../hooks/useAuth'
 import Comment from './Comment'
+import { fetchUserInfoByUserId } from '../../config/api/user/fetchUserInfo'
+import loadingSVG from '../../assets/images/logo/ball-triangle.svg'
 
 // dayjs 상대 시간 플러그인과 한국어 설정
 dayjs.extend(relativeTime)
@@ -21,7 +23,12 @@ dayjs.locale('ko')
 
 // 게시물 상세 데이터를 받는 props 인터페이스
 interface PostDetailProps {
-  userInfo: { userId: string; email: string; avatar_url: string }
+  userInfo: {
+    userId: string
+    email: string
+    avatar_url: string
+    nickname: string
+  }
   post: PostType
 }
 
@@ -30,7 +37,32 @@ export default function PostDetail({ userInfo, post }: PostDetailProps) {
   const [isExpanded, setIsExpanded] = useState(false)
   const [showMoreButton, setShowMoreButton] = useState(false)
   const textRef = useRef<HTMLSpanElement>(null)
+  const [commentsWithUserInfo, setCommentsWithUserInfo] = useState<any[]>([])
+  const [isLoading, setIsLoading] = useState(true)
   const { session } = useAuth()
+
+  // 댓글의 유저 정보를 불러오는 로직
+  useEffect(() => {
+    const loadCommentsWithUserInfo = async () => {
+      const loadedComments = await Promise.all(
+        post!.comments!.map(async comment => {
+          const userInfo = await fetchUserInfoByUserId(comment.id)
+          return {
+            ...comment,
+            profileUrl: userInfo?.avatar_url,
+            username: userInfo?.nickname,
+            email: userInfo?.email,
+          }
+        })
+      )
+      setCommentsWithUserInfo(loadedComments)
+      setIsLoading(false) // 모든 댓글의 유저 정보가 로드되면 로딩 해제
+    }
+
+    if (post.comments) {
+      loadCommentsWithUserInfo()
+    }
+  }, [post.comments])
 
   useEffect(() => {
     if (textRef.current) {
@@ -49,16 +81,20 @@ export default function PostDetail({ userInfo, post }: PostDetailProps) {
     await insertComment({
       postId: post.id,
       userId: session!.user.id,
-      userName: session!.user.email!.split('@')[0],
       comment: newComment,
-      userProfileUrl:
-        session!.user.user_metadata.avatar_url ||
-        'http://img1.kakaocdn.net/thumb/R640x640.q70/?fname=http://t1.kakaocdn.net/account_images/default_profile.jpeg',
     })
   }
 
   const handleExpandClick = () => {
     setIsExpanded(!isExpanded)
+  }
+
+  if (isLoading) {
+    return (
+      <LoadingContainer>
+        <img src={loadingSVG} alt="loading" />
+      </LoadingContainer>
+    )
   }
 
   return (
@@ -120,7 +156,7 @@ export default function PostDetail({ userInfo, post }: PostDetailProps) {
         </CommentInputSection>
 
         <CommentsSection>
-          {post.comments?.map(comment => (
+          {commentsWithUserInfo.map(comment => (
             <Comment key={comment.id} comment={comment} />
           ))}
         </CommentsSection>
@@ -144,6 +180,12 @@ export default function PostDetail({ userInfo, post }: PostDetailProps) {
 const Container = styled.div`
   display: flex;
   justify-content: space-between;
+`
+const LoadingContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
 `
 
 const DetailContainer = styled.div`

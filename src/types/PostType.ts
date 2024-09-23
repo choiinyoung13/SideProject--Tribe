@@ -3,7 +3,6 @@ type CommentType = {
   user: string
   text: string
   timestamp: string
-  userProfileUrl: string
 }
 
 type LikedType = {
