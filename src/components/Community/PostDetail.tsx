@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { IoMdHeart } from 'react-icons/io'
 import { FaCommentDots } from 'react-icons/fa'
@@ -16,6 +16,9 @@ import { useAuth } from '../../hooks/useAuth'
 import Comment from './Comment'
 import { fetchUserInfoByUserId } from '../../config/api/user/fetchUserInfo'
 import loadingSVG from '../../assets/images/logo/ball-triangle.svg'
+import { useMutation, useQueryClient } from 'react-query'
+import Swal from 'sweetalert2'
+import Spinner from '../Common/Spinner'
 
 // dayjs 상대 시간 플러그인과 한국어 설정
 dayjs.extend(relativeTime)
@@ -36,10 +39,42 @@ export default function PostDetail({ userInfo, post }: PostDetailProps) {
   const [newComment, setNewComment] = useState('')
   const [isExpanded, setIsExpanded] = useState(false)
   const [showMoreButton, setShowMoreButton] = useState(false)
-  const textRef = useRef<HTMLSpanElement>(null)
   const [commentsWithUserInfo, setCommentsWithUserInfo] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [isImageLoading, setIsImageLoading] = useState(false)
+  const queryClient = useQueryClient()
   const { session } = useAuth()
+
+  const { mutate, isLoading: insertCommentLoading } = useMutation(
+    insertComment,
+    {
+      onSuccess: () => {
+        // 게시글이 성공적으로 저장되면, 기존 게시글 목록 쿼리를 무효화하고 새로 가져옴
+        queryClient.invalidateQueries({ queryKey: ['posts'], exact: false })
+
+        setCommentsWithUserInfo([])
+      },
+      onError: error => {
+        console.error('게시글 저장 오류:', error)
+        Swal.fire({
+          text: '게시글 저장 중 오류가 발생했습니다.',
+          icon: 'error',
+          confirmButtonColor: '#1E1E1E',
+          confirmButtonText: '확인',
+          scrollbarPadding: false,
+        })
+      },
+    }
+  )
+
+  useEffect(() => {
+    setShowMoreButton(post.content.length > 150)
+  }, [post.content])
+
+  useEffect(() => {
+    console.log(isExpanded)
+    console.log(showMoreButton)
+  }, [isExpanded, showMoreButton])
 
   // 댓글의 유저 정보를 불러오는 로직
   useEffect(() => {
@@ -68,21 +103,13 @@ export default function PostDetail({ userInfo, post }: PostDetailProps) {
     loadCommentsWithUserInfo()
   }, [post.comments])
 
-  useEffect(() => {
-    if (textRef.current) {
-      setShowMoreButton(
-        textRef.current.scrollHeight > textRef.current.clientHeight
-      )
-    }
-  }, [post.content])
-
   const OnInputSubmit = async (
     e: React.FormEvent<HTMLFormElement>
   ): Promise<void> => {
     e.preventDefault()
     if (!newComment.trim()) return
 
-    await insertComment({
+    await mutate({
       postId: post.id,
       userId: session!.user.id,
       comment: newComment,
@@ -93,7 +120,7 @@ export default function PostDetail({ userInfo, post }: PostDetailProps) {
     setIsExpanded(!isExpanded)
   }
 
-  if (isLoading) {
+  if (isLoading && !isImageLoading) {
     return (
       <LoadingContainer>
         <img src={loadingSVG} alt="loading" />
@@ -119,9 +146,7 @@ export default function PostDetail({ userInfo, post }: PostDetailProps) {
         <ContentWrapper>
           <Content>
             <TextContainer>
-              <Text ref={textRef} isExpanded={isExpanded}>
-                {post.content}
-              </Text>
+              <Text isExpanded={isExpanded}>{post.content}</Text>
               {showMoreButton && !isExpanded && (
                 <MoreButton onClick={handleExpandClick}>... 더보기</MoreButton>
               )}
@@ -140,7 +165,13 @@ export default function PostDetail({ userInfo, post }: PostDetailProps) {
             >
               {post.img_urls.map((imgUrl, index) => (
                 <SwiperSlide key={index}>
-                  <SlideImage src={imgUrl} alt={`Slide ${index + 1}`} />
+                  <SlideImage
+                    src={imgUrl}
+                    alt={`Slide ${index + 1}`}
+                    onLoad={() => {
+                      setIsImageLoading(true)
+                    }}
+                  />
                 </SwiperSlide>
               ))}
             </Swiper>
@@ -156,7 +187,9 @@ export default function PostDetail({ userInfo, post }: PostDetailProps) {
             value={newComment}
             onChange={e => setNewComment(e.target.value)}
           />
-          <CommentButton type="submit">작성</CommentButton>
+          <CommentButton type="submit" disabled={insertCommentLoading}>
+            {insertCommentLoading ? <Spinner width={16} height={16} /> : '작성'}
+          </CommentButton>
         </CommentInputSection>
 
         <CommentsSection>
@@ -189,7 +222,13 @@ const LoadingContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%;
+  height: 744px;
+  width: 1090px;
+
+  img {
+    width: 150px;
+    height: 150px;
+  }
 `
 
 const DetailContainer = styled.div`
@@ -241,12 +280,12 @@ interface TextProps {
 const Text = styled.span<TextProps>`
   display: block;
   line-height: 1.7;
-  max-height: ${props => (props.isExpanded ? 'none' : '3.4em')};
+  max-height: ${({ isExpanded }) => (isExpanded ? 'none' : '3.4em')};
   font-size: 1rem;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
-  -webkit-line-clamp: ${props => (props.isExpanded ? 'none' : 2)};
+  -webkit-line-clamp: ${({ isExpanded }) => (isExpanded ? 'none' : 2)};
   -webkit-box-orient: vertical;
   white-space: normal;
   word-break: break-word;
