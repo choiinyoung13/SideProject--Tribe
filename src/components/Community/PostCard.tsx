@@ -1,39 +1,47 @@
-import styled from "styled-components";
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { IoMdHeart } from "react-icons/io";
-import { FaCommentDots } from "react-icons/fa";
-import PostDetailModal from "./PostDetailModal";
-import { PostType } from "../../types/PostType";
-import { fetchUserInfoByUserId } from "../../config/api/user/fetchUserInfo";
+import styled from 'styled-components'
+import { useEffect, useState } from 'react'
+import { motion } from 'framer-motion'
+import { IoMdHeart } from 'react-icons/io'
+import { FaCommentDots } from 'react-icons/fa'
+import PostDetailModal from './PostDetailModal'
+import { PostType } from '../../types/PostType'
+import { fetchUserInfoByUserId } from '../../config/api/user/fetchUserInfo'
 
 interface PostCardProps {
-  post: PostType;
+  post: PostType
 }
 
 export default function PostCard({ post }: PostCardProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isImageLoaded, setIsImageLoaded] = useState(false)
   const [userInfo, setUserInfo] = useState({
-    email: "",
-    avatar_url: "",
-  });
+    email: '',
+    avatar_url: '',
+  })
 
   useEffect(() => {
     const getUserInfo = async () => {
-      const result = await fetchUserInfoByUserId(post.user);
-      setUserInfo({ email: result?.email, avatar_url: result?.avatar_url });
-    };
-    getUserInfo();
-  }, []);
+      const result = await fetchUserInfoByUserId(post.user)
+      setUserInfo({ email: result?.email, avatar_url: result?.avatar_url })
+    }
+    getUserInfo()
+  }, [])
 
   const handleCardClick = () => {
-    setIsModalOpen(true);
-  };
+    setIsModalOpen(true)
+  }
+
+  if (!userInfo.email) return
 
   return (
     <>
-      {isModalOpen && <PostDetailModal onClose={() => setIsModalOpen(false)} />}
+      {isModalOpen && (
+        <PostDetailModal
+          userInfo={userInfo}
+          post={post}
+          onClose={() => setIsModalOpen(false)}
+        />
+      )}
       <Card onClick={handleCardClick}>
         <ImgBox>
           <motion.div
@@ -46,7 +54,7 @@ export default function PostCard({ post }: PostCardProps) {
               alt="post image"
               draggable="false"
               onLoad={() => setIsImageLoaded(true)}
-              style={{ display: isImageLoaded ? "block" : "none" }}
+              style={{ display: isImageLoaded ? 'block' : 'none' }}
             />
           </motion.div>
         </ImgBox>
@@ -63,16 +71,16 @@ export default function PostCard({ post }: PostCardProps) {
                     src={
                       userInfo.avatar_url
                         ? userInfo.avatar_url
-                        : "http://img1.kakaocdn.net/thumb/R640x640.q70/?fname=http://t1.kakaocdn.net/account_images/default_profile.jpeg"
+                        : 'http://img1.kakaocdn.net/thumb/R640x640.q70/?fname=http://t1.kakaocdn.net/account_images/default_profile.jpeg'
                     }
                   />
-                  <Username>{userInfo.email.split("@")[0]}</Username>
+                  <Username>{userInfo.email.split('@')[0]}</Username>
                 </Profile>
               </TextLeft>
               <TextRight>
                 <HeartIcon>
                   <IoMdHeart />
-                  <span>{post.liked ? post.liked : 0}</span>
+                  <span>{post.liked ? post.liked.length : 0}</span>
                 </HeartIcon>
                 <CommentIcon>
                   <FaCommentDots />
@@ -84,7 +92,7 @@ export default function PostCard({ post }: PostCardProps) {
         )}
       </Card>
     </>
-  );
+  )
 }
 
 const Card = styled.div`
@@ -98,7 +106,7 @@ const Card = styled.div`
   @media (max-width: 1300px) {
     width: calc(50% - 10.5px);
   }
-`;
+`
 
 const ImgBox = styled.div`
   width: 100%;
@@ -109,7 +117,7 @@ const ImgBox = styled.div`
   img {
     width: 100%;
   }
-`;
+`
 
 const TextBox = styled.div`
   margin-top: 10px;
@@ -123,11 +131,11 @@ const TextBox = styled.div`
   @media (max-width: 450px) {
     margin-top: 6px;
   }
-`;
+`
 
 const TextHeader = styled.div`
   display: flex;
-`;
+`
 const PostCategory = styled.div`
   flex-shrink: 0;
   margin-right: 4px;
@@ -139,7 +147,7 @@ const PostCategory = styled.div`
   @media (max-width: 450px) {
     font-size: 0.8rem;
   }
-`;
+`
 
 const PostText = styled.div`
   display: flex;
@@ -154,7 +162,7 @@ const PostText = styled.div`
   @media (max-width: 450px) {
     margin-top: 4px;
   }
-`;
+`
 
 const Title = styled.div`
   width: 280px;
@@ -173,14 +181,14 @@ const Title = styled.div`
   @media (max-width: 450px) {
     font-size: 0.8rem;
   }
-`;
+`
 
 const Profile = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
   cursor: pointer;
-`;
+`
 const ProfileImg = styled.img`
   width: 24px;
   height: 24px;
@@ -195,7 +203,7 @@ const ProfileImg = styled.img`
     width: 18px;
     height: 18px;
   }
-`;
+`
 const Username = styled.div`
   font-size: 0.9rem;
   color: rgba(50, 50, 50, 1);
@@ -216,18 +224,17 @@ const Username = styled.div`
   @media (max-width: 375px) {
     font-size: 0.75rem;
   }
-`;
+`
 const TextLeft = styled.div`
   display: flex;
   align-items: center;
-`;
+`
 const TextRight = styled.div`
   display: flex;
   align-items: center;
   font-size: 1 rem;
   color: rgba(190, 190, 190, 1);
   margin-top: 1px;
-  cursor: pointer;
 
   span {
     font-size: 0.9rem;
@@ -244,17 +251,35 @@ const TextRight = styled.div`
       margin-left: 3px;
     }
   }
-`;
+
+  @media (max-width: 375px) {
+    span {
+      display: none;
+    }
+  }
+`
 
 const HeartIcon = styled.div`
   display: flex;
   align-items: center;
   margin-left: 12px;
+  cursor: pointer;
+
+  svg {
+    font-size: 1.25rem;
+    color: rgba(190, 190, 190, 1);
+  }
 
   @media (max-width: 450px) {
     margin-left: 8px;
   }
-`;
+
+  @media (max-width: 375px) {
+    svg {
+      font-size: 1rem;
+    }
+  }
+`
 const CommentIcon = styled.div`
   color: rgba(50, 50, 50, 1);
   display: flex;
@@ -264,4 +289,8 @@ const CommentIcon = styled.div`
   @media (max-width: 450px) {
     margin-left: 8px;
   }
-`;
+
+  @media (max-width: 375px) {
+    margin-left: 6px;
+  }
+`
