@@ -65,9 +65,7 @@ export default function PostDetail({ userInfo, post }: PostDetailProps) {
       setIsLoading(false) // 모든 댓글의 유저 정보가 로드되면 로딩 해제
     }
 
-    if (post.comments) {
-      loadCommentsWithUserInfo()
-    }
+    loadCommentsWithUserInfo()
   }, [post.comments])
 
   useEffect(() => {
