@@ -50,19 +50,6 @@ const CommentCon = styled.div`
   margin-bottom: 27px;
 `
 
-const Loading = styled.div`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  img {
-    width: 60px;
-    height: auto;
-  }
-`
-
 const CommentProfileImage = styled.img`
   width: 36px;
   height: 36px;

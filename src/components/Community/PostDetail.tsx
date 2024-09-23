@@ -44,6 +44,12 @@ export default function PostDetail({ userInfo, post }: PostDetailProps) {
   // 댓글의 유저 정보를 불러오는 로직
   useEffect(() => {
     const loadCommentsWithUserInfo = async () => {
+      if (!post.comments || post.comments.length === 0) {
+        // 댓글이 없을 경우 로딩 해제
+        setIsLoading(false)
+        return
+      }
+
       const loadedComments = await Promise.all(
         post!.comments!.map(async comment => {
           const userInfo = await fetchUserInfoByUserId(comment.id)
