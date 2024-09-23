@@ -6,11 +6,13 @@ export async function insertComment({
   userId,
   userName,
   comment,
+  userProfileUrl,
 }: {
   postId: number
   userId: string
   userName: string
   comment: string
+  userProfileUrl: string
 }) {
   const timestamp = new Date().toISOString() // 현재 시간을 ISO 8601 형식으로 가공
 
@@ -31,6 +33,7 @@ export async function insertComment({
     id: userId,
     user: userName,
     text: comment,
+    userProfileUrl,
     timestamp,
   }
 

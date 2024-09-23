@@ -12,6 +12,8 @@ import 'dayjs/locale/ko'
 import { Pagination, Navigation } from 'swiper/modules' // Pagination과 Navigation 모듈 추가
 import { PostType } from '../../types/PostType'
 import { insertComment } from '../../config/api/post/insertComment'
+import { useAuth } from '../../hooks/useAuth'
+import Comment from './Comment'
 
 // dayjs 상대 시간 플러그인과 한국어 설정
 dayjs.extend(relativeTime)
@@ -28,6 +30,7 @@ export default function PostDetail({ userInfo, post }: PostDetailProps) {
   const [isExpanded, setIsExpanded] = useState(false)
   const [showMoreButton, setShowMoreButton] = useState(false)
   const textRef = useRef<HTMLSpanElement>(null)
+  const { session } = useAuth()
 
   useEffect(() => {
     if (textRef.current) {
@@ -45,9 +48,12 @@ export default function PostDetail({ userInfo, post }: PostDetailProps) {
 
     await insertComment({
       postId: post.id,
-      userId: userInfo.userId,
-      userName: userInfo.email.split('@')[0],
+      userId: session!.user.id,
+      userName: session!.user.email!.split('@')[0],
       comment: newComment,
+      userProfileUrl:
+        session!.user.user_metadata.avatar_url ||
+        'http://img1.kakaocdn.net/thumb/R640x640.q70/?fname=http://t1.kakaocdn.net/account_images/default_profile.jpeg',
     })
   }
 
@@ -115,23 +121,7 @@ export default function PostDetail({ userInfo, post }: PostDetailProps) {
 
         <CommentsSection>
           {post.comments?.map(comment => (
-            <Comment key={comment.id}>
-              <CommentLeft>
-                <CommentProfileImage
-                  src={
-                    userInfo.avatar_url
-                      ? userInfo.avatar_url
-                      : 'http://img1.kakaocdn.net/thumb/R640x640.q70/?fname=http://t1.kakaocdn.net/account_images/default_profile.jpeg'
-                  }
-                  alt="Author"
-                />
-                <CommentLeftText>
-                  <CommentUser>{comment.user}</CommentUser>
-                  <CommentText>{comment.text}</CommentText>
-                </CommentLeftText>
-              </CommentLeft>
-              <CommentTime>{dayjs(comment.timestamp).fromNow()}</CommentTime>
-            </Comment>
+            <Comment key={comment.id} comment={comment} />
           ))}
         </CommentsSection>
 
@@ -302,13 +292,6 @@ const CommentInput = styled.input`
   border-bottom-left-radius: 5px;
 `
 
-const CommentProfileImage = styled.img`
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  margin-right: 10px;
-`
-
 const CommentButton = styled.button`
   padding: 10px;
   background-color: rgba(30, 30, 30, 1);
@@ -340,42 +323,6 @@ const CommentsSection = styled.div`
   }
   scrollbar-width: none;
   -ms-overflow-style: none;
-`
-
-const Comment = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 27px;
-`
-
-const CommentLeft = styled.div`
-  display: flex;
-  align-items: center;
-`
-
-const CommentLeftText = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  margin-bottom: 3.5px;
-`
-
-const CommentUser = styled.div`
-  font-weight: bold;
-  font-size: 0.9rem;
-`
-
-const CommentText = styled.div`
-  margin-top: 8px;
-  font-size: 0.9rem;
-  margin-right: 2px;
-  color: #555;
-`
-
-const CommentTime = styled.div`
-  font-size: 0.8rem;
-  color: #aaa;
 `
 
 const PostInteractions = styled.div`

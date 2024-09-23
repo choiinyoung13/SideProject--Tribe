@@ -1,9 +1,11 @@
 type CommentType = {
-  id: number
+  id: string
   user: string
   text: string
   timestamp: string
+  userProfileUrl: string
 }
+
 type LikedType = {
   id: string
 }

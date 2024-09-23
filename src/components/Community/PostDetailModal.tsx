@@ -3,6 +3,7 @@ import PostDetail from './PostDetail'
 import { IoCloseSharp } from 'react-icons/io5'
 import { useEffect } from 'react'
 import { PostType } from '../../types/PostType'
+import { useQueryClient } from 'react-query'
 
 export default function PostDetailModal({
   userInfo,
@@ -13,7 +14,12 @@ export default function PostDetailModal({
   post: PostType
   onClose: () => void
 }) {
+  const queryClient = useQueryClient()
+
   useEffect(() => {
+    // 모달이 열릴 때 posts 쿼리 리패치
+    queryClient.invalidateQueries({ queryKey: ['posts'], exact: false })
+
     // 모달이 열릴 때 body 스크롤 비활성화
     document.body.style.overflow = 'hidden'
 
