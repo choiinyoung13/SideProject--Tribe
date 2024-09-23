@@ -15,6 +15,7 @@ export default function PostCard({ post }: PostCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isImageLoaded, setIsImageLoaded] = useState(false)
   const [userInfo, setUserInfo] = useState({
+    userId: '',
     email: '',
     avatar_url: '',
   })
@@ -22,7 +23,11 @@ export default function PostCard({ post }: PostCardProps) {
   useEffect(() => {
     const getUserInfo = async () => {
       const result = await fetchUserInfoByUserId(post.user)
-      setUserInfo({ email: result?.email, avatar_url: result?.avatar_url })
+      setUserInfo({
+        userId: post.user,
+        email: result?.email,
+        avatar_url: result?.avatar_url,
+      })
     }
     getUserInfo()
   }, [])

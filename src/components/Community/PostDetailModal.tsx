@@ -9,7 +9,7 @@ export default function PostDetailModal({
   post,
   onClose,
 }: {
-  userInfo: { email: string; avatar_url: string }
+  userInfo: { userId: string; email: string; avatar_url: string }
   post: PostType
   onClose: () => void
 }) {

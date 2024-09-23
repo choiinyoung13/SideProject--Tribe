@@ -11,6 +11,7 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 import 'dayjs/locale/ko'
 import { Pagination, Navigation } from 'swiper/modules' // Pagination과 Navigation 모듈 추가
 import { PostType } from '../../types/PostType'
+import { insertComment } from '../../config/api/post/insertComment'
 
 // dayjs 상대 시간 플러그인과 한국어 설정
 dayjs.extend(relativeTime)
@@ -18,7 +19,7 @@ dayjs.locale('ko')
 
 // 게시물 상세 데이터를 받는 props 인터페이스
 interface PostDetailProps {
-  userInfo: { email: string; avatar_url: string }
+  userInfo: { userId: string; email: string; avatar_url: string }
   post: PostType
 }
 
@@ -36,7 +37,19 @@ export default function PostDetail({ userInfo, post }: PostDetailProps) {
     }
   }, [post.content])
 
-  const handleAddComment = () => {}
+  const OnInputSubmit = async (
+    e: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
+    e.preventDefault()
+    if (!newComment.trim()) return
+
+    await insertComment({
+      postId: post.id,
+      userId: userInfo.userId,
+      userName: userInfo.email.split('@')[0],
+      comment: newComment,
+    })
+  }
 
   const handleExpandClick = () => {
     setIsExpanded(!isExpanded)
@@ -90,22 +103,32 @@ export default function PostDetail({ userInfo, post }: PostDetailProps) {
       </DetailContainer>
 
       <CommentSection>
-        <CommentInputSection>
+        <CommentInputSection onSubmit={OnInputSubmit}>
           <CommentInput
             type="text"
             placeholder="댓글을 입력하세요"
             value={newComment}
             onChange={e => setNewComment(e.target.value)}
           />
-          <CommentButton onClick={handleAddComment}>작성</CommentButton>
+          <CommentButton type="submit">작성</CommentButton>
         </CommentInputSection>
 
         <CommentsSection>
           {post.comments?.map(comment => (
             <Comment key={comment.id}>
               <CommentLeft>
-                <CommentUser>{comment.user}</CommentUser>
-                <CommentText>{comment.text}</CommentText>
+                <CommentProfileImage
+                  src={
+                    userInfo.avatar_url
+                      ? userInfo.avatar_url
+                      : 'http://img1.kakaocdn.net/thumb/R640x640.q70/?fname=http://t1.kakaocdn.net/account_images/default_profile.jpeg'
+                  }
+                  alt="Author"
+                />
+                <CommentLeftText>
+                  <CommentUser>{comment.user}</CommentUser>
+                  <CommentText>{comment.text}</CommentText>
+                </CommentLeftText>
               </CommentLeft>
               <CommentTime>{dayjs(comment.timestamp).fromNow()}</CommentTime>
             </Comment>
@@ -265,7 +288,7 @@ const CommentSection = styled.div`
   border-left: 1px solid #e1e8ed;
 `
 
-const CommentInputSection = styled.div`
+const CommentInputSection = styled.form`
   display: flex;
   align-items: center;
   width: 100%;
@@ -277,6 +300,13 @@ const CommentInput = styled.input`
   border: 1px solid #ccc;
   border-top-left-radius: 5px;
   border-bottom-left-radius: 5px;
+`
+
+const CommentProfileImage = styled.img`
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  margin-right: 10px;
 `
 
 const CommentButton = styled.button`
@@ -315,11 +345,21 @@ const CommentsSection = styled.div`
 const Comment = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
+  align-items: center;
   margin-bottom: 27px;
 `
 
-const CommentLeft = styled.div``
+const CommentLeft = styled.div`
+  display: flex;
+  align-items: center;
+`
+
+const CommentLeftText = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-bottom: 3.5px;
+`
 
 const CommentUser = styled.div`
   font-weight: bold;
@@ -329,13 +369,13 @@ const CommentUser = styled.div`
 const CommentText = styled.div`
   margin-top: 8px;
   font-size: 0.9rem;
+  margin-right: 2px;
   color: #555;
 `
 
 const CommentTime = styled.div`
   font-size: 0.8rem;
   color: #aaa;
-  margin-top: 5px;
 `
 
 const PostInteractions = styled.div`
