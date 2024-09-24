@@ -1,131 +1,143 @@
-import { useEffect, useState } from 'react'
-import styled from 'styled-components'
-import { IoMdHeart } from 'react-icons/io'
-import { FaCommentDots } from 'react-icons/fa'
-import { Swiper, SwiperSlide } from 'swiper/react'
-import 'swiper/css'
-import 'swiper/css/pagination'
-import 'swiper/css/navigation' // navigation 관련 스타일 추가
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
-import 'dayjs/locale/ko'
-import { Pagination, Navigation } from 'swiper/modules' // Pagination과 Navigation 모듈 추가
-import { PostType } from '../../types/PostType'
-import { insertComment } from '../../config/api/post/insertComment'
-import { useAuth } from '../../hooks/useAuth'
-import Comment from './Comment'
-import { fetchUserInfoByUserId } from '../../config/api/user/fetchUserInfo'
-import loadingSVG from '../../assets/images/logo/ball-triangle.svg'
-import { useMutation, useQueryClient } from 'react-query'
-import Swal from 'sweetalert2'
-import Spinner from '../Common/Spinner'
+import { useEffect, useState } from "react";
+import styled from "styled-components";
+import { IoMdHeart } from "react-icons/io";
+import { FaCommentDots } from "react-icons/fa";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/navigation"; // navigation 관련 스타일 추가
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import "dayjs/locale/ko";
+import { Pagination, Navigation } from "swiper/modules"; // Pagination과 Navigation 모듈 추가
+import { PostType } from "../../types/PostType";
+import { insertComment } from "../../config/api/post/insertComment";
+import { useAuth } from "../../hooks/useAuth";
+import Comment from "./Comment";
+import { fetchUserInfoByUserId } from "../../config/api/user/fetchUserInfo";
+import loadingSVG from "../../assets/images/logo/ball-triangle.svg";
+import { useMutation, useQueryClient } from "react-query";
+import Swal from "sweetalert2";
+import Spinner from "../Common/Spinner";
 
 // dayjs 상대 시간 플러그인과 한국어 설정
-dayjs.extend(relativeTime)
-dayjs.locale('ko')
+dayjs.extend(relativeTime);
+dayjs.locale("ko");
 
 // 게시물 상세 데이터를 받는 props 인터페이스
 interface PostDetailProps {
   userInfo: {
-    userId: string
-    email: string
-    avatar_url: string
-    nickname: string
-  }
-  post: PostType
+    userId: string;
+    email: string;
+    avatar_url: string;
+    nickname: string;
+  };
+  post: PostType;
+}
+
+interface CommentProps {
+  id: string;
+  user: string;
+  text: string;
+  timestamp: string;
+  profileUrl?: string;
+  username?: string;
+  email?: string;
 }
 
 export default function PostDetail({ userInfo, post }: PostDetailProps) {
-  const [newComment, setNewComment] = useState('')
-  const [isExpanded, setIsExpanded] = useState(false)
-  const [showMoreButton, setShowMoreButton] = useState(false)
-  const [commentsWithUserInfo, setCommentsWithUserInfo] = useState<any[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [isImageLoading, setIsImageLoading] = useState(false)
-  const queryClient = useQueryClient()
-  const { session } = useAuth()
+  const [newComment, setNewComment] = useState("");
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [showMoreButton, setShowMoreButton] = useState(false);
+  const [commentsWithUserInfo, setCommentsWithUserInfo] = useState<
+    CommentProps[]
+  >([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isImageLoading, setIsImageLoading] = useState(false);
+  const queryClient = useQueryClient();
+  const { session } = useAuth();
 
   const { mutate, isLoading: insertCommentLoading } = useMutation(
     insertComment,
     {
       onSuccess: () => {
         // 게시글이 성공적으로 저장되면, 기존 게시글 목록 쿼리를 무효화하고 새로 가져옴
-        queryClient.invalidateQueries({ queryKey: ['posts'], exact: false })
+        queryClient.invalidateQueries({ queryKey: ["posts"], exact: false });
 
-        setCommentsWithUserInfo([])
+        setCommentsWithUserInfo([]);
       },
-      onError: error => {
-        console.error('게시글 저장 오류:', error)
+      onError: (error) => {
+        console.error("게시글 저장 오류:", error);
         Swal.fire({
-          text: '게시글 저장 중 오류가 발생했습니다.',
-          icon: 'error',
-          confirmButtonColor: '#1E1E1E',
-          confirmButtonText: '확인',
+          text: "게시글 저장 중 오류가 발생했습니다.",
+          icon: "error",
+          confirmButtonColor: "#1E1E1E",
+          confirmButtonText: "확인",
           scrollbarPadding: false,
-        })
+        });
       },
     }
-  )
+  );
 
   useEffect(() => {
-    setShowMoreButton(post.content.length > 150)
-  }, [post.content])
+    setShowMoreButton(post.content.length > 150);
+  }, [post.content]);
 
   useEffect(() => {
-    console.log(isExpanded)
-    console.log(showMoreButton)
-  }, [isExpanded, showMoreButton])
+    console.log(isExpanded);
+    console.log(showMoreButton);
+  }, [isExpanded, showMoreButton]);
 
   // 댓글의 유저 정보를 불러오는 로직
   useEffect(() => {
     const loadCommentsWithUserInfo = async () => {
       if (!post.comments || post.comments.length === 0) {
         // 댓글이 없을 경우 로딩 해제
-        setIsLoading(false)
-        return
+        setIsLoading(false);
+        return;
       }
 
       const loadedComments = await Promise.all(
-        post!.comments!.map(async comment => {
-          const userInfo = await fetchUserInfoByUserId(comment.id)
+        post!.comments!.map(async (comment) => {
+          const userInfo = await fetchUserInfoByUserId(comment.id);
           return {
             ...comment,
             profileUrl: userInfo?.avatar_url,
             username: userInfo?.nickname,
             email: userInfo?.email,
-          }
+          };
         })
-      )
-      setCommentsWithUserInfo(loadedComments)
-      setIsLoading(false) // 모든 댓글의 유저 정보가 로드되면 로딩 해제
-    }
+      );
+      setCommentsWithUserInfo(loadedComments);
+      setIsLoading(false); // 모든 댓글의 유저 정보가 로드되면 로딩 해제
+    };
 
-    loadCommentsWithUserInfo()
-  }, [post.comments])
+    loadCommentsWithUserInfo();
+  }, [post.comments]);
 
   const OnInputSubmit = async (
     e: React.FormEvent<HTMLFormElement>
   ): Promise<void> => {
-    e.preventDefault()
-    if (!newComment.trim()) return
+    e.preventDefault();
+    if (!newComment.trim()) return;
 
     await mutate({
       postId: post.id,
       userId: session!.user.id,
       comment: newComment,
-    })
-  }
+    });
+  };
 
   const handleExpandClick = () => {
-    setIsExpanded(!isExpanded)
-  }
+    setIsExpanded(!isExpanded);
+  };
 
   if (isLoading && !isImageLoading) {
     return (
       <LoadingContainer>
         <img src={loadingSVG} alt="loading" />
       </LoadingContainer>
-    )
+    );
   }
 
   return (
@@ -136,11 +148,11 @@ export default function PostDetail({ userInfo, post }: PostDetailProps) {
             src={
               userInfo.avatar_url
                 ? userInfo.avatar_url
-                : 'http://img1.kakaocdn.net/thumb/R640x640.q70/?fname=http://t1.kakaocdn.net/account_images/default_profile.jpeg'
+                : "http://img1.kakaocdn.net/thumb/R640x640.q70/?fname=http://t1.kakaocdn.net/account_images/default_profile.jpeg"
             }
             alt="Author"
           />
-          <AuthorName>{userInfo.email.split('@')[0]}</AuthorName>
+          <AuthorName>{userInfo.email.split("@")[0]}</AuthorName>
         </AuthorInfo>
 
         <ContentWrapper>
@@ -169,7 +181,7 @@ export default function PostDetail({ userInfo, post }: PostDetailProps) {
                     src={imgUrl}
                     alt={`Slide ${index + 1}`}
                     onLoad={() => {
-                      setIsImageLoading(true)
+                      setIsImageLoading(true);
                     }}
                   />
                 </SwiperSlide>
@@ -185,15 +197,15 @@ export default function PostDetail({ userInfo, post }: PostDetailProps) {
             type="text"
             placeholder="댓글을 입력하세요"
             value={newComment}
-            onChange={e => setNewComment(e.target.value)}
+            onChange={(e) => setNewComment(e.target.value)}
           />
           <CommentButton type="submit" disabled={insertCommentLoading}>
-            {insertCommentLoading ? <Spinner width={16} height={16} /> : '작성'}
+            {insertCommentLoading ? <Spinner width={16} height={16} /> : "작성"}
           </CommentButton>
         </CommentInputSection>
 
         <CommentsSection>
-          {commentsWithUserInfo.map(comment => (
+          {commentsWithUserInfo.map((comment) => (
             <Comment key={comment.id} comment={comment} />
           ))}
         </CommentsSection>
@@ -203,13 +215,13 @@ export default function PostDetail({ userInfo, post }: PostDetailProps) {
             <IoMdHeart /> <span>{post.liked ? post.liked.length : 0}</span>
           </Likes>
           <Comments>
-            <FaCommentDots />{' '}
+            <FaCommentDots />{" "}
             <span>{post.comments ? post.comments.length : 0}</span>
           </Comments>
         </PostInteractions>
       </CommentSection>
     </Container>
-  )
+  );
 }
 
 // 스타일 컴포넌트들
@@ -217,7 +229,7 @@ export default function PostDetail({ userInfo, post }: PostDetailProps) {
 const Container = styled.div`
   display: flex;
   justify-content: space-between;
-`
+`;
 const LoadingContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -229,31 +241,31 @@ const LoadingContainer = styled.div`
     width: 150px;
     height: 150px;
   }
-`
+`;
 
 const DetailContainer = styled.div`
   max-width: 620px;
   margin: 0;
   margin-right: 20px;
-`
+`;
 
 const AuthorInfo = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 12px;
-`
+`;
 
 const ProfileImage = styled.img`
   width: 30px;
   height: 30px;
   border-radius: 50%;
   margin-right: 10px;
-`
+`;
 
 const AuthorName = styled.div`
   font-weight: bold;
   font-size: 1.05rem;
-`
+`;
 
 const ContentWrapper = styled.div`
   height: 702px;
@@ -264,32 +276,32 @@ const ContentWrapper = styled.div`
   }
   scrollbar-width: none;
   -ms-overflow-style: none;
-`
+`;
 
-const Content = styled.div``
+const Content = styled.div``;
 
 const TextContainer = styled.div`
   position: relative;
   display: inline-block;
-`
+`;
 
 interface TextProps {
-  isExpanded: boolean
+  isExpanded: boolean;
 }
 
 const Text = styled.span<TextProps>`
   display: block;
   line-height: 1.7;
-  max-height: ${({ isExpanded }) => (isExpanded ? 'none' : '3.4em')};
+  max-height: ${({ isExpanded }) => (isExpanded ? "none" : "3.4em")};
   font-size: 1rem;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
-  -webkit-line-clamp: ${({ isExpanded }) => (isExpanded ? 'none' : 2)};
+  -webkit-line-clamp: ${({ isExpanded }) => (isExpanded ? "none" : 2)};
   -webkit-box-orient: vertical;
   white-space: normal;
   word-break: break-word;
-`
+`;
 
 const MoreButton = styled.button`
   position: absolute;
@@ -302,7 +314,7 @@ const MoreButton = styled.button`
   padding: 0 0 0 0;
   font-weight: 400;
   font-size: 1rem;
-`
+`;
 
 const SwiperContainer = styled.div`
   margin-top: 16px;
@@ -344,14 +356,14 @@ const SwiperContainer = styled.div`
   .swiper-button-next:hover {
     color: rgba(0, 0, 0, 1);
   }
-`
+`;
 
 const SlideImage = styled.img`
   width: 100%;
   height: 620px;
   object-fit: cover;
   border-radius: 10px;
-`
+`;
 
 const CommentSection = styled.div`
   display: flex;
@@ -361,13 +373,13 @@ const CommentSection = styled.div`
   padding: 20px;
   background-color: #f8f9fa;
   border-left: 1px solid #e1e8ed;
-`
+`;
 
 const CommentInputSection = styled.form`
   display: flex;
   align-items: center;
   width: 100%;
-`
+`;
 
 const CommentInput = styled.input`
   width: 100%;
@@ -375,7 +387,7 @@ const CommentInput = styled.input`
   border: 1px solid #ccc;
   border-top-left-radius: 5px;
   border-bottom-left-radius: 5px;
-`
+`;
 
 const CommentButton = styled.button`
   padding: 10px;
@@ -391,7 +403,7 @@ const CommentButton = styled.button`
   &:hover {
     background-color: rgba(60, 60, 60, 1);
   }
-`
+`;
 
 const CommentsSection = styled.div`
   margin-top: 22px;
@@ -408,7 +420,7 @@ const CommentsSection = styled.div`
   }
   scrollbar-width: none;
   -ms-overflow-style: none;
-`
+`;
 
 const PostInteractions = styled.div`
   display: flex;
@@ -419,7 +431,7 @@ const PostInteractions = styled.div`
   span {
     font-size: 1.2rem;
   }
-`
+`;
 
 const Likes = styled.div`
   display: flex;
@@ -432,7 +444,7 @@ const Likes = styled.div`
     margin-right: 6px;
     color: rgba(190, 190, 190, 1);
   }
-`
+`;
 
 const Comments = styled.div`
   display: flex;
@@ -444,4 +456,4 @@ const Comments = styled.div`
     margin-right: 6px;
     color: rgba(50, 50, 50, 1);
   }
-`
+`;

@@ -1,50 +1,50 @@
-import styled from 'styled-components'
-import PostCard from './PostCard'
-import loadingIcon from '../../assets/images/logo/ball-triangle.svg'
-import { fetchPostsPerPage } from '../../config/api/post/fecthPosts'
-import { useInfiniteQuery } from 'react-query'
-import { PostType } from '../../types/PostType'
-import { useInView } from 'react-intersection-observer'
-import { useEffect } from 'react'
+import styled from "styled-components";
+import PostCard from "./PostCard";
+import loadingIcon from "../../assets/images/logo/ball-triangle.svg";
+import { fetchPostsPerPage } from "../../config/api/post/fecthPosts";
+import { useInfiniteQuery } from "react-query";
+import { PostType } from "../../types/PostType";
+import { useInView } from "react-intersection-observer";
+import { useEffect } from "react";
 
 export type FetchPostsResponse = {
-  posts: PostType[]
-  nextCursor: number | null
-}
+  posts: PostType[];
+  nextCursor: number | null;
+};
 
 export default function PostListCon() {
   const { inView, ref } = useInView({
     threshold: 0.5,
     initialInView: true,
-  })
+  });
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteQuery<FetchPostsResponse>(
-      ['posts'],
+      ["posts"],
       ({ pageParam = 0 }) => fetchPostsPerPage(pageParam, 8),
       {
-        getNextPageParam: lastPage => lastPage.nextCursor || undefined,
+        getNextPageParam: (lastPage) => lastPage.nextCursor || undefined,
         staleTime: 10 * 60 * 1000,
         cacheTime: 30 * 60 * 1000,
       }
-    )
+    );
 
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
-      fetchNextPage()
+      fetchNextPage();
     }
-  }, [inView])
+  }, [inView]);
 
   if (isLoading) {
     return (
       <LoadingScreen>
         <img src={loadingIcon} alt="loading" />
       </LoadingScreen>
-    )
+    );
   }
 
   if (!data) {
-    return null
+    return null;
   }
 
   return (
@@ -55,9 +55,9 @@ export default function PostListCon() {
             <Empty>게시물이 없습니다.</Empty>
           ) : (
             <>
-              {data.pages.map(page =>
-                page.posts.map(post => {
-                  return <PostCard key={post.id} post={post} />
+              {data.pages.map((page) =>
+                page.posts.map((post) => {
+                  return <PostCard key={post.id} post={post} />;
                 })
               )}
               {hasNextPage && <div ref={ref} />}
@@ -66,7 +66,7 @@ export default function PostListCon() {
         </ListWrapper>
       </ListCon>
     </>
-  )
+  );
 }
 
 const LoadingScreen = styled.div`
@@ -97,20 +97,20 @@ const LoadingScreen = styled.div`
       width: 80px;
     }
   }
-`
+`;
 
 const ListCon = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-`
+`;
 
 const ListWrapper = styled.div`
   display: flex;
   gap: 20px;
   width: 100%;
   flex-wrap: wrap;
-`
+`;
 
 // const LoadingObserver = styled.div`
 //   width: 100%;
@@ -137,4 +137,4 @@ const Empty = styled.div`
   @media (max-width: 600px) {
     font-size: 1.2rem;
   }
-`
+`;

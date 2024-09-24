@@ -1,10 +1,4 @@
-import {
-  useEffect,
-  useState,
-  useRef,
-  useCallback,
-  useLayoutEffect,
-} from "react";
+import { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import ItemCard from "./ItemCard";
 import { useQuery, useInfiniteQuery } from "react-query";
@@ -37,13 +31,12 @@ export default function ItemListCon() {
   const filterData = useRecoilValue(filterState);
   const [sortedItems, setSortedItems] = useRecoilState(sortedItemsState);
   const [isDataReady, setIsDataReady] = useState(false);
-  const [showLoadingObserver, setShowLoadingObserver] = useState(false);
   const tabValue = Number(queryParams.get("tab"));
   const listWrapperRef = useRef(null);
 
   const [ref, inView] = useInView({
     threshold: 0.3,
-    triggerOnce: false,
+    initialInView: true,
   });
 
   const { data, fetchNextPage, hasNextPage, isLoading, isFetchingNextPage } =
@@ -54,7 +47,6 @@ export default function ItemListCon() {
         getNextPageParam: (lastPage) => lastPage.nextCursor || undefined,
         staleTime: 0,
         cacheTime: 0,
-        keepPreviousData: true,
       }
     );
 
@@ -78,29 +70,9 @@ export default function ItemListCon() {
     }
   );
 
-  const handleItemsRendered = useCallback(() => {
-    if (isDataReady && sortedItems.length > 0 && listWrapperRef.current) {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          if (entries[0].isIntersecting) {
-            setShowLoadingObserver(true);
-            observer.disconnect();
-          }
-        },
-        { threshold: 0.1 }
-      );
-      observer.observe(listWrapperRef.current);
-
-      return () => {
-        if (observer) observer.disconnect();
-      };
-    }
-  }, [isDataReady, sortedItems.length]);
-
   useEffect(() => {
     setIsDataReady(false);
     setSortedItems([]);
-    setShowLoadingObserver(false);
   }, [tabValue]);
 
   useEffect(() => {
@@ -134,18 +106,6 @@ export default function ItemListCon() {
       fetchFilteredAndSortedItems();
     }
   }, [sortValue, filterData, data, setSortedItems]);
-
-  const isDataFullyLoaded = session
-    ? !isLoading && !userInfoLoading && !cartLoading && session
-    : !isLoading && !userInfoLoading && !cartLoading;
-
-  useLayoutEffect(() => {
-    if (!isDataFullyLoaded || !listWrapperRef.current) {
-      console.log("listWrapperRef.current가 아직 null입니다.");
-    } else {
-      handleItemsRendered();
-    }
-  }, [isDataReady, sortedItems.length, isDataFullyLoaded]);
 
   const cartItems: CartItemType[] = cartData ? cartData.items : [];
 
@@ -195,7 +155,7 @@ export default function ItemListCon() {
                 <Empty>해당하는 제품이 없습니다.</Empty>
               ))}
           </ListWrapper>
-          {showLoadingObserver && hasNextPage && sortedItems.length !== 0 && (
+          {hasNextPage && sortedItems.length !== 0 && (
             <LoadingObserver ref={ref}></LoadingObserver>
           )}
         </ListCon>
