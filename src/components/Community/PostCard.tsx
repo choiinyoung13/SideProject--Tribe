@@ -1,69 +1,69 @@
-import styled from "styled-components";
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { IoMdHeart } from "react-icons/io";
-import { FaCommentDots } from "react-icons/fa";
-import PostDetailModal from "./PostDetailModal";
-import { PostType } from "../../types/PostType";
-import { fetchUserInfoByUserId } from "../../config/api/user/fetchUserInfo";
-import { useAuth } from "../../hooks/useAuth";
-import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
-import { useMutation, useQueryClient } from "react-query";
-import { insertUserIdIntoLiked } from "../../config/api/post/insertPost";
+import styled from 'styled-components'
+import { useEffect, useState } from 'react'
+import { motion } from 'framer-motion'
+import { IoMdHeart } from 'react-icons/io'
+import { FaCommentDots } from 'react-icons/fa'
+import PostDetailModal from './PostDetailModal'
+import { PostType } from '../../types/PostType'
+import { fetchUserInfoByUserId } from '../../config/api/user/fetchUserInfo'
+import { useAuth } from '../../hooks/useAuth'
+import Swal from 'sweetalert2'
+import { useNavigate } from 'react-router-dom'
+import { useMutation, useQueryClient } from 'react-query'
+import { insertUserIdIntoLiked } from '../../config/api/post/insertPost'
 
 interface PostCardProps {
-  post: PostType;
+  post: PostType
+  onImageLoad: () => void
 }
 
-export default function PostCard({ post }: PostCardProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isImageLoaded, setIsImageLoaded] = useState(false);
-  const { session } = useAuth();
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
+export default function PostCard({ post, onImageLoad }: PostCardProps) {
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isImageLoaded, setIsImageLoaded] = useState(false)
+  const { session } = useAuth()
+  const navigate = useNavigate()
+  const queryClient = useQueryClient()
   const [userInfo, setUserInfo] = useState({
-    userId: "",
-    email: "",
-    avatar_url: "",
-    nickname: "",
-  });
+    userId: '',
+    email: '',
+    avatar_url: '',
+    nickname: '',
+  })
+  const [isUserInfoLoaded, setIsUserInfoLoaded] = useState(false) // 유저 정보 로딩 상태
 
   const { mutate } = useMutation(insertUserIdIntoLiked, {
     onSuccess: () => {
-      // 좋아요 업데이트를 성공하면, 기존 게시글 목록 쿼리를 무효화하고 새로 가져옴
-      queryClient.invalidateQueries({ queryKey: ["posts"], exact: false });
+      queryClient.invalidateQueries({ queryKey: ['posts'], exact: false })
     },
-    onError: (error) => {
-      console.error("게시글 저장 오류:", error);
+    onError: error => {
+      console.error('게시글 저장 오류:', error)
       Swal.fire({
-        text: "좋아요 업데이트를 실패했습니다.",
-        icon: "error",
-        confirmButtonColor: "#1E1E1E",
-        confirmButtonText: "확인",
+        text: '좋아요 업데이트를 실패했습니다.',
+        icon: 'error',
+        confirmButtonColor: '#1E1E1E',
+        confirmButtonText: '확인',
         scrollbarPadding: false,
-      });
+      })
     },
-  });
+  })
 
   useEffect(() => {
     const getUserInfo = async () => {
-      const result = await fetchUserInfoByUserId(post.user);
+      const result = await fetchUserInfoByUserId(post.user)
       setUserInfo({
         userId: post.user,
         email: result?.email,
         avatar_url: result?.avatar_url,
-        nickname: result?.nickname ? result.nickname : "",
-      });
-    };
-    getUserInfo();
-  }, []);
+        nickname: result?.nickname ? result.nickname : '',
+      })
+      setIsUserInfoLoaded(true) // 유저 정보가 로드된 후 true로 설정
+    }
+    getUserInfo()
+  }, [post.user])
 
   const handleCardClick = () => {
-    setIsModalOpen(true);
-  };
-
-  if (!userInfo.email) return;
+    setIsModalOpen(true)
+  }
 
   return (
     <>
@@ -85,8 +85,11 @@ export default function PostCard({ post }: PostCardProps) {
               src={post.img_urls[0]}
               alt="post image"
               draggable="false"
-              onLoad={() => setIsImageLoaded(true)}
-              style={{ display: isImageLoaded ? "block" : "none" }}
+              onLoad={() => {
+                setIsImageLoaded(true)
+                onImageLoad() // 이미지 로드 시 부모 컴포넌트로 전달
+              }}
+              style={{ display: isImageLoaded ? 'block' : 'none' }}
             />
           </motion.div>
         </ImgBox>
@@ -98,20 +101,29 @@ export default function PostCard({ post }: PostCardProps) {
             </TextHeader>
             <PostText>
               <TextLeft>
-                <Profile>
-                  <ProfileImg
-                    src={
-                      userInfo.avatar_url
-                        ? userInfo.avatar_url
-                        : "http://img1.kakaocdn.net/thumb/R640x640.q70/?fname=http://t1.kakaocdn.net/account_images/default_profile.jpeg"
-                    }
-                  />
-                  <Username>
-                    {userInfo.nickname === ""
-                      ? userInfo.email.split("@")[0]
-                      : userInfo.nickname}
-                  </Username>
-                </Profile>
+                {isUserInfoLoaded ? (
+                  // 유저 정보가 로드되었을 때만 실제 데이터를 표시
+                  <Profile>
+                    <ProfileImg
+                      src={
+                        userInfo.avatar_url
+                          ? userInfo.avatar_url
+                          : 'http://img1.kakaocdn.net/thumb/R640x640.q70/?fname=http://t1.kakaocdn.net/account_images/default_profile.jpeg'
+                      }
+                    />
+                    <Username>
+                      {userInfo.nickname === ''
+                        ? userInfo.email.split('@')[0]
+                        : userInfo.nickname}
+                    </Username>
+                  </Profile>
+                ) : (
+                  // 로드 중일 때 Skeleton 표시
+                  <ProfileSkeleton>
+                    <SkeletonCircle />
+                    <SkeletonText />
+                  </ProfileSkeleton>
+                )}
               </TextLeft>
               <TextRight>
                 <HeartIcon
@@ -125,22 +137,22 @@ export default function PostCard({ post }: PostCardProps) {
                   onClick={() => {
                     if (!session) {
                       Swal.fire({
-                        text: "로그인 후 사용 가능한 기능입니다.",
-                        icon: "warning",
+                        text: '로그인 후 사용 가능한 기능입니다.',
+                        icon: 'warning',
                         showCancelButton: true,
-                        confirmButtonColor: "#1E1E1E",
-                        cancelButtonColor: "#1E1E1E",
-                        confirmButtonText: "로그인",
-                        cancelButtonText: "닫기",
+                        confirmButtonColor: '#1E1E1E',
+                        cancelButtonColor: '#1E1E1E',
+                        confirmButtonText: '로그인',
+                        cancelButtonText: '닫기',
                         scrollbarPadding: false,
-                      }).then((result) => {
+                      }).then(result => {
                         if (result.isConfirmed) {
-                          navigate("/login");
+                          navigate('/login')
                         }
-                      });
-                      return;
+                      })
+                      return
                     }
-                    mutate({ postId: post.id, userId: session.user.id });
+                    mutate({ postId: post.id, userId: session.user.id })
                   }}
                 >
                   <IoMdHeart />
@@ -160,7 +172,7 @@ export default function PostCard({ post }: PostCardProps) {
         )}
       </Card>
     </>
-  );
+  )
 }
 
 const Card = styled.div`
@@ -174,7 +186,7 @@ const Card = styled.div`
   @media (max-width: 1300px) {
     width: calc(50% - 10.5px);
   }
-`;
+`
 
 const ImgBox = styled.div`
   width: 100%;
@@ -185,7 +197,7 @@ const ImgBox = styled.div`
   img {
     width: 100%;
   }
-`;
+`
 
 const TextBox = styled.div`
   margin-top: 10px;
@@ -199,11 +211,11 @@ const TextBox = styled.div`
   @media (max-width: 450px) {
     margin-top: 6px;
   }
-`;
+`
 
 const TextHeader = styled.div`
   display: flex;
-`;
+`
 const PostCategory = styled.div`
   flex-shrink: 0;
   margin-right: 4px;
@@ -215,7 +227,7 @@ const PostCategory = styled.div`
   @media (max-width: 450px) {
     font-size: 0.8rem;
   }
-`;
+`
 
 const PostText = styled.div`
   display: flex;
@@ -230,7 +242,7 @@ const PostText = styled.div`
   @media (max-width: 450px) {
     margin-top: 4px;
   }
-`;
+`
 
 const Title = styled.div`
   width: 280px;
@@ -249,14 +261,15 @@ const Title = styled.div`
   @media (max-width: 450px) {
     font-size: 0.8rem;
   }
-`;
+`
 
 const Profile = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
   cursor: pointer;
-`;
+`
+
 const ProfileImg = styled.img`
   width: 24px;
   height: 24px;
@@ -271,7 +284,8 @@ const ProfileImg = styled.img`
     width: 18px;
     height: 18px;
   }
-`;
+`
+
 const Username = styled.div`
   font-size: 0.9rem;
   color: rgba(50, 50, 50, 1);
@@ -292,15 +306,57 @@ const Username = styled.div`
   @media (max-width: 375px) {
     font-size: 0.75rem;
   }
-`;
+`
+
+// Skeleton UI 추가
+const ProfileSkeleton = styled.div`
+  display: flex;
+  align-items: center;
+`
+
+const SkeletonCircle = styled.div`
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #e0e0e0;
+
+  @media (max-width: 450px) {
+    width: 22px;
+    height: 22px;
+  }
+
+  @media (max-width: 375px) {
+    width: 18px;
+    height: 18px;
+  }
+`
+
+const SkeletonText = styled.div`
+  width: 90px;
+  height: 14px;
+  background-color: #e0e0e0;
+  margin-left: 6px;
+
+  @media (max-width: 450px) {
+    width: 80px;
+    height: 14px;
+  }
+
+  @media (max-width: 375px) {
+    width: 60px;
+    height: 12px;
+  }
+`
+
 const TextLeft = styled.div`
   display: flex;
   align-items: center;
-`;
+`
+
 const TextRight = styled.div`
   display: flex;
   align-items: center;
-  font-size: 1 rem;
+  font-size: 1rem;
   color: rgba(190, 190, 190, 1);
   margin-top: 1px;
 
@@ -325,10 +381,10 @@ const TextRight = styled.div`
       display: none;
     }
   }
-`;
+`
 
 interface HeartIconProps {
-  isLiked: boolean;
+  isLiked: boolean
 }
 
 const HeartIcon = styled.div<HeartIconProps>`
@@ -340,13 +396,13 @@ const HeartIcon = styled.div<HeartIconProps>`
   svg {
     font-size: 1.25rem;
     color: ${({ isLiked }) =>
-      isLiked ? "rgb(253, 70, 108)" : "rgba(190, 190, 190, 1)"};
+      isLiked ? 'rgb(253, 70, 108)' : 'rgba(190, 190, 190, 1)'};
     transition: color 0.2s ease;
   }
 
   &:hover svg {
     color: ${({ isLiked }) =>
-      isLiked ? "rgb(253, 70, 108)" : "rgba(160, 160, 160, 1)"};
+      isLiked ? 'rgb(253, 70, 108)' : 'rgba(160, 160, 160, 1)'};
   }
 
   @media (max-width: 450px) {
@@ -358,7 +414,7 @@ const HeartIcon = styled.div<HeartIconProps>`
       font-size: 1rem;
     }
   }
-`;
+`
 
 const CommentIcon = styled.div`
   color: rgba(50, 50, 50, 1);
@@ -373,4 +429,4 @@ const CommentIcon = styled.div`
   @media (max-width: 375px) {
     margin-left: 6px;
   }
-`;
+`
