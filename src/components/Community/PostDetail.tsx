@@ -19,6 +19,8 @@ import loadingSVG from "../../assets/images/logo/ball-triangle.svg";
 import { useMutation, useQueryClient } from "react-query";
 import Swal from "sweetalert2";
 import Spinner from "../Common/Spinner";
+import { useNavigate } from "react-router-dom";
+import { insertUserIdIntoLiked } from "../../config/api/post/insertPost";
 
 // dayjs 상대 시간 플러그인과 한국어 설정
 dayjs.extend(relativeTime);
@@ -56,10 +58,11 @@ export default function PostDetail({ userInfo, post }: PostDetailProps) {
   const [isImageLoading, setIsImageLoading] = useState(false);
   const queryClient = useQueryClient();
   const { session } = useAuth();
+  const navigate = useNavigate();
 
-  const { mutate, isLoading: insertCommentLoading } = useMutation(
-    insertComment,
-    {
+  // 댓글 추가 mutation
+  const { mutate: commentMutate, isLoading: insertCommentLoading } =
+    useMutation(insertComment, {
       onSuccess: () => {
         // 게시글이 성공적으로 저장되면, 기존 게시글 목록 쿼리를 무효화하고 새로 가져옴
         queryClient.invalidateQueries({ queryKey: ["posts"], exact: false });
@@ -76,11 +79,28 @@ export default function PostDetail({ userInfo, post }: PostDetailProps) {
           scrollbarPadding: false,
         });
       },
-    }
-  );
+    });
+
+  // 좋아요 추가 및 삭제 mutation
+  const { mutate: likeMutate } = useMutation(insertUserIdIntoLiked, {
+    onSuccess: () => {
+      // 좋아요 업데이트를 성공하면, 기존 게시글 목록 쿼리를 무효화하고 새로 가져옴
+      queryClient.invalidateQueries({ queryKey: ["posts"], exact: false });
+    },
+    onError: (error) => {
+      console.error("게시글 저장 오류:", error);
+      Swal.fire({
+        text: "좋아요 업데이트를 실패했습니다.",
+        icon: "error",
+        confirmButtonColor: "#1E1E1E",
+        confirmButtonText: "확인",
+        scrollbarPadding: false,
+      });
+    },
+  });
 
   useEffect(() => {
-    setShowMoreButton(post.content.length > 150);
+    setShowMoreButton(post.content.length > 160);
   }, [post.content]);
 
   useEffect(() => {
@@ -121,7 +141,7 @@ export default function PostDetail({ userInfo, post }: PostDetailProps) {
     e.preventDefault();
     if (!newComment.trim()) return;
 
-    await mutate({
+    await commentMutate({
       postId: post.id,
       userId: session!.user.id,
       comment: newComment,
@@ -211,8 +231,40 @@ export default function PostDetail({ userInfo, post }: PostDetailProps) {
         </CommentsSection>
 
         <PostInteractions>
-          <Likes>
-            <IoMdHeart /> <span>{post.liked ? post.liked.length : 0}</span>
+          <Likes
+            onClick={async () => {
+              if (!session) {
+                Swal.fire({
+                  text: "로그인 후 사용 가능한 기능입니다.",
+                  icon: "warning",
+                  showCancelButton: true,
+                  confirmButtonColor: "#1E1E1E",
+                  cancelButtonColor: "#1E1E1E",
+                  confirmButtonText: "로그인",
+                  cancelButtonText: "닫기",
+                  scrollbarPadding: false,
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    // 로그인 버튼을 눌렀을 때 이동할 URL
+                    navigate("/login");
+                  }
+                });
+                return;
+              }
+
+              await likeMutate({ postId: post.id, userId: session.user.id });
+            }}
+          >
+            <IoMdHeart
+              color={
+                session?.user.id &&
+                Array.isArray(post.liked) &&
+                post.liked.includes(session.user.id)
+                  ? "rgb(253, 70, 108)"
+                  : "rgba(190, 190, 190, 1)"
+              }
+            />{" "}
+            <span>{post.liked ? post.liked.length : 0}</span>
           </Likes>
           <Comments>
             <FaCommentDots />{" "}

@@ -1,44 +1,69 @@
-import styled from 'styled-components'
-import { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
-import { IoMdHeart } from 'react-icons/io'
-import { FaCommentDots } from 'react-icons/fa'
-import PostDetailModal from './PostDetailModal'
-import { PostType } from '../../types/PostType'
-import { fetchUserInfoByUserId } from '../../config/api/user/fetchUserInfo'
+import styled from "styled-components";
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { IoMdHeart } from "react-icons/io";
+import { FaCommentDots } from "react-icons/fa";
+import PostDetailModal from "./PostDetailModal";
+import { PostType } from "../../types/PostType";
+import { fetchUserInfoByUserId } from "../../config/api/user/fetchUserInfo";
+import { useAuth } from "../../hooks/useAuth";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
+import { useMutation, useQueryClient } from "react-query";
+import { insertUserIdIntoLiked } from "../../config/api/post/insertPost";
 
 interface PostCardProps {
-  post: PostType
+  post: PostType;
 }
 
 export default function PostCard({ post }: PostCardProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [isImageLoaded, setIsImageLoaded] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const { session } = useAuth();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [userInfo, setUserInfo] = useState({
-    userId: '',
-    email: '',
-    avatar_url: '',
-    nickname: '',
-  })
+    userId: "",
+    email: "",
+    avatar_url: "",
+    nickname: "",
+  });
+
+  const { mutate } = useMutation(insertUserIdIntoLiked, {
+    onSuccess: () => {
+      // 좋아요 업데이트를 성공하면, 기존 게시글 목록 쿼리를 무효화하고 새로 가져옴
+      queryClient.invalidateQueries({ queryKey: ["posts"], exact: false });
+    },
+    onError: (error) => {
+      console.error("게시글 저장 오류:", error);
+      Swal.fire({
+        text: "좋아요 업데이트를 실패했습니다.",
+        icon: "error",
+        confirmButtonColor: "#1E1E1E",
+        confirmButtonText: "확인",
+        scrollbarPadding: false,
+      });
+    },
+  });
 
   useEffect(() => {
     const getUserInfo = async () => {
-      const result = await fetchUserInfoByUserId(post.user)
+      const result = await fetchUserInfoByUserId(post.user);
       setUserInfo({
         userId: post.user,
         email: result?.email,
         avatar_url: result?.avatar_url,
-        nickname: result?.nickname ? result.nickname : '',
-      })
-    }
-    getUserInfo()
-  }, [])
+        nickname: result?.nickname ? result.nickname : "",
+      });
+    };
+    getUserInfo();
+  }, []);
 
   const handleCardClick = () => {
-    setIsModalOpen(true)
-  }
+    setIsModalOpen(true);
+  };
 
-  if (!userInfo.email) return
+  if (!userInfo.email) return;
 
   return (
     <>
@@ -49,8 +74,8 @@ export default function PostCard({ post }: PostCardProps) {
           onClose={() => setIsModalOpen(false)}
         />
       )}
-      <Card onClick={handleCardClick}>
-        <ImgBox>
+      <Card>
+        <ImgBox onClick={handleCardClick}>
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: isImageLoaded ? 1 : 0 }}
@@ -61,13 +86,13 @@ export default function PostCard({ post }: PostCardProps) {
               alt="post image"
               draggable="false"
               onLoad={() => setIsImageLoaded(true)}
-              style={{ display: isImageLoaded ? 'block' : 'none' }}
+              style={{ display: isImageLoaded ? "block" : "none" }}
             />
           </motion.div>
         </ImgBox>
         {isImageLoaded && (
           <TextBox>
-            <TextHeader>
+            <TextHeader onClick={handleCardClick}>
               <PostCategory>[{post.category}]</PostCategory>
               <Title>{post.title}</Title>
             </TextHeader>
@@ -78,24 +103,59 @@ export default function PostCard({ post }: PostCardProps) {
                     src={
                       userInfo.avatar_url
                         ? userInfo.avatar_url
-                        : 'http://img1.kakaocdn.net/thumb/R640x640.q70/?fname=http://t1.kakaocdn.net/account_images/default_profile.jpeg'
+                        : "http://img1.kakaocdn.net/thumb/R640x640.q70/?fname=http://t1.kakaocdn.net/account_images/default_profile.jpeg"
                     }
                   />
                   <Username>
-                    {userInfo.nickname === ''
-                      ? userInfo.email.split('@')[0]
+                    {userInfo.nickname === ""
+                      ? userInfo.email.split("@")[0]
                       : userInfo.nickname}
                   </Username>
                 </Profile>
               </TextLeft>
               <TextRight>
-                <HeartIcon>
-                  <IoMdHeart />
-                  <span>{post.liked ? post.liked.length : 0}</span>
+                <HeartIcon
+                  onClick={() => {
+                    if (!session) {
+                      Swal.fire({
+                        text: "로그인 후 사용 가능한 기능입니다.",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#1E1E1E",
+                        cancelButtonColor: "#1E1E1E",
+                        confirmButtonText: "로그인",
+                        cancelButtonText: "닫기",
+                        scrollbarPadding: false,
+                      }).then((result) => {
+                        if (result.isConfirmed) {
+                          // 로그인 버튼을 눌렀을 때 이동할 URL
+                          navigate("/login");
+                        }
+                      });
+                      return;
+                    }
+
+                    mutate({ postId: post.id, userId: session.user.id });
+                  }}
+                >
+                  <IoMdHeart
+                    color={
+                      session?.user.id &&
+                      Array.isArray(post.liked) &&
+                      post.liked.includes(session.user.id)
+                        ? "rgb(253, 70, 108)"
+                        : "rgba(190, 190, 190, 1)"
+                    }
+                  />
+                  <span>
+                    {Array.isArray(post.liked) ? post.liked.length : 0}
+                  </span>
                 </HeartIcon>
                 <CommentIcon>
                   <FaCommentDots />
-                  <span>{post.comments ? post.comments.length : 0}</span>
+                  <span>
+                    {Array.isArray(post.comments) ? post.comments.length : 0}
+                  </span>
                 </CommentIcon>
               </TextRight>
             </PostText>
@@ -103,7 +163,7 @@ export default function PostCard({ post }: PostCardProps) {
         )}
       </Card>
     </>
-  )
+  );
 }
 
 const Card = styled.div`
@@ -117,7 +177,7 @@ const Card = styled.div`
   @media (max-width: 1300px) {
     width: calc(50% - 10.5px);
   }
-`
+`;
 
 const ImgBox = styled.div`
   width: 100%;
@@ -128,7 +188,7 @@ const ImgBox = styled.div`
   img {
     width: 100%;
   }
-`
+`;
 
 const TextBox = styled.div`
   margin-top: 10px;
@@ -142,11 +202,11 @@ const TextBox = styled.div`
   @media (max-width: 450px) {
     margin-top: 6px;
   }
-`
+`;
 
 const TextHeader = styled.div`
   display: flex;
-`
+`;
 const PostCategory = styled.div`
   flex-shrink: 0;
   margin-right: 4px;
@@ -158,7 +218,7 @@ const PostCategory = styled.div`
   @media (max-width: 450px) {
     font-size: 0.8rem;
   }
-`
+`;
 
 const PostText = styled.div`
   display: flex;
@@ -173,7 +233,7 @@ const PostText = styled.div`
   @media (max-width: 450px) {
     margin-top: 4px;
   }
-`
+`;
 
 const Title = styled.div`
   width: 280px;
@@ -192,14 +252,14 @@ const Title = styled.div`
   @media (max-width: 450px) {
     font-size: 0.8rem;
   }
-`
+`;
 
 const Profile = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
   cursor: pointer;
-`
+`;
 const ProfileImg = styled.img`
   width: 24px;
   height: 24px;
@@ -214,7 +274,7 @@ const ProfileImg = styled.img`
     width: 18px;
     height: 18px;
   }
-`
+`;
 const Username = styled.div`
   font-size: 0.9rem;
   color: rgba(50, 50, 50, 1);
@@ -235,11 +295,11 @@ const Username = styled.div`
   @media (max-width: 375px) {
     font-size: 0.75rem;
   }
-`
+`;
 const TextLeft = styled.div`
   display: flex;
   align-items: center;
-`
+`;
 const TextRight = styled.div`
   display: flex;
   align-items: center;
@@ -268,7 +328,7 @@ const TextRight = styled.div`
       display: none;
     }
   }
-`
+`;
 
 const HeartIcon = styled.div`
   display: flex;
@@ -278,7 +338,6 @@ const HeartIcon = styled.div`
 
   svg {
     font-size: 1.25rem;
-    color: rgba(190, 190, 190, 1);
   }
 
   @media (max-width: 450px) {
@@ -290,7 +349,7 @@ const HeartIcon = styled.div`
       font-size: 1rem;
     }
   }
-`
+`;
 const CommentIcon = styled.div`
   color: rgba(50, 50, 50, 1);
   display: flex;
@@ -304,4 +363,4 @@ const CommentIcon = styled.div`
   @media (max-width: 375px) {
     margin-left: 6px;
   }
-`
+`;
