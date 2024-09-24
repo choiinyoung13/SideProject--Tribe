@@ -115,6 +115,13 @@ export default function PostCard({ post }: PostCardProps) {
               </TextLeft>
               <TextRight>
                 <HeartIcon
+                  isLiked={
+                    !!(
+                      session?.user.id &&
+                      Array.isArray(post.liked) &&
+                      post.liked.includes(session.user.id)
+                    )
+                  }
                   onClick={() => {
                     if (!session) {
                       Swal.fire({
@@ -128,25 +135,15 @@ export default function PostCard({ post }: PostCardProps) {
                         scrollbarPadding: false,
                       }).then((result) => {
                         if (result.isConfirmed) {
-                          // 로그인 버튼을 눌렀을 때 이동할 URL
                           navigate("/login");
                         }
                       });
                       return;
                     }
-
                     mutate({ postId: post.id, userId: session.user.id });
                   }}
                 >
-                  <IoMdHeart
-                    color={
-                      session?.user.id &&
-                      Array.isArray(post.liked) &&
-                      post.liked.includes(session.user.id)
-                        ? "rgb(253, 70, 108)"
-                        : "rgba(190, 190, 190, 1)"
-                    }
-                  />
+                  <IoMdHeart />
                   <span>
                     {Array.isArray(post.liked) ? post.liked.length : 0}
                   </span>
@@ -330,7 +327,11 @@ const TextRight = styled.div`
   }
 `;
 
-const HeartIcon = styled.div`
+interface HeartIconProps {
+  isLiked: boolean;
+}
+
+const HeartIcon = styled.div<HeartIconProps>`
   display: flex;
   align-items: center;
   margin-left: 12px;
@@ -338,6 +339,14 @@ const HeartIcon = styled.div`
 
   svg {
     font-size: 1.25rem;
+    color: ${({ isLiked }) =>
+      isLiked ? "rgb(253, 70, 108)" : "rgba(190, 190, 190, 1)"};
+    transition: color 0.2s ease;
+  }
+
+  &:hover svg {
+    color: ${({ isLiked }) =>
+      isLiked ? "rgb(253, 70, 108)" : "rgba(160, 160, 160, 1)"};
   }
 
   @media (max-width: 450px) {
@@ -350,6 +359,7 @@ const HeartIcon = styled.div`
     }
   }
 `;
+
 const CommentIcon = styled.div`
   color: rgba(50, 50, 50, 1);
   display: flex;

@@ -18,6 +18,8 @@ export default function Community() {
   const windowWidth = useWindowWidth();
   const { session } = useAuth();
   const navigate = useNavigate();
+  const [inputValue, setInputValue] = useState<string>("");
+  const [searchKeyword, setSearchKeyword] = useState<string>("");
 
   // 모달 상태 관리
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -60,6 +62,13 @@ export default function Community() {
     setIsModalOpen(false);
   };
 
+  // 검색어 제출 시 실행되는 함수
+  const onInputValueSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!inputValue.trim()) return;
+    setSearchKeyword(inputValue);
+  };
+
   return (
     <CommunityCon>
       {windowWidth >= 768 ? (
@@ -98,11 +107,17 @@ export default function Community() {
       <MainContent>
         <MainContentHeader>
           <HeaderLeft>
-            <InputWrapper>
+            <InputWrapper onSubmit={onInputValueSubmit}>
               <SearchIcon>
                 <IoSearch />
               </SearchIcon>
-              <Input placeholder="궁금한 키워드 입력" />
+              <Input
+                placeholder="궁금한 키워드 입력"
+                value={inputValue}
+                onChange={(e) => {
+                  setInputValue(e.target.value);
+                }}
+              />
             </InputWrapper>
           </HeaderLeft>
           <HeaderRight>
@@ -112,7 +127,7 @@ export default function Community() {
           </HeaderRight>
         </MainContentHeader>
         <Feed>
-          <PostListCon />
+          <PostListCon searchKeyword={searchKeyword} />
         </Feed>
       </MainContent>
       <RightSidebar>
@@ -297,7 +312,7 @@ const HeaderRight = styled.div`
   flex: 1;
 `;
 
-const InputWrapper = styled.div`
+const InputWrapper = styled.form`
   position: relative;
   width: 100%;
 `;

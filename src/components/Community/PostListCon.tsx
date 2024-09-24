@@ -1,8 +1,11 @@
 import styled from "styled-components";
 import PostCard from "./PostCard";
 import loadingIcon from "../../assets/images/logo/ball-triangle.svg";
-import { fetchPostsPerPage } from "../../config/api/post/fecthPosts";
-import { useInfiniteQuery } from "react-query";
+import {
+  fetchPostsByKeyword,
+  fetchPostsPerPage,
+} from "../../config/api/post/fecthPosts";
+import { useInfiniteQuery, useQuery } from "react-query";
 import { PostType } from "../../types/PostType";
 import { useInView } from "react-intersection-observer";
 import { useEffect, useMemo } from "react";
@@ -14,7 +17,11 @@ export type FetchPostsResponse = {
   nextCursor: number | null;
 };
 
-export default function PostListCon() {
+interface PostListConProps {
+  searchKeyword: string;
+}
+
+export default function PostListCon({ searchKeyword }: PostListConProps) {
   const sortValue = useRecoilValue(communitySortState);
 
   const { inView, ref } = useInView({
@@ -22,16 +29,36 @@ export default function PostListCon() {
     initialInView: true,
   });
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
-    useInfiniteQuery<FetchPostsResponse>(
-      ["posts"],
-      ({ pageParam = 0 }) => fetchPostsPerPage(pageParam, 8),
-      {
-        getNextPageParam: (lastPage) => lastPage.nextCursor || undefined,
-        staleTime: 10 * 60 * 1000,
-        cacheTime: 30 * 60 * 1000,
-      }
-    );
+  // 검색어가 있을 때는 검색어에 맞는 모든 데이터를 가져옴
+  const { data: keywordData, isLoading: isKeywordLoading } = useQuery(
+    ["posts", searchKeyword],
+    () => fetchPostsByKeyword(searchKeyword),
+    {
+      staleTime: 10 * 60 * 1000,
+      cacheTime: 30 * 60 * 1000,
+      enabled: !!searchKeyword, // 검색어가 있을 때만 실행
+    }
+  );
+
+  const {
+    data: paginatedData,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading: isPaginatedLoading,
+  } = useInfiniteQuery<FetchPostsResponse>(
+    ["posts"],
+    ({ pageParam = 0 }) => fetchPostsPerPage(pageParam, 8),
+    {
+      getNextPageParam: (lastPage) => lastPage.nextCursor || undefined,
+      staleTime: 10 * 60 * 1000,
+      cacheTime: 30 * 60 * 1000,
+      enabled: !searchKeyword, // 검색어가 없을 때만 실행
+    }
+  );
+
+  // 로딩 상태 처리
+  const isLoading = isKeywordLoading || isPaginatedLoading;
 
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
@@ -41,21 +68,25 @@ export default function PostListCon() {
 
   // 데이터를 sortValue에 따라 재가공
   const sortedPosts = useMemo(() => {
-    if (!data) return [];
+    let allPosts: PostType[] = [];
 
-    // 모든 페이지의 게시글을 합침
-    const allPosts = data.pages.flatMap((page) => page.posts);
+    if (searchKeyword && keywordData) {
+      // 검색어가 있을 때는 keywordData 사용
+      allPosts = keywordData;
+    } else if (paginatedData) {
+      // 검색어가 없을 때는 기존 페이지네이션 데이터 사용
+      allPosts = paginatedData.pages.flatMap((page) => page.posts);
+    }
 
+    // sortValue에 따라 정렬
     if (sortValue === "인기순") {
-      // 인기순으로 liked 배열의 길이 기준으로 정렬
       return allPosts.sort(
         (a, b) => (b.liked?.length || 0) - (a.liked?.length || 0)
       );
-    } else if (sortValue === "최신순") {
-      // 기본적으로 오는 데이터들이 최신순으로 정렬되서 오기 때문에 그대로 사용
+    } else {
       return allPosts;
     }
-  }, [data, sortValue]);
+  }, [keywordData, paginatedData, searchKeyword, sortValue]);
 
   if (isLoading) {
     return (
@@ -65,7 +96,7 @@ export default function PostListCon() {
     );
   }
 
-  if (!data || !sortedPosts) {
+  if (!paginatedData || !sortedPosts) {
     return null;
   }
 

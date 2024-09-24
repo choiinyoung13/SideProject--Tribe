@@ -6,6 +6,7 @@ export type FetchPostsResponse = {
   nextCursor: number | null;
 };
 
+// page별로 게시물 조회
 export async function fetchPostsPerPage(
   pageParam: number = 0,
   pageSize: number = 8
@@ -34,4 +35,23 @@ export async function fetchPostsPerPage(
 
   console.log("조회된 데이터:", data);
   return { posts: data, nextCursor };
+}
+
+// 키워드로 게시물 조회
+export async function fetchPostsByKeyword(
+  keyword: string
+): Promise<PostType[]> {
+  // 검색어에 맞는 데이터 전체를 가져옴
+  const { data, error } = await supabase
+    .from("posts")
+    .select("*")
+    .ilike("title", `%${keyword}%`)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("데이터 조회 오류:", error.message);
+    return [];
+  }
+
+  return data || [];
 }

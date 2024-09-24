@@ -232,6 +232,13 @@ export default function PostDetail({ userInfo, post }: PostDetailProps) {
 
         <PostInteractions>
           <Likes
+            isLiked={
+              !!(
+                session?.user.id &&
+                Array.isArray(post.liked) &&
+                post.liked.includes(session.user.id)
+              )
+            }
             onClick={async () => {
               if (!session) {
                 Swal.fire({
@@ -255,16 +262,7 @@ export default function PostDetail({ userInfo, post }: PostDetailProps) {
               await likeMutate({ postId: post.id, userId: session.user.id });
             }}
           >
-            <IoMdHeart
-              color={
-                session?.user.id &&
-                Array.isArray(post.liked) &&
-                post.liked.includes(session.user.id)
-                  ? "rgb(253, 70, 108)"
-                  : "rgba(190, 190, 190, 1)"
-              }
-            />{" "}
-            <span>{post.liked ? post.liked.length : 0}</span>
+            <IoMdHeart /> <span>{post.liked ? post.liked.length : 0}</span>
           </Likes>
           <Comments>
             <FaCommentDots />{" "}
@@ -485,7 +483,11 @@ const PostInteractions = styled.div`
   }
 `;
 
-const Likes = styled.div`
+interface HeartIconProps {
+  isLiked: boolean;
+}
+
+const Likes = styled.div<HeartIconProps>`
   display: flex;
   align-items: center;
   font-size: 1.6rem;
@@ -494,7 +496,14 @@ const Likes = styled.div`
   svg {
     margin-top: 1px;
     margin-right: 6px;
-    color: rgba(190, 190, 190, 1);
+    color: ${({ isLiked }) =>
+      isLiked ? "rgb(253, 70, 108)" : "rgba(190, 190, 190, 1)"};
+    transition: color 0.2s ease;
+  }
+
+  &:hover svg {
+    color: ${({ isLiked }) =>
+      isLiked ? "rgb(253, 70, 108)" : "rgba(160, 160, 160, 1)"};
   }
 `;
 
