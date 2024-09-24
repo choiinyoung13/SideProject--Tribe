@@ -68,7 +68,7 @@ export default function Community() {
   const onInputValueSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!inputValue.trim() && inputValue !== '') return
-    setSearchKeyword(inputValue)
+    setSearchKeyword(inputValue.trim())
   }
 
   return (
