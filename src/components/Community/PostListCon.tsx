@@ -5,7 +5,9 @@ import { fetchPostsPerPage } from "../../config/api/post/fecthPosts";
 import { useInfiniteQuery } from "react-query";
 import { PostType } from "../../types/PostType";
 import { useInView } from "react-intersection-observer";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
+import { communitySortState } from "../../recoil/atoms/SortState";
+import { useRecoilValue } from "recoil";
 
 export type FetchPostsResponse = {
   posts: PostType[];
@@ -13,6 +15,8 @@ export type FetchPostsResponse = {
 };
 
 export default function PostListCon() {
+  const sortValue = useRecoilValue(communitySortState);
+
   const { inView, ref } = useInView({
     threshold: 0.5,
     initialInView: true,
@@ -35,6 +39,24 @@ export default function PostListCon() {
     }
   }, [inView]);
 
+  // 데이터를 sortValue에 따라 재가공
+  const sortedPosts = useMemo(() => {
+    if (!data) return [];
+
+    // 모든 페이지의 게시글을 합침
+    const allPosts = data.pages.flatMap((page) => page.posts);
+
+    if (sortValue === "인기순") {
+      // 인기순으로 liked 배열의 길이 기준으로 정렬
+      return allPosts.sort(
+        (a, b) => (b.liked?.length || 0) - (a.liked?.length || 0)
+      );
+    } else if (sortValue === "최신순") {
+      // 기본적으로 오는 데이터들이 최신순으로 정렬되서 오기 때문에 그대로 사용
+      return allPosts;
+    }
+  }, [data, sortValue]);
+
   if (isLoading) {
     return (
       <LoadingScreen>
@@ -43,7 +65,7 @@ export default function PostListCon() {
     );
   }
 
-  if (!data) {
+  if (!data || !sortedPosts) {
     return null;
   }
 
@@ -51,15 +73,13 @@ export default function PostListCon() {
     <>
       <ListCon>
         <ListWrapper>
-          {data.pages[0].posts.length === 0 ? (
+          {sortedPosts.length === 0 ? (
             <Empty>게시물이 없습니다.</Empty>
           ) : (
             <>
-              {data.pages.map((page) =>
-                page.posts.map((post) => {
-                  return <PostCard key={post.id} post={post} />;
-                })
-              )}
+              {sortedPosts.map((post) => {
+                return <PostCard key={post.id} post={post} />;
+              })}
               {hasNextPage && <div ref={ref} />}
             </>
           )}
