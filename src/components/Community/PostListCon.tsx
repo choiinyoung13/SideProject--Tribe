@@ -34,8 +34,8 @@ export default function PostListCon({ searchKeyword }: PostListConProps) {
     ["posts", searchKeyword],
     () => fetchPostsByKeyword(searchKeyword),
     {
-      staleTime: 10 * 60 * 1000,
-      cacheTime: 30 * 60 * 1000,
+      staleTime: 0,
+      cacheTime: 0,
       enabled: !!searchKeyword, // 검색어가 있을 때만 실행
     }
   );
@@ -51,8 +51,8 @@ export default function PostListCon({ searchKeyword }: PostListConProps) {
     ({ pageParam = 0 }) => fetchPostsPerPage(pageParam, 8),
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor || undefined,
-      staleTime: 10 * 60 * 1000,
-      cacheTime: 30 * 60 * 1000,
+      staleTime: 0,
+      cacheTime: 0,
       enabled: !searchKeyword, // 검색어가 없을 때만 실행
     }
   );

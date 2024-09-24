@@ -65,7 +65,7 @@ export default function Community() {
   // 검색어 제출 시 실행되는 함수
   const onInputValueSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!inputValue.trim()) return;
+    if (!inputValue.trim() && inputValue !== "") return;
     setSearchKeyword(inputValue);
   };
 
