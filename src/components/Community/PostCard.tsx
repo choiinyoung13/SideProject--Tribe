@@ -318,7 +318,7 @@ const SkeletonCircle = styled.div`
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background-color: rgba(230, 230, 230, 1);
+  background-color: rgba(235, 235, 235, 1);
 
   @media (max-width: 450px) {
     width: 22px;
@@ -334,7 +334,7 @@ const SkeletonCircle = styled.div`
 const SkeletonText = styled.div`
   width: 80px;
   height: 14px;
-  background-color: rgba(230, 230, 230, 1);
+  background-color: rgba(235, 235, 235, 1);
   margin-left: 6px;
 
   @media (max-width: 450px) {

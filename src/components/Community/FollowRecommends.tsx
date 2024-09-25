@@ -2,6 +2,7 @@ import styled from "styled-components";
 import profile1 from "../../assets/images/community/fake_profile/1.jpg";
 import profile2 from "../../assets/images/community/fake_profile/2.jpg";
 import profile3 from "../../assets/images/community/fake_profile/3.jpg";
+import { FaPlus } from "react-icons/fa";
 
 export default function FollowRecommends() {
   return (
@@ -15,7 +16,7 @@ export default function FollowRecommends() {
           </TextSection>
         </FollowRecommendLeft>
         <FollowRecommendRight>
-          <FollowBtn>+</FollowBtn>
+          <FaPlus />
         </FollowRecommendRight>
       </FollowRecommend>
       <FollowRecommend>
@@ -27,7 +28,7 @@ export default function FollowRecommends() {
           </TextSection>
         </FollowRecommendLeft>
         <FollowRecommendRight>
-          <FollowBtn>+</FollowBtn>
+          <FaPlus />
         </FollowRecommendRight>
       </FollowRecommend>
       <FollowRecommend>
@@ -39,7 +40,19 @@ export default function FollowRecommends() {
           </TextSection>
         </FollowRecommendLeft>
         <FollowRecommendRight>
-          <FollowBtn>+</FollowBtn>
+          <FaPlus />
+        </FollowRecommendRight>
+      </FollowRecommend>
+      <FollowRecommend>
+        <FollowRecommendLeft>
+          <Profile src={profile1} />
+          <TextSection>
+            <UserName>dlsdud156</UserName>
+            <Description>풀과 달, 식물과 제철 그리고 고양이</Description>
+          </TextSection>
+        </FollowRecommendLeft>
+        <FollowRecommendRight>
+          <FaPlus />
         </FollowRecommendRight>
       </FollowRecommend>
     </>
@@ -56,7 +69,6 @@ const FollowRecommend = styled.div`
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   transition: background-color 0.3s ease;
-  cursor: pointer;
 
   &:hover {
     background-color: rgba(240, 240, 240, 1);
@@ -94,24 +106,17 @@ const Description = styled.div`
 const FollowRecommendLeft = styled.div`
   display: flex;
   align-items: center;
-`;
-const FollowRecommendRight = styled.div``;
-
-const FollowBtn = styled.button`
-  background-color: #141414;
-  color: rgba(255, 255, 255, 1);
-  font-size: 1.3rem;
-  border: none;
-  border-radius: 6px;
   cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 26px;
-  height: 26px;
-  padding-bottom: 3px;
+`;
+const FollowRecommendRight = styled.div`
+  svg {
+    margin-right: 4px;
+    font-size: 1.2rem;
+    color: rgba(50, 50, 50, 1);
+    cursor: pointer;
 
-  &:hover {
-    background-color: rgba(50, 50, 50, 1);
+    &:hover {
+      color: rgba(100, 100, 100, 1);
+    }
   }
 `;

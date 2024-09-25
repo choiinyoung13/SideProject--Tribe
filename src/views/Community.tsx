@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import PostModal from "../components/Community/PostModal"; // PostModal 컴포넌트 추가
 import { useAuth } from "../hooks/useAuth";
 import Swal from "sweetalert2";
-import aside_image from "../assets/images/community/aside/hands_1843283.png";
+import aside_image from "../assets/images/community/aside/user.png";
 import aside_image2 from "../assets/images/community/aside/stats.png";
 import { useQuery } from "react-query";
 import { fetchPostCategories } from "../config/api/post/fetchPostCategories";
@@ -177,7 +177,10 @@ export default function Community() {
           </WidgetTitleWrapper>
           <WidgetBack>
             <Widget>
-              <RealTimeKeywords />
+              <RealTimeKeywords
+                setInputValue={setInputValue}
+                setSearchKeyword={setSearchKeyword}
+              />
             </Widget>
           </WidgetBack>
         </WidgetWrapper>
