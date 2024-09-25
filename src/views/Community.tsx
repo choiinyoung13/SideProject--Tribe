@@ -10,7 +10,7 @@ import { useState } from "react";
 import PostModal from "../components/Community/PostModal"; // PostModal 컴포넌트 추가
 import { useAuth } from "../hooks/useAuth";
 import Swal from "sweetalert2";
-import aside_image from "../assets/images/community/aside/user.png";
+import aside_image from "../assets/images/community/aside/hands_1843283.png";
 import aside_image2 from "../assets/images/community/aside/stats.png";
 
 export default function Community() {
@@ -138,7 +138,7 @@ export default function Community() {
           </HeaderRight>
         </MainContentHeader>
         <Feed>
-          <PostListCon searchKeyword={searchKeyword} />
+          <PostListCon searchKeyword={searchKeyword} tab={tab} />
         </Feed>
       </MainContent>
       <RightSidebar>

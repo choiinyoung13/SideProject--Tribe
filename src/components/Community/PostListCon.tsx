@@ -11,6 +11,7 @@ import { useInView } from "react-intersection-observer";
 import { useEffect, useMemo, useState } from "react";
 import { communitySortState } from "../../recoil/atoms/SortState";
 import { useRecoilValue } from "recoil";
+import { tabNumberToCommunityCategory } from "../../utill/tabNumberToCategory";
 
 export type FetchPostsResponse = {
   posts: PostType[];
@@ -19,9 +20,10 @@ export type FetchPostsResponse = {
 
 interface PostListConProps {
   searchKeyword: string;
+  tab: string | null;
 }
 
-export default function PostListCon({ searchKeyword }: PostListConProps) {
+export default function PostListCon({ searchKeyword, tab }: PostListConProps) {
   const sortValue = useRecoilValue(communitySortState);
 
   const { inView, ref } = useInView({
@@ -41,7 +43,12 @@ export default function PostListCon({ searchKeyword }: PostListConProps) {
     isLoading: isPaginatedLoading,
   } = useInfiniteQuery<FetchPostsResponse>(
     ["posts"],
-    ({ pageParam = 0 }) => fetchPostsPerPage(pageParam, 8),
+    ({ pageParam = 0 }) =>
+      fetchPostsPerPage(
+        pageParam,
+        8,
+        tabNumberToCommunityCategory(Number(tab))
+      ),
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor || undefined,
       staleTime: 0,

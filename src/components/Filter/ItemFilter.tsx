@@ -3,7 +3,7 @@ import { AiOutlinePlus } from "react-icons/ai";
 import { BiMinus } from "react-icons/bi";
 import { useState } from "react";
 import SelectOptionBox from "./ItemFilterSelectOptionBox";
-import convertToKorean from "../../utill/convertToKorean";
+import { convertToKorean } from "../../utill/convertToKorean";
 
 interface ItemFilterProps {
   type: "size" | "price" | "color";
