@@ -6,12 +6,15 @@ import RealTimeKeywords from "../components/Community/RealTimeKeywords";
 import FollowRecommends from "../components/Community/FollowRecommends";
 import SortButton from "../components/Community/SortButton";
 import useWindowWidth from "../hooks/useWindowWidth";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PostModal from "../components/Community/PostModal"; // PostModal 컴포넌트 추가
 import { useAuth } from "../hooks/useAuth";
 import Swal from "sweetalert2";
 import aside_image from "../assets/images/community/aside/hands_1843283.png";
 import aside_image2 from "../assets/images/community/aside/stats.png";
+import { useQuery } from "react-query";
+import { fetchPostCategories } from "../config/api/post/fetchPostCategories";
+import { CategorySkeletonUi } from "../components/Community/CategorySkeletonUi";
 
 export default function Community() {
   const location = useLocation();
@@ -23,18 +26,18 @@ export default function Community() {
   const [inputValue, setInputValue] = useState<string>("");
   const [searchKeyword, setSearchKeyword] = useState<string>("");
 
+  // 카테고리 데이터 패칭
+  const { data: categories, isLoading: isCategoryLoading } = useQuery(
+    ["categories"],
+    fetchPostCategories,
+    {
+      staleTime: 0,
+      cacheTime: 0,
+    }
+  );
+
   // 모달 상태 관리
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const categories = [
-    { id: 1, title: "전체", count: 321 },
-    { id: 2, title: "잡담", count: 54 },
-    { id: 3, title: "이벤트", count: 101 },
-    { id: 4, title: "질문", count: 108 },
-    { id: 5, title: "나눔", count: 60 },
-    { id: 6, title: "정보", count: 91 },
-    { id: 7, title: "기타", count: 12 },
-  ];
 
   // 모달 열기 함수
   const openModal = () => {
@@ -80,39 +83,64 @@ export default function Community() {
     setSearchKeyword(inputValue.trim());
   };
 
+  useEffect(() => {
+    setInputValue("");
+    setSearchKeyword("");
+  }, [tab]);
+
+  if (!categories) {
+    return null;
+  }
+
   return (
     <CommunityCon>
       {windowWidth >= 768 ? (
         <Sidebar>
-          {categories.map((cat) => {
-            return (
-              <Link
-                to={
-                  cat.title === "전체"
-                    ? "/community"
-                    : `/community?tab=${cat.id - 1}`
-                }
-                key={cat.id}
-              >
-                <NavItem isActive={Number(tab) === cat.id - 1}>
-                  {cat.title}({cat.count})
-                </NavItem>
-              </Link>
-            );
-          })}
+          {isCategoryLoading ? (
+            <CategorySkeletonUi /> // 카테고리 데이터를 불러오는 동안 보여줄 Skeleton UI
+          ) : (
+            categories.map((cat) => {
+              return (
+                <Link
+                  to={
+                    cat.title === "전체"
+                      ? "/community"
+                      : `/community?tab=${cat.id}`
+                  }
+                  key={cat.id}
+                >
+                  <NavItem isActive={Number(tab) === cat.id}>
+                    {cat.title}({cat.count})
+                  </NavItem>
+                </Link>
+              );
+            })
+          )}
         </Sidebar>
       ) : (
         <SelectSection>
-          <Select>
-            {categories.map((category) => {
-              return (
-                <option>
-                  {category.title}
-                  {`(${category.count})`}
-                </option>
-              );
-            })}
-          </Select>
+          {isCategoryLoading ? (
+            <CategorySkeletonUi /> // 모바일 화면에서도 카테고리 데이터를 불러오는 동안 Skeleton UI 적용
+          ) : (
+            <Select
+              onChange={(e) => {
+                if (e.target.value === "0") {
+                  navigate(`/community`);
+                  return;
+                }
+                navigate(`/community?tab=${e.target.value}`);
+              }}
+            >
+              {categories.map((category) => {
+                return (
+                  <option value={category.id}>
+                    {category.title}
+                    {`(${category.count})`}
+                  </option>
+                );
+              })}
+            </Select>
+          )}
         </SelectSection>
       )}
       <MainContent>

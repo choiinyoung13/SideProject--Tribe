@@ -1,11 +1,8 @@
 import styled from "styled-components";
 import PostCard from "./PostCard";
 import loadingIcon from "../../assets/images/logo/ball-triangle.svg";
-import {
-  fetchPostsByKeyword,
-  fetchPostsPerPage,
-} from "../../config/api/post/fecthPosts";
-import { useInfiniteQuery, useQuery } from "react-query";
+import { fetchPostsPerPage } from "../../config/api/post/fecthPosts";
+import { useInfiniteQuery } from "react-query";
 import { PostType } from "../../types/PostType";
 import { useInView } from "react-intersection-observer";
 import { useEffect, useMemo, useState } from "react";
@@ -40,36 +37,22 @@ export default function PostListCon({ searchKeyword, tab }: PostListConProps) {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-    isLoading: isPaginatedLoading,
+    isLoading,
   } = useInfiniteQuery<FetchPostsResponse>(
-    ["posts"],
+    ["posts", tab, searchKeyword],
     ({ pageParam = 0 }) =>
       fetchPostsPerPage(
         pageParam,
         8,
-        tabNumberToCommunityCategory(Number(tab))
+        tabNumberToCommunityCategory(Number(tab)),
+        searchKeyword
       ),
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor || undefined,
       staleTime: 0,
       cacheTime: 0,
-      enabled: searchKeyword.trim() === "", // 검색어가 없을 때만 실행
     }
   );
-
-  // 검색어가 있을 때는 검색어에 맞는 모든 데이터를 가져옴
-  const { data: keywordData, isLoading: isKeywordLoading } = useQuery(
-    ["posts", searchKeyword],
-    () => fetchPostsByKeyword(searchKeyword),
-    {
-      staleTime: 0,
-      cacheTime: 0,
-      enabled: searchKeyword.trim() !== "", // 검색어가 있을 때만 실행
-    }
-  );
-
-  // 로딩 상태 처리
-  const isLoading = isKeywordLoading || isPaginatedLoading;
 
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
@@ -81,11 +64,8 @@ export default function PostListCon({ searchKeyword, tab }: PostListConProps) {
   const sortedPosts = useMemo(() => {
     let allPosts: PostType[] = [];
 
-    if (searchKeyword && keywordData) {
-      // 검색어가 있을 때는 keywordData 사용
-      allPosts = keywordData;
-    } else if (paginatedData) {
-      // 검색어가 없을 때는 기존 페이지네이션 데이터 사용
+    if (paginatedData) {
+      // paginatedData가 있는지 확인
       allPosts = paginatedData.pages.flatMap((page) => page.posts);
     }
 
@@ -97,7 +77,7 @@ export default function PostListCon({ searchKeyword, tab }: PostListConProps) {
     } else {
       return allPosts;
     }
-  }, [keywordData, paginatedData, searchKeyword, sortValue]);
+  }, [paginatedData, sortValue]);
 
   // 모든 이미지가 로드되었는지 확인하는 로직
   useEffect(() => {
