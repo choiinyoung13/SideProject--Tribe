@@ -53,5 +53,6 @@ export async function fetchPostsByKeyword(
     return [];
   }
 
+  console.log("검색어로 조회된 데이터:", data);
   return data || [];
 }

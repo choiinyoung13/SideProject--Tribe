@@ -1,86 +1,95 @@
-import styled from 'styled-components'
-import { IoSearch } from 'react-icons/io5'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
-import PostListCon from '../components/Community/PostListCon'
-import RealTimeKeywords from '../components/Community/RealTimeKeywords'
-import FollowRecommends from '../components/Community/FollowRecommends'
-import SortButton from '../components/Community/SortButton'
-import useWindowWidth from '../hooks/useWindowWidth'
-import { useState } from 'react'
-import PostModal from '../components/Community/PostModal' // PostModal 컴포넌트 추가
-import { useAuth } from '../hooks/useAuth'
-import Swal from 'sweetalert2'
-import aside_image from '../assets/images/community/aside/user.png'
-import aside_image2 from '../assets/images/community/aside/stats.png'
+import styled from "styled-components";
+import { IoSearch } from "react-icons/io5";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import PostListCon from "../components/Community/PostListCon";
+import RealTimeKeywords from "../components/Community/RealTimeKeywords";
+import FollowRecommends from "../components/Community/FollowRecommends";
+import SortButton from "../components/Community/SortButton";
+import useWindowWidth from "../hooks/useWindowWidth";
+import { useState } from "react";
+import PostModal from "../components/Community/PostModal"; // PostModal 컴포넌트 추가
+import { useAuth } from "../hooks/useAuth";
+import Swal from "sweetalert2";
+import aside_image from "../assets/images/community/aside/user.png";
+import aside_image2 from "../assets/images/community/aside/stats.png";
 
 export default function Community() {
-  const location = useLocation()
-  const searchParams = new URLSearchParams(location.search)
-  const tab = searchParams.get('tab')
-  const windowWidth = useWindowWidth()
-  const { session } = useAuth()
-  const navigate = useNavigate()
-  const [inputValue, setInputValue] = useState<string>('')
-  const [searchKeyword, setSearchKeyword] = useState<string>('')
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const tab = searchParams.get("tab");
+  const windowWidth = useWindowWidth();
+  const { session } = useAuth();
+  const navigate = useNavigate();
+  const [inputValue, setInputValue] = useState<string>("");
+  const [searchKeyword, setSearchKeyword] = useState<string>("");
 
   // 모달 상태 관리
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const categories = [
-    { id: 1, title: '전체', count: 321 },
-    { id: 2, title: '잡담', count: 54 },
-    { id: 3, title: '이벤트', count: 101 },
-    { id: 4, title: '질문', count: 108 },
-    { id: 5, title: '나눔', count: 60 },
-    { id: 6, title: '정보', count: 91 },
-    { id: 7, title: '기타', count: 12 },
-  ]
+    { id: 1, title: "전체", count: 321 },
+    { id: 2, title: "잡담", count: 54 },
+    { id: 3, title: "이벤트", count: 101 },
+    { id: 4, title: "질문", count: 108 },
+    { id: 5, title: "나눔", count: 60 },
+    { id: 6, title: "정보", count: 91 },
+    { id: 7, title: "기타", count: 12 },
+  ];
 
   // 모달 열기 함수
   const openModal = () => {
     if (!session) {
       Swal.fire({
-        text: '로그인 후 사용 가능한 기능입니다.',
-        icon: 'warning',
+        text: "로그인 후 사용 가능한 기능입니다.",
+        icon: "warning",
         showCancelButton: true,
-        confirmButtonColor: '#1E1E1E',
-        cancelButtonColor: '#1E1E1E',
-        confirmButtonText: '로그인',
-        cancelButtonText: '닫기',
+        confirmButtonColor: "#1E1E1E",
+        cancelButtonColor: "#1E1E1E",
+        confirmButtonText: "로그인",
+        cancelButtonText: "닫기",
         scrollbarPadding: false,
-      }).then(result => {
+      }).then((result) => {
         if (result.isConfirmed) {
           // 로그인 버튼을 눌렀을 때 이동할 URL
-          navigate('/login')
+          navigate("/login");
         }
-      })
-      return
+      });
+      return;
     }
-    setIsModalOpen(true)
-  }
+    setIsModalOpen(true);
+  };
 
   // 모달 닫기 함수
   const closeModal = () => {
-    setIsModalOpen(false)
-  }
+    setIsModalOpen(false);
+  };
 
   // 검색어 제출 시 실행되는 함수
   const onInputValueSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    if (!inputValue.trim() && inputValue !== '') return
-    setSearchKeyword(inputValue.trim())
-  }
+    e.preventDefault();
+    if (!inputValue.trim() && inputValue === "") {
+      Swal.fire({
+        text: "검색어를 입력하세요.",
+        icon: "warning",
+        confirmButtonColor: "#1E1E1E",
+        confirmButtonText: "닫기",
+        scrollbarPadding: false,
+      });
+      return;
+    }
+    setSearchKeyword(inputValue.trim());
+  };
 
   return (
     <CommunityCon>
       {windowWidth >= 768 ? (
         <Sidebar>
-          {categories.map(cat => {
+          {categories.map((cat) => {
             return (
               <Link
                 to={
-                  cat.title === '전체'
-                    ? '/community'
+                  cat.title === "전체"
+                    ? "/community"
                     : `/community?tab=${cat.id - 1}`
                 }
                 key={cat.id}
@@ -89,19 +98,19 @@ export default function Community() {
                   {cat.title}({cat.count})
                 </NavItem>
               </Link>
-            )
+            );
           })}
         </Sidebar>
       ) : (
         <SelectSection>
           <Select>
-            {categories.map(category => {
+            {categories.map((category) => {
               return (
                 <option>
                   {category.title}
                   {`(${category.count})`}
                 </option>
-              )
+              );
             })}
           </Select>
         </SelectSection>
@@ -116,15 +125,15 @@ export default function Community() {
               <Input
                 placeholder="궁금한 키워드 입력"
                 value={inputValue}
-                onChange={e => {
-                  setInputValue(e.target.value)
+                onChange={(e) => {
+                  setInputValue(e.target.value);
                 }}
               />
             </InputWrapper>
           </HeaderLeft>
           <HeaderRight>
             <SortButton />
-            <PostButton onClick={openModal}>글쓰기</PostButton>{' '}
+            <PostButton onClick={openModal}>글쓰기</PostButton>{" "}
             {/* 모달 열기 */}
           </HeaderRight>
         </MainContentHeader>
@@ -159,7 +168,7 @@ export default function Community() {
       {/* 글쓰기 모달 */}
       {isModalOpen && <PostModal onClose={closeModal} />} {/* 모달 컴포넌트 */}
     </CommunityCon>
-  )
+  );
 }
 
 // 전체 레이아웃 컨테이너
@@ -186,7 +195,7 @@ const CommunityCon = styled.div`
     margin-top: 52px;
     flex-direction: column;
   }
-`
+`;
 
 // 왼쪽 사이드바
 const Sidebar = styled.div`
@@ -204,7 +213,7 @@ const Sidebar = styled.div`
     border-right: none;
     border-bottom: 1px solid #e1e1e1;
   }
-`
+`;
 
 const SelectSection = styled.div`
   position: relative;
@@ -213,7 +222,7 @@ const SelectSection = styled.div`
   background-color: #f4f4f4;
 
   &::after {
-    content: '';
+    content: "";
     position: absolute;
     top: 65%;
     right: 32px;
@@ -228,7 +237,7 @@ const SelectSection = styled.div`
     padding: 30px 20px 0 20px;
 
     &::after {
-      content: '';
+      content: "";
       position: absolute;
       top: 72%;
       right: 32px;
@@ -239,7 +248,7 @@ const SelectSection = styled.div`
       pointer-events: none;
     }
   }
-`
+`;
 
 const Select = styled.select`
   width: 100%;
@@ -252,19 +261,19 @@ const Select = styled.select`
   &:focus {
     outline: none;
   }
-`
+`;
 
 interface NavItemProps {
-  isActive: boolean
+  isActive: boolean;
 }
 
 const NavItem = styled.div<NavItemProps>`
   margin: 30px 0;
   font-size: 1rem;
-  color: ${props =>
-    props.isActive ? 'rgba(60, 60, 60, 1)' : 'rgba(130, 130, 130, 1)'};
+  color: ${(props) =>
+    props.isActive ? "rgba(60, 60, 60, 1)" : "rgba(130, 130, 130, 1)"};
   cursor: pointer;
-  font-weight: ${props => (props.isActive ? 'bold' : 'normal')};
+  font-weight: ${(props) => (props.isActive ? "bold" : "normal")};
 
   &:hover {
     color: rgba(60, 60, 60, 1);
@@ -279,7 +288,7 @@ const NavItem = styled.div<NavItemProps>`
     margin: 10px 0;
     font-size: 1rem;
   }
-`
+`;
 
 // 중앙 메인 컨텐츠 영역
 const MainContent = styled.div`
@@ -292,7 +301,7 @@ const MainContent = styled.div`
   @media (max-width: 768px) {
     padding: 14px 20px 20px 20px;
   }
-`
+`;
 
 const MainContentHeader = styled.div`
   display: flex;
@@ -300,7 +309,7 @@ const MainContentHeader = styled.div`
   align-items: center;
   margin-bottom: 20px;
   width: 100%;
-`
+`;
 
 const HeaderLeft = styled.div`
   display: flex;
@@ -311,19 +320,19 @@ const HeaderLeft = styled.div`
   @media (max-width: 768px) {
     margin-right: 12px;
   }
-`
+`;
 
 const HeaderRight = styled.div`
   display: flex;
   align-items: center;
   justify-content: end;
   flex: 1;
-`
+`;
 
 const InputWrapper = styled.form`
   position: relative;
   width: 100%;
-`
+`;
 
 const SearchIcon = styled.div`
   font-size: 1rem;
@@ -332,7 +341,7 @@ const SearchIcon = styled.div`
   top: 50%;
   transform: translateY(-45%);
   left: 13px;
-`
+`;
 
 const Input = styled.input`
   width: 100%;
@@ -349,7 +358,7 @@ const Input = styled.input`
   &::placeholder {
     color: rgba(150, 150, 150, 1);
   }
-`
+`;
 
 const PostButton = styled.button`
   width: 70px;
@@ -373,14 +382,14 @@ const PostButton = styled.button`
   @media (max-width: 768px) {
     margin-left: 12px;
   }
-`
+`;
 
 // 게시글 피드
 const Feed = styled.div`
   margin-top: 20px;
   width: 100%;
   height: 100%;
-`
+`;
 
 // 오른쪽 사이드바
 const RightSidebar = styled.div`
@@ -396,34 +405,34 @@ const RightSidebar = styled.div`
   @media (max-width: 1024px) {
     display: none;
   }
-`
+`;
 
 const WidgetWrapper = styled.div`
   margin-bottom: 40px;
-`
+`;
 
 const WidgetTitleWrapper = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 16px;
   margin-left: 6px;
-`
+`;
 
 const TitleImage = styled.img`
   width: 20px;
   height: 20px;
-`
+`;
 
 const WidgetBack = styled.div`
   background-color: #f4f4f4;
   padding: 17px;
   border-radius: 6px;
-`
+`;
 
 const WidgetTitle = styled.div`
   font-size: 1.2rem;
   font-weight: bold;
   margin-left: 9px;
-`
+`;
 
-const Widget = styled.div``
+const Widget = styled.div``;
