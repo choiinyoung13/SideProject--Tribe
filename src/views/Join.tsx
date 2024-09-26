@@ -1,44 +1,44 @@
-import { useEffect, useState } from 'react'
-import styled from 'styled-components'
-import Input from '../components/Common/Input'
-import loadingIcon from '../assets/images/logo/ball-triangle.svg'
+import { useEffect, useState } from "react";
+import styled from "styled-components";
+import Input from "../components/Common/Input";
+import loadingIcon from "../assets/images/logo/ball-triangle.svg";
 import {
   AiOutlineEye,
   AiOutlineEyeInvisible,
   AiOutlinePlus,
-} from 'react-icons/ai'
-import join_image from '../assets/images/join_web_1.jpg'
-import useWindowWidth from '../hooks/useWindowWidth'
-import { useHandleSignUp } from '../hooks/usehandleSignUp'
-import { checkEmailExists } from '../utill/checkEmailExists'
-import Swal from 'sweetalert2'
+} from "react-icons/ai";
+import join_image from "../assets/images/join_web_1.jpg";
+import useWindowWidth from "../hooks/useWindowWidth";
+import { useHandleSignUp } from "../hooks/usehandleSignUp";
+import { checkEmailExists } from "../utill/checkEmailExists";
+import Swal from "sweetalert2";
 
 export default function Join() {
-  const windowWidth = useWindowWidth()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const [isIdValid, setIsIdValid] = useState(true)
-  const [isPasswordValid, setIsPasswordValid] = useState(false)
-  const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(false)
-  const [isEmailExists, setIsEmailExists] = useState(false)
-  const [ischeckRedundancyOpened, setIscheckRedundancyOpened] = useState(false)
-  const [isRequiredChecked, setIsRequiredChecked] = useState(false)
-  const { handleSignUp, errorMessage } = useHandleSignUp()
-  const [isImageLoaded, setIsImageLoaded] = useState(false)
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false) // 비밀번호 보이기 상태 관리
+  const windowWidth = useWindowWidth();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [isIdValid, setIsIdValid] = useState(true);
+  const [isPasswordValid, setIsPasswordValid] = useState(false);
+  const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(false);
+  const [isEmailExists, setIsEmailExists] = useState(false);
+  const [ischeckRedundancyOpened, setIscheckRedundancyOpened] = useState(false);
+  const [isRequiredChecked, setIsRequiredChecked] = useState(false);
+  const { handleSignUp, errorMessage } = useHandleSignUp();
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false); // 비밀번호 보이기 상태 관리
 
   useEffect(() => {
     if (password !== confirmPassword) {
-      setIsConfirmPasswordValid(false)
+      setIsConfirmPasswordValid(false);
     } else if (password === confirmPassword) {
-      setIsConfirmPasswordValid(true)
+      setIsConfirmPasswordValid(true);
     }
 
-    if (confirmPassword === '') {
-      setIsConfirmPasswordValid(false)
+    if (confirmPassword === "") {
+      setIsConfirmPasswordValid(false);
     }
-  }, [password, confirmPassword])
+  }, [password, confirmPassword]);
 
   return (
     <JoinCon>
@@ -47,127 +47,127 @@ export default function Join() {
           <FormTitle>Tribe 회원가입</FormTitle>
           <Form
             action=""
-            onSubmit={async e => {
-              e.preventDefault()
+            onSubmit={async (e) => {
+              e.preventDefault();
 
               // 이메일 입력 유무 검사
               if (!email.trim()) {
                 Swal.fire({
-                  text: '사용하실 이메일을 입력해주세요.',
-                  icon: 'warning',
-                  confirmButtonColor: '#1E1E1E',
-                  confirmButtonText: '확인',
+                  text: "사용하실 이메일을 입력해주세요.",
+                  icon: "warning",
+                  confirmButtonColor: "#1E1E1E",
+                  confirmButtonText: "확인",
                   scrollbarPadding: false,
-                })
-                return
+                });
+                return;
               }
 
               // 이메일 유효성 검사
               if (!isIdValid) {
                 Swal.fire({
-                  text: '올바른 이메일 형식으로 입력해주세요.',
-                  icon: 'warning',
-                  confirmButtonColor: '#1E1E1E',
-                  confirmButtonText: '확인',
+                  text: "올바른 이메일 형식으로 입력해주세요.",
+                  icon: "warning",
+                  confirmButtonColor: "#1E1E1E",
+                  confirmButtonText: "확인",
                   scrollbarPadding: false,
-                })
-                return
+                });
+                return;
               }
 
               // 이메일 중복 확인
               if (!ischeckRedundancyOpened) {
                 Swal.fire({
-                  text: '이메일 중복 확인해 주세요.',
-                  icon: 'warning',
-                  confirmButtonColor: '#1E1E1E',
-                  confirmButtonText: '확인',
+                  text: "이메일 중복 확인해 주세요.",
+                  icon: "warning",
+                  confirmButtonColor: "#1E1E1E",
+                  confirmButtonText: "확인",
                   scrollbarPadding: false,
-                })
-                return
+                });
+                return;
               }
 
               if (isEmailExists) {
                 Swal.fire({
-                  text: '이미 가입한 이메일 계정입니다.',
-                  icon: 'warning',
-                  confirmButtonColor: '#1E1E1E',
-                  confirmButtonText: '확인',
+                  text: "이미 가입한 이메일 계정입니다.",
+                  icon: "warning",
+                  confirmButtonColor: "#1E1E1E",
+                  confirmButtonText: "확인",
                   scrollbarPadding: false,
-                })
-                return
+                });
+                return;
               }
 
               // 이메일 입력 유무 검사
               if (!password.trim()) {
                 Swal.fire({
-                  text: '사용하실 비밀번호를 입력해주세요.',
-                  icon: 'warning',
-                  confirmButtonColor: '#1E1E1E',
-                  confirmButtonText: '확인',
+                  text: "사용하실 비밀번호를 입력해주세요.",
+                  icon: "warning",
+                  confirmButtonColor: "#1E1E1E",
+                  confirmButtonText: "확인",
                   scrollbarPadding: false,
-                })
-                return
+                });
+                return;
               }
 
               // 비밀번호 유효성 검사
               if (!isPasswordValid) {
                 Swal.fire({
-                  text: '올바른 비밀번호 형식으로 입력해주세요.',
-                  icon: 'warning',
-                  confirmButtonColor: '#1E1E1E',
-                  confirmButtonText: '확인',
+                  text: "올바른 비밀번호 형식으로 입력해주세요.",
+                  icon: "warning",
+                  confirmButtonColor: "#1E1E1E",
+                  confirmButtonText: "확인",
                   scrollbarPadding: false,
-                })
-                return
+                });
+                return;
               }
 
               // 비밀번호 확인 우뮤 검사
               if (!confirmPassword.trim()) {
                 Swal.fire({
-                  text: '확인을 위해 비밀번호를 재입력해주세요.',
-                  icon: 'warning',
-                  confirmButtonColor: '#1E1E1E',
-                  confirmButtonText: '확인',
+                  text: "확인을 위해 비밀번호를 재입력해주세요.",
+                  icon: "warning",
+                  confirmButtonColor: "#1E1E1E",
+                  confirmButtonText: "확인",
                   scrollbarPadding: false,
-                })
-                return
+                });
+                return;
               }
 
               // 비밀번호 확인 요휴성 검사
               if (!isConfirmPasswordValid) {
                 Swal.fire({
-                  text: '비밀번호가 일치하지 않습니다. 확인해 주세요.',
-                  icon: 'warning',
-                  confirmButtonColor: '#1E1E1E',
-                  confirmButtonText: '확인',
+                  text: "비밀번호가 일치하지 않습니다. 확인해 주세요.",
+                  icon: "warning",
+                  confirmButtonColor: "#1E1E1E",
+                  confirmButtonText: "확인",
                   scrollbarPadding: false,
-                })
-                return
+                });
+                return;
               }
 
               // 필수 동의 체크박스 검사
               if (!isRequiredChecked) {
                 Swal.fire({
-                  text: '필수 약관에 동의해 주세요.',
-                  icon: 'warning',
-                  confirmButtonColor: '#1E1E1E',
-                  confirmButtonText: '확인',
+                  text: "필수 약관에 동의해 주세요.",
+                  icon: "warning",
+                  confirmButtonColor: "#1E1E1E",
+                  confirmButtonText: "확인",
                   scrollbarPadding: false,
-                })
-                return
+                });
+                return;
               }
 
               // 회원가입 처리
               try {
-                await handleSignUp(email, password)
+                await handleSignUp(email, password);
               } catch (error) {
                 Swal.fire({
                   text: `${errorMessage}`,
-                  icon: 'warning',
-                  confirmButtonColor: '#1E1E1E',
-                  confirmButtonText: '확인',
+                  icon: "warning",
+                  confirmButtonColor: "#1E1E1E",
+                  confirmButtonText: "확인",
                   scrollbarPadding: false,
-                })
+                });
               }
             }}
           >
@@ -185,9 +185,9 @@ export default function Join() {
                 type="button"
                 onClick={async () => {
                   if (isIdValid && email.length > 0) {
-                    await setIscheckRedundancyOpened(true)
-                    const result = await checkEmailExists(email)
-                    setIsEmailExists(result)
+                    await setIscheckRedundancyOpened(true);
+                    const result = await checkEmailExists(email);
+                    setIsEmailExists(result);
                   }
                 }}
               >
@@ -201,16 +201,16 @@ export default function Join() {
                   <div>
                     <CheckRedundancy isemailexists={isEmailExists.toString()}>
                       {isEmailExists
-                        ? '이미 가입한 이메일입니다.'
-                        : '사용 가능한 이메일입니다.'}
+                        ? "이미 가입한 이메일입니다."
+                        : "사용 가능한 이메일입니다."}
                     </CheckRedundancy>
                   </div>
                 )}
-                {!ischeckRedundancyOpened && email === '' && (
+                {!ischeckRedundancyOpened && email === "" && (
                   <div>@앞 4~12자/영문 소문자, 숫자 가능 (중복확인 필수)</div>
                 )}
                 {!ischeckRedundancyOpened && email && isIdValid && (
-                  <div style={{ color: 'rgb(0, 101, 196)' }}>
+                  <div style={{ color: "rgb(0, 101, 196)" }}>
                     올바른 이메일 형식입니다, 중복확인을 해주세요.
                   </div>
                 )}
@@ -236,11 +236,11 @@ export default function Join() {
               <InputWrapper>
                 <Input
                   setConfirmPassword={setConfirmPassword}
-                  type={isPasswordVisible ? 'text' : 'password'} // 상태에 따라 type 변경
+                  type={isPasswordVisible ? "text" : "password"} // 상태에 따라 type 변경
                   placeholder="비밀번호 확인을 위해 다시 입력해주세요."
                 />
                 {/* 눈 모양 아이콘 */}
-                <EyeIcon onClick={() => setIsPasswordVisible(prev => !prev)}>
+                <EyeIcon onClick={() => setIsPasswordVisible((prev) => !prev)}>
                   {isPasswordVisible ? (
                     <AiOutlineEyeInvisible />
                   ) : (
@@ -273,7 +273,7 @@ export default function Join() {
 
               {/* 비밀번호가 올바르고 비밀번호 확인란이 비어 있을 때 */}
               {isPasswordValid && !confirmPassword && (
-                <HelperText style={{ color: 'rgb(0, 101, 196)' }}>
+                <HelperText style={{ color: "rgb(0, 101, 196)" }}>
                   올바른 비밀번호 형식입니다.
                 </HelperText>
               )}
@@ -292,7 +292,7 @@ export default function Join() {
                 <input
                   type="checkbox"
                   checked={isRequiredChecked}
-                  onChange={e => setIsRequiredChecked(e.target.checked)}
+                  onChange={(e) => setIsRequiredChecked(e.target.checked)}
                 />
                 <label>[필수]만 14세 이상이며 모두 동의합니다.</label>
               </AgreeWrapper>
@@ -323,25 +323,25 @@ export default function Join() {
             src={join_image}
             alt=""
             onLoad={() => setIsImageLoaded(true)}
-            style={{ display: isImageLoaded ? 'block' : 'none' }}
+            style={{ display: isImageLoaded ? "block" : "none" }}
           />
         </ImgCon>
       )}
     </JoinCon>
-  )
+  );
 }
 
 const JoinCon = styled.div`
   width: 100%;
   display: flex;
-`
+`;
 
 interface FormConType {
-  windowwidth: number
+  windowwidth: number;
 }
 
 const FormCon = styled.div<FormConType>`
-  width: ${props => (props.windowwidth === 1920 ? '50%' : '100%')};
+  width: ${(props) => (props.windowwidth === 1920 ? "50%" : "100%")};
   height: 100vh;
   overflow: hidden;
   display: flex;
@@ -365,7 +365,7 @@ const FormCon = styled.div<FormConType>`
       }
     }
   }
-`
+`;
 
 const FormWrapper = styled.div`
   display: flex;
@@ -387,9 +387,9 @@ const FormWrapper = styled.div`
       margin-bottom: 10px;
     }
   }
-`
+`;
 
-const Form = styled.form``
+const Form = styled.form``;
 
 const FormTitle = styled.h2`
   font-size: 1.8rem;
@@ -402,7 +402,7 @@ const FormTitle = styled.h2`
     margin: 0 auto 30px;
     padding-left: 10px;
   }
-`
+`;
 const IdInputCon = styled.div`
   width: 100%;
   display: flex;
@@ -434,11 +434,11 @@ const IdInputCon = styled.div`
       margin-left: 6px;
     }
   }
-`
+`;
 
 const PasswordInputCon = styled.div`
   width: 100%;
-`
+`;
 const InputWrapper = styled.div`
   position: relative;
   width: 100%;
@@ -452,7 +452,7 @@ const InputWrapper = styled.div`
       width: 80%;
     }
   }
-`
+`;
 
 const EyeIcon = styled.div`
   position: absolute;
@@ -466,7 +466,7 @@ const EyeIcon = styled.div`
   @media (max-width: 600px) {
     right: 60px;
   }
-`
+`;
 
 const HelperTextCon = styled.div`
   width: 100%;
@@ -478,7 +478,7 @@ const HelperTextCon = styled.div`
     margin-bottom: 40px;
     padding-left: 10px;
   }
-`
+`;
 
 const HelperText = styled.p`
   font-size: 0.9rem;
@@ -490,7 +490,7 @@ const HelperText = styled.p`
     width: 85%;
     margin: 0 auto;
   }
-`
+`;
 
 const WarningText = styled.span`
   color: red;
@@ -502,7 +502,7 @@ const WarningText = styled.span`
     width: 85%;
     margin: 0 auto;
   }
-`
+`;
 
 const ValidText = styled.span`
   color: green;
@@ -514,11 +514,11 @@ const ValidText = styled.span`
     width: 85%;
     margin: 0 auto;
   }
-`
+`;
 
 const CheckRedundancy = styled.span<{ isemailexists: string }>`
-  color: ${props => (props.isemailexists === 'true' ? 'red' : 'green')};
-`
+  color: ${(props) => (props.isemailexists === "true" ? "red" : "green")};
+`;
 
 const AgreeCon = styled.div`
   display: flex;
@@ -531,7 +531,7 @@ const AgreeCon = styled.div`
     width: 80%;
     margin: 10px auto;
   }
-`
+`;
 
 const AgreeWrapper = styled.div`
   input {
@@ -554,7 +554,7 @@ const AgreeWrapper = styled.div`
       font-size: 0.8rem;
     }
   }
-`
+`;
 
 const JoinBtn = styled.button`
   color: #fff;
@@ -572,7 +572,7 @@ const JoinBtn = styled.button`
     width: 80%;
     margin: 20px auto 0;
   }
-`
+`;
 
 const ImgCon = styled.div`
   width: 50%;
@@ -583,7 +583,7 @@ const ImgCon = styled.div`
     width: 100%;
     height: 100vh;
   }
-`
+`;
 
 const Loading = styled.div`
   display: flex;
@@ -595,4 +595,4 @@ const Loading = styled.div`
   img {
     width: 15%;
   }
-`
+`;
