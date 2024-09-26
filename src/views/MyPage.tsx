@@ -1,50 +1,50 @@
-import { useState, useEffect } from "react";
-import styled from "styled-components";
-import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import { useAuth } from "../hooks/useAuth";
-import UnauthorizedAccess from "../components/Common/UnauthorizedAccess";
-import { fetchUserInfoByUserId } from "../config/api/user/fetchUserInfo";
+import { useState, useEffect } from 'react'
+import styled from 'styled-components'
+import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
+import { useAuth } from '../hooks/useAuth'
+import UnauthorizedAccess from '../components/Common/UnauthorizedAccess'
+import { fetchUserInfoByUserId } from '../config/api/user/fetchUserInfo'
 
 interface userInfoType {
-  id: string;
-  email: string;
-  avatar_url: string | null;
-  username: string;
-  admin: boolean;
-  likes: number[] | null;
-  nickname: string | null;
+  id: string
+  email: string
+  avatar_url: string | null
+  username: string
+  admin: boolean
+  likes: number[] | null
+  nickname: string | null
 }
 
 export default function MyPage() {
-  const { session } = useAuth();
-  const [isNicknameEditMode, setIsNicknameEditMode] = useState(false);
-  const [isEmailEditMode, setIsEmailEditMode] = useState(false);
+  const { session } = useAuth()
+  const [isNicknameEditMode, setIsNicknameEditMode] = useState(false)
+  const [isEmailEditMode, setIsEmailEditMode] = useState(false)
   const [userInfo, setUserInfo] = useState<userInfoType>({
-    id: "",
-    email: "",
+    id: '',
+    email: '',
     avatar_url: null,
-    username: "",
+    username: '',
     admin: false,
     likes: null,
     nickname: null,
-  });
+  })
 
-  const [initialNickname, setInitialNickname] = useState("");
-  const [initialEmail, setInitialEmail] = useState("");
+  const [initialNickname, setInitialNickname] = useState('')
+  const [initialEmail, setInitialEmail] = useState('')
 
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
-    useState(false); // 비밀번호 확인 보이기 상태 관리
-  const [isPasswordValid, setIsPasswordValid] = useState(false); // 비밀번호 유효성 상태
-  const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(false); // 비밀번호 확인 유효성 상태
-  const [warningText, setWarningText] = useState(""); // 경고 메시지 상태
+    useState(false) // 비밀번호 확인 보이기 상태 관리
+  const [isPasswordValid, setIsPasswordValid] = useState(false) // 비밀번호 유효성 상태
+  const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(false) // 비밀번호 확인 유효성 상태
+  const [warningText, setWarningText] = useState('') // 경고 메시지 상태
 
   useEffect(() => {
-    if (!session) return;
+    if (!session) return
 
     const getUserInfo = async () => {
-      const result = await fetchUserInfoByUserId(session.user.id);
+      const result = await fetchUserInfoByUserId(session.user.id)
       setUserInfo(() => ({
         id: result?.id,
         email: result?.email,
@@ -53,55 +53,55 @@ export default function MyPage() {
         admin: result?.admin,
         likes: result?.likes,
         nickname: result?.nickname ? result.nickname : null,
-      }));
+      }))
       setInitialNickname(
-        result?.nickname ? result.nickname : result?.email.split("@")[0]
-      );
-      setInitialEmail(result?.email);
-    };
+        result?.nickname ? result.nickname : result?.email.split('@')[0]
+      )
+      setInitialEmail(result?.email)
+    }
 
-    getUserInfo();
-  }, [session]);
+    getUserInfo()
+  }, [session])
 
   // 비밀번호 유효성 검사
   useEffect(() => {
     const passwordRegex =
-      /^(?=.*[A-Za-z])(?=.*[!@#$%^&*()\-_=+{};:,<.>])|(?=.*[A-Z])(?=.*\d)|(?=.*[a-z])(?=.*[!@#$%^&*()\-_=+{};:,<.>])|(?=.*\d)(?=.*[!@#$%^&*()\-_=+{};:,<.>]).{6,20}$/;
+      /^(?=.*[A-Za-z])(?=.*[!@#$%^&*()\-_=+{};:,<.>])|(?=.*[A-Z])(?=.*\d)|(?=.*[a-z])(?=.*[!@#$%^&*()\-_=+{};:,<.>])|(?=.*\d)(?=.*[!@#$%^&*()\-_=+{};:,<.>]).{6,20}$/
 
-    const isValidPassword = passwordRegex.test(password);
-    setIsPasswordValid(isValidPassword);
+    const isValidPassword = passwordRegex.test(password)
+    setIsPasswordValid(isValidPassword)
 
-    const isPasswordMatching = password === confirmPassword && password !== "";
-    setIsConfirmPasswordValid(isPasswordMatching);
+    const isPasswordMatching = password === confirmPassword && password !== ''
+    setIsConfirmPasswordValid(isPasswordMatching)
 
     // 첫 번째 인풋이 비어있을 때 경고 메시지 표시 안함
     if (!password) {
-      setWarningText("");
+      setWarningText('')
     }
     // 비밀번호 유효성이 올바르지 않고, 비밀번호가 일치하지 않는 경우
     else if (!isValidPassword && !isPasswordMatching) {
       setWarningText(
-        "6~20자 / 영문 대문자, 소문자, 숫자, 특수문자 중 2가지 이상 조합만 가능합니다."
-      );
+        '6~20자 / 영문 대문자, 소문자, 숫자, 특수문자 중 2가지 이상 조합만 가능합니다.'
+      )
     }
     // 비밀번호 유효성이 올바르지 않은 경우만
     else if (!isValidPassword) {
       setWarningText(
-        "6~20자 / 영문 대문자, 소문자, 숫자, 특수문자 중 2가지 이상 조합만 가능합니다."
-      );
+        '6~20자 / 영문 대문자, 소문자, 숫자, 특수문자 중 2가지 이상 조합만 가능합니다.'
+      )
     }
     // 비밀번호가 일치하지 않는 경우만
     else if (!isPasswordMatching && confirmPassword) {
-      setWarningText("비밀번호가 일치하지 않습니다.");
+      setWarningText('비밀번호가 일치하지 않습니다.')
     }
     // 모든 조건이 충족될 경우 경고 문구를 비움
     else {
-      setWarningText("");
+      setWarningText('')
     }
-  }, [password, confirmPassword]);
+  }, [password, confirmPassword])
 
   if (!session) {
-    return <UnauthorizedAccess />;
+    return <UnauthorizedAccess />
   }
 
   return (
@@ -113,7 +113,7 @@ export default function MyPage() {
               src={
                 session.user.user_metadata.avatar_url
                   ? session.user.user_metadata.avatar_url
-                  : "http://img1.kakaocdn.net/thumb/R640x640.q70/?fname=http://t1.kakaocdn.net/account_images/default_profile.jpeg"
+                  : 'http://img1.kakaocdn.net/thumb/R640x640.q70/?fname=http://t1.kakaocdn.net/account_images/default_profile.jpeg'
               }
               alt="avatar url"
             />
@@ -138,8 +138,8 @@ export default function MyPage() {
                     </button>
                     <button
                       onClick={() => {
-                        setUserInfo({ ...userInfo, nickname: initialNickname });
-                        setIsNicknameEditMode(false);
+                        setUserInfo({ ...userInfo, nickname: initialNickname })
+                        setIsNicknameEditMode(false)
                       }}
                     >
                       취소
@@ -153,13 +153,13 @@ export default function MyPage() {
                 draggable={false}
                 disabled={!isNicknameEditMode}
                 type="text"
-                value={userInfo.nickname || userInfo.email.split("@")[0]}
-                onChange={(e) => {
+                value={userInfo.nickname || userInfo.email.split('@')[0]}
+                onChange={e => {
                   if (isNicknameEditMode) {
-                    setUserInfo({ ...userInfo, nickname: e.target.value });
+                    setUserInfo({ ...userInfo, nickname: e.target.value })
                   }
                 }}
-                style={{ pointerEvents: isNicknameEditMode ? "auto" : "none" }}
+                style={{ pointerEvents: isNicknameEditMode ? 'auto' : 'none' }}
               />
               <Infomation>
                 * 닉네임은 변경 후 30일이 지나야 다시 바꿀 수 있습니다. <br />
@@ -184,8 +184,8 @@ export default function MyPage() {
                     </button>
                     <button
                       onClick={() => {
-                        setUserInfo({ ...userInfo, email: initialEmail });
-                        setIsEmailEditMode(false);
+                        setUserInfo({ ...userInfo, email: initialEmail })
+                        setIsEmailEditMode(false)
                       }}
                     >
                       취소
@@ -200,12 +200,12 @@ export default function MyPage() {
                 draggable={false}
                 disabled={!isEmailEditMode}
                 value={userInfo.email}
-                onChange={(e) => {
+                onChange={e => {
                   if (isEmailEditMode) {
-                    setUserInfo({ ...userInfo, email: e.target.value });
+                    setUserInfo({ ...userInfo, email: e.target.value })
                   }
                 }}
-                style={{ pointerEvents: isEmailEditMode ? "auto" : "none" }}
+                style={{ pointerEvents: isEmailEditMode ? 'auto' : 'none' }}
               />
               <Infomation>
                 * 이메일 수정 후 인증번호 요청을 누르면 해당 이메일로 인증번호가
@@ -220,23 +220,33 @@ export default function MyPage() {
               <Title>비밀번호 변경</Title>
             </SectionHeader>
             <SectionBody>
-              {/* 비밀번호 입력 필드 */}
+              {/* 기존 비밀번호 입력 필드 */}
               <InputWrapper>
                 <input
-                  type={"password"}
-                  placeholder="비밀번호를 입력해주세요."
+                  type={'password'}
+                  placeholder="기존 비밀번호를 입력해주세요."
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={e => setPassword(e.target.value)}
+                />
+              </InputWrapper>
+
+              {/* 새로운 비밀번호 입력 필드 */}
+              <InputWrapper>
+                <input
+                  type={'password'}
+                  placeholder="새로운 비밀번호를 입력해주세요."
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
                 />
               </InputWrapper>
 
               {/* 비밀번호 확인 입력 필드 */}
               <InputWrapper>
                 <input
-                  type={isConfirmPasswordVisible ? "text" : "password"}
+                  type={isConfirmPasswordVisible ? 'text' : 'password'}
                   placeholder="비밀번호 확인을 위해 다시 입력해주세요."
                   value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  onChange={e => setConfirmPassword(e.target.value)}
                 />
                 <EyeIcon
                   onClick={() =>
@@ -273,14 +283,15 @@ export default function MyPage() {
         </Right>
       </Main>
     </Container>
-  );
+  )
 }
 
 // 스타일링
 const Container = styled.div`
   margin-top: 100px;
+  border-top: 1px solid rgba(210, 210, 210, 1);
   padding: 10px 0 100px 0;
-`;
+`
 
 const Main = styled.main`
   margin: 30px auto 0;
@@ -291,18 +302,18 @@ const Main = styled.main`
     flex-direction: column;
     width: 100%;
   }
-`;
+`
 
 const Left = styled.div`
   flex: 1;
-`;
+`
 
 const Right = styled.div`
   flex: 3;
   display: flex;
   flex-direction: column;
   gap: 10px;
-`;
+`
 
 const ProfileWrapper = styled.div`
   display: flex;
@@ -310,13 +321,13 @@ const ProfileWrapper = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-`;
+`
 
 const ProfileImg = styled.img`
   border-radius: 50%;
   width: 60%;
   height: 60%;
-`;
+`
 
 const ProfileChangeButton = styled.button`
   margin-top: 20px;
@@ -331,21 +342,21 @@ const ProfileChangeButton = styled.button`
   &:hover {
     background-color: rgba(50, 50, 50, 1);
   }
-`;
+`
 
 const NicknameSection = styled.section`
   width: 100%;
-`;
+`
 
 const EmailSection = styled.section`
   width: 100%;
   margin-top: 30px;
-`;
+`
 
 const PasswordSection = styled.section`
   width: 100%;
   margin-top: 30px;
-`;
+`
 
 const SectionHeader = styled.div`
   width: 100%;
@@ -361,7 +372,7 @@ const SectionHeader = styled.div`
     font-size: 1rem;
     color: rgb(0, 109, 235);
   }
-`;
+`
 
 const SectionBody = styled.div`
   input {
@@ -380,7 +391,7 @@ const SectionBody = styled.div`
       color: rgba(150, 150, 150, 1);
     }
   }
-`;
+`
 
 const InputWrapper = styled.div`
   position: relative;
@@ -391,7 +402,11 @@ const InputWrapper = styled.div`
     width: 100%;
     padding-right: 40px;
   }
-`;
+
+  &:first-of-type {
+    margin-top: 14px;
+  }
+`
 
 const EyeIcon = styled.div`
   position: absolute;
@@ -401,13 +416,13 @@ const EyeIcon = styled.div`
   cursor: pointer;
   font-size: 1.2rem;
   color: #000;
-`;
+`
 
 const WarningText = styled.span`
   color: red;
   font-size: 0.9rem;
   margin: 6px 0 35px;
-`;
+`
 
 const SectionFooter = styled.div`
   display: flex;
@@ -432,7 +447,7 @@ const SectionFooter = styled.div`
       cursor: not-allowed;
     }
   }
-`;
+`
 
 const AccountDeletionSection = styled.section`
   width: 100%;
@@ -450,21 +465,21 @@ const AccountDeletionSection = styled.section`
       background-color: darkred;
     }
   }
-`;
+`
 
 const Infomation = styled.p`
   line-height: 28px;
   margin-top: 10px;
   color: rgba(120, 120, 120, 1);
   font-size: 0.9rem;
-`;
+`
 
 const Title = styled.div`
   font-size: 1.2rem;
   font-weight: 600;
   color: rgba(50, 50, 50, 1);
-`;
+`
 
-const ButtonWrapper = styled.div``;
+const ButtonWrapper = styled.div``
 
-const EditButtonWrapper = styled.div``;
+const EditButtonWrapper = styled.div``
