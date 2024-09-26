@@ -258,6 +258,7 @@ const ProductImg = styled.div`
   img {
     width: 100%;
     min-width: 80px;
+    border-radius: 6px;
   }
 
   @media (max-width: 1024px) {

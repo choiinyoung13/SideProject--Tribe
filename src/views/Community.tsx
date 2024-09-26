@@ -172,7 +172,12 @@ export default function Community() {
       <RightSidebar>
         <WidgetWrapper>
           <WidgetTitleWrapper>
-            <TitleImage src={aside_image2} alt="aside image1" />
+            <TitleImage
+              src={aside_image2}
+              alt="aside image1"
+              width={'22px'}
+              height={'22px'}
+            />
             <WidgetTitle>실시간 인기 키워드</WidgetTitle>
           </WidgetTitleWrapper>
           <WidgetBack>
@@ -253,12 +258,14 @@ const SelectSection = styled.div`
   &::after {
     content: '';
     position: absolute;
-    top: 65%;
-    right: 32px;
+    top: 58%;
+    right: 34px;
     transform: translateY(-50%);
-    border: solid transparent;
-    border-width: 6px 6px 0;
-    border-top-color: #000;
+    transform: rotate(-45deg);
+    width: 7px;
+    height: 7px;
+    border-bottom: 2.5px solid rgba(40, 40, 40, 1);
+    border-left: 2.5px solid rgba(40, 40, 40, 1);
     pointer-events: none;
   }
 
@@ -266,15 +273,8 @@ const SelectSection = styled.div`
     padding: 30px 20px 0 20px;
 
     &::after {
-      content: '';
-      position: absolute;
-      top: 72%;
-      right: 32px;
-      transform: translateY(-50%);
-      border: solid transparent;
-      border-width: 6px 6px 0;
-      border-top-color: #000;
-      pointer-events: none;
+      top: 64%;
+      right: 36px;
     }
   }
 `

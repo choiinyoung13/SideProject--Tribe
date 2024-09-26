@@ -248,7 +248,7 @@ const ButtonCon = styled.div`
 
   button {
     border: none;
-    border-radius: 2px;
+    border-radius: 6px;
     transition: color 0.3s ease;
   }
 

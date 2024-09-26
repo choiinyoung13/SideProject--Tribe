@@ -77,6 +77,7 @@ interface CountButtonType {
 
 const ButtonCon = styled.div`
   border: 1px solid rgba(200, 200, 200, 1);
+  border-radius: 6px;
   display: flex;
 `
 

@@ -1,16 +1,16 @@
-import styled from "styled-components";
-import formatNumberWithCommas from "../../utill/formatNumberWithCommas";
-import { FaPlus } from "react-icons/fa6";
-import { PiEqualsBold } from "react-icons/pi";
-import useWindowWidth from "../../hooks/useWindowWidth";
-import { SHIPPING_COST } from "../../config/constants/constants";
+import styled from 'styled-components'
+import formatNumberWithCommas from '../../utill/formatNumberWithCommas'
+import { FaPlus } from 'react-icons/fa6'
+import { PiEqualsBold } from 'react-icons/pi'
+import useWindowWidth from '../../hooks/useWindowWidth'
+import { SHIPPING_COST } from '../../config/constants/constants'
 
 export default function TotalPriceSection({
   totalPrice,
 }: {
-  totalPrice: number;
+  totalPrice: number
 }) {
-  const windowWidth = useWindowWidth();
+  const windowWidth = useWindowWidth()
 
   return (
     <>
@@ -61,14 +61,14 @@ export default function TotalPriceSection({
         )}
       </ItemContentCon>
     </>
-  );
+  )
 }
 
 const ItemContentCon = styled.div`
   @media (max-width: 600px) {
     font-size: 0.8rem;
   }
-`;
+`
 
 const ItemContent = styled.div`
   display: flex;
@@ -87,7 +87,7 @@ const ItemContent = styled.div`
     align-items: flex-start;
     padding: 10px;
   }
-`;
+`
 
 const TotalOrderPrice = styled.div`
   flex-grow: 1;
@@ -116,7 +116,7 @@ const TotalOrderPrice = styled.div`
       font-size: 1.2rem;
     }
   }
-`;
+`
 const DeliveryPrice = styled.div`
   flex-grow: 1;
   flex-basis: 33.3%;
@@ -143,7 +143,7 @@ const DeliveryPrice = styled.div`
       font-size: 1.2rem;
     }
   }
-`;
+`
 const TotalPrice = styled.div`
   flex-grow: 1;
   flex-basis: 33.3%;
@@ -170,7 +170,7 @@ const TotalPrice = styled.div`
       font-size: 1.2rem;
     }
   }
-`;
+`
 
 const PlusIcon = styled.div`
   position: absolute;
@@ -200,7 +200,7 @@ const PlusIcon = styled.div`
   @media (max-width: 600px) {
     display: none;
   }
-`;
+`
 
 const EqualIcon = styled.div`
   position: absolute;
@@ -230,11 +230,11 @@ const EqualIcon = styled.div`
   @media (max-width: 600px) {
     display: none;
   }
-`;
+`
 
 const MobileTotalPriceSection = styled.div`
   padding: 10px 12px;
-`;
+`
 
 const MobileTotalOrderPrice = styled.div`
   display: flex;
@@ -247,7 +247,7 @@ const MobileTotalOrderPrice = styled.div`
   span {
     font-weight: 500;
   }
-`;
+`
 const MobileDeliveryPrice = styled.div`
   display: flex;
   justify-content: space-between;
@@ -258,7 +258,7 @@ const MobileDeliveryPrice = styled.div`
   span {
     font-weight: 500;
   }
-`;
+`
 const MobileTotalPrice = styled.div`
   display: flex;
   justify-content: space-between;
@@ -270,4 +270,4 @@ const MobileTotalPrice = styled.div`
   span {
     font-weight: 500;
   }
-`;
+`

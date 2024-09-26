@@ -4,6 +4,7 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
 import { useAuth } from '../hooks/useAuth'
 import UnauthorizedAccess from '../components/Common/UnauthorizedAccess'
 import { fetchUserInfoByUserId } from '../config/api/user/fetchUserInfo'
+import { FaChevronDown } from 'react-icons/fa'
 
 interface userInfoType {
   id: string
@@ -32,6 +33,7 @@ export default function MyPage() {
   const [initialNickname, setInitialNickname] = useState('')
   const [initialEmail, setInitialEmail] = useState('')
 
+  const [currentPassword, setCurrentPassword] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
@@ -39,6 +41,9 @@ export default function MyPage() {
   const [isPasswordValid, setIsPasswordValid] = useState(false) // 비밀번호 유효성 상태
   const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(false) // 비밀번호 확인 유효성 상태
   const [warningText, setWarningText] = useState('') // 경고 메시지 상태
+  const [selectedReason, setSelectedReason] = useState('') // 탈퇴 사유 선택 상태
+
+  const isDeletionButtonDisabled = !selectedReason // 탈퇴 버튼 활성화 조건
 
   useEffect(() => {
     if (!session) return
@@ -74,28 +79,19 @@ export default function MyPage() {
     const isPasswordMatching = password === confirmPassword && password !== ''
     setIsConfirmPasswordValid(isPasswordMatching)
 
-    // 첫 번째 인풋이 비어있을 때 경고 메시지 표시 안함
     if (!password) {
       setWarningText('')
-    }
-    // 비밀번호 유효성이 올바르지 않고, 비밀번호가 일치하지 않는 경우
-    else if (!isValidPassword && !isPasswordMatching) {
+    } else if (!isValidPassword && !isPasswordMatching) {
       setWarningText(
         '6~20자 / 영문 대문자, 소문자, 숫자, 특수문자 중 2가지 이상 조합만 가능합니다.'
       )
-    }
-    // 비밀번호 유효성이 올바르지 않은 경우만
-    else if (!isValidPassword) {
+    } else if (!isValidPassword) {
       setWarningText(
         '6~20자 / 영문 대문자, 소문자, 숫자, 특수문자 중 2가지 이상 조합만 가능합니다.'
       )
-    }
-    // 비밀번호가 일치하지 않는 경우만
-    else if (!isPasswordMatching && confirmPassword) {
+    } else if (!isPasswordMatching && confirmPassword) {
       setWarningText('비밀번호가 일치하지 않습니다.')
-    }
-    // 모든 조건이 충족될 경우 경고 문구를 비움
-    else {
+    } else {
       setWarningText('')
     }
   }, [password, confirmPassword])
@@ -225,8 +221,8 @@ export default function MyPage() {
                 <input
                   type={'password'}
                   placeholder="기존 비밀번호를 입력해주세요."
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
+                  value={currentPassword}
+                  onChange={e => setCurrentPassword(e.target.value)}
                 />
               </InputWrapper>
 
@@ -277,8 +273,37 @@ export default function MyPage() {
               <Title>회원 탈퇴</Title>
             </SectionHeader>
             <SectionBody>
-              <button className="delete-account-button">회원 탈퇴</button>
+              <CustomSelectWrapper>
+                <AccountDeletionSelect
+                  onChange={e => {
+                    setSelectedReason(e.target.value)
+                  }}
+                >
+                  <option value="" disabled hidden>
+                    Trib를 떠나는 이유를 알려주세요
+                  </option>
+                  <option value="더이상 사용하지 않아요">
+                    더이상 사용하지 않아요
+                  </option>
+                  <option value="대체할 만한 서비스를 찾았어요">
+                    대체할 만한 서비스를 찾았어요
+                  </option>
+                  <option value="쿠폰 · 적립금 등 혜택이 적어요">
+                    쿠폰 · 적립금 등 혜택이 적어요
+                  </option>
+                  <option value="원하는 제품이 없어요">
+                    원하는 제품이 없어요
+                  </option>
+                  <option value="기타">기타</option>
+                </AccountDeletionSelect>
+                <SelectArrow>
+                  <FaChevronDown />
+                </SelectArrow>
+              </CustomSelectWrapper>
             </SectionBody>
+            <SectionFooter>
+              <button disabled={isDeletionButtonDisabled}>회원 탈퇴</button>
+            </SectionFooter>
           </AccountDeletionSection>
         </Right>
       </Main>
@@ -312,7 +337,7 @@ const Right = styled.div`
   flex: 3;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 40px;
 `
 
 const ProfileWrapper = styled.div`
@@ -350,12 +375,10 @@ const NicknameSection = styled.section`
 
 const EmailSection = styled.section`
   width: 100%;
-  margin-top: 30px;
 `
 
 const PasswordSection = styled.section`
   width: 100%;
-  margin-top: 30px;
 `
 
 const SectionHeader = styled.div`
@@ -406,6 +429,10 @@ const InputWrapper = styled.div`
   &:first-of-type {
     margin-top: 14px;
   }
+
+  &:last-of-type {
+    margin-bottom: 0px;
+  }
 `
 
 const EyeIcon = styled.div`
@@ -436,10 +463,10 @@ const SectionFooter = styled.div`
     padding: 10px 20px;
     cursor: pointer;
     font-size: 0.9rem;
-    margin-top: 8px;
+    margin-top: 16px;
 
     &:hover {
-      background-color: rgb(0, 80, 200);
+      background-color: rgb(50, 50, 50, 1);
     }
 
     &:disabled {
@@ -451,20 +478,34 @@ const SectionFooter = styled.div`
 
 const AccountDeletionSection = styled.section`
   width: 100%;
-  margin-top: 30px;
+`
 
-  .delete-account-button {
-    background-color: red;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    padding: 10px 20px;
-    cursor: pointer;
+const CustomSelectWrapper = styled.div`
+  position: relative;
+  display: inline-block;
+  width: 100%;
+`
 
-    &:hover {
-      background-color: darkred;
-    }
-  }
+const AccountDeletionSelect = styled.select`
+  width: 100%;
+  -webkit-appearance: none; /* Safari, Chrome */
+  -moz-appearance: none; /* Firefox */
+  appearance: none; /* Standard */
+  padding: 10px;
+  font-size: 1rem;
+  background-color: rgb(245, 245, 245);
+  border: 1px solid rgba(230, 230, 230, 1);
+  border-radius: 6px;
+`
+
+const SelectArrow = styled.span`
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  font-size: 1rem;
+  color: rgba(120, 120, 120, 1);
 `
 
 const Infomation = styled.p`

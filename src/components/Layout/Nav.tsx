@@ -29,6 +29,20 @@ export default function Nav() {
     }
   )
 
+  // 화면 크기 변경 감지 및 상태 업데이트
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 1000) {
+        setMenuOpen(false) // 1000px보다 크면 메뉴를 닫음
+      }
+    }
+
+    window.addEventListener('resize', handleResize)
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [])
+
   const toggleMenu = (state: boolean) => {
     setMenuOpen(state)
   }
@@ -128,7 +142,7 @@ export default function Nav() {
         </NavRight>
         <HamburgerMenu
           onClick={() => {
-            toggleMenu(true)
+            toggleMenu(!menuOpen) // 열고 닫기 토글
           }}
         >
           {menuOpen ? <FaTimes /> : <FaBars />}
@@ -163,11 +177,7 @@ export default function Nav() {
               <Link
                 to={'/'}
                 onClick={() => {
-                  ;() => {
-                    toggleMenu(false)
-                  }
-                  signOut()
-                  queryClient.invalidateQueries('@cartData')
+                  handleLogout()
                 }}
               >
                 <li>LOGOUT</li>
@@ -199,7 +209,6 @@ export default function Nav() {
                     scrollbarPadding: false,
                   }).then(result => {
                     if (result.isConfirmed) {
-                      // 로그인 버튼을 눌렀을 때 이동할 URL
                       navigate('/login')
                     }
                   })
@@ -225,45 +234,6 @@ interface NavProps {
   windowwidth: number
 }
 
-const NavCon = styled.nav<NavProps>`
-  position: absolute;
-  top: 0px;
-  z-index: 102;
-  width: 100%;
-  height: 100px;
-  padding: 15px 60px 15px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background-color: ${props =>
-    props.pantname === 'login' ||
-    props.pantname === 'join' ||
-    props.pantname === 'about' ||
-    props.pantname === 'community-feature' ||
-    props.pantname === ''
-      ? 'rgba(0,0,0,0)'
-      : 'rgba(255,255,255,1)'};
-
-  @media (max-width: 1024px) {
-    height: 90px;
-    padding: 40px 60px;
-  }
-
-  @media (max-width: 768px) {
-    height: 74px;
-    padding: 0px 34px;
-  }
-
-  @media (max-width: 600px) {
-    top: 52px;
-    padding: 0px 26px 0px 26px;
-    display: flex;
-    align-items: center;
-    height: 60px;
-    width: 100%;
-  }
-`
-
 const NavLeft = styled.div`
   display: flex;
   align-items: center;
@@ -271,19 +241,48 @@ const NavLeft = styled.div`
   @media (max-width: 600px) {
     align-items: start;
   }
+
+  @media (max-width: 1000px) {
+    // 1000px 이하에서 로고는 계속 표시
+    display: flex;
+  }
 `
 
-const Logo = styled.div`
-  width: 15px;
-  height: 15px;
+const NavRight = styled.ul`
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 
-  img {
-    width: 100%;
-    height: 100%;
+  a {
+    color: rgba(20, 20, 20, 1);
+    font-size: 1rem;
+    font-weight: bold;
+    text-decoration: none;
+    margin-right: 50px;
+
+    &:last-of-type {
+      margin-right: 0;
+    }
   }
 
-  @media (max-width: 1024px) {
-    margin-right: 0px;
+  @media (max-width: 1000px) {
+    display: none; // 1000px 이하에서 숨김
+  }
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+`
+
+const HamburgerMenu = styled.div`
+  display: none;
+  cursor: pointer;
+
+  @media (max-width: 1000px) {
+    display: flex;
+    align-items: center;
+    font-size: 1.4rem;
   }
 `
 
@@ -335,37 +334,69 @@ const NavLinks = styled.ul`
   }
 `
 
-const NavRight = styled.ul`
+const NavCon = styled.nav<NavProps>`
+  position: absolute;
+  top: 0px;
+  z-index: 102;
+  width: 100%;
+  height: 100px;
+  padding: 15px 60px 15px;
   display: flex;
-  list-style: none;
-  margin: 0;
-  padding: 0;
+  align-items: center;
+  justify-content: space-between;
+  background-color: ${props =>
+    props.pantname === 'login' ||
+    props.pantname === 'join' ||
+    props.pantname === 'about' ||
+    props.pantname === 'community-feature' ||
+    props.pantname === ''
+      ? 'rgba(0,0,0,0)'
+      : 'rgba(255,255,255,1)'};
 
-  a {
-    color: rgba(20, 20, 20, 1);
-    font-size: 1rem;
-    font-weight: bold;
-    text-decoration: none;
-    margin-right: 50px;
-
-    &:last-of-type {
-      margin-right: 0;
-    }
+  @media (max-width: 1024px) {
+    height: 90px;
+    padding: 40px 60px;
   }
 
   @media (max-width: 768px) {
-    display: none;
+    height: 74px;
+    padding: 0px 34px;
+  }
+
+  @media (max-width: 600px) {
+    top: 52px;
+    padding: 0px 26px 0px 26px;
+    display: flex;
+    align-items: center;
+    height: 60px;
+    width: 100%;
+  }
+
+  @media (max-width: 1000px) {
+    // 1000px 이하에서는 로고와 햄버거만 보이도록 설정
+    justify-content: space-between;
+
+    ${NavLeft}, ${HamburgerMenu} {
+      display: flex;
+    }
+
+    ${NavRight}, ${NavLinks} {
+      display: none;
+    }
   }
 `
 
-const HamburgerMenu = styled.div`
-  display: none;
-  cursor: pointer;
+const Logo = styled.div`
+  width: 15px;
+  height: 15px;
 
-  @media (max-width: 768px) {
-    display: flex;
-    align-items: center;
-    font-size: 1.4rem;
+  img {
+    width: 100%;
+    height: 100%;
+  }
+
+  @media (max-width: 1024px) {
+    margin-right: 0px;
   }
 `
 
@@ -395,7 +426,7 @@ const MobileMenu = styled.ul`
     margin: 20px 0;
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 1000px) {
     display: flex;
   }
 
