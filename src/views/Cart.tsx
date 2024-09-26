@@ -1,40 +1,41 @@
-import styled from 'styled-components'
-import CartItem from '../components/Cart/CartItem'
-import Button from '../components/Common/Button'
-import TotalPriceSection from '../components/Cart/TotalPriceSection'
-import useWindowWidth from '../hooks/useWindowWidth'
-import { useNavigate } from 'react-router-dom'
-import { useEffect, useState } from 'react'
-import { priceCalculation } from '../utill/priceCalculation'
-import EmptyCart from '../components/Cart/EmptyCart'
-import { useAuth } from '../hooks/useAuth'
-import { useCartMutations } from '../mutations/useCartMutations'
-import { UseQueryResult, useQuery } from 'react-query'
-import { fetchCartItems } from '../config/api/cart/fetchCartItems'
-import { QUERY_KEYS } from '../config/constants/queryKeys'
-import loadingIcon from '../assets/images/logo/ball-triangle.svg'
-import { countCheckItemAmount } from '../utill/countCheckItemAmount'
-import { CartItemType } from '../types/CartItemType'
-import Swal from 'sweetalert2'
+import styled from "styled-components";
+import CartItem from "../components/Cart/CartItem";
+import Button from "../components/Common/Button";
+import TotalPriceSection from "../components/Cart/TotalPriceSection";
+import useWindowWidth from "../hooks/useWindowWidth";
+import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { priceCalculation } from "../utill/priceCalculation";
+import EmptyCart from "../components/Cart/EmptyCart";
+import { useAuth } from "../hooks/useAuth";
+import { useCartMutations } from "../mutations/useCartMutations";
+import { UseQueryResult, useQuery } from "react-query";
+import { fetchCartItems } from "../config/api/cart/fetchCartItems";
+import { QUERY_KEYS } from "../config/constants/queryKeys";
+import loadingIcon from "../assets/images/logo/ball-triangle.svg";
+import { countCheckItemAmount } from "../utill/countCheckItemAmount";
+import { CartItemType } from "../types/CartItemType";
+import Swal from "sweetalert2";
+import UnauthorizedAccess from "../components/Common/UnauthorizedAccess";
 
 interface CartItemsResponse {
-  items: CartItemType[]
+  items: CartItemType[];
 }
 
 export default function Cart() {
-  const windowWidth = useWindowWidth()
-  const navigate = useNavigate()
-  const [totalPrice, setTotalPrice] = useState(0)
-  const { session } = useAuth()
-  const [allItemChecked, setAllItemChecked] = useState(false)
+  const windowWidth = useWindowWidth();
+  const navigate = useNavigate();
+  const [totalPrice, setTotalPrice] = useState(0);
+  const { session } = useAuth();
+  const [allItemChecked, setAllItemChecked] = useState(false);
   const [isAllItemReceivingDateSelected, setIsAllItemReceivingDateSelected] =
-    useState(false)
+    useState(false);
 
   const {
     deleteCartItemMutation,
     deleteAllCartItemMutation,
     toggleAllCartItemStatusMutation,
-  } = useCartMutations()
+  } = useCartMutations();
 
   const {
     data: cartData,
@@ -44,7 +45,7 @@ export default function Cart() {
     QUERY_KEYS.CART_ITEMS,
     () => {
       if (session) {
-        return fetchCartItems(session.user.id)
+        return fetchCartItems(session.user.id);
       }
     },
     {
@@ -52,24 +53,28 @@ export default function Cart() {
       staleTime: Infinity,
       cacheTime: 30 * 60 * 1000,
     }
-  )
+  );
 
   useEffect(() => {
     if (cartData && cartData.items.length > 0 && session) {
-      const isAllItmeSelected = cartData.items.every(item => item.checked)
-      setAllItemChecked(isAllItmeSelected)
+      const isAllItmeSelected = cartData.items.every((item) => item.checked);
+      setAllItemChecked(isAllItmeSelected);
 
       const isAllItemReceivingDateSelected = cartData.items.every(
         (item: CartItemType) => item.receivingDate !== 0
-      )
-      setIsAllItemReceivingDateSelected(isAllItemReceivingDateSelected)
-      console.log(isAllItemReceivingDateSelected)
+      );
+      setIsAllItemReceivingDateSelected(isAllItemReceivingDateSelected);
+      console.log(isAllItemReceivingDateSelected);
     }
-  }, [cartData, session])
+  }, [cartData, session]);
+
+  if (!session) {
+    return <UnauthorizedAccess />;
+  }
 
   if (error) {
-    console.error(error)
-    return <div>Error loading cart data</div>
+    console.error(error);
+    return <div>Error loading cart data</div>;
   }
 
   if (isLoading) {
@@ -79,7 +84,7 @@ export default function Cart() {
           <img src={loadingIcon} alt="" />
         </LoadingIcon>
       </LoadingPage>
-    )
+    );
   }
 
   return (
@@ -94,16 +99,16 @@ export default function Cart() {
                   type="checkbox"
                   checked={allItemChecked}
                   onChange={() => {
-                    const cartId = session!.user.id
+                    const cartId = session!.user.id;
 
-                    setAllItemChecked(prev => {
-                      const newValue = !prev
+                    setAllItemChecked((prev) => {
+                      const newValue = !prev;
                       toggleAllCartItemStatusMutation.mutate({
                         cartId,
                         allItemChecked: newValue,
-                      })
-                      return newValue
-                    })
+                      });
+                      return newValue;
+                    });
                   }}
                 />
               </div>
@@ -114,7 +119,7 @@ export default function Cart() {
             </CheckHeaderLeft>
             <CheckHeaderRight
               onClick={() => {
-                if (session) deleteCartItemMutation.mutate(session.user.id)
+                if (session) deleteCartItemMutation.mutate(session.user.id);
               }}
             >
               선택삭제
@@ -160,7 +165,7 @@ export default function Cart() {
                 colortype="white"
                 hover={false.toString()}
                 onClick={() => {
-                  if (session) deleteCartItemMutation.mutate(session.user.id)
+                  if (session) deleteCartItemMutation.mutate(session.user.id);
                 }}
               >
                 선택상품 삭제
@@ -170,12 +175,12 @@ export default function Cart() {
                 hover={false.toString()}
                 onClick={() => {
                   Swal.fire({
-                    text: '품절 상품이 없습니다.',
-                    icon: 'warning',
-                    confirmButtonColor: '#1E1E1E',
-                    confirmButtonText: '확인',
+                    text: "품절 상품이 없습니다.",
+                    icon: "warning",
+                    confirmButtonColor: "#1E1E1E",
+                    confirmButtonText: "확인",
                     scrollbarPadding: false,
-                  })
+                  });
                 }}
               >
                 품절상품 삭제
@@ -194,27 +199,27 @@ export default function Cart() {
         <ButtonCon>
           <button
             onClick={() => {
-              navigate('/shop')
+              navigate("/shop");
             }}
           >
-            {cartData.items.length > 0 ? '계속 쇼핑하기' : '쇼핑하러 가기'}
+            {cartData.items.length > 0 ? "계속 쇼핑하기" : "쇼핑하러 가기"}
           </button>
           {cartData.items.length > 0 && isAllItemReceivingDateSelected ? (
             <button
               onClick={() => {
                 Swal.fire({
-                  text: '구매해주셔서 감사합니다.',
-                  icon: 'success',
-                  confirmButtonColor: '#1E1E1E',
-                  confirmButtonText: '확인',
+                  text: "구매해주셔서 감사합니다.",
+                  icon: "success",
+                  confirmButtonColor: "#1E1E1E",
+                  confirmButtonText: "확인",
                   scrollbarPadding: false,
-                }).then(result => {
+                }).then((result) => {
                   if (result.isConfirmed) {
                     // 확인 버튼을 눌렀을 때 이동할 URL
-                    navigate('/shop')
+                    navigate("/shop");
                   }
-                })
-                deleteAllCartItemMutation.mutate(session!.user.id)
+                });
+                deleteAllCartItemMutation.mutate(session!.user.id);
               }}
             >
               결제하기
@@ -225,7 +230,7 @@ export default function Cart() {
         </ButtonCon>
       </CartCon>
     )
-  )
+  );
 }
 
 const CartCon = styled.div`
@@ -244,7 +249,7 @@ const CartCon = styled.div`
     margin: 60px auto;
     padding: 0 14px;
   }
-`
+`;
 
 const Title = styled.div`
   margin-bottom: 20px;
@@ -254,7 +259,7 @@ const Title = styled.div`
   @media (max-width: 1024px) {
     display: none;
   }
-`
+`;
 
 const CheckHeader = styled.div`
   display: flex;
@@ -262,7 +267,7 @@ const CheckHeader = styled.div`
   align-items: center;
   padding: 10px;
   margin-bottom: 6px;
-`
+`;
 
 const CheckHeaderLeft = styled.div`
   display: flex;
@@ -283,7 +288,7 @@ const CheckHeaderLeft = styled.div`
       margin-right: 8px;
     }
   }
-`
+`;
 
 const CheckHeaderRight = styled.div`
   cursor: pointer;
@@ -291,7 +296,7 @@ const CheckHeaderRight = styled.div`
   @media (max-width: 600px) {
     font-size: 0.9rem;
   }
-`
+`;
 
 const ItemCon = styled.div`
   border-top: 3px solid rgba(20, 20, 20, 1);
@@ -304,7 +309,7 @@ const ItemCon = styled.div`
   @media (max-width: 600px) {
     border-top: 1px solid rgba(20, 20, 20, 1);
   }
-`
+`;
 
 const ItemSubButtonCon = styled.div`
   display: flex;
@@ -320,7 +325,7 @@ const ItemSubButtonCon = styled.div`
 
   @media (max-width: 600px) {
   }
-`
+`;
 
 const ButtonWrapper = styled.div`
   display: flex;
@@ -331,7 +336,7 @@ const ButtonWrapper = styled.div`
   @media (max-width: 1024px) {
     display: none;
   }
-`
+`;
 
 const PriceConWrapper = styled.div`
   margin-top: 90px;
@@ -345,7 +350,7 @@ const PriceConWrapper = styled.div`
     margin-top: 30px;
     margin-bottom: 40px;
   }
-`
+`;
 
 const DetailDesc = styled.div`
   @media (max-width: 1024px) {
@@ -359,7 +364,7 @@ const DetailDesc = styled.div`
   @media (max-width: 400px) {
     font-size: 0.7rem;
   }
-`
+`;
 
 const ButtonCon = styled.div`
   display: flex;
@@ -410,13 +415,13 @@ const ButtonCon = styled.div`
       font-size: 1rem;
     }
   }
-`
+`;
 
 const LoadingPage = styled.div`
   margin-top: 120px;
   width: 100%;
   height: 700px;
-`
+`;
 
 const LoadingIcon = styled.div`
   margin: 0 auto;
@@ -426,4 +431,4 @@ const LoadingIcon = styled.div`
   img {
     width: 100%;
   }
-`
+`;

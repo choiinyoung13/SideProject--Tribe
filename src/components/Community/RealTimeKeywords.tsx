@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 // 여러 세트의 Mock 데이터
@@ -61,6 +62,7 @@ export default function RealTimeKeywords({
   setSearchKeyword,
 }: RealTimeKeywordsProps) {
   const [keywords, setKeywords] = useState<string[]>(mockKeywordSets[0]); // 처음에는 첫 번째 세트를 기본으로 보여줌
+  const navigate = useNavigate();
 
   useEffect(() => {
     // 페이지가 처음 로드될 때 랜덤으로 키워드를 선택 (이전에 보인 키워드는 제외)
@@ -73,9 +75,10 @@ export default function RealTimeKeywords({
       {keywords.map((keyword, index) => (
         <KeywordCard
           key={index}
-          onClick={() => {
-            setInputValue(keyword);
-            setSearchKeyword(keyword);
+          onClick={async () => {
+            await navigate("/community");
+            await setInputValue(keyword);
+            await setSearchKeyword(keyword);
           }}
         >
           <KeywordRank>{index + 1}</KeywordRank>

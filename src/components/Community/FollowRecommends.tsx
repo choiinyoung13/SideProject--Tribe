@@ -111,7 +111,7 @@ const FollowRecommendLeft = styled.div`
 const FollowRecommendRight = styled.div`
   svg {
     margin-right: 4px;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     color: rgba(50, 50, 50, 1);
     cursor: pointer;
 
