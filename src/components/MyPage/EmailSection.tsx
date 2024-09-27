@@ -1,4 +1,11 @@
 import styled from 'styled-components'
+import Swal from 'sweetalert2'
+import { useState } from 'react'
+import {
+  sendVerificationEmail,
+  changeEmail,
+} from '../../config/api/user/ChangeEmail'
+import { emailRegex } from '../../utill/checkInputValueValid'
 
 interface EmailSectionProps {
   userInfo: any
@@ -15,6 +22,77 @@ export function EmailSection({
   initialEmail,
   setUserInfo,
 }: EmailSectionProps) {
+  const [newEmail, setNewEmail] = useState(userInfo.email)
+  const [isVerified, setIsVerified] = useState(false)
+
+  const sendVerificationCode = async () => {
+    if (!emailRegex.test(newEmail)) {
+      Swal.fire({
+        text: '유효한 이메일 형식이 아닙니다.',
+        icon: 'warning',
+        confirmButtonColor: '#1E1E1E',
+        confirmButtonText: '확인',
+        scrollbarPadding: false,
+      })
+      return
+    }
+
+    // 서버로 이메일 인증 요청 (이메일로 인증번호 전송)
+    const result = await sendVerificationEmail(newEmail)
+    if (result.success) {
+      Swal.fire({
+        text: '인증 메일이 발송되었습니다. 메일함을 확인해주세요.',
+        icon: 'success',
+        confirmButtonColor: '#1E1E1E',
+        confirmButtonText: '확인',
+        scrollbarPadding: false,
+      })
+      setIsVerified(true)
+    } else {
+      Swal.fire({
+        text: '인증 메일 발송에 실패했습니다. 다시 시도해 주세요.',
+        icon: 'error',
+        confirmButtonColor: '#1E1E1E',
+        confirmButtonText: '확인',
+        scrollbarPadding: false,
+      })
+    }
+  }
+
+  const saveEmailChange = async () => {
+    if (newEmail === initialEmail) {
+      Swal.fire({
+        text: '기존 이메일과 동일합니다.',
+        icon: 'warning',
+        confirmButtonColor: '#1E1E1E',
+        confirmButtonText: '확인',
+        scrollbarPadding: false,
+      })
+      return
+    }
+
+    const result = await changeEmail(newEmail, userInfo.id)
+    if (result.success) {
+      Swal.fire({
+        text: '이메일이 성공적으로 변경되었습니다.',
+        icon: 'success',
+        confirmButtonColor: '#1E1E1E',
+        confirmButtonText: '확인',
+        scrollbarPadding: false,
+      })
+      setUserInfo({ ...userInfo, email: newEmail })
+      setIsEmailEditMode(false)
+    } else {
+      Swal.fire({
+        text: '이메일 변경 중 오류가 발생했습니다.',
+        icon: 'error',
+        confirmButtonColor: '#1E1E1E',
+        confirmButtonText: '확인',
+        scrollbarPadding: false,
+      })
+    }
+  }
+
   return (
     <Section>
       <SectionHeader>
@@ -25,9 +103,11 @@ export function EmailSection({
           )}
           {isEmailEditMode && (
             <EditButtonWrapper>
-              <button onClick={() => setIsEmailEditMode(false)}>
-                인증번호 요청
-              </button>
+              {!isVerified ? (
+                <button onClick={sendVerificationCode}>인증 메일 전송</button>
+              ) : (
+                <button onClick={saveEmailChange}>이메일 저장</button>
+              )}
               <button
                 onClick={() => {
                   setUserInfo({ ...userInfo, email: initialEmail })
@@ -44,25 +124,20 @@ export function EmailSection({
         <input
           type="email"
           draggable={false}
-          disabled={!isEmailEditMode}
+          disabled={!isEmailEditMode || isVerified}
           value={userInfo.email}
-          onChange={e => {
-            if (isEmailEditMode) {
-              setUserInfo({ ...userInfo, email: e.target.value })
-            }
-          }}
+          onChange={e => setNewEmail(e.target.value)}
           style={{ pointerEvents: isEmailEditMode ? 'auto' : 'none' }}
         />
         <Infomation>
-          * 이메일 수정 후 인증번호 요청을 누르면 해당 이메일로 인증번호가
-          전송됩니다. <br />* 이미 사용중인 이메일로 변경 불가능합니다.
+          * 이메일 수정 후 인증 메일 전송을 누르면 해당 이메일로 인증 메일이
+          발송됩니다. <br />* 이미 사용중인 이메일로 변경 불가능합니다.
         </Infomation>
       </SectionBody>
     </Section>
   )
 }
 
-// 스타일링
 const Section = styled.section`
   width: 100%;
 `

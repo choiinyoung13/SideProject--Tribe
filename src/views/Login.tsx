@@ -106,28 +106,26 @@ export default function Login() {
           </HelperTextCon>
         </FormWrapper>
       </FormCon>
-      {windowWidth >= 1920 && (
-        <ImgCon>
-          {!isImageLoaded && (
-            <Loading>
-              <img src={loadingIcon} alt="Loading..." />
-            </Loading>
-          )}
-          <img
-            src={login_image}
-            alt=""
-            onLoad={() => setIsImageLoaded(true)}
-            style={{ display: isImageLoaded ? 'block' : 'none' }}
-          />
-        </ImgCon>
-      )}
+
+      <ImgCon>
+        {!isImageLoaded && (
+          <Loading>
+            <img src={loadingIcon} alt="Loading..." />
+          </Loading>
+        )}
+        <img
+          src={login_image}
+          alt=""
+          onLoad={() => setIsImageLoaded(true)}
+          style={{ display: isImageLoaded ? 'block' : 'none' }}
+        />
+      </ImgCon>
     </LoginCon>
   )
 }
 
 const LoginCon = styled.div`
   width: 100%;
-  height: 100vh;
   display: flex;
 `
 
@@ -136,9 +134,9 @@ interface FormConType {
 }
 
 const FormCon = styled.div<FormConType>`
-  width: ${props => (props.windowwidth === 1920 ? '50%' : '100%')};
+  width: ${props => (props.windowwidth >= 1920 ? '50%' : '100%')};
   height: 100vh;
-  over-flow: hidden;
+  min-height: 900px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -156,6 +154,8 @@ const FormCon = styled.div<FormConType>`
   }
 
   @media (max-width: 600px) {
+    min-height: 700px;
+
     form {
       input {
         width: 84%;
@@ -178,11 +178,16 @@ const FormWrapper = styled.div`
 `
 
 const FormTitle = styled.h2`
+  margin-top: 30px;
   font-size: 1.8rem;
   font-weight: bold;
 
   @media (max-width: 600px) {
     font-size: 1.3rem;
+  }
+
+  @media (max-width: 370px) {
+    font-size: 1.1rem;
   }
 `
 
@@ -301,11 +306,16 @@ const HelperText = styled.p`
 const ImgCon = styled.div`
   width: 50%;
   height: 100vh;
-  over-flow: hidden;
+  min-height: 900px;
 
   img {
     width: 100%;
     height: 100vh;
+    min-height: 900px;
+  }
+
+  @media (max-width: 1919px) {
+    display: none;
   }
 `
 
@@ -313,7 +323,7 @@ const Loading = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100dvh;
+  height: 100vh;
   width: 100%;
 
   img {

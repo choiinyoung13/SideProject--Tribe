@@ -7,10 +7,12 @@ interface InputType {
   placeholder: string
   email?: string
   password?: string
+  otp?: string
   setEmail?: React.Dispatch<React.SetStateAction<string>>
   setIsIdValid?: React.Dispatch<React.SetStateAction<boolean>>
   setIsPasswordValid?: React.Dispatch<React.SetStateAction<boolean>>
   setPassword?: React.Dispatch<React.SetStateAction<string>>
+  setOtp?: React.Dispatch<React.SetStateAction<string>>
   setConfirmPassword?: React.Dispatch<React.SetStateAction<string>>
   setIscheckRedundancyOpened?: React.Dispatch<React.SetStateAction<boolean>>
 }
@@ -23,6 +25,7 @@ export default function Input({
   setEmail,
   setIsIdValid,
   setPassword,
+  setOtp,
   setConfirmPassword,
   setIsPasswordValid,
   setIscheckRedundancyOpened,
@@ -36,6 +39,10 @@ export default function Input({
 
     if (setPassword) {
       setPassword(value)
+    }
+
+    if (setOtp) {
+      setOtp(value)
     }
 
     if (setConfirmPassword) {
