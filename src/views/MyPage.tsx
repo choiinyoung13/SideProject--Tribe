@@ -9,6 +9,7 @@ import { PasswordSection } from '../components/MyPage/PasswordSection'
 import { AccountDeletionSection } from '../components/MyPage/AccountDeletionSection'
 import { ProfileSection } from '../components/MyPage/ProfileSection'
 import { passwordRegex } from '../utill/checkInputValueValid'
+import useWindowWidth from '../hooks/useWindowWidth'
 
 export default function MyPage() {
   const { session } = useAuth()
@@ -36,6 +37,7 @@ export default function MyPage() {
   const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(false)
   const [warningText, setWarningText] = useState('')
   const [selectedReason, setSelectedReason] = useState('')
+  const windowWidth = useWindowWidth()
 
   const isDeletionButtonDisabled = !selectedReason
 
@@ -93,10 +95,10 @@ export default function MyPage() {
   return (
     <Container>
       <Main>
-        <Left>
+        <Left windowwidth={windowWidth}>
           <ProfileSection userInfo={userInfo} setUserInfo={setUserInfo} />
         </Left>
-        <Right>
+        <Right windowwidth={windowWidth}>
           <NicknameSection
             userInfo={userInfo}
             isNicknameEditMode={isNicknameEditMode}
@@ -141,12 +143,24 @@ export default function MyPage() {
 const Container = styled.div`
   margin-top: 100px;
   border-top: 1px solid rgba(210, 210, 210, 1);
-  padding: 10px 0 100px 0;
+  padding: 10px 0 80px 0;
+
+  @media (max-width: 1024px) {
+    margin-top: 90px;
+  }
+
+  @media (max-width: 768px) {
+    margin-top: 74px;
+  }
+
+  @media (max-width: 600px) {
+    margin-top: 60px;
+  }
 `
 
 const Main = styled.main`
   margin: 30px auto 0;
-  width: 1200px;
+  max-width: 1200px;
   display: flex;
 
   @media (max-width: 768px) {
@@ -154,14 +168,19 @@ const Main = styled.main`
     width: 100%;
   }
 `
+interface LeftAndRigthProps {
+  windowwidth: number
+}
 
-const Left = styled.div`
+const Left = styled.div<LeftAndRigthProps>`
   flex: 1;
+  margin-bottom: ${props => (props.windowwidth > 768 ? '0px' : '50px')};
 `
 
-const Right = styled.div`
+const Right = styled.div<LeftAndRigthProps>`
   flex: 3;
   display: flex;
   flex-direction: column;
   gap: 40px;
+  padding: ${props => (props.windowwidth > 768 ? '0 30px 0 0' : '0 30px')};
 `

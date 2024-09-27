@@ -1,4 +1,6 @@
 import styled from 'styled-components'
+import Swal from 'sweetalert2'
+import { changeNickname } from '../../config/api/user/ChangeNickname'
 
 interface NicknameSectionProps {
   userInfo: any
@@ -15,6 +17,40 @@ export function NicknameSection({
   initialNickname,
   setUserInfo,
 }: NicknameSectionProps) {
+  // 닉네임 저장 로직
+  const onSave = async (newNickname: string, id: string) => {
+    // 기존 닉네임과 같으면 경고창을 띄움
+    if (newNickname === initialNickname) {
+      Swal.fire({
+        text: '기존 닉네임과 같습니다.',
+        icon: 'warning',
+        confirmButtonColor: '#1E1E1E',
+        confirmButtonText: '확인',
+        scrollbarPadding: false,
+      })
+      return
+    }
+
+    const result = await changeNickname(newNickname, id)
+
+    // 닉네임 변경이 성공하면 상태 업데이트
+    if (result.success) {
+      setUserInfo((prev: any) => ({
+        ...prev,
+        nickname: newNickname,
+      }))
+      setIsNicknameEditMode(false)
+
+      Swal.fire({
+        text: '닉네임이 성공적으로 변경되었습니다.',
+        icon: 'success',
+        confirmButtonColor: '#1E1E1E',
+        confirmButtonText: '확인',
+        scrollbarPadding: false,
+      })
+    }
+  }
+
   return (
     <Section>
       <SectionHeader>
@@ -25,10 +61,16 @@ export function NicknameSection({
           )}
           {isNicknameEditMode && (
             <EditButtonWrapper>
-              <button onClick={() => setIsNicknameEditMode(false)}>저장</button>
               <button
                 onClick={() => {
-                  setUserInfo({ ...userInfo, nickname: initialNickname })
+                  onSave(userInfo.nickname, userInfo.id) // 닉네임 저장 호출
+                }}
+              >
+                저장
+              </button>
+              <button
+                onClick={() => {
+                  setUserInfo({ ...userInfo, nickname: initialNickname }) // 원래 닉네임으로 복구
                   setIsNicknameEditMode(false)
                 }}
               >
@@ -106,6 +148,9 @@ const Infomation = styled.p`
   margin-top: 10px;
   color: rgba(120, 120, 120, 1);
   font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `
 
 const Title = styled.div`

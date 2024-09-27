@@ -1,7 +1,8 @@
 import styled from 'styled-components'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { FaBars, FaTimes } from 'react-icons/fa'
+import { FaBars } from 'react-icons/fa'
+import { IoMdClose } from 'react-icons/io'
 import { ImInfo } from 'react-icons/im'
 import tribe_logo from '../../assets/images/logo/logo-tribe.png'
 import usewindowWidth from '../../hooks/useWindowWidth'
@@ -64,7 +65,7 @@ export default function Nav() {
 
   return (
     <>
-      {windowwidth <= 600 && (
+      {windowwidth <= 600 && !menuOpen && (
         <Option>
           <OptionLeft>
             <ImInfo size={17} />
@@ -75,7 +76,7 @@ export default function Nav() {
           </OptionRight>
         </Option>
       )}
-      <NavCon pantname={pantname} windowwidth={windowwidth}>
+      <NavCon pantname={pantname} windowwidth={windowwidth} menuopen={menuOpen}>
         <NavLeft>
           <Logo>
             <img src={tribe_logo} alt="tribe logo" />
@@ -145,7 +146,7 @@ export default function Nav() {
             toggleMenu(!menuOpen) // 열고 닫기 토글
           }}
         >
-          {menuOpen ? <FaTimes /> : <FaBars />}
+          {menuOpen ? <IoMdClose /> : <FaBars />}
         </HamburgerMenu>
         {menuOpen && (
           <MobileMenu>
@@ -229,11 +230,6 @@ export default function Nav() {
   )
 }
 
-interface NavProps {
-  pantname: string
-  windowwidth: number
-}
-
 const NavLeft = styled.div`
   display: flex;
   align-items: center;
@@ -278,6 +274,7 @@ const NavRight = styled.ul`
 const HamburgerMenu = styled.div`
   display: none;
   cursor: pointer;
+  z-index: 9999;
 
   @media (max-width: 1000px) {
     display: flex;
@@ -334,6 +331,12 @@ const NavLinks = styled.ul`
   }
 `
 
+interface NavProps {
+  pantname: string
+  windowwidth: number
+  menuopen: boolean
+}
+
 const NavCon = styled.nav<NavProps>`
   position: absolute;
   top: 0px;
@@ -364,7 +367,7 @@ const NavCon = styled.nav<NavProps>`
   }
 
   @media (max-width: 600px) {
-    top: 52px;
+    top: ${props => (props.menuopen ? '10px' : '52px')};
     padding: 0px 26px 0px 26px;
     display: flex;
     align-items: center;
@@ -416,7 +419,7 @@ const MobileMenu = styled.ul`
   background-color: #fff;
   justify-content: center;
   align-items: center;
-  z-index: 9999;
+  z-index: 9998;
 
   a {
     color: rgba(20, 20, 20, 1);

@@ -107,6 +107,9 @@ const Infomation = styled.p`
   margin-top: 10px;
   color: rgba(120, 120, 120, 1);
   font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `
 
 const Title = styled.div`
