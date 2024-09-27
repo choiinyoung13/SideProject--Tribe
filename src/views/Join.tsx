@@ -254,7 +254,7 @@ export default function Join() {
               {/* 비밀번호 조건 안내 및 유효성/일치 확인 메시지 */}
               {!password.trim() && (
                 <HelperText>
-                  6~20자/영문 대문자. 소문자, 숫자, 특수문자 중 2가지 이상 조합
+                  6~20자/영문자, 숫자, 특수문자 중 2가지 이상 조합
                 </HelperText>
               )}
 
