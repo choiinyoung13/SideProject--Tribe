@@ -53,7 +53,7 @@ export default function EmailSection({
     }
 
     if (email.length > 0 && result) {
-      setSuccessText('사용 가능한 이메일입니다')
+      setSuccessText('유효한 이메일 형식입니다')
     }
   }, [email])
 
