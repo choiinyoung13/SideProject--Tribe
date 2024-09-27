@@ -194,10 +194,10 @@ const EyeIcon = styled.div`
   color: #000;
 `
 
-const WarningText = styled.span`
+const WarningText = styled.div`
   color: red;
   font-size: 0.9rem;
-  margin: 6px 0 35px;
+  margin: 14px 0 0 8px;
 `
 
 const SectionFooter = styled.div`

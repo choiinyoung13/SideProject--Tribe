@@ -94,7 +94,7 @@ export default function MyPage() {
     <Container>
       <Main>
         <Left>
-          <ProfileSection session={session} />
+          <ProfileSection userInfo={userInfo} setUserInfo={setUserInfo} />
         </Left>
         <Right>
           <NicknameSection
