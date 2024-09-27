@@ -5,12 +5,14 @@ import {
   verifyOtpCode,
 } from '../../config/api/user/ChangeEmail'
 import { checkEmailExists } from '../../utill/checkEmailExists'
+import { useEffect, useState } from 'react'
+import { emailRegex } from '../../utill/checkInputValueValid'
 
 interface EmailSectionProps {
   email: string
   setEmail: React.Dispatch<React.SetStateAction<string>>
-  isIdValid: boolean
-  setIsIdValid: React.Dispatch<React.SetStateAction<boolean>>
+  isEmailValid: boolean
+  setIsEmailValid: React.Dispatch<React.SetStateAction<boolean>>
   isEmailExists: boolean
   setIsEmailExists: React.Dispatch<React.SetStateAction<boolean>>
   isOtpEmailSent: boolean
@@ -27,8 +29,8 @@ interface EmailSectionProps {
 export default function EmailSection({
   email,
   setEmail,
-  isIdValid,
-  setIsIdValid,
+  isEmailValid,
+  setIsEmailValid,
   isEmailExists,
   setIsEmailExists,
   isOtpEmailSent,
@@ -38,23 +40,40 @@ export default function EmailSection({
   setIsOtpValid,
   setIscheckRedundancyOpened,
 }: EmailSectionProps) {
+  const [warningText, setWarningText] = useState<string>('')
+  const [successText, setSuccessText] = useState<string>('')
+
+  useEffect(() => {
+    const result = emailRegex.test(email)
+    setWarningText('')
+    setSuccessText('')
+
+    if (email.length > 0 && !result) {
+      setWarningText('유효한 이메일 형식이 아닙니다')
+    }
+
+    if (email.length > 0 && result) {
+      setSuccessText('사용 가능한 이메일입니다')
+    }
+  }, [email])
+
   return (
     <EmailSectionCon>
       {/* 이메일 입력 및 중복 확인 */}
       <IdInputCon>
-        <Input
+        <EmailInput
           type="text"
           placeholder="사용하실 이메일을 입력해주세요."
-          setEmail={setEmail}
-          email={email}
-          setIsIdValid={setIsIdValid}
-          setIscheckRedundancyOpened={setIscheckRedundancyOpened}
+          value={email}
+          onChange={e => {
+            setEmail(e.target.value)
+          }}
         />
         <button
-          disabled={!isIdValid || isEmailExists}
+          disabled={!(email.length > 0 && emailRegex.test(email) === true)}
           type="button"
           onClick={async () => {
-            if (isIdValid && email.length > 0) {
+            if (isEmailValid && email.length > 0) {
               setIscheckRedundancyOpened(true)
               const result = await checkEmailExists(email)
               setIsEmailExists(result)
@@ -88,6 +107,13 @@ export default function EmailSection({
             제출
           </button>
         </IdInputCon>
+      )}
+
+      {email.length > 0 && warningText && (
+        <WarningText>{warningText}</WarningText>
+      )}
+      {email.length > 0 && successText && (
+        <SuccessText>{successText}</SuccessText>
       )}
     </EmailSectionCon>
   )
@@ -141,4 +167,35 @@ const IdInputCon = styled.div`
       margin-left: 6px;
     }
   }
+`
+const EmailInput = styled.input`
+  padding: 10px 12px;
+  font-size: 1rem;
+  width: 100%;
+  background-color: rgb(245, 245, 245);
+  border: 1px solid rgba(220, 220, 220, 1);
+  border-radius: 6px;
+
+  @media (max-width: 1450px) {
+    width: 300px;
+  }
+
+  @media (max-width: 600px) {
+    font-size: 0.8rem;
+    margin: 0 auto 14px;
+  }
+`
+
+const WarningText = styled.div`
+  color: rgb(243, 28, 0);
+  font-size: 0.9rem;
+  margin-top: 8px;
+  margin-left: 4px;
+`
+
+const SuccessText = styled.div`
+  color: rgb(0, 150, 75);
+  font-size: 0.9rem;
+  margin-top: 8px;
+  margin-left: 4px;
 `

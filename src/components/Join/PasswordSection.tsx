@@ -30,19 +30,23 @@ export default function PasswordSection({
     <>
       {/* 비밀번호 입력 */}
       <PasswordInputCon>
-        <Input
-          setPassword={setPassword}
+        <PasswordInput
+          value={password}
+          onChange={e => {
+            setPassword(e.target.value)
+          }}
           type="password"
           placeholder="비밀번호를 입력해주세요."
-          password={password}
-          setIsPasswordValid={setIsPasswordValid}
         />
       </PasswordInputCon>
 
       {/* 비밀번호 확인 입력 */}
       <InputWrapper>
-        <Input
-          setConfirmPassword={setConfirmPassword}
+        <PasswordConfirmInput
+          value={confirmPassword}
+          onChange={e => {
+            setConfirmPassword(e.target.value)
+          }}
           type={isPasswordVisible ? 'text' : 'password'}
           placeholder="비밀번호 확인을 위해 다시 입력해주세요."
         />
@@ -93,6 +97,44 @@ const EyeIcon = styled.div`
 
   @media (max-width: 600px) {
     right: 60px;
+  }
+`
+
+const PasswordInput = styled.input`
+  padding: 10px 12px;
+  font-size: 1rem;
+  width: 100%;
+  background-color: rgb(245, 245, 245);
+  border: 1px solid rgba(220, 220, 220, 1);
+  border-radius: 6px;
+  margin-top: 20px;
+
+  @media (max-width: 1450px) {
+    width: 300px;
+  }
+
+  @media (max-width: 600px) {
+    font-size: 0.8rem;
+    margin: 0 auto 14px;
+  }
+`
+
+const PasswordConfirmInput = styled.input`
+  padding: 10px 12px;
+  font-size: 1rem;
+  width: 100%;
+  background-color: rgb(245, 245, 245);
+  border: 1px solid rgba(220, 220, 220, 1);
+  border-radius: 6px;
+  margin-top: 8px;
+
+  @media (max-width: 1450px) {
+    width: 300px;
+  }
+
+  @media (max-width: 600px) {
+    font-size: 0.8rem;
+    margin: 0 auto 14px;
   }
 `
 

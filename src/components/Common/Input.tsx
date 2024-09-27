@@ -1,64 +1,24 @@
 import { ChangeEvent } from 'react'
 import styled from 'styled-components'
-import { emailRegex, passwordRegex } from '../../utill/checkInputValueValid'
 
 interface InputType {
   type: 'text' | 'password'
   placeholder: string
-  email?: string
-  password?: string
   otp?: string
-  setEmail?: React.Dispatch<React.SetStateAction<string>>
-  setIsIdValid?: React.Dispatch<React.SetStateAction<boolean>>
-  setIsPasswordValid?: React.Dispatch<React.SetStateAction<boolean>>
-  setPassword?: React.Dispatch<React.SetStateAction<string>>
   setOtp?: React.Dispatch<React.SetStateAction<string>>
-  setConfirmPassword?: React.Dispatch<React.SetStateAction<string>>
-  setIscheckRedundancyOpened?: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export default function Input({
   type,
-  email,
-  password,
   placeholder,
-  setEmail,
-  setIsIdValid,
-  setPassword,
+
   setOtp,
-  setConfirmPassword,
-  setIsPasswordValid,
-  setIscheckRedundancyOpened,
 }: InputType) {
   const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
 
-    if (setEmail) {
-      setEmail(value)
-    }
-
-    if (setPassword) {
-      setPassword(value)
-    }
-
     if (setOtp) {
       setOtp(value)
-    }
-
-    if (setConfirmPassword) {
-      setConfirmPassword(value)
-    }
-
-    if (setIsIdValid && email !== undefined) {
-      setIsIdValid(emailRegex.test(value))
-    }
-
-    if (setIsPasswordValid && password !== undefined) {
-      setIsPasswordValid(passwordRegex.test(value))
-    }
-
-    if (setIscheckRedundancyOpened && email !== undefined) {
-      setIscheckRedundancyOpened(false)
     }
   }
 

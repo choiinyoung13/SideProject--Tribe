@@ -5,7 +5,6 @@ import join_image from '../assets/images/join_web_1.jpg'
 import useWindowWidth from '../hooks/useWindowWidth'
 import { useHandleSignUp } from '../hooks/usehandleSignUp'
 import Swal from 'sweetalert2'
-
 import EmailSection from '../components/Join/EmailSection'
 import PasswordSection from '../components/Join/PasswordSection'
 import AgreeSection from '../components/Join/AgreeSection'
@@ -14,9 +13,10 @@ import AgreeSection from '../components/Join/AgreeSection'
 export default function Join() {
   const windowWidth = useWindowWidth() // 창 너비 가져오기
   const [email, setEmail] = useState('') // 이메일 상태 관리
+  const [isEmailValid, setIsEmailValid] = useState(false) // 이메일 유효성 상태
+
   const [password, setPassword] = useState('') // 비밀번호 상태 관리
   const [confirmPassword, setConfirmPassword] = useState('') // 비밀번호 확인 상태 관리
-  const [isIdValid, setIsIdValid] = useState(true) // 이메일 유효성 상태
   const [isPasswordValid, setIsPasswordValid] = useState(false) // 비밀번호 유효성 상태
   const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(false) // 비밀번호 일치 상태
   const [isEmailExists, setIsEmailExists] = useState(false) // 이메일 중복 확인 상태
@@ -71,7 +71,7 @@ export default function Join() {
     }
 
     // 이메일 유효성 검사
-    if (!isIdValid) {
+    if (!isEmailValid) {
       Swal.fire({
         text: '올바른 이메일 형식으로 입력해주세요.',
         icon: 'warning',
@@ -189,8 +189,8 @@ export default function Join() {
             <EmailSection
               email={email}
               setEmail={setEmail}
-              isIdValid={isIdValid}
-              setIsIdValid={setIsIdValid}
+              isEmailValid={isEmailValid}
+              setIsEmailValid={setIsEmailValid}
               isEmailExists={isEmailExists}
               setIsEmailExists={setIsEmailExists}
               isOtpEmailSent={isOtpEmailSent}
@@ -215,8 +215,6 @@ export default function Join() {
               setIsPasswordValid={setIsPasswordValid}
               isConfirmPasswordValid={isConfirmPasswordValid}
             />
-
-            <hr />
 
             {/* 필수 약관 동의 섹션 */}
             <AgreeSection

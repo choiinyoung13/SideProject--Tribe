@@ -59,15 +59,21 @@ export default function Login() {
               }
             }}
           >
-            <Input
-              setEmail={setEmail}
+            <EmailInput
               type="text"
               placeholder="가입한 이메일을 입력해주세요."
+              value={email}
+              onChange={e => {
+                setEmail(e.target.value)
+              }}
             />
-            <Input
-              setPassword={setPassword}
+            <PasswordInput
               type="password"
               placeholder="비밀번호를 입력해주세요."
+              value={password}
+              onChange={e => {
+                setPassword(e.target.value)
+              }}
             />
             {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
             <HelperTextCon>
@@ -328,5 +334,41 @@ const Loading = styled.div`
 
   img {
     width: 15%;
+  }
+`
+
+const EmailInput = styled.input`
+  padding: 10px 12px;
+  font-size: 1rem;
+  width: 100%;
+  background-color: rgb(245, 245, 245);
+  border: 1px solid rgba(220, 220, 220, 1);
+  border-radius: 6px;
+
+  @media (max-width: 1450px) {
+    width: 300px;
+  }
+
+  @media (max-width: 600px) {
+    font-size: 0.8rem;
+    margin: 0 auto 14px;
+  }
+`
+
+const PasswordInput = styled.input`
+  padding: 10px 12px;
+  font-size: 1rem;
+  width: 100%;
+  background-color: rgb(245, 245, 245);
+  border: 1px solid rgba(220, 220, 220, 1);
+  border-radius: 6px;
+
+  @media (max-width: 1450px) {
+    width: 300px;
+  }
+
+  @media (max-width: 600px) {
+    font-size: 0.8rem;
+    margin: 0 auto 14px;
   }
 `
