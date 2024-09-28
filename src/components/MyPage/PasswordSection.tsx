@@ -205,6 +205,7 @@ const SectionFooter = styled.div`
   justify-content: flex-end;
 
   button {
+    transition: background-color 0.3s ease;
     background-color: rgb(30, 30, 30, 1);
     color: white;
     border: none;

@@ -8,7 +8,6 @@ interface AccountDeletionSectionProps {
 }
 
 export function AccountDeletionSection({
-  selectedReason,
   setSelectedReason,
   isDeletionButtonDisabled,
 }: AccountDeletionSectionProps) {
@@ -100,6 +99,7 @@ const SectionFooter = styled.div`
 
   button {
     background-color: rgb(30, 30, 30, 1);
+    transition: background-color 0.3s ease;
     color: white;
     border: none;
     border-radius: 6px;

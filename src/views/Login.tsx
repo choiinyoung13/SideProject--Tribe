@@ -75,7 +75,9 @@ export default function Login() {
                 setPassword(e.target.value)
               }}
             />
-            {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
+            {errorMessage && (
+              <p style={{ color: 'rgb(243, 28, 0)' }}>{errorMessage}</p>
+            )}
             <HelperTextCon>
               <HelperText>
                 계정을 잊으셨나요? <span>ID찾기</span> 또는{' '}
@@ -151,22 +153,11 @@ const FormCon = styled.div<FormConType>`
     display: flex;
     flex-direction: column;
     width: 100%;
-
-    input {
-      width: 100%;
-      margin-bottom: 10px;
-      border: 1px solid rgba(50, 50, 50, 0.3);
-    }
+    
   }
 
   @media (max-width: 600px) {
     min-height: 700px;
-
-    form {
-      input {
-        width: 84%;
-        margin-bottom: 10px;
-      }
     }
   }
 `
@@ -344,12 +335,10 @@ const EmailInput = styled.input`
   background-color: rgb(245, 245, 245);
   border: 1px solid rgba(220, 220, 220, 1);
   border-radius: 6px;
-
-  @media (max-width: 1450px) {
-    width: 300px;
-  }
+  margin-bottom: 8px;
 
   @media (max-width: 600px) {
+    width: 85%;
     font-size: 0.8rem;
     margin: 0 auto 14px;
   }
@@ -362,12 +351,10 @@ const PasswordInput = styled.input`
   background-color: rgb(245, 245, 245);
   border: 1px solid rgba(220, 220, 220, 1);
   border-radius: 6px;
-
-  @media (max-width: 1450px) {
-    width: 300px;
-  }
+  margin-bottom: 8px;
 
   @media (max-width: 600px) {
+    width: 85%;
     font-size: 0.8rem;
     margin: 0 auto 14px;
   }

@@ -1,5 +1,4 @@
 import styled from 'styled-components'
-import Input from '../../components/Common/Input'
 import {
   sendVerificationEmail,
   verifyOtpCode,
@@ -7,61 +6,107 @@ import {
 import { checkEmailExists } from '../../utill/checkEmailExists'
 import { useEffect, useState } from 'react'
 import { emailRegex } from '../../utill/checkInputValueValid'
+import Spinner from '../Common/Spinner'
 
 interface EmailSectionProps {
   email: string
   setEmail: React.Dispatch<React.SetStateAction<string>>
-  isEmailValid: boolean
   setIsEmailValid: React.Dispatch<React.SetStateAction<boolean>>
-  isEmailExists: boolean
-  setIsEmailExists: React.Dispatch<React.SetStateAction<boolean>>
-  isOtpEmailSent: boolean
-  setIsOtpEmailSent: React.Dispatch<React.SetStateAction<boolean>>
-  otp: string
-  setOtp: React.Dispatch<React.SetStateAction<string>>
+  isEmailExists: boolean | null
+  setIsEmailExists: React.Dispatch<React.SetStateAction<boolean | null>>
+  setIsConfirmedEmail: React.Dispatch<React.SetStateAction<boolean>>
   isOtpValid: boolean
   setIsOtpValid: React.Dispatch<React.SetStateAction<boolean>>
-  ischeckRedundancyOpened: boolean
-  setIscheckRedundancyOpened: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-// 이메일 입력 섹션
 export default function EmailSection({
   email,
   setEmail,
-  isEmailValid,
   setIsEmailValid,
   isEmailExists,
   setIsEmailExists,
-  isOtpEmailSent,
-  setIsOtpEmailSent,
-  otp,
-  setOtp,
+  setIsConfirmedEmail,
+  isOtpValid,
   setIsOtpValid,
-  setIscheckRedundancyOpened,
 }: EmailSectionProps) {
   const [warningText, setWarningText] = useState<string>('')
   const [successText, setSuccessText] = useState<string>('')
+  const [isOtpEmailSent, setIsOtpEmailSent] = useState<boolean>(false)
+  const [isSendVerificationEmailLoading, setSendVerificationEmailLoading] =
+    useState<boolean>(false)
+
+  const [otp, setOtp] = useState<string>('')
 
   useEffect(() => {
     const result = emailRegex.test(email)
     setWarningText('')
     setSuccessText('')
+    setIsEmailExists(null)
+    setIsOtpEmailSent(false)
+    setIsEmailValid(false)
+    setIsConfirmedEmail(false)
 
     if (email.length > 0 && !result) {
       setWarningText('유효한 이메일 형식이 아닙니다')
     }
 
     if (email.length > 0 && result) {
+      setIsEmailValid(true)
       setSuccessText('유효한 이메일 형식입니다')
     }
   }, [email])
+
+  useEffect(() => {
+    const result = emailRegex.test(email)
+
+    if (
+      email.length > 0 &&
+      result &&
+      !isEmailExists &&
+      isEmailExists !== null
+    ) {
+      setSuccessText('사용 가능한 이메일입니다. (이메일 인증 필수)')
+    }
+
+    if (email.length > 0 && result && isEmailExists) {
+      setWarningText('이미 가입된 이메일입니다.')
+    }
+  }, [isEmailExists])
+
+  useEffect(() => {
+    const result = emailRegex.test(email)
+    if (
+      email.length > 0 &&
+      result &&
+      !isEmailExists &&
+      isEmailExists !== null &&
+      isOtpEmailSent
+    ) {
+      setSuccessText('해당 이메일로 인증번호을 전송하였습니다.')
+    }
+  }, [isOtpEmailSent])
+
+  useEffect(() => {
+    const result = emailRegex.test(email)
+
+    if (
+      email.length > 0 &&
+      result &&
+      !isEmailExists &&
+      isEmailExists !== null &&
+      isOtpEmailSent &&
+      isOtpValid
+    ) {
+      setSuccessText('인증 완료 되었습니다.')
+    }
+  }, [isOtpValid])
 
   return (
     <EmailSectionCon>
       {/* 이메일 입력 및 중복 확인 */}
       <IdInputCon>
         <EmailInput
+          disabled={isOtpEmailSent}
           type="text"
           placeholder="사용하실 이메일을 입력해주세요."
           value={email}
@@ -69,33 +114,60 @@ export default function EmailSection({
             setEmail(e.target.value)
           }}
         />
-        <button
-          disabled={!(email.length > 0 && emailRegex.test(email) === true)}
-          type="button"
-          onClick={async () => {
-            if (isEmailValid && email.length > 0) {
-              setIscheckRedundancyOpened(true)
-              const result = await checkEmailExists(email)
-              setIsEmailExists(result)
+        {isEmailExists === null ? (
+          <button
+            disabled={!(email.length > 0 && emailRegex.test(email))}
+            type="button"
+            onClick={async () => {
+              if (emailRegex.test(email) && email.length > 0) {
+                const result = await checkEmailExists(email)
+                setIsEmailExists(result)
+              }
+            }}
+          >
+            중복확인
+          </button>
+        ) : (
+          <VerificationEmailButton
+            disabled={
+              isSendVerificationEmailLoading || isOtpEmailSent || isOtpValid
+            }
+            type="button"
+            onClick={async () => {
+              // 이미 가입한 이메일이 존재할 경우 인증문자를 보내지 않음
+              if (isEmailExists) return
 
               // 인증코드 입력한 이메일로 보내기
+              await setSendVerificationEmailLoading(true)
               const res = await sendVerificationEmail(email)
+              if (res.success) {
+                setIsConfirmedEmail(true)
+              }
+              setSendVerificationEmailLoading(false)
               setIsOtpEmailSent(res.success)
-            }
-          }}
-        >
-          중복확인
-        </button>
+            }}
+          >
+            {isOtpValid ? (
+              '인증 완료'
+            ) : isSendVerificationEmailLoading ? (
+              <Spinner width={20} height={20} />
+            ) : (
+              '이메일 인증'
+            )}
+          </VerificationEmailButton>
+        )}
       </IdInputCon>
 
       {/* 인증번호 입력 섹션 */}
-      {isOtpEmailSent && (
+      {isOtpEmailSent && !isOtpValid && (
         <IdInputCon>
-          <Input
+          <OtpInput
             type="text"
             placeholder="인증번호 6자리를 입력해주세요"
-            setOtp={setOtp}
-            otp={otp}
+            value={otp}
+            onChange={e => {
+              setOtp(e.target.value)
+            }}
           />
           <button
             type="button"
@@ -104,7 +176,7 @@ export default function EmailSection({
               setIsOtpValid(result.success)
             }}
           >
-            제출
+            코드제출
           </button>
         </IdInputCon>
       )}
@@ -112,7 +184,7 @@ export default function EmailSection({
       {email.length > 0 && warningText && (
         <WarningText>{warningText}</WarningText>
       )}
-      {email.length > 0 && successText && (
+      {email.length > 0 && successText && !warningText && (
         <SuccessText>{successText}</SuccessText>
       )}
     </EmailSectionCon>
@@ -124,13 +196,20 @@ const EmailSectionCon = styled.div``
 const IdInputCon = styled.div`
   width: 100%;
   display: flex;
+  margin-bottom: 8px;
 
   input {
-    flex: 1 0 0;
+    flex: 1;
+    padding: 10px 12px;
+    font-size: 1rem;
+    background-color: rgb(245, 245, 245);
+    border: 1px solid rgba(220, 220, 220, 1);
+    border-radius: 6px;
   }
 
   button {
-    height: 100%;
+    height: 46px;
+    width: 100px;
     font-size: 0.9rem;
     font-weight: 300;
     padding: 12px;
@@ -140,6 +219,7 @@ const IdInputCon = styled.div`
     border-radius: 6px;
     color: #fff;
     cursor: pointer;
+    transition: background-color 0.3s ease;
 
     &:hover {
       background-color: rgba(50, 50, 50, 1);
@@ -149,16 +229,18 @@ const IdInputCon = styled.div`
       background-color: rgba(150, 150, 150, 1);
       cursor: not-allowed;
     }
+
+    &:disabled:hover {
+      background-color: rgba(150, 150, 150, 1); // hover 상태에서도 유지
+    }
   }
 
   @media (max-width: 600px) {
-    width: 80%;
-    display: flex;
     margin: 0 auto;
-    align-item: center;
+    align-items: center;
 
     input {
-      flex: 1 0 0;
+      font-size: 0.8rem;
     }
 
     button {
@@ -168,6 +250,26 @@ const IdInputCon = styled.div`
     }
   }
 `
+
+const VerificationEmailButton = styled.button`
+  background-color: rgba(30, 30, 30, 1);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: rgba(50, 50, 50, 1);
+  }
+
+  &:disabled {
+    background-color: rgba(150, 150, 150, 1);
+    cursor: not-allowed;
+  }
+
+  &:disabled:hover {
+    background-color: rgba(150, 150, 150, 1); // hover 상태에서도 유지
+  }
+`
+
 const EmailInput = styled.input`
   padding: 10px 12px;
   font-size: 1rem;
@@ -176,9 +278,24 @@ const EmailInput = styled.input`
   border: 1px solid rgba(220, 220, 220, 1);
   border-radius: 6px;
 
-  @media (max-width: 1450px) {
-    width: 300px;
+  @media (max-width: 600px) {
+    font-size: 0.8rem;
+    margin: 0 auto 14px;
   }
+
+  &:disabled {
+    color: rgba(120, 120, 120, 1);
+    cursor: not-allowed;
+  }
+`
+
+const OtpInput = styled.input`
+  padding: 10px 12px;
+  font-size: 1rem;
+  width: 100%;
+  background-color: rgb(245, 245, 245);
+  border: 1px solid rgba(220, 220, 220, 1);
+  border-radius: 6px;
 
   @media (max-width: 600px) {
     font-size: 0.8rem;

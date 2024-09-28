@@ -1,34 +1,17 @@
-import { ChangeEvent } from 'react'
 import styled from 'styled-components'
 
 interface InputType {
   type: 'text' | 'password'
   placeholder: string
-  otp?: string
-  setOtp?: React.Dispatch<React.SetStateAction<string>>
 }
 
-export default function Input({
-  type,
-  placeholder,
-
-  setOtp,
-}: InputType) {
-  const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-
-    if (setOtp) {
-      setOtp(value)
-    }
-  }
-
+export default function Input({ type, placeholder }: InputType) {
   return (
     <FormInput
       autoComplete="off"
       type={type}
       placeholder={placeholder}
       maxLength={30}
-      onChange={handleOnChange}
     />
   )
 }

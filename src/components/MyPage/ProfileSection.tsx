@@ -73,7 +73,13 @@ export function ProfileSection({ userInfo, setUserInfo }: ProfileSectionProps) {
         onLoad={handleImageLoad} // 이미지 로드 완료 시 로딩 종료
       />
       <input type="file" id="img" onChange={handleFileChange} />
-      <ProfileChangeButton htmlFor="img">
+      <ProfileChangeButton
+        htmlFor="img"
+        isLoading={isLoading}
+        onClick={e => {
+          if (isLoading) e.preventDefault() // 로딩 중일 때 클릭 방지
+        }}
+      >
         {isLoading ? <Spinner width={22} height={22} /> : '프로필 변경'}
       </ProfileChangeButton>
     </ProfileWrapper>
@@ -99,21 +105,24 @@ const ProfileImg = styled.img`
   height: 60%;
 `
 
-const ProfileChangeButton = styled.label`
+const ProfileChangeButton = styled.label<{ isLoading: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
   margin-top: 20px;
-  background-color: rgba(30, 30, 30, 1);
+  transition: background-color 0.3s ease;
+  background-color: ${({ isLoading }) =>
+    isLoading ? 'rgba(150, 150, 150, 1)' : 'rgba(30, 30, 30, 1)'};
   color: #fff;
   border: none;
   border-radius: 6px;
   width: 100px;
   height: 40px;
   font-size: 0.9rem;
-  cursor: pointer;
+  cursor: ${({ isLoading }) => (isLoading ? 'not-allowed' : 'pointer')};
 
   &:hover {
-    background-color: rgba(50, 50, 50, 1);
+    background-color: ${({ isLoading }) =>
+      isLoading ? 'rgba(150, 150, 150, 1)' : 'rgba(50, 50, 50, 1)'};
   }
 `

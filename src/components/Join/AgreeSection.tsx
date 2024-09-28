@@ -12,7 +12,7 @@ export default function AgreeSection({
   setIsRequiredChecked,
 }: AgreeSectionProps) {
   return (
-    <>
+    <Container>
       {/* 필수 동의 */}
       <AgreeCon>
         <AgreeWrapper>
@@ -34,9 +34,21 @@ export default function AgreeSection({
         </AgreeWrapper>
         <AiOutlinePlus />
       </AgreeCon>
-    </>
+    </Container>
   )
 }
+
+const Container = styled.div`
+  margin-top: 40px;
+  margin-bottom: 10px;
+  border-top: 1px solid rgba(90, 90, 90, 1);
+  padding-top: 24px;
+
+  @media (max-width: 600px) {
+    margin-top: 20px;
+    padding-top: 20px;
+  }
+`
 
 const AgreeCon = styled.div`
   display: flex;
@@ -45,9 +57,12 @@ const AgreeCon = styled.div`
   margin-bottom: 10px;
   width: 100%;
 
-  @media (max-width: 600px) {
-    width: 80%;
-    margin: 10px auto;
+  svg {
+    margin-top: 10px;
+  }
+
+  &:last-of-type {
+    margin-top: 16px;
   }
 `
 

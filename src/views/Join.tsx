@@ -19,14 +19,13 @@ export default function Join() {
   const [confirmPassword, setConfirmPassword] = useState('') // 비밀번호 확인 상태 관리
   const [isPasswordValid, setIsPasswordValid] = useState(false) // 비밀번호 유효성 상태
   const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(false) // 비밀번호 일치 상태
-  const [isEmailExists, setIsEmailExists] = useState(false) // 이메일 중복 확인 상태
-  const [ischeckRedundancyOpened, setIscheckRedundancyOpened] = useState(false) // 중복 확인 여부
+  const [isEmailExists, setIsEmailExists] = useState<boolean | null>(null) // 이메일 중복 여부
+  const [isConfirmedEmail, setIsConfirmedEmail] = useState<boolean>(false) // 이메일 인증 여부
+
   const [isRequiredChecked, setIsRequiredChecked] = useState(false) // 필수 동의 여부
   const { handleSignUp, errorMessage } = useHandleSignUp() // 회원가입 처리 핸들러
   const [isImageLoaded, setIsImageLoaded] = useState(false) // 이미지 로딩 상태
   const [isPasswordVisible, setIsPasswordVisible] = useState(false) // 비밀번호 가시성 상태
-  const [isOtpEmailSent, setIsOtpEmailSent] = useState(false) // OTP 이메일 발송 여부
-  const [otp, setOtp] = useState('') // OTP 코드 상태
   const [isOtpValid, setIsOtpValid] = useState(false) // OTP 유효성 상태
 
   // 비밀번호와 비밀번호 확인이 일치하는지 확인
@@ -58,18 +57,6 @@ export default function Join() {
       return
     }
 
-    // 인증번호 유효성 검사
-    if (!isOtpValid) {
-      Swal.fire({
-        text: '인증번호가 다릅니다.',
-        icon: 'warning',
-        confirmButtonColor: '#1E1E1E',
-        confirmButtonText: '확인',
-        scrollbarPadding: false,
-      })
-      return
-    }
-
     // 이메일 유효성 검사
     if (!isEmailValid) {
       Swal.fire({
@@ -82,10 +69,10 @@ export default function Join() {
       return
     }
 
-    // 이메일 중복 확인
-    if (!ischeckRedundancyOpened) {
+    // 중복확인 검사
+    if (isEmailExists === null) {
       Swal.fire({
-        text: '이메일 중복 확인해 주세요.',
+        text: '중복확인을 진행해 주세요.',
         icon: 'warning',
         confirmButtonColor: '#1E1E1E',
         confirmButtonText: '확인',
@@ -105,7 +92,31 @@ export default function Join() {
       return
     }
 
-    // 이메일 입력 유무 검사
+    // 이메일 인증 여부 검사
+    if (!isConfirmedEmail) {
+      Swal.fire({
+        text: '이메일 인증을 완료해주세요.',
+        icon: 'warning',
+        confirmButtonColor: '#1E1E1E',
+        confirmButtonText: '확인',
+        scrollbarPadding: false,
+      })
+      return
+    }
+
+    // 인증번호 유효성 검사
+    if (!isOtpValid) {
+      Swal.fire({
+        text: '인증번호 검사를 완료해주세요.',
+        icon: 'warning',
+        confirmButtonColor: '#1E1E1E',
+        confirmButtonText: '확인',
+        scrollbarPadding: false,
+      })
+      return
+    }
+
+    // 비밀번호 입력 유무 검사
     if (!password.trim()) {
       Swal.fire({
         text: '사용하실 비밀번호를 입력해주세요.',
@@ -184,23 +195,19 @@ export default function Join() {
       {/* 이메일 입력 섹션 */}
       <FormCon windowwidth={windowWidth}>
         <FormWrapper>
-          <FormTitle>Tribe 회원가입</FormTitle>
+          <FormTitleWrapper>
+            <FormTitle>Tribe 회원가입</FormTitle>
+          </FormTitleWrapper>
           <Form onSubmit={onSubmit}>
             <EmailSection
               email={email}
               setEmail={setEmail}
-              isEmailValid={isEmailValid}
               setIsEmailValid={setIsEmailValid}
               isEmailExists={isEmailExists}
               setIsEmailExists={setIsEmailExists}
-              isOtpEmailSent={isOtpEmailSent}
-              setIsOtpEmailSent={setIsOtpEmailSent}
-              otp={otp}
-              setOtp={setOtp}
+              setIsConfirmedEmail={setIsConfirmedEmail}
               isOtpValid={isOtpValid}
               setIsOtpValid={setIsOtpValid}
-              ischeckRedundancyOpened={ischeckRedundancyOpened}
-              setIscheckRedundancyOpened={setIscheckRedundancyOpened}
             />
 
             {/* 비밀번호 입력 섹션 */}
@@ -248,7 +255,6 @@ export default function Join() {
 
 const JoinCon = styled.div`
   width: 100%;
-
   display: flex;
 `
 
@@ -273,18 +279,31 @@ const FormWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: start;
+  align-items: center;
   min-width: 476px;
 `
 
 const Form = styled.form`
   width: 100%;
+
+  @media (max-width: 600px) {
+    width: 85%;
+  }
 `
 
 const FormTitle = styled.h2`
   font-size: 1.8rem;
   font-weight: bold;
   margin-bottom: 40px;
+`
+
+const FormTitleWrapper = styled.div`
+  display: flex;
+  width: 100%;
+
+  @media (max-width: 600px) {
+    width: 85%;
+  }
 `
 
 const ImgCon = styled.div`
@@ -309,6 +328,7 @@ const Loading = styled.div`
   align-items: center;
   height: 100vh;
   width: 100%;
+
   img {
     width: 15%;
   }
@@ -326,5 +346,9 @@ const JoinBtn = styled.button`
 
   &:hover {
     background-color: rgba(50, 50, 50, 1);
+  }
+
+  @media (max-width: 600px) {
+    margin-top: 20px;
   }
 `

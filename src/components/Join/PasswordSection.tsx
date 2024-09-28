@@ -1,6 +1,5 @@
 import styled from 'styled-components'
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
-import Input from '../../components/Common/Input'
 
 interface PasswordSectionProps {
   password: string
@@ -23,7 +22,6 @@ export default function PasswordSection({
   isPasswordVisible,
   setIsPasswordVisible,
   isPasswordValid,
-  setIsPasswordValid,
   isConfirmPasswordValid,
 }: PasswordSectionProps) {
   return (
@@ -80,23 +78,21 @@ const InputWrapper = styled.div`
 
   @media (max-width: 600px) {
     display: flex;
-    input {
-      width: 80%;
-    }
   }
 `
 
 const EyeIcon = styled.div`
   position: absolute;
   right: 14px;
-  top: 50%;
+  top: 68%;
   transform: translateY(-70%);
   cursor: pointer;
   font-size: 1.2rem;
   color: #000;
 
   @media (max-width: 600px) {
-    right: 60px;
+    top: 50%;
+    right: 14px;
   }
 `
 
@@ -108,10 +104,6 @@ const PasswordInput = styled.input`
   border: 1px solid rgba(220, 220, 220, 1);
   border-radius: 6px;
   margin-top: 20px;
-
-  @media (max-width: 1450px) {
-    width: 300px;
-  }
 
   @media (max-width: 600px) {
     font-size: 0.8rem;
@@ -127,10 +119,6 @@ const PasswordConfirmInput = styled.input`
   border: 1px solid rgba(220, 220, 220, 1);
   border-radius: 6px;
   margin-top: 8px;
-
-  @media (max-width: 1450px) {
-    width: 300px;
-  }
 
   @media (max-width: 600px) {
     font-size: 0.8rem;
