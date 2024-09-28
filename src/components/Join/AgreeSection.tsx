@@ -1,5 +1,4 @@
 import styled from 'styled-components'
-import { AiOutlinePlus } from 'react-icons/ai'
 
 interface AgreeSectionProps {
   isRequiredChecked: boolean
@@ -21,9 +20,11 @@ export default function AgreeSection({
             checked={isRequiredChecked}
             onChange={e => setIsRequiredChecked(e.target.checked)}
           />
-          <label>[필수]만 14세 이상이며 모두 동의합니다.</label>
+          <label>
+            <span>[필수]</span> 만 14세 이상이며 서비스 이용 관련 약관에 모두
+            동의합니다.
+          </label>
         </AgreeWrapper>
-        <AiOutlinePlus />
       </AgreeCon>
 
       {/* 선택 동의 */}
@@ -32,7 +33,6 @@ export default function AgreeSection({
           <input type="checkbox" />
           <label>[선택]광고성 정보 수신에 모두 동의합니다.</label>
         </AgreeWrapper>
-        <AiOutlinePlus />
       </AgreeCon>
     </Container>
   )
@@ -72,7 +72,11 @@ const AgreeWrapper = styled.div`
   }
 
   label {
-    font-size: 1rem;
+    font-size: 0.9rem;
+
+    span {
+      color: red;
+    }
   }
 
   @media (max-width: 600px) {
