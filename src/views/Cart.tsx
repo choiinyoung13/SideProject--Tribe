@@ -37,23 +37,20 @@ export default function Cart() {
     toggleAllCartItemStatusMutation,
   } = useCartMutations()
 
-  const {
-    data: cartData,
-    error,
-    isLoading,
-  }: UseQueryResult<CartItemsResponse> = useQuery(
-    QUERY_KEYS.CART_ITEMS,
-    () => {
-      if (session) {
-        return fetchCartItems(session.user.id)
+  const { data: cartData, isLoading }: UseQueryResult<CartItemsResponse> =
+    useQuery(
+      QUERY_KEYS.CART_ITEMS,
+      () => {
+        if (session) {
+          return fetchCartItems(session.user.id)
+        }
+      },
+      {
+        enabled: !!session,
+        staleTime: Infinity,
+        cacheTime: 30 * 60 * 1000,
       }
-    },
-    {
-      enabled: !!session,
-      staleTime: Infinity,
-      cacheTime: 30 * 60 * 1000,
-    }
-  )
+    )
 
   useEffect(() => {
     if (cartData && cartData.items.length > 0 && session) {
