@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import loadingIcon from '../assets/images/logo/ball-triangle.svg'
 import join_image from '../assets/images/join_web_1.jpg'
@@ -8,44 +8,110 @@ import Swal from 'sweetalert2'
 import EmailSection from '../components/Join/EmailSection'
 import PasswordSection from '../components/Join/PasswordSection'
 import AgreeSection from '../components/Join/AgreeSection'
+import Spinner from '../components/Common/Spinner'
+import { useNavigate } from 'react-router-dom'
 
-// 메인 Join 컴포넌트
 export default function Join() {
-  const windowWidth = useWindowWidth() // 창 너비 가져오기
-  const [email, setEmail] = useState('') // 이메일 상태 관리
-  const [isEmailValid, setIsEmailValid] = useState(false) // 이메일 유효성 상태
+  const windowWidth = useWindowWidth()
+  const [email, setEmail] = useState(sessionStorage.getItem('email') || '') // 세션에서 데이터 복원
+  const [isEmailValid, setIsEmailValid] = useState(
+    JSON.parse(sessionStorage.getItem('isEmailValid') || 'false')
+  )
+  const [password, setPassword] = useState(
+    sessionStorage.getItem('password') || ''
+  )
+  const [confirmPassword, setConfirmPassword] = useState(
+    sessionStorage.getItem('confirmPassword') || ''
+  )
+  const [isPasswordValid, setIsPasswordValid] = useState(
+    JSON.parse(sessionStorage.getItem('isPasswordValid') || 'false')
+  )
+  const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(
+    JSON.parse(sessionStorage.getItem('isConfirmPasswordValid') || 'false')
+  )
+  const [isEmailExists, setIsEmailExists] = useState<boolean | null>(
+    JSON.parse(sessionStorage.getItem('isEmailExists') || 'null')
+  )
+  const [isRequiredChecked, setIsRequiredChecked] = useState(
+    JSON.parse(sessionStorage.getItem('isRequiredChecked') || 'false')
+  )
+  const [isInputsDisabled, setIsInputsDisabled] = useState(
+    JSON.parse(sessionStorage.getItem('isInputsDisabled') || 'false')
+  )
+  const { handleSignUp, verifyOtpCode } = useHandleSignUp()
+  const [isImageLoaded, setIsImageLoaded] = useState(false)
+  const [isSignUpLoading, setIsSignUpLoading] = useState(false)
+  const navigate = useNavigate()
 
-  const [password, setPassword] = useState('') // 비밀번호 상태 관리
-  const [confirmPassword, setConfirmPassword] = useState('') // 비밀번호 확인 상태 관리
-  const [isPasswordValid, setIsPasswordValid] = useState(false) // 비밀번호 유효성 상태
-  const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(false) // 비밀번호 일치 상태
-  const [isEmailExists, setIsEmailExists] = useState<boolean | null>(null) // 이메일 중복 여부
-  const [isConfirmedEmail, setIsConfirmedEmail] = useState<boolean>(false) // 이메일 인증 여부
+  // 취소 버튼을 눌렀을 때 세션에 데이터 저장
+  const saveToSession = () => {
+    sessionStorage.setItem('email', email)
+    sessionStorage.setItem('isEmailValid', JSON.stringify(isEmailValid))
+    sessionStorage.setItem('password', password)
+    sessionStorage.setItem('confirmPassword', confirmPassword)
+    sessionStorage.setItem('isPasswordValid', JSON.stringify(isPasswordValid))
+    sessionStorage.setItem(
+      'isConfirmPasswordValid',
+      JSON.stringify(isConfirmPasswordValid)
+    )
+    sessionStorage.setItem('isEmailExists', JSON.stringify(isEmailExists))
+    sessionStorage.setItem(
+      'isRequiredChecked',
+      JSON.stringify(isRequiredChecked)
+    )
+    sessionStorage.setItem('isInputsDisabled', JSON.stringify(true))
+  }
 
-  const [isRequiredChecked, setIsRequiredChecked] = useState(false) // 필수 동의 여부
-  const { handleSignUp, errorMessage } = useHandleSignUp() // 회원가입 처리 핸들러
-  const [isImageLoaded, setIsImageLoaded] = useState(false) // 이미지 로딩 상태
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false) // 비밀번호 가시성 상태
-  const [isOtpValid, setIsOtpValid] = useState(false) // OTP 유효성 상태
-
-  // 비밀번호와 비밀번호 확인이 일치하는지 확인
-  useEffect(() => {
-    if (password !== confirmPassword) {
-      setIsConfirmPasswordValid(false)
-    } else if (password === confirmPassword) {
-      setIsConfirmPasswordValid(true)
-    }
-
-    if (confirmPassword === '') {
-      setIsConfirmPasswordValid(false)
-    }
-  }, [password, confirmPassword])
+  // 인증번호 입력 모달 띄우기
+  const openVerificationModal = (email: string) => {
+    Swal.fire({
+      html: `
+        <h1 style="font-weight:500; font-size:22px;">인증번호 입력</h1>
+        <input type="text" id="otp-code" class="swal2-input" placeholder="6자리 인증번호 입력">
+      `,
+      confirmButtonText: '확인',
+      showCancelButton: true,
+      cancelButtonText: '취소',
+      allowOutsideClick: false,
+      confirmButtonColor: '#1E1E1E',
+      cancelButtonColor: '#1E1E1E',
+      preConfirm: () => {
+        const otpCode = (
+          document.getElementById('otp-code') as HTMLInputElement
+        ).value
+        if (!otpCode || otpCode.length !== 6) {
+          Swal.showValidationMessage('6자리 인증번호를 입력하세요.')
+          return false
+        }
+        return otpCode
+      },
+    }).then(async result => {
+      if (result.isConfirmed && result.value) {
+        // 인증번호 검증 로직 실행
+        const success = await verifyOtpCode(email, result.value)
+        if (success) {
+          Swal.fire({
+            text: '이메일 인증이 완료되었습니다!',
+            icon: 'success',
+            confirmButtonColor: '#1E1E1E',
+            confirmButtonText: '확인',
+          }).then(() => {
+            // 인증 성공 후 리다이렉트
+            navigate('/')
+          })
+        }
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        // 인증번호 모달을 취소했을 때 처리 (입력 필드 비활성화)
+        setIsInputsDisabled(true)
+        saveToSession() // 취소했을 때 세션에 데이터 저장
+      }
+    })
+  }
 
   // 폼 제출 핸들러
   const onSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault()
 
-    // 이메일 입력 유무 검사
     if (!email.trim()) {
       Swal.fire({
         text: '사용하실 이메일을 입력해주세요.',
@@ -57,7 +123,6 @@ export default function Join() {
       return
     }
 
-    // 이메일 유효성 검사
     if (!isEmailValid) {
       Swal.fire({
         text: '올바른 이메일 형식으로 입력해주세요.',
@@ -69,7 +134,6 @@ export default function Join() {
       return
     }
 
-    // 중복확인 검사
     if (isEmailExists === null) {
       Swal.fire({
         text: '중복확인을 진행해 주세요.',
@@ -92,31 +156,6 @@ export default function Join() {
       return
     }
 
-    // 이메일 인증 여부 검사
-    if (!isConfirmedEmail) {
-      Swal.fire({
-        text: '이메일 인증을 완료해주세요.',
-        icon: 'warning',
-        confirmButtonColor: '#1E1E1E',
-        confirmButtonText: '확인',
-        scrollbarPadding: false,
-      })
-      return
-    }
-
-    // 인증번호 유효성 검사
-    if (!isOtpValid) {
-      Swal.fire({
-        text: '인증번호 검사를 완료해주세요.',
-        icon: 'warning',
-        confirmButtonColor: '#1E1E1E',
-        confirmButtonText: '확인',
-        scrollbarPadding: false,
-      })
-      return
-    }
-
-    // 비밀번호 입력 유무 검사
     if (!password.trim()) {
       Swal.fire({
         text: '사용하실 비밀번호를 입력해주세요.',
@@ -128,7 +167,6 @@ export default function Join() {
       return
     }
 
-    // 비밀번호 유효성 검사
     if (!isPasswordValid) {
       Swal.fire({
         text: '올바른 비밀번호 형식으로 입력해주세요.',
@@ -140,10 +178,9 @@ export default function Join() {
       return
     }
 
-    // 비밀번호 확인 우뮤 검사
     if (!confirmPassword.trim()) {
       Swal.fire({
-        text: '확인을 위해 비밀번호를 재입력해주세요.',
+        text: '비밀번호 확인란을 입력해주세요.',
         icon: 'warning',
         confirmButtonColor: '#1E1E1E',
         confirmButtonText: '확인',
@@ -152,7 +189,6 @@ export default function Join() {
       return
     }
 
-    // 비밀번호 확인 요휴성 검사
     if (!isConfirmPasswordValid) {
       Swal.fire({
         text: '비밀번호가 일치하지 않습니다. 확인해 주세요.',
@@ -164,7 +200,6 @@ export default function Join() {
       return
     }
 
-    // 필수 동의 체크박스 검사
     if (!isRequiredChecked) {
       Swal.fire({
         text: '필수 약관에 동의해 주세요.',
@@ -177,22 +212,48 @@ export default function Join() {
     }
 
     // 회원가입 처리
-    try {
-      await handleSignUp(email, password)
-    } catch (error) {
-      Swal.fire({
-        text: `${errorMessage}`,
-        icon: 'warning',
-        confirmButtonColor: '#1E1E1E',
-        confirmButtonText: '확인',
-        scrollbarPadding: false,
-      })
+    setIsSignUpLoading(true)
+    const result = await handleSignUp(email, password)
+
+    if (!result.success) {
+      // 계정 등록 실패 메시지
+      if (result.error?.message === 'email rate limit exceeded') {
+        Swal.fire({
+          text: '이메일 발신 횟수 제한을 초과했습니다.',
+          icon: 'warning',
+          confirmButtonColor: '#1E1E1E',
+          confirmButtonText: '확인',
+          scrollbarPadding: false,
+        })
+      } else {
+        Swal.fire({
+          text: '계정등록 오류가 발생했습니다.',
+          icon: 'warning',
+          confirmButtonColor: '#1E1E1E',
+          confirmButtonText: '확인',
+          scrollbarPadding: false,
+        })
+      }
+      setIsSignUpLoading(false)
+      return
     }
+
+    // 계정 등록 성공 메시지
+    Swal.fire({
+      html: '<strong>계정 등록이 성공했습니다!</strong><br>이메일을 확인하여 인증을 완료해 주세요.',
+      icon: 'success',
+      confirmButtonColor: '#1E1E1E',
+      confirmButtonText: '확인',
+      scrollbarPadding: false,
+    }).then(() => {
+      // 이메일 인증번호 모달을 띄움
+      openVerificationModal(email)
+    })
+    setIsSignUpLoading(false)
   }
 
   return (
     <JoinCon>
-      {/* 이메일 입력 섹션 */}
       <FormCon windowwidth={windowWidth}>
         <FormWrapper>
           <FormTitleWrapper>
@@ -205,37 +266,41 @@ export default function Join() {
               setIsEmailValid={setIsEmailValid}
               isEmailExists={isEmailExists}
               setIsEmailExists={setIsEmailExists}
-              setIsConfirmedEmail={setIsConfirmedEmail}
-              isOtpValid={isOtpValid}
-              setIsOtpValid={setIsOtpValid}
+              disabled={isInputsDisabled} // 비활성화 상태 적용
             />
-
-            {/* 비밀번호 입력 섹션 */}
             <PasswordSection
               password={password}
               setPassword={setPassword}
               confirmPassword={confirmPassword}
               setConfirmPassword={setConfirmPassword}
-              isPasswordVisible={isPasswordVisible}
-              setIsPasswordVisible={setIsPasswordVisible}
-              isPasswordValid={isPasswordValid}
               setIsPasswordValid={setIsPasswordValid}
-              isConfirmPasswordValid={isConfirmPasswordValid}
+              setIsConfirmPasswordValid={setIsConfirmPasswordValid}
+              disabled={isInputsDisabled} // 비활성화 상태 적용
             />
-
-            {/* 필수 약관 동의 섹션 */}
             <AgreeSection
               isRequiredChecked={isRequiredChecked}
               setIsRequiredChecked={setIsRequiredChecked}
+              disabled={isInputsDisabled} // 비활성화 상태 적용
             />
-
-            <JoinBtn type="submit">가입하기</JoinBtn>
+            {isInputsDisabled ? (
+              <JoinBtn
+                type="button"
+                onClick={() => openVerificationModal(email)} // 이메일 인증 버튼으로 변경
+              >
+                이메일 인증
+              </JoinBtn>
+            ) : (
+              <JoinBtn type="submit" disabled={isSignUpLoading}>
+                {isSignUpLoading ? (
+                  <Spinner width={20} height={20} />
+                ) : (
+                  '가입하기'
+                )}
+              </JoinBtn>
+            )}
           </Form>
         </FormWrapper>
       </FormCon>
-
-      {/* 이미지 로딩 */}
-
       <ImgCon>
         {!isImageLoaded && (
           <Loading>
@@ -244,7 +309,7 @@ export default function Join() {
         )}
         <img
           src={join_image}
-          alt=""
+          alt="회원가입 페이지 이미지"
           onLoad={() => setIsImageLoaded(true)}
           style={{ display: isImageLoaded ? 'block' : 'none' }}
         />
@@ -336,9 +401,10 @@ const Loading = styled.div`
 
 const JoinBtn = styled.button`
   width: 100%;
+  height: 50px;
   color: #fff;
+  font-size: 1rem;
   background-color: rgba(30, 30, 30, 1);
-  padding: 12px 20px;
   cursor: pointer;
   border: none;
   border-radius: 6px;
@@ -348,7 +414,18 @@ const JoinBtn = styled.button`
     background-color: rgba(50, 50, 50, 1);
   }
 
+  &:disabled {
+    background-color: rgba(150, 150, 150, 1);
+    cursor: not-allowed;
+  }
+
+  &:disabled:hover {
+    background-color: rgba(150, 150, 150, 1);
+  }
+
   @media (max-width: 600px) {
     margin-top: 20px;
+    font-size: 0.9rem;
+    height: 40px;
   }
 `
