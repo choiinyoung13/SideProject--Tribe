@@ -43,6 +43,13 @@ export default function Join() {
   const [isSignUpLoading, setIsSignUpLoading] = useState(false)
   const navigate = useNavigate()
 
+  // 컴포넌트가 언마운트될 때 sessionStorage 비우기
+  useEffect(() => {
+    return () => {
+      sessionStorage.clear()
+    }
+  }, [])
+
   // 취소 버튼을 눌렀을 때 세션에 데이터 저장
   const saveToSession = () => {
     sessionStorage.setItem('email', email)
