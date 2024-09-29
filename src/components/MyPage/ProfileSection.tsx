@@ -62,47 +62,61 @@ export function ProfileSection({ userInfo, setUserInfo }: ProfileSectionProps) {
 
   return (
     <ProfileWrapper>
-      {/* 이미지가 로드될 때까지 로딩 상태 유지 */}
-      <ProfileImg
-        src={
-          imageUrl
-            ? imageUrl
-            : 'http://img1.kakaocdn.net/thumb/R640x640.q70/?fname=http://t1.kakaocdn.net/account_images/default_profile.jpeg'
-        }
-        alt="avatar url"
-        onLoad={handleImageLoad} // 이미지 로드 완료 시 로딩 종료
-      />
-      <input type="file" id="img" onChange={handleFileChange} />
-      <ProfileChangeButton
-        htmlFor="img"
-        isLoading={isLoading}
-        onClick={e => {
-          if (isLoading) e.preventDefault() // 로딩 중일 때 클릭 방지
-        }}
-      >
-        {isLoading ? <Spinner width={22} height={22} /> : '프로필 변경'}
-      </ProfileChangeButton>
+      <ProfileBox>
+        {/* 이미지가 로드될 때까지 로딩 상태 유지 */}
+        <ProfileImg
+          src={
+            imageUrl
+              ? imageUrl
+              : 'http://img1.kakaocdn.net/thumb/R640x640.q70/?fname=http://t1.kakaocdn.net/account_images/default_profile.jpeg'
+          }
+          alt="avatar url"
+          onLoad={handleImageLoad} // 이미지 로드 완료 시 로딩 종료
+        />
+        <input type="file" id="img" onChange={handleFileChange} />
+        <ProfileChangeButton
+          htmlFor="img"
+          isLoading={isLoading}
+          onClick={e => {
+            if (isLoading) e.preventDefault() // 로딩 중일 때 클릭 방지
+          }}
+        >
+          {isLoading ? <Spinner width={22} height={22} /> : '프로필 변경'}
+        </ProfileChangeButton>
+      </ProfileBox>
     </ProfileWrapper>
   )
 }
 
 // 스타일링
 const ProfileWrapper = styled.div`
+  width: 100%;
+`
+
+const ProfileBox = styled.div`
+  width: 80%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  width: 100%;
 
   input {
     display: none;
+  }
+
+  @media (max-width: 768px) {
+    margin: 0 auto;
   }
 `
 
 const ProfileImg = styled.img`
   border-radius: 50%;
-  width: 60%;
-  height: 60%;
+  width: 100%;
+  height: 100%;
+
+  @media (max-width: 768px) {
+    width: 70%;
+    height: 70%;
+  }
 `
 
 const ProfileChangeButton = styled.label<{ isLoading: boolean }>`

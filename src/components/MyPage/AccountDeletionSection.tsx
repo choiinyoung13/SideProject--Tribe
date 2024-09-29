@@ -81,6 +81,10 @@ const AccountDeletionSelect = styled.select`
   background-color: rgb(245, 245, 245);
   border: 1px solid rgba(230, 230, 230, 1);
   border-radius: 6px;
+
+  @media (max-width: 768px) {
+    font-size: 0.85rem;
+  }
 `
 
 const SelectArrow = styled.span`

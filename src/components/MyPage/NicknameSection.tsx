@@ -1,12 +1,13 @@
 import styled from 'styled-components'
 import Swal from 'sweetalert2'
 import { changeNickname } from '../../config/api/user/ChangeNickname'
+import { useEffect, useState } from 'react'
+import { nicknameRegex } from '../../utill/checkInputValueValid'
 
 interface NicknameSectionProps {
   userInfo: any
   isNicknameEditMode: boolean
   setIsNicknameEditMode: (value: boolean) => void
-  initialNickname: string
   setUserInfo: (userInfo: any) => void
 }
 
@@ -14,15 +15,43 @@ export function NicknameSection({
   userInfo,
   isNicknameEditMode,
   setIsNicknameEditMode,
-  initialNickname,
   setUserInfo,
 }: NicknameSectionProps) {
+  const [initialNickname, setInitialNickname] = useState<string>('')
+  const [inputValue, setInputValue] = useState<string>('')
+
+  useEffect(() => {
+    if (!userInfo) return
+
+    if (!userInfo.nickname) {
+      setInitialNickname(userInfo.email.split('@')[0])
+      setInputValue(userInfo.email.split('@')[0])
+    } else {
+      setInitialNickname(userInfo.nickname)
+      setInputValue(userInfo.nickname)
+    }
+  }, [userInfo])
+
   // 닉네임 저장 로직
   const onSave = async (newNickname: string, id: string) => {
-    // 기존 닉네임과 같으면 경고창을 띄움
-    if (newNickname === initialNickname) {
+    if (!initialNickname) return
+
+    // 닉네임 유효성 검사
+    if (!nicknameRegex.test(inputValue)) {
       Swal.fire({
-        text: '기존 닉네임과 같습니다.',
+        text: '유효하지 않은 닉네임 형식입니다.',
+        icon: 'warning',
+        confirmButtonColor: '#1E1E1E',
+        confirmButtonText: '확인',
+        scrollbarPadding: false,
+      })
+      return
+    }
+
+    // 기존 닉네임과 같으면 경고창을 띄움
+    if (initialNickname === inputValue) {
+      Swal.fire({
+        text: '현재 사용중인 닉네임입니다.',
         icon: 'warning',
         confirmButtonColor: '#1E1E1E',
         confirmButtonText: '확인',
@@ -63,14 +92,14 @@ export function NicknameSection({
             <EditButtonWrapper>
               <button
                 onClick={() => {
-                  onSave(userInfo.nickname, userInfo.id) // 닉네임 저장 호출
+                  onSave(inputValue, userInfo.id) // 닉네임 저장 호출
                 }}
               >
                 저장
               </button>
               <button
                 onClick={() => {
-                  setUserInfo({ ...userInfo, nickname: initialNickname }) // 원래 닉네임으로 복구
+                  setInputValue(initialNickname) // 원래 닉네임으로 복구
                   setIsNicknameEditMode(false)
                 }}
               >
@@ -85,10 +114,10 @@ export function NicknameSection({
           draggable={false}
           disabled={!isNicknameEditMode}
           type="text"
-          value={userInfo.nickname || userInfo.email.split('@')[0]}
+          value={inputValue}
           onChange={e => {
             if (isNicknameEditMode) {
-              setUserInfo({ ...userInfo, nickname: e.target.value })
+              setInputValue(e.target.value)
             }
           }}
           style={{ pointerEvents: isNicknameEditMode ? 'auto' : 'none' }}

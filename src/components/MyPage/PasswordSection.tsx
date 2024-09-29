@@ -182,6 +182,12 @@ const InputWrapper = styled.div`
   &:last-of-type {
     margin-bottom: 0px;
   }
+
+  @media (max-width: 768px) {
+    input {
+      font-size: 0.85rem;
+    }
+  }
 `
 
 const EyeIcon = styled.div`
@@ -230,4 +236,8 @@ const Title = styled.div`
   font-size: 1.2rem;
   font-weight: 600;
   color: rgba(50, 50, 50, 1);
+
+  @media (max-width: 768px) {
+    font-size: 1.1rem;
+  }
 `

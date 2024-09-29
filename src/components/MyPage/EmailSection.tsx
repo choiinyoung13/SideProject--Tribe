@@ -11,7 +11,6 @@ interface EmailSectionProps {
   userInfo: any
   isEmailEditMode: boolean
   setIsEmailEditMode: (value: boolean) => void
-  initialEmail: string
   setUserInfo: (userInfo: any) => void
 }
 
@@ -19,13 +18,25 @@ export function EmailSection({
   userInfo,
   isEmailEditMode,
   setIsEmailEditMode,
-  initialEmail,
   setUserInfo,
 }: EmailSectionProps) {
-  const [newEmail, setNewEmail] = useState(userInfo.email)
+  const [newEmail, setNewEmail] = useState<string>('')
   const [isVerified, setIsVerified] = useState(false)
 
   const sendVerificationCode = async () => {
+    if (!newEmail) return
+
+    if (newEmail === userInfo.email) {
+      Swal.fire({
+        text: '현재 사용중인 이메일 입니다.',
+        icon: 'warning',
+        confirmButtonColor: '#1E1E1E',
+        confirmButtonText: '확인',
+        scrollbarPadding: false,
+      })
+      return
+    }
+
     if (!emailRegex.test(newEmail)) {
       Swal.fire({
         text: '유효한 이메일 형식이 아닙니다.',
@@ -60,17 +71,6 @@ export function EmailSection({
   }
 
   const saveEmailChange = async () => {
-    if (newEmail === initialEmail) {
-      Swal.fire({
-        text: '기존 이메일과 동일합니다.',
-        icon: 'warning',
-        confirmButtonColor: '#1E1E1E',
-        confirmButtonText: '확인',
-        scrollbarPadding: false,
-      })
-      return
-    }
-
     const result = await changeEmail(newEmail, userInfo.id)
     if (result.success) {
       Swal.fire({
@@ -99,7 +99,14 @@ export function EmailSection({
         <Title>이메일</Title>
         <ButtonWrapper>
           {!isEmailEditMode && (
-            <button onClick={() => setIsEmailEditMode(true)}>수정</button>
+            <button
+              onClick={() => {
+                setNewEmail(userInfo.email)
+                setIsEmailEditMode(true)
+              }}
+            >
+              수정
+            </button>
           )}
           {isEmailEditMode && (
             <EditButtonWrapper>
@@ -110,8 +117,9 @@ export function EmailSection({
               )}
               <button
                 onClick={() => {
-                  setUserInfo({ ...userInfo, email: initialEmail })
+                  setUserInfo({ ...userInfo })
                   setIsEmailEditMode(false)
+                  setNewEmail('')
                 }}
               >
                 취소
@@ -125,13 +133,15 @@ export function EmailSection({
           type="email"
           draggable={false}
           disabled={!isEmailEditMode || isVerified}
-          value={userInfo.email}
+          value={newEmail ? newEmail : userInfo.email}
           onChange={e => setNewEmail(e.target.value)}
           style={{ pointerEvents: isEmailEditMode ? 'auto' : 'none' }}
         />
         <Infomation>
           * 이메일 수정 후 인증 메일 전송을 누르면 해당 이메일로 인증 메일이
           발송됩니다. <br />* 이미 사용중인 이메일로 변경 불가능합니다.
+          <br />* 이메일 변경 시 따로 설정한 닉네임이 없다면 이메일 @앞부분
+          아이디로 닉네임이 변경됩니다.
         </Infomation>
       </SectionBody>
     </Section>
@@ -175,6 +185,12 @@ const SectionBody = styled.div`
       color: rgba(150, 150, 150, 1);
     }
   }
+
+  @media (max-width: 768px) {
+    input {
+      font-size: 0.85rem;
+    }
+  }
 `
 
 const Infomation = styled.p`
@@ -185,12 +201,20 @@ const Infomation = styled.p`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+
+  @media (max-width: 768px) {
+    font-size: 0.8rem;
+  }
 `
 
 const Title = styled.div`
   font-size: 1.2rem;
   font-weight: 600;
   color: rgba(50, 50, 50, 1);
+
+  @media (max-width: 768px) {
+    font-size: 1.1rem;
+  }
 `
 
 const ButtonWrapper = styled.div``

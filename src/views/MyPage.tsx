@@ -25,9 +25,6 @@ export default function MyPage() {
     nickname: null,
   })
 
-  const [initialNickname, setInitialNickname] = useState('')
-  const [initialEmail, setInitialEmail] = useState('')
-
   const [currentPassword, setCurrentPassword] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -40,6 +37,8 @@ export default function MyPage() {
   const windowWidth = useWindowWidth()
 
   const isDeletionButtonDisabled = !selectedReason
+
+  const [selectedTab, setSelectedTab] = useState('내 정보') // Tab 상태 관리
 
   useEffect(() => {
     if (!session) return
@@ -55,10 +54,6 @@ export default function MyPage() {
         likes: result?.likes,
         nickname: result?.nickname ? result.nickname : null,
       }))
-      setInitialNickname(
-        result?.nickname ? result.nickname : result?.email.split('@')[0]
-      )
-      setInitialEmail(result?.email)
     }
 
     getUserInfo()
@@ -94,56 +89,79 @@ export default function MyPage() {
 
   return (
     <Container>
+      <Header>
+        <TabWrapper>
+          <Tab
+            selected={selectedTab === '내 정보'}
+            onClick={() => setSelectedTab('내 정보')}
+          >
+            내 정보
+          </Tab>
+          <Tab
+            selected={selectedTab === '내 활동'}
+            onClick={() => setSelectedTab('내 활동')}
+          >
+            내 활동
+          </Tab>
+        </TabWrapper>
+      </Header>
       <Main>
-        <Left windowwidth={windowWidth}>
-          <ProfileSection userInfo={userInfo} setUserInfo={setUserInfo} />
-        </Left>
-        <Right windowwidth={windowWidth}>
-          <NicknameSection
-            userInfo={userInfo}
-            isNicknameEditMode={isNicknameEditMode}
-            setIsNicknameEditMode={setIsNicknameEditMode}
-            initialNickname={initialNickname}
-            setUserInfo={setUserInfo}
-          />
-          <EmailSection
-            userInfo={userInfo}
-            isEmailEditMode={isEmailEditMode}
-            setIsEmailEditMode={setIsEmailEditMode}
-            initialEmail={initialEmail}
-            setUserInfo={setUserInfo}
-          />
-          <PasswordSection
-            userInfo={userInfo}
-            currentPassword={currentPassword}
-            setCurrentPassword={setCurrentPassword}
-            password={password}
-            setPassword={setPassword}
-            confirmPassword={confirmPassword}
-            setConfirmPassword={setConfirmPassword}
-            isConfirmPasswordVisible={isConfirmPasswordVisible}
-            setIsConfirmPasswordVisible={setIsConfirmPasswordVisible}
-            isPasswordValid={isPasswordValid}
-            isConfirmPasswordValid={isConfirmPasswordValid}
-            warningText={warningText}
-            setWarningText={setWarningText}
-          />
-          <AccountDeletionSection
-            selectedReason={selectedReason}
-            setSelectedReason={setSelectedReason}
-            isDeletionButtonDisabled={isDeletionButtonDisabled}
-          />
-        </Right>
+        {selectedTab === '내 정보' ? (
+          <>
+            <Left windowwidth={windowWidth}>
+              <ProfileSection userInfo={userInfo} setUserInfo={setUserInfo} />
+            </Left>
+            <Right windowwidth={windowWidth}>
+              <NicknameSection
+                userInfo={userInfo}
+                isNicknameEditMode={isNicknameEditMode}
+                setIsNicknameEditMode={setIsNicknameEditMode}
+                setUserInfo={setUserInfo}
+              />
+              <EmailSection
+                userInfo={userInfo}
+                isEmailEditMode={isEmailEditMode}
+                setIsEmailEditMode={setIsEmailEditMode}
+                setUserInfo={setUserInfo}
+              />
+              <PasswordSection
+                userInfo={userInfo}
+                currentPassword={currentPassword}
+                setCurrentPassword={setCurrentPassword}
+                password={password}
+                setPassword={setPassword}
+                confirmPassword={confirmPassword}
+                setConfirmPassword={setConfirmPassword}
+                isConfirmPasswordVisible={isConfirmPasswordVisible}
+                setIsConfirmPasswordVisible={setIsConfirmPasswordVisible}
+                isPasswordValid={isPasswordValid}
+                isConfirmPasswordValid={isConfirmPasswordValid}
+                warningText={warningText}
+                setWarningText={setWarningText}
+              />
+              <AccountDeletionSection
+                selectedReason={selectedReason}
+                setSelectedReason={setSelectedReason}
+                isDeletionButtonDisabled={isDeletionButtonDisabled}
+              />
+            </Right>
+          </>
+        ) : (
+          <ActivitySection>
+            <h2>내 활동</h2>
+            {/* 여기에 내 활동을 위한 새로운 UI 구성요소들을 추가하세요 */}
+            <p>최근 활동 내역이 여기에 표시됩니다.</p>
+          </ActivitySection>
+        )}
       </Main>
     </Container>
   )
 }
 
-// 스타일링
 const Container = styled.div`
   margin-top: 100px;
   border-top: 1px solid rgba(210, 210, 210, 1);
-  padding: 10px 0 80px 0;
+  padding: 0 0 120px 0;
 
   @media (max-width: 1024px) {
     margin-top: 90px;
@@ -151,6 +169,7 @@ const Container = styled.div`
 
   @media (max-width: 768px) {
     margin-top: 74px;
+    padding: 0 0 80px 0;
   }
 
   @media (max-width: 600px) {
@@ -158,9 +177,44 @@ const Container = styled.div`
   }
 `
 
+const Header = styled.header`
+  max-width: 1080px;
+  margin: 0 auto;
+`
+
+const TabWrapper = styled.div`
+  display: flex;
+  width: 90%;
+  margin: 0 auto;
+  border-bottom: 1px solid rgba(230, 230, 230, 1);
+  gap: 23px;
+`
+
+interface TabProps {
+  selected: boolean
+}
+
+const Tab = styled.div<TabProps>`
+  padding: 20px 0px;
+  font-size: 1rem;
+  cursor: pointer;
+  border-bottom: ${props =>
+    props.selected ? '2px solid rgba(0,0,0,1)' : 'none'};
+  font-weight: ${props => (props.selected ? '700' : '400')};
+
+  &:hover {
+    border-bottom: 2px solid black;
+  }
+
+  @media (max-width: 768px) {
+    padding: 16px 0px;
+    font-size: 0.9rem;
+  }
+`
+
 const Main = styled.main`
-  margin: 30px auto 0;
-  max-width: 1200px;
+  margin: 40px auto 0;
+  max-width: 1080px;
   display: flex;
 
   @media (max-width: 768px) {
@@ -168,19 +222,35 @@ const Main = styled.main`
     width: 100%;
   }
 `
-interface LeftAndRigthProps {
+
+interface LeftAndRightProps {
   windowwidth: number
 }
 
-const Left = styled.div<LeftAndRigthProps>`
+const Left = styled.div<LeftAndRightProps>`
   flex: 1;
   margin-bottom: ${props => (props.windowwidth > 768 ? '0px' : '50px')};
+  padding-left: 50px;
+
+  @media (max-width: 768px) {
+    padding-left: 0px;
+  }
 `
 
-const Right = styled.div<LeftAndRigthProps>`
+const Right = styled.div<LeftAndRightProps>`
   flex: 3;
   display: flex;
   flex-direction: column;
   gap: 40px;
-  padding: ${props => (props.windowwidth > 768 ? '0 30px 0 0' : '0 30px')};
+  padding: ${props => (props.windowwidth > 768 ? '0 50px 0 0' : '0 50px')};
+
+  @media (max-width: 768px) {
+    padding: ${props => (props.windowwidth > 768 ? '0 50px 0 0' : '0 30px')};
+  }
+`
+
+const ActivitySection = styled.div`
+  width: 100%;
+  text-align: center;
+  padding: 20px;
 `
