@@ -172,12 +172,7 @@ export default function Community() {
       <RightSidebar>
         <WidgetWrapper>
           <WidgetTitleWrapper>
-            <TitleImage
-              src={aside_image2}
-              alt="aside image1"
-              width={'22px'}
-              height={'22px'}
-            />
+            <TitleImage src={aside_image2} alt="aside image1" />
             <WidgetTitle>실시간 인기 키워드</WidgetTitle>
           </WidgetTitleWrapper>
           <WidgetBack>
@@ -447,8 +442,8 @@ const WidgetTitleWrapper = styled.div`
 `
 
 const TitleImage = styled.img`
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
 `
 
 const WidgetBack = styled.div`
