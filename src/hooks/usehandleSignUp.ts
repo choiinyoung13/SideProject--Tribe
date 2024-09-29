@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { supabase } from '../supabase/supabaseClient'
-import Swal from 'sweetalert2'
 
 export const useHandleSignUp = () => {
   const [errorMessage, setErrorMessage] = useState('')
