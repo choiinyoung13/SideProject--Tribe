@@ -181,7 +181,7 @@ export function EmailSection({
         <input
           type="email"
           draggable={false}
-          disabled={!isEmailEditMode}
+          disabled={!isEmailEditMode || changeEmailLoading}
           value={newEmail ? newEmail : userInfo.email}
           onChange={e => setNewEmail(e.target.value)}
           style={{ pointerEvents: isEmailEditMode ? 'auto' : 'none' }}

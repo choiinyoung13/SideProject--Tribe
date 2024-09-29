@@ -1,5 +1,8 @@
 import styled from 'styled-components'
 import { FaChevronDown } from 'react-icons/fa'
+import Swal from 'sweetalert2'
+import { deleteUser } from '../../config/api/user/deleteUser'
+import { useNavigate } from 'react-router-dom'
 
 interface AccountDeletionSectionProps {
   selectedReason: string
@@ -11,6 +14,27 @@ export function AccountDeletionSection({
   setSelectedReason,
   isDeletionButtonDisabled,
 }: AccountDeletionSectionProps) {
+  const navigate = useNavigate()
+
+  const setDeleteModalOpen = () => {
+    Swal.fire({
+      html: `
+        <h1 style="font-weight:500; font-size:22px;">정말 탈퇴 하시겠습니까?</h1>
+      `,
+      confirmButtonText: '탈퇴',
+      showCancelButton: true,
+      cancelButtonText: '취소',
+      allowOutsideClick: false,
+      confirmButtonColor: '#1E1E1E',
+      cancelButtonColor: '#1E1E1E',
+    }).then(async result => {
+      if (result.isConfirmed) {
+        await deleteUser()
+        navigate('/')
+      }
+    })
+  }
+
   return (
     <Section>
       <SectionHeader>
@@ -42,7 +66,14 @@ export function AccountDeletionSection({
         </CustomSelectWrapper>
       </SectionBody>
       <SectionFooter>
-        <button disabled={isDeletionButtonDisabled}>회원 탈퇴</button>
+        <button
+          onClick={() => {
+            setDeleteModalOpen()
+          }}
+          disabled={isDeletionButtonDisabled}
+        >
+          회원 탈퇴
+        </button>
       </SectionFooter>
     </Section>
   )
