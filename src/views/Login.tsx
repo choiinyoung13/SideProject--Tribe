@@ -4,17 +4,90 @@ import kakao_logo from '../assets/images/logo/logo_kakao.png'
 import login_image from '../assets/images/logo/login_web_1.jpg'
 import useWindowWidth from '../hooks/useWindowWidth'
 import loadingIcon from '../assets/images/logo/ball-triangle.svg'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import { useHandleSignIn } from '../hooks/usehandleSignIn'
 import Swal from 'sweetalert2'
+import { useHandleSignUp } from '../hooks/usehandleSignUp'
 
 export default function Login() {
   const windowWidth = useWindowWidth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const { handleSignIn, signInWithOAuth, errorMessage } = useHandleSignIn()
+  const { verifyOtpCode } = useHandleSignUp()
   const [isImageLoaded, setIsImageLoaded] = useState(false)
+  const navigate = useNavigate()
+
+  // 인증번호 입력 모달 띄우기
+  const openVerificationModal = (email: string) => {
+    Swal.fire({
+      html: `
+        <h1 style="font-weight:500; font-size:22px;">인증번호 입력</h1>
+        <input type="text" id="otp-code" class="swal2-input" placeholder="6자리 인증번호 입력">
+      `,
+      confirmButtonText: '확인',
+      showCancelButton: true,
+      cancelButtonText: '취소',
+      allowOutsideClick: false,
+      confirmButtonColor: '#1E1E1E',
+      cancelButtonColor: '#1E1E1E',
+      preConfirm: () => {
+        const otpCode = (
+          document.getElementById('otp-code') as HTMLInputElement
+        ).value
+        if (!otpCode || otpCode.length !== 6) {
+          Swal.showValidationMessage('6자리 인증번호를 입력하세요.')
+          return false
+        }
+        return otpCode
+      },
+    }).then(async result => {
+      if (result.isConfirmed && result.value) {
+        // 인증번호 검증 로직 실행
+        const res = await verifyOtpCode(email, result.value)
+
+        if (res.success) {
+          Swal.fire({
+            text: '이메일 인증이 완료되었습니다!',
+            icon: 'success',
+            confirmButtonColor: '#1E1E1E',
+            confirmButtonText: '확인',
+          }).then(() => {
+            // 인증 성공 후 리다이렉트
+            navigate('/')
+            return
+          })
+        } else if (!res.success && res.error) {
+          if (res.error.message === 'Token has expired or is invalid') {
+            Swal.fire({
+              text: '인증코드가 유효하지 않습니다.',
+              icon: 'warning',
+              confirmButtonColor: '#1E1E1E',
+              confirmButtonText: '확인',
+            }).then(result => {
+              if (result.isConfirmed && result.value) {
+                openVerificationModal(email)
+                return
+              }
+            })
+          } else {
+            Swal.fire({
+              text: '인증과정 중 오류가 발생했습니다.',
+              icon: 'warning',
+              confirmButtonColor: '#1E1E1E',
+              confirmButtonText: '확인',
+            }).then(result => {
+              if (result.isConfirmed && result.value) {
+                openVerificationModal(email)
+                return
+              }
+            })
+          }
+        }
+      }
+    })
+  }
 
   return (
     <LoginCon>
@@ -26,7 +99,7 @@ export default function Login() {
           </FormSubTitle>
           <form
             action=""
-            onSubmit={e => {
+            onSubmit={async e => {
               e.preventDefault()
 
               if (!email.trim()) {
@@ -51,10 +124,33 @@ export default function Login() {
                 return
               }
 
-              try {
-                handleSignIn(email, password)
-              } catch (e) {
-                console.error(e)
+              const result = await handleSignIn(email, password)
+
+              if (!result.success && result.error) {
+                if (result?.error?.message === 'Email not confirmed') {
+                  Swal.fire({
+                    text: '이메일 인증이 완료되지 않은 계정입니다.',
+                    icon: 'warning',
+                    allowOutsideClick: false,
+                    confirmButtonColor: '#1E1E1E',
+                    confirmButtonText: '확인',
+                    scrollbarPadding: false,
+                  }).then(result => {
+                    if (result.isConfirmed && result.value) {
+                      openVerificationModal(email)
+                    }
+                  })
+                  return
+                }
+
+                Swal.fire({
+                  text: '비밀번호가 올바르지 않습니다.',
+                  icon: 'warning',
+                  confirmButtonColor: '#1E1E1E',
+                  confirmButtonText: '확인',
+                  scrollbarPadding: false,
+                })
+                return
               }
             }}
           >

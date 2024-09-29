@@ -43,20 +43,13 @@ export const useHandleSignUp = () => {
       })
 
       if (error) {
-        Swal.fire({
-          text: '인증번호 확인 중 오류가 발생했습니다.',
-          icon: 'error',
-          confirmButtonColor: '#1E1E1E',
-          confirmButtonText: '확인',
-          scrollbarPadding: false,
-        })
-        return false
+        return { success: false, error }
       }
 
-      return true
+      return { success: true }
     } catch (error) {
       console.error('인증번호 확인 중 오류 발생:', error)
-      return false
+      return { success: false }
     }
   }
 

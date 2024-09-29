@@ -28,7 +28,7 @@ export const useHandleSignIn = () => {
         confirmButtonText: '확인',
         scrollbarPadding: false,
       })
-      return
+      return { success: false, error: userExistsError }
     }
 
     try {
@@ -38,27 +38,21 @@ export const useHandleSignIn = () => {
         password: password,
       })
 
-      // 비밀번호가 틀린 경우
+      // 비밀번호가 틀린 경우 에러 반환
       if (error) {
         console.error(error)
-
-        Swal.fire({
-          text: '비밀번호가 올바르지 않습니다.',
-          icon: 'warning',
-          confirmButtonColor: '#1E1E1E',
-          confirmButtonText: '확인',
-          scrollbarPadding: false,
-        })
-        return
+        return { success: false, error }
       }
 
       // 로그인 성공 시 홈으로 이동
       navigate('/')
+      return { success: true }
     } catch (err) {
       console.error('로그인 중 오류 발생:', err)
       setErrorMessage(
         '예기치 않은 오류가 발생했습니다. 나중에 다시 시도해주세요.'
       )
+      return { success: false, error: { message: 'Unexpected error occurred' } }
     }
   }
 

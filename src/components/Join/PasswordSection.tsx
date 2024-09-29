@@ -50,6 +50,11 @@ export default function PasswordSection({
     if (password && !result) {
       setWarningText('유효하지 않은 비밀번호 형식입니다')
     }
+
+    if (password && confirmPassword && password === confirmPassword) {
+      setSuccessText('비밀번호가 일치합니다')
+      setIsConfirmPasswordValid(true)
+    }
   }, [password])
 
   useEffect(() => {
@@ -72,7 +77,7 @@ export default function PasswordSection({
       setIsConfirmPasswordValid(false)
     }
 
-    if (confirmPassword && password === confirmPassword) {
+    if (password && confirmPassword && password === confirmPassword) {
       setSuccessText('비밀번호가 일치합니다')
       setIsConfirmPasswordValid(true)
     }

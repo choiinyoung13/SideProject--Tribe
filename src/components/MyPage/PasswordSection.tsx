@@ -156,7 +156,7 @@ const SectionBody = styled.div`
     border-radius: 6px;
 
     &:focus {
-      outline: 1px solid rgba(230, 230, 230, 1);
+      outline: 2px solid rgba(30, 30, 30, 1);
     }
 
     &:disabled {

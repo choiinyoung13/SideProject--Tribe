@@ -71,6 +71,8 @@ export default function Join() {
 
   // 인증번호 입력 모달 띄우기
   const openVerificationModal = (email: string) => {
+    saveToSession() // 모달이 떴을 때 세션에 데이터 저장 -> 새로고침해도 데이터를 유지해서 화면에 보여주기 위해
+
     Swal.fire({
       html: `
         <h1 style="font-weight:500; font-size:22px;">인증번호 입력</h1>
@@ -95,8 +97,8 @@ export default function Join() {
     }).then(async result => {
       if (result.isConfirmed && result.value) {
         // 인증번호 검증 로직 실행
-        const success = await verifyOtpCode(email, result.value)
-        if (success) {
+        const res = await verifyOtpCode(email, result.value)
+        if (res.success) {
           Swal.fire({
             text: '이메일 인증이 완료되었습니다!',
             icon: 'success',
@@ -106,11 +108,34 @@ export default function Join() {
             // 인증 성공 후 리다이렉트
             navigate('/')
           })
+        } else if (!res.success && res.error) {
+          if (res.error.message === 'Token has expired or is invalid') {
+            Swal.fire({
+              text: '인증코드가 유효하지 않습니다.',
+              icon: 'warning',
+              confirmButtonColor: '#1E1E1E',
+              confirmButtonText: '확인',
+            }).then(result => {
+              if (result.isConfirmed && result.value) {
+                openVerificationModal(email)
+              }
+            })
+          } else {
+            Swal.fire({
+              text: '인증과정 중 오류가 발생했습니다.',
+              icon: 'warning',
+              confirmButtonColor: '#1E1E1E',
+              confirmButtonText: '확인',
+            }).then(result => {
+              if (result.isConfirmed && result.value) {
+                openVerificationModal(email)
+              }
+            })
+          }
         }
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         // 인증번호 모달을 취소했을 때 처리 (입력 필드 비활성화)
         setIsInputsDisabled(true)
-        saveToSession() // 취소했을 때 세션에 데이터 저장
       }
     })
   }
@@ -299,7 +324,7 @@ export default function Join() {
             ) : (
               <JoinBtn type="submit" disabled={isSignUpLoading}>
                 {isSignUpLoading ? (
-                  <Spinner width={20} height={20} />
+                  <Spinner width={27} height={27} />
                 ) : (
                   '가입하기'
                 )}
@@ -416,6 +441,10 @@ const JoinBtn = styled.button`
   border: none;
   border-radius: 6px;
   margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 1px;
 
   &:hover {
     background-color: rgba(50, 50, 50, 1);
