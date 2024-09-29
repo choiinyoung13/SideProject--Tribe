@@ -98,7 +98,6 @@ export default function Login() {
             우리 함께 당신의 공간을 아름답게 꾸며 볼까요?
           </FormSubTitle>
           <form
-            action=""
             onSubmit={async e => {
               e.preventDefault()
 
@@ -142,15 +141,6 @@ export default function Login() {
                   })
                   return
                 }
-
-                Swal.fire({
-                  text: '비밀번호가 올바르지 않습니다.',
-                  icon: 'warning',
-                  confirmButtonColor: '#1E1E1E',
-                  confirmButtonText: '확인',
-                  scrollbarPadding: false,
-                })
-                return
               }
             }}
           >

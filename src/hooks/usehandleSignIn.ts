@@ -40,6 +40,13 @@ export const useHandleSignIn = () => {
 
       // 비밀번호가 틀린 경우 에러 반환
       if (error) {
+        Swal.fire({
+          text: '올바른 비밀번호가 아닙니다.',
+          icon: 'warning',
+          confirmButtonColor: '#1E1E1E',
+          confirmButtonText: '확인',
+          scrollbarPadding: false,
+        })
         console.error(error)
         return { success: false, error }
       }

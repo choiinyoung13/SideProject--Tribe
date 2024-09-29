@@ -122,7 +122,7 @@ export default function Join() {
             })
           } else {
             Swal.fire({
-              text: '인증과정 중 오류가 발생했습니다.',
+              text: '오류가 발생했습니다 다시 시도해주세요',
               icon: 'warning',
               confirmButtonColor: '#1E1E1E',
               confirmButtonText: '확인',

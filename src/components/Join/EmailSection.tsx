@@ -90,7 +90,7 @@ export default function EmailSection({
           type="button"
           onClick={async () => {
             if (emailRegex.test(email) && email.length > 0) {
-              const result = await checkEmailExists(email)
+              const result = await checkEmailExists(email, true)
               setIsEmailExists(result)
             }
           }}

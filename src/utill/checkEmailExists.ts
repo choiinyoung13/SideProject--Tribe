@@ -1,7 +1,7 @@
 import Swal from 'sweetalert2'
 import { supabase } from '../supabase/supabaseClient'
 
-export const checkEmailExists = async (email: string) => {
+export const checkEmailExists = async (email: string, useSwal?: boolean) => {
   const { data, error } = await supabase
     .from('userinfo')
     .select('email')
@@ -24,13 +24,15 @@ export const checkEmailExists = async (email: string) => {
     return false
   }
 
-  Swal.fire({
-    text: '사용 가능한 이메일입니다.',
-    icon: 'success',
-    confirmButtonColor: '#1E1E1E',
-    confirmButtonText: '확인',
-    scrollbarPadding: false,
-  })
+  if (useSwal) {
+    Swal.fire({
+      text: '사용 가능한 이메일입니다.',
+      icon: 'success',
+      confirmButtonColor: '#1E1E1E',
+      confirmButtonText: '확인',
+      scrollbarPadding: false,
+    })
+  }
 
   return false
 }
