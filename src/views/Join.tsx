@@ -251,7 +251,7 @@ export default function Join() {
       // 계정 등록 실패 메시지
       if (result.error?.message === 'email rate limit exceeded') {
         Swal.fire({
-          text: '이메일 발신 횟수 제한을 초과했습니다.',
+          text: '인증 이메일 발신 횟수 제한을 초과했습니다.',
           icon: 'warning',
           confirmButtonColor: '#1E1E1E',
           confirmButtonText: '확인',

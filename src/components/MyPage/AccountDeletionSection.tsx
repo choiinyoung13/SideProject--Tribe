@@ -20,7 +20,7 @@ export function AccountDeletionSection({
     Swal.fire({
       html: `
         <h1 style="font-weight:500; font-size:22px;">정말 탈퇴 하시겠습니까?</h1><br/>
-        <p style="font-size:14px;">회원탈퇴 시 기존에 등록했던 모든 게시물은 삭제됩니다.<p/>
+        <p style="font-size:16px;">회원탈퇴 시 기존에 등록했던 모든 게시물은 삭제됩니다.<p/>
       `,
       confirmButtonText: '탈퇴',
       showCancelButton: true,
@@ -158,4 +158,8 @@ const Title = styled.div`
   font-size: 1.2rem;
   font-weight: 600;
   color: rgba(50, 50, 50, 1);
+
+  @media (max-width: 768px) {
+    font-size: 1.1rem;
+  }
 `

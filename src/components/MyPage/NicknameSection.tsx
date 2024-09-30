@@ -170,6 +170,12 @@ const SectionBody = styled.div`
       color: rgba(150, 150, 150, 1);
     }
   }
+
+  @media (max-width: 768px) {
+    input {
+      font-size: 0.85rem;
+    }
+  }
 `
 
 const Infomation = styled.p`
@@ -180,12 +186,20 @@ const Infomation = styled.p`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+
+  @media (max-width: 768px) {
+    font-size: 0.8rem;
+  }
 `
 
 const Title = styled.div`
   font-size: 1.2rem;
   font-weight: 600;
   color: rgba(50, 50, 50, 1);
+
+  @media (max-width: 768px) {
+    font-size: 1.1rem;
+  }
 `
 
 const ButtonWrapper = styled.div``

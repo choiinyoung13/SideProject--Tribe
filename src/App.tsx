@@ -6,6 +6,7 @@ import useLocalStorageFilter from './hooks/useLocalStorageFilter'
 import { useRecoilValue } from 'recoil'
 import { ModileCartCalendarModalState } from './recoil/atoms/ModileCartCalendarModalState'
 import { useEffect } from 'react'
+import styled from 'styled-components'
 
 function App() {
   useLocalStorageFilter()
@@ -25,11 +26,17 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Nav />
-      <Router />
-      <Footer />
+      <Container>
+        <Nav />
+        <Router />
+        <Footer />
+      </Container>
     </BrowserRouter>
   )
 }
+
+const Container = styled.div`
+  min-width: 375px; /* 화면에 맞춰서 반응형으로 줄어듦 */
+`
 
 export default App

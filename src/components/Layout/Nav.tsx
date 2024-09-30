@@ -44,6 +44,20 @@ export default function Nav() {
     }
   }, [])
 
+  // 반응형 메뉴가 열릴 때 body의 overflow를 hidden으로 설정
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'auto'
+    }
+
+    // 컴포넌트가 unmount 될 때 스크롤을 복원
+    return () => {
+      document.body.style.overflow = 'auto'
+    }
+  }, [menuOpen])
+
   const toggleMenu = (state: boolean) => {
     setMenuOpen(state)
   }
@@ -219,7 +233,12 @@ export default function Nav() {
               <li>CART</li>
             </Link>
             {session && (
-              <Link to={'/mypage'}>
+              <Link
+                to={'/mypage'}
+                onClick={() => {
+                  toggleMenu(false)
+                }}
+              >
                 <li>MYPAGE</li>
               </Link>
             )}
@@ -341,6 +360,7 @@ const NavCon = styled.nav<NavProps>`
   position: absolute;
   top: 0px;
   z-index: 102;
+  min-width: 375px;
   width: 100%;
   height: 100px;
   padding: 15px 60px 15px;
@@ -415,7 +435,7 @@ const MobileMenu = styled.ul`
   right: 0;
   left: 0;
   width: 100%;
-  height: 100vh;
+  height: 100%;
   background-color: #fff;
   justify-content: center;
   align-items: center;

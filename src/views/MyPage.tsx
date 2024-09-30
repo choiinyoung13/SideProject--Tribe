@@ -10,6 +10,7 @@ import { AccountDeletionSection } from '../components/MyPage/AccountDeletionSect
 import { ProfileSection } from '../components/MyPage/ProfileSection'
 import { passwordRegex } from '../utill/checkInputValueValid'
 import useWindowWidth from '../hooks/useWindowWidth'
+import ActivitySection from '../components/MyPage/ActivitySection'
 
 export default function MyPage() {
   const { session } = useAuth()
@@ -147,11 +148,7 @@ export default function MyPage() {
             </Right>
           </>
         ) : (
-          <ActivitySection>
-            <h2>내 활동</h2>
-            {/* 여기에 내 활동을 위한 새로운 UI 구성요소들을 추가하세요 */}
-            <p>최근 활동 내역이 여기에 표시됩니다.</p>
-          </ActivitySection>
+          <ActivitySection />
         )}
       </Main>
     </Container>
@@ -247,10 +244,4 @@ const Right = styled.div<LeftAndRightProps>`
   @media (max-width: 768px) {
     padding: ${props => (props.windowwidth > 768 ? '0 50px 0 0' : '0 30px')};
   }
-`
-
-const ActivitySection = styled.div`
-  width: 100%;
-  text-align: center;
-  padding: 20px;
 `
