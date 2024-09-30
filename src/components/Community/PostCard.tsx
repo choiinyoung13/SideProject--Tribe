@@ -79,7 +79,7 @@ export default function PostCard({ post, onImageLoad }: PostCardProps) {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: isImageLoaded ? 1 : 0 }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.7 }}
           >
             <img
               src={post.img_urls[0]}

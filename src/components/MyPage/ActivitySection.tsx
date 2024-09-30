@@ -1,6 +1,17 @@
+import { useQuery } from 'react-query'
 import styled from 'styled-components'
+import { fetchLikedPosts } from '../../config/api/post/fecthPosts'
 
 export default function ActivitySection() {
+  //   const { data: likedPost, isLoading: likedPostLoading } = useQuery(
+  //     ['Posts', 'liked'],
+  //     fetchLikedPosts,
+  //     {
+  //       staleTime: 0,
+  //       cacheTime: 30 * 60 * 1000,
+  //     }
+  //   )
+
   return (
     <Container>
       <Section>

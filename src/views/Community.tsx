@@ -202,7 +202,6 @@ export default function Community() {
   )
 }
 
-// 전체 레이아웃 컨테이너
 const CommunityCon = styled.div`
   display: flex;
   width: 100%;

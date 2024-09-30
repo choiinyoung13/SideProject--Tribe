@@ -3,16 +3,23 @@ import styled from 'styled-components'
 import { uploadImagesToStorageAndGetUrl } from '../../config/api/post/uploadImagesToStorageAndGetUrl'
 import { ChangeUserProfileImage } from '../../config/api/user/ChangeUserProfileImage'
 import Spinner from '../Common/Spinner'
+import { useMutation, useQueryClient } from 'react-query'
+import { motion } from 'framer-motion'
 
 interface ProfileSectionProps {
   userInfo: any
   setUserInfo: (userInfo: any) => void
+  avatar_url: string
 }
 
-export function ProfileSection({ userInfo, setUserInfo }: ProfileSectionProps) {
+export function ProfileSection({
+  userInfo,
+  setUserInfo,
+  avatar_url,
+}: ProfileSectionProps) {
   const [imageFile, setImageFile] = useState<File | null>(null)
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [imageUrl, setImageUrl] = useState<string | null>(userInfo.avatar_url) // 변경된 이미지 URL 상태로 관리
+  const [isImageLoading, setIsImageLoading] = useState<boolean>(false)
+  const queryClient = useQueryClient()
 
   // 파일 선택 시 호출되는 함수
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -22,17 +29,17 @@ export function ProfileSection({ userInfo, setUserInfo }: ProfileSectionProps) {
     }
   }
 
-  useEffect(() => {
-    if (userInfo.avatar_url !== null) {
-      setImageUrl(userInfo.avatar_url)
-    }
-  }, [userInfo.avatar_url])
+  const { mutate } = useMutation(ChangeUserProfileImage, {
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['userinfo'], exact: false })
+    },
+  })
 
   useEffect(() => {
     if (!imageFile) return
 
     const changeProfileUrl = async () => {
-      setIsLoading(true)
+      setIsImageLoading(true)
       try {
         const result = await uploadImagesToStorageAndGetUrl([imageFile])
         const uploadedImageUrl = result[0]
@@ -43,10 +50,7 @@ export function ProfileSection({ userInfo, setUserInfo }: ProfileSectionProps) {
         }))
 
         // 서버에도 업데이트 요청
-        await ChangeUserProfileImage(uploadedImageUrl, userInfo.id)
-
-        // 변경된 이미지 URL 설정
-        setImageUrl(uploadedImageUrl)
+        mutate({ url: uploadedImageUrl, id: userInfo.id })
       } catch (error) {
         console.error('프로필 이미지 변경 중 오류 발생:', error)
       }
@@ -57,31 +61,37 @@ export function ProfileSection({ userInfo, setUserInfo }: ProfileSectionProps) {
 
   // 이미지 로드 완료 시 호출되는 함수
   const handleImageLoad = () => {
-    setIsLoading(false) // 이미지가 완전히 로드되면 로딩 상태 종료
+    setIsImageLoading(false) // 이미지가 완전히 로드되면 로딩 상태 종료
   }
 
   return (
     <ProfileWrapper>
       <ProfileBox>
         {/* 이미지가 로드될 때까지 로딩 상태 유지 */}
-        <ProfileImg
-          src={
-            imageUrl
-              ? imageUrl
-              : 'http://img1.kakaocdn.net/thumb/R640x640.q70/?fname=http://t1.kakaocdn.net/account_images/default_profile.jpeg'
-          }
-          alt="avatar url"
-          onLoad={handleImageLoad} // 이미지 로드 완료 시 로딩 종료
-        />
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: !isImageLoading ? 1 : 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <ProfileImg
+            src={
+              avatar_url
+                ? avatar_url
+                : 'http://img1.kakaocdn.net/thumb/R640x640.q70/?fname=http://t1.kakaocdn.net/account_images/default_profile.jpeg'
+            }
+            alt="avatar url"
+            onLoad={handleImageLoad} // 이미지 로드 완료 시 로딩 종료
+          />
+        </motion.div>
         <input type="file" id="img" onChange={handleFileChange} />
         <ProfileChangeButton
           htmlFor="img"
-          isLoading={isLoading}
+          isLoading={isImageLoading}
           onClick={e => {
-            if (isLoading) e.preventDefault() // 로딩 중일 때 클릭 방지
+            if (isImageLoading) e.preventDefault() // 로딩 중일 때 클릭 방지
           }}
         >
-          {isLoading ? <Spinner width={22} height={22} /> : '프로필 변경'}
+          {isImageLoading ? <Spinner width={22} height={22} /> : '프로필 변경'}
         </ProfileChangeButton>
       </ProfileBox>
     </ProfileWrapper>

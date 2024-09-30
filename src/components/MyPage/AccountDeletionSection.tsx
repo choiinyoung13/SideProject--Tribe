@@ -65,6 +65,11 @@ export function AccountDeletionSection({
             <FaChevronDown />
           </SelectArrow>
         </CustomSelectWrapper>
+        <Infomation>
+          * 회원탈퇴 완료시 계정을 다시 복구할 수 없습니다. <br />* 이전에
+          작성했던 게시물 및 활동 기록은 자동으로 삭제됩니다.
+          <br />
+        </Infomation>
       </SectionBody>
       <SectionFooter>
         <button
@@ -95,6 +100,19 @@ const SectionHeader = styled.div`
 
 const SectionBody = styled.div`
   width: 100%;
+`
+const Infomation = styled.p`
+  line-height: 28px;
+  margin-top: 10px;
+  color: rgba(120, 120, 120, 1);
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  @media (max-width: 768px) {
+    font-size: 0.8rem;
+  }
 `
 
 const CustomSelectWrapper = styled.div`

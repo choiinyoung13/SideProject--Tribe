@@ -2,7 +2,13 @@ import Swal from 'sweetalert2'
 import { supabase } from '../../../supabase/supabaseClient'
 
 // 사용자 프로필 이미지 변경
-export async function ChangeUserProfileImage(url: string, id: string) {
+export async function ChangeUserProfileImage({
+  url,
+  id,
+}: {
+  url: string
+  id: string
+}) {
   const { data, error } = await supabase
     .from('userinfo')
     .update({ avatar_url: url })

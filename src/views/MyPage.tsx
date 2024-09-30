@@ -11,6 +11,8 @@ import { ProfileSection } from '../components/MyPage/ProfileSection'
 import { passwordRegex } from '../utill/checkInputValueValid'
 import useWindowWidth from '../hooks/useWindowWidth'
 import ActivitySection from '../components/MyPage/ActivitySection'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { useQuery } from 'react-query'
 
 export default function MyPage() {
   const { session } = useAuth()
@@ -36,29 +38,36 @@ export default function MyPage() {
   const [warningText, setWarningText] = useState('')
   const [selectedReason, setSelectedReason] = useState('')
   const windowWidth = useWindowWidth()
-
+  const navigate = useNavigate()
   const isDeletionButtonDisabled = !selectedReason
 
-  const [selectedTab, setSelectedTab] = useState('내 정보') // Tab 상태 관리
+  const location = useLocation()
+  const queryParams = new URLSearchParams(location.search)
+  const tab = queryParams.get('tab')
+
+  const { data, isLoading } = useQuery(
+    ['userinfo', session?.user?.id],
+    () => session && fetchUserInfoByUserId(session.user.id),
+    {
+      staleTime: Infinity,
+      cacheTime: 30 * 60 * 1000,
+      enabled: session !== null,
+    }
+  )
 
   useEffect(() => {
-    if (!session) return
+    if (!data || isLoading) return
 
-    const getUserInfo = async () => {
-      const result = await fetchUserInfoByUserId(session.user.id)
-      setUserInfo(() => ({
-        id: result?.id,
-        email: result?.email,
-        avatar_url: result?.avatar_url,
-        username: result?.username,
-        admin: result?.admin,
-        likes: result?.likes,
-        nickname: result?.nickname ? result.nickname : null,
-      }))
-    }
-
-    getUserInfo()
-  }, [session])
+    setUserInfo(() => ({
+      id: data?.id,
+      email: data?.email,
+      avatar_url: data?.avatar_url,
+      username: data?.username,
+      admin: data?.admin,
+      likes: data?.likes,
+      nickname: data?.nickname ? data.nickname : null,
+    }))
+  }, [data])
 
   useEffect(() => {
     const isValidPassword = passwordRegex.test(password)
@@ -84,8 +93,8 @@ export default function MyPage() {
     }
   }, [password, confirmPassword])
 
-  if (!session) {
-    return <UnauthorizedAccess />
+  if (isLoading || !data) {
+    return <LodaingContainer>로딩 중...</LodaingContainer>
   }
 
   return (
@@ -93,24 +102,32 @@ export default function MyPage() {
       <Header>
         <TabWrapper>
           <Tab
-            selected={selectedTab === '내 정보'}
-            onClick={() => setSelectedTab('내 정보')}
+            selected={tab === null}
+            onClick={() => {
+              navigate('/mypage')
+            }}
           >
             내 정보
           </Tab>
           <Tab
-            selected={selectedTab === '내 활동'}
-            onClick={() => setSelectedTab('내 활동')}
+            selected={tab === '1'}
+            onClick={() => {
+              navigate('/mypage?tab=1')
+            }}
           >
             내 활동
           </Tab>
         </TabWrapper>
       </Header>
       <Main>
-        {selectedTab === '내 정보' ? (
+        {tab === null ? (
           <>
             <Left windowwidth={windowWidth}>
-              <ProfileSection userInfo={userInfo} setUserInfo={setUserInfo} />
+              <ProfileSection
+                userInfo={userInfo}
+                setUserInfo={setUserInfo}
+                avatar_url={data.avatar_url}
+              />
             </Left>
             <Right windowwidth={windowWidth}>
               <NicknameSection
@@ -154,6 +171,16 @@ export default function MyPage() {
     </Container>
   )
 }
+
+const LodaingContainer = styled.div`
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  font-size: 1.5rem;
+`
 
 const Container = styled.div`
   margin-top: 100px;
