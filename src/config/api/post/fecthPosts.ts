@@ -51,7 +51,6 @@ export async function fetchPostsPerPage(
   const hasMore = data.length === pageSize
   const nextCursor = hasMore ? pageParam + 1 : null
 
-  console.log('조회된 데이터:', data)
   return { posts: data, nextCursor }
 }
 

@@ -1,129 +1,122 @@
-// import { useQuery } from 'react-query'
 import styled from 'styled-components'
-// import { fetchLikedPosts } from '../../config/api/post/fecthPosts'
+import { LikedPostsSection } from './LikedPostsSection'
+import { MyPostsSection } from './MyPostsSection'
+import { PurchaseHistorySection } from './PurchaseHistorySection'
+import { useLocation, useNavigate } from 'react-router-dom'
 
-export default function ActivitySection() {
-  //   const { data: likedPost, isLoading: likedPostLoading } = useQuery(
-  //     ['Posts', 'liked'],
-  //     fetchLikedPosts,
-  //     {
-  //       staleTime: 0,
-  //       cacheTime: 30 * 60 * 1000,
-  //     }
-  //   )
+interface ActivitySectionProps {
+  likedPost: any[]
+}
+
+export default function ActivitySection({ likedPost }: ActivitySectionProps) {
+  const location = useLocation()
+  const queryParams = new URLSearchParams(location.search)
+  const subTab = queryParams.get('subTab')
+  const navigate = useNavigate()
+
+  const myPosts: never[] = [
+    /* 내가 올린 게시물 데이터 */
+  ]
+  const purchaseHistory: never[] = [
+    /* 구매 내역 데이터 */
+  ]
 
   return (
     <Container>
-      <Section>
-        <Title>좋아요 누른 게시물</Title>
-        <ContentWrapper>
-          <Card>
-            <p>게시물 1</p>
-          </Card>
-          <Card>
-            <p>게시물 2</p>
-          </Card>
-          <Card>
-            <p>게시물 3</p>
-          </Card>
-        </ContentWrapper>
-      </Section>
+      <Header>
+        <TabWrapper>
+          <Tab
+            selected={subTab === null}
+            onClick={() => {
+              navigate('/mypage?tab=1')
+            }}
+          >
+            좋아요 누른 게시물
+          </Tab>
+          <Tab
+            selected={subTab === '1'}
+            onClick={() => {
+              navigate('/mypage?tab=1&subTab=1')
+            }}
+          >
+            내가 올린 게시물
+          </Tab>
+          <Tab
+            selected={subTab === '2'}
+            onClick={() => {
+              navigate('/mypage?tab=1&subTab=2')
+            }}
+          >
+            구매 내역
+          </Tab>
+        </TabWrapper>
+      </Header>
 
-      <Section>
-        <Title>내가 올린 게시물</Title>
-        <ContentWrapper>
-          <Card>
-            <p>게시물 1</p>
-          </Card>
-          <Card>
-            <p>게시물 2</p>
-          </Card>
-        </ContentWrapper>
-      </Section>
-
-      <Section>
-        <Title>구매 내역</Title>
-        <ContentWrapper>
-          <Card>
-            <p>구매 내역 1</p>
-          </Card>
-          <Card>
-            <p>구매 내역 2</p>
-          </Card>
-        </ContentWrapper>
-      </Section>
+      <Main>
+        {/* 좋아요 누른 게시물 */}
+        {subTab === null && <LikedPostsSection likedPosts={likedPost} />}{' '}
+        {/* 내가 올린 게시물 */}
+        {subTab === '1' && <MyPostsSection myPosts={[]} />} {/* 구매 내역 */}
+        {subTab === '2' && <PurchaseHistorySection purchaseHistory={[]} />}
+      </Main>
     </Container>
   )
 }
 
 const Container = styled.div`
   width: 100%;
-  padding: 0px 50px;
   margin: 0 auto;
   background-color: #ffffff;
-
-  @media (max-width: 768px) {
-    padding: 0px 30px;
-  }
 `
 
-const Section = styled.div`
-  width: 100%;
-  margin-bottom: 40px;
-  padding: 20px 0;
-  border-bottom: 1px solid #ddd;
-
-  &:first-of-type {
-    padding: 0 0 20px 0;
-  }
+const Header = styled.header`
+  max-width: 1080px;
+  margin: 0 auto;
 `
 
-const Title = styled.h2`
-  font-size: 1.3rem;
-  font-weight: bold;
-  margin-bottom: 20px;
-  color: #222;
-
-  @media (max-width: 768px) {
-    font-size: 1.2rem;
-  }
-
-  @media (max-width: 600px) {
-    font-size: 1.1rem;
-  }
-`
-
-const ContentWrapper = styled.div`
+const TabWrapper = styled.div`
   display: flex;
-  flex-direction: column;
-  gap: 15px;
+  width: 100%;
+  margin: 0 auto;
+  border-bottom: 1px solid rgba(230, 230, 230, 1);
+  gap: 25px;
 `
 
-const Card = styled.div`
-  width: 100%;
-  background-color: #f8f9fa;
-  padding: 20px;
-  border: 1px solid #e0e0e0;
-  border-radius: 6px;
-  text-align: left;
-  color: #333;
+interface TabProps {
+  selected: boolean
+}
 
-  p {
-    margin: 0;
-    font-size: 1rem;
+const Tab = styled.div<TabProps>`
+  padding: 20px 0px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  border-bottom: ${props =>
+    props.selected ? '2px solid rgba(0,0,0,1)' : 'none'};
+  font-weight: ${props => (props.selected ? '700' : '400')};
+
+  &:hover {
+    border-bottom: 2px solid black;
+  }
+
+  @media (max-width: 1150px) {
+    &:first-of-type {
+      margin-left: 30px;
+    }
   }
 
   @media (max-width: 768px) {
-    padding: 15px;
-    p {
-      font-size: 0.9rem;
-    }
+    padding: 16px 0px;
+    font-size: 0.85rem;
   }
+`
 
-  @media (max-width: 600px) {
-    padding: 10px;
-    p {
-      font-size: 0.8rem;
-    }
+const Main = styled.main`
+  margin: 0 auto;
+  max-width: 1080px;
+  display: flex;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    width: 100%;
   }
 `

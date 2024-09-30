@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { IoMdHeart } from 'react-icons/io'
-import { FaCommentDots } from 'react-icons/fa'
+import { IoChatbubbleEllipsesOutline } from 'react-icons/io5'
 import PostDetailModal from './PostDetailModal'
 import { PostType } from '../../types/PostType'
 import { fetchUserInfoByUserId } from '../../config/api/user/fetchUserInfo'
@@ -161,7 +161,7 @@ export default function PostCard({ post, onImageLoad }: PostCardProps) {
                   </span>
                 </HeartIcon>
                 <CommentIcon>
-                  <FaCommentDots />
+                  <IoChatbubbleEllipsesOutline />
                   <span>
                     {Array.isArray(post.comments) ? post.comments.length : 0}
                   </span>
@@ -423,6 +423,10 @@ const CommentIcon = styled.div`
   display: flex;
   align-items: center;
   margin-left: 12px;
+
+  svg {
+    font-size: 1.1rem;
+  }
 
   @media (max-width: 450px) {
     margin-left: 8px;

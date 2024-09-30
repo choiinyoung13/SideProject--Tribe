@@ -13,6 +13,7 @@ import ActivitySection from '../components/MyPage/ActivitySection'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useQuery } from 'react-query'
 import loadingIcon from '../assets/images/logo/ball-triangle.svg'
+import { fetchLikedPosts } from '../config/api/post/fecthPosts'
 
 export default function MyPage() {
   const { session } = useAuth()
@@ -45,6 +46,7 @@ export default function MyPage() {
   const queryParams = new URLSearchParams(location.search)
   const tab = queryParams.get('tab')
 
+  // 내 정보 데이터 패칭
   const { data, isLoading } = useQuery(
     ['userinfo', session?.user?.id],
     () => session && fetchUserInfoByUserId(session.user.id),
@@ -52,6 +54,16 @@ export default function MyPage() {
       staleTime: Infinity,
       cacheTime: 30 * 60 * 1000,
       enabled: session !== null,
+    }
+  )
+
+  // 내 활동 (좋아요 누른 게시물) 데이터 패칭
+  const { data: likedPost, isLoading: likedPostLoading } = useQuery(
+    ['Posts', 'liked'],
+    fetchLikedPosts,
+    {
+      staleTime: 10,
+      cacheTime: 30 * 60 * 1000,
     }
   )
 
@@ -93,7 +105,7 @@ export default function MyPage() {
     }
   }, [password, confirmPassword])
 
-  if (isLoading || !data) {
+  if (isLoading || !data || likedPostLoading) {
     return (
       <LoadingPage>
         <LoadingIcon>
@@ -125,7 +137,7 @@ export default function MyPage() {
           </Tab>
         </TabWrapper>
       </Header>
-      <Main>
+      <Main tab={tab}>
         {tab === null ? (
           <>
             <Left windowwidth={windowWidth}>
@@ -171,7 +183,7 @@ export default function MyPage() {
             </Right>
           </>
         ) : (
-          <ActivitySection />
+          <ActivitySection likedPost={likedPost?.data || []} />
         )}
       </Main>
     </Container>
@@ -204,7 +216,7 @@ const Header = styled.header`
 
 const TabWrapper = styled.div`
   display: flex;
-  width: 90%;
+  width: 100%;
   margin: 0 auto;
   border-bottom: 1px solid rgba(230, 230, 230, 1);
   gap: 23px;
@@ -226,14 +238,24 @@ const Tab = styled.div<TabProps>`
     border-bottom: 2px solid black;
   }
 
+  @media (max-width: 1150px) {
+    &:first-of-type {
+      margin-left: 30px;
+    }
+  }
+
   @media (max-width: 768px) {
     padding: 16px 0px;
     font-size: 0.9rem;
   }
 `
 
-const Main = styled.main`
-  margin: 40px auto 0;
+interface MainProps {
+  tab: null | string
+}
+
+const Main = styled.main<MainProps>`
+  margin: ${props => (props.tab === null ? '40px auto 0' : '0 auto')};
   max-width: 1080px;
   display: flex;
 
