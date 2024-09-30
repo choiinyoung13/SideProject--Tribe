@@ -68,31 +68,37 @@ export function ProfileSection({
     <ProfileWrapper>
       <ProfileBox>
         {/* 이미지가 로드될 때까지 로딩 상태 유지 */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: !isImageLoading ? 1 : 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          <ProfileImg
-            src={
-              avatar_url
-                ? avatar_url
-                : 'http://img1.kakaocdn.net/thumb/R640x640.q70/?fname=http://t1.kakaocdn.net/account_images/default_profile.jpeg'
-            }
-            alt="avatar url"
-            onLoad={handleImageLoad} // 이미지 로드 완료 시 로딩 종료
-          />
-        </motion.div>
-        <input type="file" id="img" onChange={handleFileChange} />
-        <ProfileChangeButton
-          htmlFor="img"
-          isLoading={isImageLoading}
-          onClick={e => {
-            if (isImageLoading) e.preventDefault() // 로딩 중일 때 클릭 방지
-          }}
-        >
-          {isImageLoading ? <Spinner width={22} height={22} /> : '프로필 변경'}
-        </ProfileChangeButton>
+        <div>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: !isImageLoading ? 1 : 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <ProfileImg
+              src={
+                avatar_url
+                  ? avatar_url
+                  : 'http://img1.kakaocdn.net/thumb/R640x640.q70/?fname=http://t1.kakaocdn.net/account_images/default_profile.jpeg'
+              }
+              alt="avatar url"
+              onLoad={handleImageLoad} // 이미지 로드 완료 시 로딩 종료
+            />
+          </motion.div>
+          <input type="file" id="img" onChange={handleFileChange} />
+          <ProfileChangeButton
+            htmlFor="img"
+            isLoading={isImageLoading}
+            onClick={e => {
+              if (isImageLoading) e.preventDefault() // 로딩 중일 때 클릭 방지
+            }}
+          >
+            {isImageLoading ? (
+              <Spinner width={22} height={22} />
+            ) : (
+              '프로필 변경'
+            )}
+          </ProfileChangeButton>
+        </div>
       </ProfileBox>
     </ProfileWrapper>
   )
@@ -105,9 +111,12 @@ const ProfileWrapper = styled.div`
 
 const ProfileBox = styled.div`
   width: 80%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+
+  div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 
   input {
     display: none;

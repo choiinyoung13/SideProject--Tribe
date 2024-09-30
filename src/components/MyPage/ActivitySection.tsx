@@ -1,6 +1,6 @@
-import { useQuery } from 'react-query'
+// import { useQuery } from 'react-query'
 import styled from 'styled-components'
-import { fetchLikedPosts } from '../../config/api/post/fecthPosts'
+// import { fetchLikedPosts } from '../../config/api/post/fecthPosts'
 
 export default function ActivitySection() {
   //   const { data: likedPost, isLoading: likedPostLoading } = useQuery(

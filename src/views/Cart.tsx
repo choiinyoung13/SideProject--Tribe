@@ -26,7 +26,7 @@ export default function Cart() {
   const windowWidth = useWindowWidth()
   const navigate = useNavigate()
   const [totalPrice, setTotalPrice] = useState(0)
-  const { session } = useAuth()
+  const { session, isLoading: isAuthLoading } = useAuth()
   const [allItemChecked, setAllItemChecked] = useState(false)
   const [isAllItemReceivingDateSelected, setIsAllItemReceivingDateSelected] =
     useState(false)
@@ -65,11 +65,7 @@ export default function Cart() {
     }
   }, [cartData, session])
 
-  if (!session) {
-    return <UnauthorizedAccess />
-  }
-
-  if (isLoading) {
+  if (isAuthLoading || isLoading) {
     return (
       <LoadingPage>
         <LoadingIcon>
@@ -79,12 +75,16 @@ export default function Cart() {
     )
   }
 
+  if (!session) {
+    return <UnauthorizedAccess />
+  }
+
   return (
     cartData && (
       <CartCon>
         <CartWrapper>
           <Title>장바구니</Title>
-          {windowWidth < 1024 && (
+          {windowWidth <= 1024 && (
             <CheckHeader>
               <CheckHeaderLeft>
                 <div>
@@ -106,7 +106,7 @@ export default function Cart() {
                   />
                 </div>
                 <div>
-                  전체선택 ({countCheckItemAmount(cartData.items)}/
+                  전체선택 ({countCheckItemAmount(cartData.items)}
                   {cartData.items.length})
                 </div>
               </CheckHeaderLeft>
@@ -230,21 +230,33 @@ const CartCon = styled.div`
   width: 100%;
   border-top: 1px solid rgba(210, 210, 210, 1);
   margin-top: 100px;
+
+  @media (max-width: 1024px) {
+    margin-top: 90px;
+  }
+
+  @media (max-width: 768px) {
+    margin-top: 74px;
+  }
+
+  @media (max-width: 600px) {
+    margin-top: 52px;
+  }
 `
 
 const CartWrapper = styled.div`
   margin: 40px auto 0;
-
   width: 75%;
+
   @media (max-width: 1024px) {
     width: 90%;
     height: auto;
-    margin: 100px auto;
+    margin: 42px auto;
   }
 
   @media (max-width: 600px) {
     width: 100%;
-    margin: 60px auto;
+    margin: 16px auto;
     padding: 0 14px;
   }
 `
@@ -419,17 +431,46 @@ const ButtonCon = styled.div`
 `
 
 const LoadingPage = styled.div`
-  margin-top: 120px;
+  margin-top: 100px;
   width: 100%;
-  height: 700px;
+  min-height: 500px;
+  height: calc(100vh - 100px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @media (max-width: 1024px) {
+    margin-top: 90px;
+    height: calc(100vh - 90px);
+  }
+
+  @media (max-width: 768px) {
+    margin-top: 74px;
+    height: calc(100vh - 74px);
+  }
+
+  @media (max-width: 600px) {
+    margin-top: 52px;
+    height: calc(100vh - 112px);
+  }
 `
 
 const LoadingIcon = styled.div`
-  margin: 0 auto;
-  padding-top: 260px;
-  width: 150px;
+  width: 140px;
+  height: 140px;
+  margin-bottom: 100px;
 
   img {
     width: 100%;
+  }
+
+  @media (max-width: 1024px) {
+    width: 130px;
+    height: 130px;
+  }
+
+  @media (max-width: 600px) {
+    width: 120px;
+    height: 120px;
   }
 `

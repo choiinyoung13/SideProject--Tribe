@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { useAuth } from '../hooks/useAuth'
-import UnauthorizedAccess from '../components/Common/UnauthorizedAccess'
 import { fetchUserInfoByUserId } from '../config/api/user/fetchUserInfo'
 import { NicknameSection } from '../components/MyPage/NicknameSection'
 import { EmailSection } from '../components/MyPage/EmailSection'
@@ -13,6 +12,7 @@ import useWindowWidth from '../hooks/useWindowWidth'
 import ActivitySection from '../components/MyPage/ActivitySection'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useQuery } from 'react-query'
+import loadingIcon from '../assets/images/logo/ball-triangle.svg'
 
 export default function MyPage() {
   const { session } = useAuth()
@@ -94,7 +94,13 @@ export default function MyPage() {
   }, [password, confirmPassword])
 
   if (isLoading || !data) {
-    return <LodaingContainer>로딩 중...</LodaingContainer>
+    return (
+      <LoadingPage>
+        <LoadingIcon>
+          <img src={loadingIcon} alt="" />
+        </LoadingIcon>
+      </LoadingPage>
+    )
   }
 
   return (
@@ -171,16 +177,6 @@ export default function MyPage() {
     </Container>
   )
 }
-
-const LodaingContainer = styled.div`
-  width: 100%;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #fff;
-  font-size: 1.5rem;
-`
 
 const Container = styled.div`
   margin-top: 100px;
@@ -270,5 +266,50 @@ const Right = styled.div<LeftAndRightProps>`
 
   @media (max-width: 768px) {
     padding: ${props => (props.windowwidth > 768 ? '0 50px 0 0' : '0 30px')};
+  }
+`
+
+const LoadingPage = styled.div`
+  margin-top: 100px;
+  width: 100%;
+  min-height: 500px;
+  height: calc(100vh - 100px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @media (max-width: 1024px) {
+    margin-top: 90px;
+    height: calc(100vh - 90px);
+  }
+
+  @media (max-width: 768px) {
+    margin-top: 74px;
+    height: calc(100vh - 74px);
+  }
+
+  @media (max-width: 600px) {
+    margin-top: 52px;
+    height: calc(100vh - 112px);
+  }
+`
+
+const LoadingIcon = styled.div`
+  width: 140px;
+  height: 140px;
+  margin-bottom: 100px;
+
+  img {
+    width: 100%;
+  }
+
+  @media (max-width: 1024px) {
+    width: 130px;
+    height: 130px;
+  }
+
+  @media (max-width: 600px) {
+    width: 120px;
+    height: 120px;
   }
 `
