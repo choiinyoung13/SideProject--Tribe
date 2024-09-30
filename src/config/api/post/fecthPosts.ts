@@ -55,7 +55,13 @@ export async function fetchPostsPerPage(
 }
 
 // 유저가 좋아요 누른 게시물만 조회
-export async function fetchLikedPosts() {
+export async function fetchLikedPostsPerPage(
+  pageParam: number = 0,
+  pageSize: number = 8
+): Promise<FetchPostsResponse> {
+  const start = pageParam * pageSize
+  const end = start + pageSize - 1
+
   // 현재 로그인된 유저의 세션 정보를 가져옴
   const {
     data: { user },
@@ -69,13 +75,21 @@ export async function fetchLikedPosts() {
   const { data, error } = await supabase
     .from('posts')
     .select('*')
-    .contains('liked', [user.id]) // liked 배열에 유저 UUID가 포함된 게시물만 필터링
-    .order('created_at', { ascending: false }) // 최신 순으로 정렬 (옵션)
+    .contains('liked', [user.id])
+    .order('created_at', { ascending: false })
+    .range(start, end)
 
   if (error) {
-    console.error('게시물을 불러오는 중 에러 발생:', error)
-    return { success: false }
+    console.error('데이터 조회 오류:', error.message)
+    return { posts: [], nextCursor: null }
   }
 
-  return { success: true, data }
+  if (!data || data.length === 0) {
+    return { posts: [], nextCursor: null }
+  }
+
+  const hasMore = data.length === pageSize
+  const nextCursor = hasMore ? pageParam + 1 : null
+
+  return { posts: data, nextCursor }
 }

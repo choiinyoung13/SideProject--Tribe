@@ -13,7 +13,6 @@ import ActivitySection from '../components/MyPage/ActivitySection'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useQuery } from 'react-query'
 import loadingIcon from '../assets/images/logo/ball-triangle.svg'
-import { fetchLikedPosts } from '../config/api/post/fecthPosts'
 
 export default function MyPage() {
   const { session } = useAuth()
@@ -53,17 +52,7 @@ export default function MyPage() {
     {
       staleTime: Infinity,
       cacheTime: 30 * 60 * 1000,
-      enabled: session !== null,
-    }
-  )
-
-  // 내 활동 (좋아요 누른 게시물) 데이터 패칭
-  const { data: likedPost, isLoading: likedPostLoading } = useQuery(
-    ['Posts', 'liked'],
-    fetchLikedPosts,
-    {
-      staleTime: 10,
-      cacheTime: 30 * 60 * 1000,
+      enabled: session !== null && tab === null,
     }
   )
 
@@ -105,7 +94,7 @@ export default function MyPage() {
     }
   }, [password, confirmPassword])
 
-  if (isLoading || !data || likedPostLoading) {
+  if (isLoading || !data) {
     return (
       <LoadingPage>
         <LoadingIcon>
@@ -183,7 +172,7 @@ export default function MyPage() {
             </Right>
           </>
         ) : (
-          <ActivitySection likedPost={likedPost?.data || []} />
+          <ActivitySection />
         )}
       </Main>
     </Container>
@@ -193,11 +182,7 @@ export default function MyPage() {
 const Container = styled.div`
   margin-top: 100px;
   border-top: 1px solid rgba(210, 210, 210, 1);
-  padding: 0 0 120px 0;
-
-  @media (max-width: 1024px) {
-    margin-top: 90px;
-  }
+  padding: 0 0 90px 0;
 
   @media (max-width: 768px) {
     margin-top: 74px;

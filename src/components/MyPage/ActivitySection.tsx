@@ -4,22 +4,11 @@ import { MyPostsSection } from './MyPostsSection'
 import { PurchaseHistorySection } from './PurchaseHistorySection'
 import { useLocation, useNavigate } from 'react-router-dom'
 
-interface ActivitySectionProps {
-  likedPost: any[]
-}
-
-export default function ActivitySection({ likedPost }: ActivitySectionProps) {
+export default function ActivitySection() {
   const location = useLocation()
   const queryParams = new URLSearchParams(location.search)
   const subTab = queryParams.get('subTab')
   const navigate = useNavigate()
-
-  // const myPosts: never[] = [
-  //   /* 내가 올린 게시물 데이터 */
-  // ]
-  // const purchaseHistory: never[] = [
-  //   /* 구매 내역 데이터 */
-  // ]
 
   return (
     <Container>
@@ -54,8 +43,7 @@ export default function ActivitySection({ likedPost }: ActivitySectionProps) {
 
       <Main>
         {/* 좋아요 누른 게시물 */}
-        {subTab === null && <LikedPostsSection likedPosts={likedPost} />}{' '}
-        {/* 내가 올린 게시물 */}
+        {subTab === null && <LikedPostsSection />} {/* 내가 올린 게시물 */}
         {subTab === '1' && <MyPostsSection myPosts={[]} />} {/* 구매 내역 */}
         {subTab === '2' && <PurchaseHistorySection purchaseHistory={[]} />}
       </Main>
