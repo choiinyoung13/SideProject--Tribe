@@ -60,6 +60,12 @@ const ContentWrapper = styled.div`
     flex-wrap: wrap;
     gap: 20px;
   }
+
+  @media (max-width: 1150px) {
+    section {
+      padding: 0 30px 0 35px;
+    }
+  }
 `
 
 const Card = styled.div`

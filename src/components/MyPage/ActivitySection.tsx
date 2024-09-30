@@ -14,12 +14,12 @@ export default function ActivitySection({ likedPost }: ActivitySectionProps) {
   const subTab = queryParams.get('subTab')
   const navigate = useNavigate()
 
-  const myPosts: never[] = [
-    /* 내가 올린 게시물 데이터 */
-  ]
-  const purchaseHistory: never[] = [
-    /* 구매 내역 데이터 */
-  ]
+  // const myPosts: never[] = [
+  //   /* 내가 올린 게시물 데이터 */
+  // ]
+  // const purchaseHistory: never[] = [
+  //   /* 구매 내역 데이터 */
+  // ]
 
   return (
     <Container>
