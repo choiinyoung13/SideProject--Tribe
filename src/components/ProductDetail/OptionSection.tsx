@@ -1,5 +1,4 @@
 import styled from 'styled-components'
-import { PiFlowerLight } from 'react-icons/pi'
 
 export default function OptionsSection() {
   return (
