@@ -1,4 +1,5 @@
 export interface CartItemType {
+  price: any
   title: string
   imgUrl: string
   originalPrice: number

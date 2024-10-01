@@ -17,6 +17,8 @@ import { countCheckItemAmount } from '../utill/countCheckItemAmount'
 import { CartItemType } from '../types/CartItemType'
 import Swal from 'sweetalert2'
 import UnauthorizedAccess from '../components/Common/UnauthorizedAccess'
+import { addPurchaseHistory } from '../config/api/cart/addPurchaseHistory'
+import { optionToPrice } from '../utill/optionToPrice'
 
 interface CartItemsResponse {
   items: CartItemType[]
@@ -206,13 +208,34 @@ export default function Cart() {
                     confirmButtonColor: '#1E1E1E',
                     confirmButtonText: '확인',
                     scrollbarPadding: false,
-                  }).then(result => {
+                    allowOutsideClick: false,
+                  }).then(async result => {
                     if (result.isConfirmed) {
+                      // 구매 데이터를 생성
+                      const purchaseDataArray = cartData.items.map(item => ({
+                        img_url: item.imgUrl,
+                        title: item.title,
+                        price:
+                          priceCalculation(item.originalPrice, item.discount) *
+                            item.quantity +
+                          optionToPrice(item.option),
+                        amount: item.quantity,
+                        additional_product: item.option || 'None',
+                        created_at: new Date().toISOString(),
+                      }))
+
+                      // 각 상품의 구매 내역을 Supabase에 저장
+                      for (const purchaseData of purchaseDataArray) {
+                        await addPurchaseHistory(session.user.id, purchaseData)
+                      }
+
                       // 확인 버튼을 눌렀을 때 이동할 URL
                       navigate('/shop')
+
+                      // 모든 장바구니 아이템 삭제
+                      deleteAllCartItemMutation.mutate(session!.user.id)
                     }
                   })
-                  deleteAllCartItemMutation.mutate(session!.user.id)
                 }}
               >
                 결제하기

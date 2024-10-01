@@ -63,10 +63,10 @@ export function LikedPostsSection() {
   }
 
   return (
-    <Section>
+    <Section data={likedPosts?.pages[0].posts || []}>
       <ContentWrapper>
         <section>
-          {likedPosts && likedPosts.pages.length > 0 ? (
+          {likedPosts && likedPosts.pages[0].posts.length > 0 ? (
             likedPosts.pages.flatMap((page, pageIndex) =>
               page.posts.map((post, index) => (
                 <Card key={`${pageIndex}-${index}`} post={post} />
@@ -85,9 +85,14 @@ export function LikedPostsSection() {
   )
 }
 
-const Section = styled.div`
+interface SectionProps {
+  data: PostType[]
+}
+
+const Section = styled.div<SectionProps>`
   width: 100%;
   padding: 20px 0 0;
+  margin-bottom: ${props => (props.data.length <= 4 ? '30px' : '0px')};
 `
 
 const ContentWrapper = styled.div`
