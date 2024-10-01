@@ -20,7 +20,10 @@ export const addItemToCart = async ({
     .single()
 
   if (cartError) {
-    console.error('Error fetching cart:', cartError)
+    console.error(
+      '징바구니 데이터를 가져오는중 에러가 발생했습니다:',
+      cartError
+    )
     return
   }
 
@@ -51,6 +54,6 @@ export const addItemToCart = async ({
     .eq('user_id', userId)
 
   if (updateError) {
-    console.error('Error updating cart:', updateError)
+    console.error('장바구니 업데이트 중 에러가 발생했습니다:', updateError)
   }
 }

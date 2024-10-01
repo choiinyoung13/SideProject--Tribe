@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from 'react-query'
 import {
-  deleteAllCartItem,
-  deleteCartItem,
+  deleteCheckedCartItems,
+  deleteAllCartItems,
 } from '../config/api/cart/deleteCartItem'
 import {
   toggleAllCartItemStatus,
@@ -22,7 +22,7 @@ export function useCartMutations() {
 
   /******* deleteCartItemMutation  ********/
   const deleteCartItemMutation = useMutation(
-    (cartId: string) => deleteCartItem(cartId),
+    (cartId: string) => deleteCheckedCartItems(cartId),
     {
       onSuccess: () => {
         queryClient.invalidateQueries(QUERY_KEYS.CART_ITEMS)
@@ -32,7 +32,7 @@ export function useCartMutations() {
 
   /******* deleteAllCartItemMutation  ********/
   const deleteAllCartItemMutation = useMutation(
-    (cartId: string) => deleteAllCartItem(cartId),
+    (cartId: string) => deleteAllCartItems(cartId),
     {
       onSuccess: () => {
         queryClient.invalidateQueries(QUERY_KEYS.CART_ITEMS)

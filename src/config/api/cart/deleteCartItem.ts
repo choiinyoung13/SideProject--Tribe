@@ -1,43 +1,52 @@
-import { supabase } from "../../../supabase/supabaseClient";
+import { supabase } from '../../../supabase/supabaseClient'
 
-export const deleteCartItem = async (cartId: string) => {
+// 체크된 아이템들을 삭제하는 함수
+export const deleteCheckedCartItems = async (cartId: string) => {
   const { data: cart, error: fetchError } = await supabase
-    .from("carts")
-    .select("items")
-    .eq("user_id", cartId)
-    .single();
+    .from('carts')
+    .select('items')
+    .eq('user_id', cartId)
+    .single()
 
   if (fetchError) {
-    console.error("Error fetching cart:", fetchError);
-    return;
+    console.error(
+      '장바구니 데이터를 불러오는 중 에러가 발생했습니다:',
+      fetchError
+    )
+    return
   }
 
-  const item = cart.items;
-  const filteredItem = item.filter((item: { checked: boolean }) => {
-    return item.checked === false;
-  });
+  const items = cart.items
+  // 체크된 아이템들을 제외한 나머지 아이템만 필터링
+  const filteredItems = items.filter(
+    (item: { checked: boolean }) => !item.checked
+  )
 
   const { data, error: deleteError } = await supabase
-    .from("carts")
-    .update({ items: filteredItem })
-    .eq("user_id", cartId);
+    .from('carts')
+    .update({ items: filteredItems })
+    .eq('user_id', cartId)
 
   if (deleteError) {
-    console.error("Error deleting item:", deleteError);
+    console.error(
+      '장바구니 데이터를 업데이트하는 중 에러가 발생했습니다:',
+      deleteError
+    )
   } else {
-    console.log("Item updated:", data);
+    console.log('장바구니에서 삭제된 아이템:', data)
   }
-};
+}
 
-export const deleteAllCartItem = async (cartId: string) => {
+// 모든 아이템을 삭제하는 함수
+export const deleteAllCartItems = async (cartId: string) => {
   const { data, error } = await supabase
-    .from("carts")
+    .from('carts')
     .update({ items: [] })
-    .eq("user_id", cartId);
+    .eq('user_id', cartId)
 
   if (error) {
-    console.error("Error deleting items:", error);
+    console.error('장바구니 데이터를 삭제하는 중 에러가 발생했습니다:', error)
   } else {
-    console.log("Items deleted:", data);
+    console.log('장바구니에서 삭제된 아이템:', data)
   }
-};
+}

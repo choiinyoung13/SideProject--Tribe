@@ -32,11 +32,8 @@ export default function Cart() {
   const [isAllItemReceivingDateSelected, setIsAllItemReceivingDateSelected] =
     useState(false)
 
-  const {
-    deleteCartItemMutation,
-    deleteAllCartItemMutation,
-    toggleAllCartItemStatusMutation,
-  } = useCartMutations()
+  const { deleteCartItemMutation, toggleAllCartItemStatusMutation } =
+    useCartMutations()
 
   const { data: cartData, isLoading }: UseQueryResult<CartItemsResponse> =
     useQuery(
@@ -55,15 +52,29 @@ export default function Cart() {
 
   useEffect(() => {
     if (cartData && cartData.items.length > 0 && session) {
-      const isAllItmeSelected = cartData.items.every(item => item.checked)
-      setAllItemChecked(isAllItmeSelected)
+      // 모든 체크된 아이템이 선택되었는지 확인
+      const isAllItemSelected = cartData.items.every(item => item.checked)
+      setAllItemChecked(isAllItemSelected)
 
-      const isAllItemReceivingDateSelected = cartData.items.every(
-        (item: CartItemType) => item.receivingDate !== 0
-      )
-      setIsAllItemReceivingDateSelected(isAllItemReceivingDateSelected)
+      // 체크된 아이템들만 수령일이 선택되었는지 확인
+      const isAllCheckedItemReceivingDateSelected = cartData.items
+        .filter(item => item.checked) // checked가 true인 아이템만 필터링
+        .every((item: CartItemType) => item.receivingDate !== 0)
+
+      setIsAllItemReceivingDateSelected(isAllCheckedItemReceivingDateSelected)
+
+      // 체크된 항목들에 대한 총 가격 계산
+      const total = cartData.items
+        .filter(item => item.checked)
+        .reduce(
+          (sum, item) =>
+            sum +
+            priceCalculation(item.originalPrice, item.discount) * item.quantity,
+          0
+        )
+      setTotalPrice(total)
     }
-  }, [cartData, session])
+  }, [cartData, session, setTotalPrice])
 
   if (isAuthLoading || isLoading) {
     return (
@@ -196,48 +207,64 @@ export default function Cart() {
             >
               {cartData.items.length > 0 ? '계속 쇼핑하기' : '쇼핑하러 가기'}
             </button>
-            {cartData.items.length > 0 && isAllItemReceivingDateSelected ? (
-              <button
-                onClick={() => {
-                  Swal.fire({
-                    text: '구매해주셔서 감사합니다.',
-                    icon: 'success',
-                    confirmButtonColor: '#1E1E1E',
-                    confirmButtonText: '확인',
-                    scrollbarPadding: false,
-                    allowOutsideClick: false,
-                  }).then(async result => {
-                    if (result.isConfirmed) {
-                      // 구매 데이터를 생성
-                      const purchaseDataArray = cartData.items.map(item => ({
-                        img_url: item.imgUrl,
-                        title: item.title,
-                        price:
-                          priceCalculation(item.originalPrice, item.discount) *
-                          item.quantity,
-                        amount: item.quantity,
-                        created_at: new Date().toISOString(),
-                      }))
 
-                      // 각 상품의 구매 내역을 Supabase에 저장
-                      for (const purchaseData of purchaseDataArray) {
-                        await addPurchaseHistory(session.user.id, purchaseData)
+            {cartData.items.length > 0 &&
+            cartData.items.some(item => item.checked) ? ( // 체크된 아이템이 있을 경우
+              isAllItemReceivingDateSelected ? (
+                <button
+                  onClick={() => {
+                    Swal.fire({
+                      text: '구매해주셔서 감사합니다.',
+                      icon: 'success',
+                      confirmButtonColor: '#1E1E1E',
+                      confirmButtonText: '확인',
+                      scrollbarPadding: false,
+                      allowOutsideClick: false,
+                    }).then(async result => {
+                      if (result.isConfirmed) {
+                        // 체크된 아이템들만 필터링
+                        const checkedItems = cartData.items.filter(
+                          item => item.checked
+                        )
+
+                        // 구매 데이터를 생성
+                        const purchaseDataArray = checkedItems.map(item => ({
+                          img_url: item.imgUrl,
+                          title: item.title,
+                          price:
+                            priceCalculation(
+                              item.originalPrice,
+                              item.discount
+                            ) * item.quantity,
+                          amount: item.quantity,
+                          created_at: new Date().toISOString(),
+                        }))
+
+                        // 각 상품의 구매 내역을 Supabase에 저장
+                        for (const purchaseData of purchaseDataArray) {
+                          await addPurchaseHistory(
+                            session.user.id,
+                            purchaseData
+                          )
+                        }
+
+                        // 체크된 아이템만 삭제
+                        deleteCartItemMutation.mutate(session.user.id)
+
+                        // 확인 버튼을 눌렀을 때 이동할 URL
+                        navigate('/shop')
                       }
-
-                      // 확인 버튼을 눌렀을 때 이동할 URL
-                      navigate('/shop')
-
-                      // 모든 장바구니 아이템 삭제
-                      deleteAllCartItemMutation.mutate(session!.user.id)
-                    }
-                  })
-                }}
-              >
-                결제하기
-              </button>
-            ) : cartData.items.length > 0 && !isAllItemReceivingDateSelected ? (
-              <button>수령일을 선택해주세요</button>
-            ) : null}
+                    })
+                  }}
+                >
+                  결제하기
+                </button>
+              ) : (
+                <button>수령일을 선택해주세요</button>
+              )
+            ) : (
+              <button>상품을 선택해주세요</button> // 체크된 아이템이 없을 경우
+            )}
           </ButtonCon>
         </CartWrapper>
       </CartCon>

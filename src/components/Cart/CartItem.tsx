@@ -5,7 +5,6 @@ import formatNumberWithCommas from '../../utill/formatNumberWithCommas'
 import { UseMutationResult } from 'react-query'
 import { useCartMutations } from '../../mutations/useCartMutations'
 import FutureDatePicker from '../Common/DatePicker'
-import { optionToPrice } from '../../utill/optionToPrice'
 
 interface ToggleCartItemStatusArgs {
   cartId: string
@@ -57,16 +56,16 @@ export default function CartItem({
   }, [receivingDate])
 
   useEffect(() => {
-    if (price && quantity && setTotalPrice) {
+    if (checked && price && quantity && setTotalPrice) {
       setTotalPrice(prev => (prev + price) * quantity)
     }
 
     return () => {
-      if (price && quantity && setTotalPrice) {
+      if (checked && price && quantity && setTotalPrice) {
         setTotalPrice(prev => prev - price * quantity)
       }
     }
-  }, [quantity])
+  }, [quantity, checked])
 
   if (type === 'header' && cartId && setAllItemChecked) {
     return (
