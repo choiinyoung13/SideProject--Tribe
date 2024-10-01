@@ -11,6 +11,8 @@ import { QUERY_KEYS } from '../../config/constants/queryKeys'
 import { useUserInfoMutations } from '../../mutations/useUserInfoMutation'
 import { CartItemType } from '../../types/CartItemType'
 import Swal from 'sweetalert2'
+import { addPurchaseHistory } from '../../config/api/cart/addPurchaseHistory'
+import { priceCalculation } from '../../utill/priceCalculation'
 
 interface ButtonSectionProps {
   isDateSelected: boolean
@@ -106,8 +108,27 @@ export default function ButtonSection({
                 confirmButtonColor: '#1E1E1E',
                 confirmButtonText: '확인',
                 scrollbarPadding: false,
-              }).then(result => {
+              }).then(async result => {
                 if (result.isConfirmed) {
+                  // 구매 데이터를 생성
+                  if (session) {
+                    const purchaseDataArray = {
+                      img_url: orderInfo.imgUrl,
+                      title: orderInfo.title,
+                      price:
+                        priceCalculation(
+                          orderInfo.originalPrice,
+                          orderInfo.discount
+                        ) * orderInfo.quantity,
+                      amount: orderInfo.quantity,
+                      created_at: new Date().toISOString(),
+                    }
+
+                    // 구매 내역을 Supabase에 저장
+
+                    await addPurchaseHistory(session.user.id, purchaseDataArray)
+                  }
+
                   // 확인 버튼을 눌렀을 때 이동할 URL
                   navigate('/shop')
                 }
