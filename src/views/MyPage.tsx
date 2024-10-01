@@ -94,7 +94,7 @@ export default function MyPage() {
     }
   }, [password, confirmPassword])
 
-  if (isLoading || !data) {
+  if (tab === null && (isLoading || !data)) {
     return (
       <LoadingPage>
         <LoadingIcon>

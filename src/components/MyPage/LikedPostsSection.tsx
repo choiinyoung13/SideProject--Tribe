@@ -6,6 +6,7 @@ import { fetchLikedPostsPerPage } from '../../config/api/post/fecthPosts'
 import { useInView } from 'react-intersection-observer'
 import { useEffect } from 'react'
 import loadingIcon from '../../assets/images/logo/ball-triangle.svg'
+import { useLocation } from 'react-router-dom'
 
 type FetchPostsResponse = {
   posts: PostType[]
@@ -13,6 +14,11 @@ type FetchPostsResponse = {
 }
 
 export function LikedPostsSection() {
+  const location = useLocation()
+  const queryParams = new URLSearchParams(location.search)
+  const tab = queryParams.get('tab')
+  const subTab = queryParams.get('subTab')
+
   // 내 활동 (좋아요 누른 게시물) 데이터 패칭
   const {
     data: likedPosts,
@@ -21,7 +27,7 @@ export function LikedPostsSection() {
     isFetchingNextPage,
     isLoading: likedPostLoading,
   } = useInfiniteQuery<FetchPostsResponse>(
-    ['Posts', 'liked'],
+    ['posts', tab, subTab],
     ({ pageParam = 0 }) => fetchLikedPostsPerPage(pageParam, 8),
     {
       getNextPageParam: lastPage => lastPage.nextCursor || undefined,
@@ -35,9 +41,13 @@ export function LikedPostsSection() {
     initialInView: true,
   })
 
+  // 마운트 시 스크롤을 최상단으로 이동
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
-      console.log('ㅎㅇ')
       fetchNextPage()
     }
   }, [inView])

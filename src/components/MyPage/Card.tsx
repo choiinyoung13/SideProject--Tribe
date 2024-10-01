@@ -3,9 +3,10 @@ import { IoChatbubbleEllipsesOutline } from 'react-icons/io5'
 import { IoMdHeart } from 'react-icons/io'
 import { motion } from 'framer-motion'
 import { useState } from 'react'
+import { PostType } from '../../types/PostType'
 
 interface CardProps {
-  post: any
+  post: PostType
 }
 
 export const Card = ({ post }: CardProps) => {
@@ -22,7 +23,9 @@ export const Card = ({ post }: CardProps) => {
           <img
             src={post.img_urls[0]}
             alt={post.title}
-            onLoad={() => setIsImageLoaded(true)}
+            onLoad={() => {
+              setIsImageLoaded(true)
+            }}
           />
         </CardImage>
         <CardContent>
@@ -34,11 +37,11 @@ export const Card = ({ post }: CardProps) => {
           <PostInfo>
             <Liked>
               <IoMdHeart />
-              <span>{post.liked.length}개</span>
+              <span>{!post.liked ? 0 : post.liked.length}개</span>
             </Liked>
             <Comment>
               <IoChatbubbleEllipsesOutline />
-              <span>{post.comments?.length || 0}개</span>
+              <span>{!post.comments ? 0 : post.comments.length}개</span>
             </Comment>
           </PostInfo>
         </CardContent>
