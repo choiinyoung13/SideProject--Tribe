@@ -13,9 +13,10 @@ import ActivitySection from '../components/MyPage/ActivitySection'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useQuery } from 'react-query'
 import loadingIcon from '../assets/images/logo/ball-triangle.svg'
+import UnauthorizedAccess from '../components/Common/UnauthorizedAccess'
 
 export default function MyPage() {
-  const { session } = useAuth()
+  const { session, isLoading: isAuthLoading } = useAuth()
   const [isNicknameEditMode, setIsNicknameEditMode] = useState(false)
   const [isEmailEditMode, setIsEmailEditMode] = useState(false)
   const [userInfo, setUserInfo] = useState({
@@ -94,6 +95,23 @@ export default function MyPage() {
     }
   }, [password, confirmPassword])
 
+  // session을 가져오는 동안 loading처리
+  if (isAuthLoading) {
+    return (
+      <LoadingPage>
+        <LoadingIcon>
+          <img src={loadingIcon} alt="" />
+        </LoadingIcon>
+      </LoadingPage>
+    )
+  }
+
+  // 유효하지 않은 session이면 오류페이지 보여주기
+  if (!session) {
+    return <UnauthorizedAccess />
+  }
+
+  // 유효한 session이면 해당 유정정보 패칭하면서 그동안 로딩처리
   if (tab === null && (isLoading || !data)) {
     return (
       <LoadingPage>
