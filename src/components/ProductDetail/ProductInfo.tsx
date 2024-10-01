@@ -1,11 +1,11 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 interface ProductInfoPropsType {
-  title: string;
-  size: string;
-  origin: string;
-  classification: string;
-  deliveryPeriod: number;
+  title: string
+  size: string
+  origin: string
+  classification: string
+  deliveryPeriod: number
 }
 
 export default function ProductInfo({
@@ -37,30 +37,28 @@ export default function ProductInfo({
         </Info>
       </InfoWrapper>
     </>
-  );
+  )
 }
 
 const Title = styled.div`
   font-size: 1.2rem;
   font-weight: 500;
-  margin-top: 16px;
+  margin-top: 14px;
 
   @media (max-width: 1024px) {
     font-size: 1.2rem;
-    margin-top: 10px;
+    margin-top: 16px;
   }
 
   @media (max-width: 600px) {
     font-size: 1rem;
     margin-top: 10px;
   }
-`;
+`
 
 const InfoWrapper = styled.div`
-  margin: 30px 0px 40px;
+  margin: 40px 0px 40px;
   display: flex;
-  padding-bottom: 2px;
-
   justify-content: space-between;
   width: 100%;
   max-width: 730px;
@@ -87,7 +85,7 @@ const InfoWrapper = styled.div`
   @media (max-width: 1024px) {
     width: 90%;
     margin: 30px auto 0px;
-    scrollbar-color: rgba(210, 210, 210, 0) #fff;
+    scrollbar-color: rgba(210, 210, 210, 1) #fff;
   }
 
   @media (max-width: 600px) {
@@ -101,14 +99,14 @@ const InfoWrapper = styled.div`
     min-width: 100%;
     scrollbar-color: rgba(210, 210, 210, 0) #fff;
   }
-`;
+`
 
 const Info = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 4px 60px;
+  padding: 4px 56px;
   border-left: 1px solid rgba(90, 90, 90, 1);
   flex-shrink: 0;
 
@@ -154,7 +152,7 @@ const Info = styled.div`
       flex-grow: 0.5;
     }
   }
-`;
+`
 
 const InfoKey = styled.div`
   font-size: 0.8rem;
@@ -168,7 +166,7 @@ const InfoKey = styled.div`
   @media (max-width: 600px) {
     font-size: 0.8rem;
   }
-`;
+`
 
 const InfoValue = styled.div`
   font-size: 1rem;
@@ -185,4 +183,4 @@ const InfoValue = styled.div`
     font-size: 0.8rem;
     font-weight: 600;
   }
-`;
+`

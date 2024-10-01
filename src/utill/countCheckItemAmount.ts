@@ -3,7 +3,6 @@ interface CartItem {
   quantity: number
   receivingDate: number
   checked: boolean
-  option: string
 }
 
 export const countCheckItemAmount = (cartItems: Array<CartItem>) => {

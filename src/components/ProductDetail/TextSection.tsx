@@ -11,8 +11,6 @@ import { CartItemType } from '../../types/CartItemType'
 type BadgeType = 'hot' | 'fast'
 
 interface TextSectionProps {
-  additionalOptionsPrice: number
-  handleSelectChange: (event: React.ChangeEvent<HTMLSelectElement>) => void
   isDateSelected: boolean
   setIsDateSelected: React.Dispatch<React.SetStateAction<boolean>>
   productInfo: {
@@ -31,8 +29,6 @@ interface TextSectionProps {
 }
 
 export default function TextSection({
-  additionalOptionsPrice,
-  handleSelectChange,
   isDateSelected,
   setIsDateSelected,
   productInfo,
@@ -53,7 +49,6 @@ export default function TextSection({
     imgUrl: imgurl,
     originalPrice: originalprice,
     discount: discount,
-    option: '-',
     checked: false,
     receivingDate: 0,
     quantity: 1,
@@ -77,12 +72,9 @@ export default function TextSection({
         isDateSelected={isDateSelected}
         receivingDate={orderInfo.receivingDate}
       />
-      <OptionsSection
-        handleSelectChange={handleSelectChange}
-        setOrderInfo={setOrderInfo}
-      />
+      <OptionsSection />
       <TotalPriceSection
-        additionalOptionsPrice={additionalOptionsPrice}
+        title={title}
         originalprice={originalprice}
         discount={discount}
         setOrderInfo={setOrderInfo}

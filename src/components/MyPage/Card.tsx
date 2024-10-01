@@ -12,7 +12,6 @@ type PurchaseHistory = {
   img_url: string
   amount: number
   created_at: string
-  additional_product: string
 }
 
 interface CardProps {
@@ -51,13 +50,9 @@ export const Card = ({ post, purchase }: CardProps) => {
                 <span>구매일</span>
                 <span>{formatDateToYYYY_MM_DD(purchase.created_at)}</span>
               </CreatedAt>
-              <Additional>
-                <span>추가옵션</span>
-                <span>{purchase.additional_product}</span>
-              </Additional>
               <Pirce>
                 <span>사용금액</span>
-                <span>{purchase.price}</span>
+                <span>{purchase.price.toLocaleString()}원</span>
               </Pirce>
             </PurchasePostInfo>
           </CardContent>
@@ -278,24 +273,6 @@ const Amount = styled.div`
 `
 
 const CreatedAt = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  span {
-    &:first-of-type {
-      width: 60px;
-    }
-
-    &:last-of-type {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-  }
-`
-
-const Additional = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;

@@ -18,7 +18,6 @@ import { CartItemType } from '../types/CartItemType'
 import Swal from 'sweetalert2'
 import UnauthorizedAccess from '../components/Common/UnauthorizedAccess'
 import { addPurchaseHistory } from '../config/api/cart/addPurchaseHistory'
-import { optionToPrice } from '../utill/optionToPrice'
 
 interface CartItemsResponse {
   items: CartItemType[]
@@ -63,7 +62,6 @@ export default function Cart() {
         (item: CartItemType) => item.receivingDate !== 0
       )
       setIsAllItemReceivingDateSelected(isAllItemReceivingDateSelected)
-      console.log(isAllItemReceivingDateSelected)
     }
   }, [cartData, session])
 
@@ -140,7 +138,6 @@ export default function Cart() {
                     cartItem.originalPrice,
                     cartItem.discount
                   )}
-                  option={cartItem.option}
                   checked={cartItem.checked}
                   receivingDate={cartItem.receivingDate}
                   setTotalPrice={setTotalPrice}
@@ -217,10 +214,8 @@ export default function Cart() {
                         title: item.title,
                         price:
                           priceCalculation(item.originalPrice, item.discount) *
-                            item.quantity +
-                          optionToPrice(item.option),
+                          item.quantity,
                         amount: item.quantity,
-                        additional_product: item.option || 'None',
                         created_at: new Date().toISOString(),
                       }))
 
@@ -372,13 +367,13 @@ const ButtonWrapper = styled.div`
 `
 
 const PriceConWrapper = styled.div`
-  margin-top: 90px;
+  margin-top: 60px;
   border: 1px solid grey;
   border-radius: 8px;
   overflow: hidden;
 
   @media (max-width: 1024px) {
-    margin-top: 60px;
+    margin-top: 50px;
   }
 
   @media (max-width: 600px) {
@@ -448,7 +443,8 @@ const ButtonCon = styled.div`
 
     @media (max-width: 600px) {
       width: 100%;
-      font-size: 1rem;
+      padding: 12px;
+      font-size: 0.9rem;
     }
   }
 `

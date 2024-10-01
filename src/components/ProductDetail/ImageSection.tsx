@@ -15,8 +15,14 @@ export default function ImageSection({ image }: ImageSectionProps) {
 }
 
 const ImgSection = styled.section`
+  display: flex;
+  align-items: center;
   width: 50%;
   min-width: 508px;
+
+  @media (max-width: 1750px) {
+    align-items: start;
+  }
 
   @media (max-width: 1024px) {
     width: 100%;

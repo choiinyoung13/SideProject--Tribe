@@ -27,7 +27,6 @@ export default function PriceInfo({
 const PriceCon = styled.div`
   display: flex;
   align-items: end;
-  padding-bottom: 6px;
 `
 
 const DiscountInfo = styled.div`

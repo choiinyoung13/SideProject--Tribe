@@ -151,7 +151,6 @@ export default function ButtonSection({
                     imgUrl: orderInfo.imgUrl,
                     originalPrice: orderInfo.originalPrice,
                     discount: orderInfo.discount,
-                    option: orderInfo.option,
                     checked: orderInfo.checked,
                     receivingDate: orderInfo.receivingDate,
                     itemId: orderInfo.itemId,

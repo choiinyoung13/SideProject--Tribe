@@ -7,14 +7,14 @@ import { SHIPPING_COST } from '../../config/constants/constants'
 import { CartItemType } from '../../types/CartItemType'
 
 interface TotalPriceSectionProps {
-  additionalOptionsPrice: number
+  title: string
   originalprice: number
   discount: number
   setOrderInfo: React.Dispatch<React.SetStateAction<CartItemType>>
 }
 
 export default function TotalPriceSection({
-  additionalOptionsPrice,
+  title,
   originalprice,
   discount,
   setOrderInfo,
@@ -26,7 +26,7 @@ export default function TotalPriceSection({
       <TotalPriceTitle>주문정보</TotalPriceTitle>
       <PriceInfoBox>
         <MainProductPrice>
-          <MainProduct>용기가 필요할 땐, 푸에고 장미</MainProduct>
+          <MainProduct>{title}</MainProduct>
           <div>
             <CountButton
               type={'productDetail'}
@@ -48,9 +48,7 @@ export default function TotalPriceSection({
           <div>총 주문금액</div>
           <div>
             {formatNumberWithCommas(
-              priceCalculation(originalprice, discount) * count +
-                SHIPPING_COST +
-                additionalOptionsPrice
+              priceCalculation(originalprice, discount) * count + SHIPPING_COST
             )}
             원
           </div>

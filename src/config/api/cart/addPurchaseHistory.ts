@@ -5,7 +5,6 @@ type PurchaseDataType = {
   img_url: string
   price: number
   amount: number
-  additional_product: string
   created_at: string
 }
 

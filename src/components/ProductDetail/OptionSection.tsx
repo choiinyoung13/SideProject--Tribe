@@ -1,47 +1,19 @@
-import React from 'react'
 import styled from 'styled-components'
 import { PiFlowerLight } from 'react-icons/pi'
-import { CartItemType } from '../../types/CartItemType'
 
-interface OptionsSectionProps {
-  handleSelectChange: (event: React.ChangeEvent<HTMLSelectElement>) => void
-  setOrderInfo: React.Dispatch<React.SetStateAction<CartItemType>>
-}
-
-export default function OptionsSection({
-  handleSelectChange,
-  setOrderInfo,
-}: OptionsSectionProps) {
+export default function OptionsSection() {
   return (
     <OptionCon>
-      <OptionTitle>
-        추가상품
-        <span>(선택)</span>
-      </OptionTitle>
-      <SelectWrapper>
-        <FlowerIcon>
-          <PiFlowerLight />
-        </FlowerIcon>
-        <select
-          name=""
-          id=""
-          onChange={e => {
-            handleSelectChange(e)
-            setOrderInfo(prev => ({ ...prev, option: e.target.value }))
-          }}
-        >
-          <option value="-">기본 화병 (+0원)</option>
-          <option value="편지로 마음 담기 (+2,500원)">
-            편지로 마음 담기 (+2,500원)
-          </option>
-          <option value="커브 라운드 화병 (+13,500원)">
-            커브 라운드 화병 (+13,500원)
-          </option>
-          <option value="미니 세라믹 화병 (+14,500원)">
-            미니 세라믹 화병 (+14,500원)
-          </option>
-        </select>
-      </SelectWrapper>
+      <OptionTitle>구매 전 확인 사항</OptionTitle>
+      <TextWrapper>
+        <p>
+          - 농장 수급 상황에 따라 가격과 일부 꽃 구성이 유동적으로 변경될 수
+          있다는 점 양해 부탁드립니다. <br />- 택배 배송으로 인한 약간의 꽃
+          눌림이 있을 수 있습니다.
+          <br />- 일조량 및 작황 상황에 따라서 꽃의 색감이 조금씩 달라질 수 있는
+          점 참고부탁드립니다.
+        </p>
+      </TextWrapper>
     </OptionCon>
   )
 }
@@ -84,44 +56,22 @@ const OptionTitle = styled.div`
   }
 `
 
-const SelectWrapper = styled.div`
+const TextWrapper = styled.div`
   display: flex;
   align-items: center;
   margin-top: 8px;
 
-  select {
-    width: 100%;
+  p {
     font-size: 0.9rem;
-    padding: 4px 2px;
-
-    option {
-      padding 4px 0px;
-    }
-  }
-
-  @media (max-width: 1024px) {
- 
+    line-height: 26px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   @media (max-width: 600px) {
-    select {
+    p {
       font-size: 0.8rem;
     }
-  }
-`
-
-const FlowerIcon = styled.div`
-  padding-top: 2px;
-  margin-right: 8px;
-  font-size: 1.4rem;
-
-  @media (max-width: 1024px) {
-    padding-top: 0px;
-    font-size: 1.3rem;
-  }
-
-  @media (max-width: 600px) {
-    padding-top: 0px;
-    font-size: 1.3rem;
   }
 `

@@ -4,8 +4,8 @@ import CountButton from '../Common/CountButton'
 import formatNumberWithCommas from '../../utill/formatNumberWithCommas'
 import { UseMutationResult } from 'react-query'
 import { useCartMutations } from '../../mutations/useCartMutations'
-import { optionToPrice } from '../../utill/optionToPrice'
 import FutureDatePicker from '../Common/DatePicker'
+import { optionToPrice } from '../../utill/optionToPrice'
 
 interface ToggleCartItemStatusArgs {
   cartId: string
@@ -17,7 +17,6 @@ interface CartItemPropsType {
   title?: string
   imgUrl?: string
   price?: number
-  option?: string
   receivingDate?: number
   checked?: boolean
   setTotalPrice?: React.Dispatch<React.SetStateAction<number>>
@@ -35,7 +34,6 @@ export default function CartItem({
   title,
   imgUrl,
   price,
-  option,
   receivingDate,
   checked,
   setTotalPrice,
@@ -60,7 +58,7 @@ export default function CartItem({
 
   useEffect(() => {
     if (price && quantity && setTotalPrice) {
-      setTotalPrice(prev => prev + price * quantity)
+      setTotalPrice(prev => (prev + price) * quantity)
     }
 
     return () => {
@@ -68,7 +66,7 @@ export default function CartItem({
         setTotalPrice(prev => prev - price * quantity)
       }
     }
-  }, [quantity, price, setTotalPrice])
+  }, [quantity])
 
   if (type === 'header' && cartId && setAllItemChecked) {
     return (
@@ -103,7 +101,6 @@ export default function CartItem({
     title &&
     imgUrl &&
     price &&
-    option &&
     cartId &&
     itemId &&
     quantity &&
@@ -131,7 +128,6 @@ export default function CartItem({
               <ProductTextPrice>
                 {formatNumberWithCommas(price)}원
               </ProductTextPrice>
-              <ProductTextOption>추가상품: {option}</ProductTextOption>
             </ProductText>
           </ProductInfo>
           <ReceivingDate>
@@ -155,9 +151,7 @@ export default function CartItem({
               count={0}
             />
           </Amount>
-          <OrderPrice>
-            {formatNumberWithCommas(price * quantity + optionToPrice(option))}원
-          </OrderPrice>
+          <OrderPrice>{formatNumberWithCommas(price * quantity)}원</OrderPrice>
         </ItemContent>
       </ItemContentCon>
     )
@@ -282,9 +276,12 @@ const ProductText = styled.div`
   flex-grow: 7;
   flex-basis: 85%;
   margin-left: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 
   @media (max-width: 1024px) {
-    margin-left: 10px;
+    margin-left: 14px;
   }
 
   @media (max-width: 600px) {
@@ -292,52 +289,45 @@ const ProductText = styled.div`
   }
 `
 const ProductTextTitle = styled.div`
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   font-weight: 500;
-  margin-bottom: 11px;
+  margin-bottom: 10px;
   display: -webkit-box;
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-height: 3em;
-  line-height: 1.5em;
+
+  @media (max-width: 1500px) {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+    margin-bottom: 7px;
+  }
 
   @media (max-width: 600px) {
     font-size: 0.8rem;
     margin-bottom: 7px;
   }
-
-  @media (max-width: 414px) {
-    font-size: 0.7rem;
-    margin-bottom: 7px;
-  }
 `
 const ProductTextPrice = styled.div`
-  font-size: 0.9rem;
-  margin-bottom: 12px;
+  font-size: 1.1rem;
   padding-left: 3px;
   color: rgba(130, 130, 130, 1);
 
-  @media (max-width: 600px) {
-    font-size: 0.7rem;
-    margin-bottom: 7px;
+  @media (max-width: 1500px) {
+    font-size: 1rem;
   }
-`
-const ProductTextOption = styled.div`
-  font-size: 0.9rem;
-  padding-left: 2px;
-  color: rgba(130, 130, 130, 1);
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-height: 3em;
-  line-height: 1.5em;
+
+  @media (max-width: 1024px) {
+    font-size: 0.95rem;
+  }
 
   @media (max-width: 600px) {
-    font-size: 0.7rem;
+    font-size: 0.8rem;
   }
 `
 
