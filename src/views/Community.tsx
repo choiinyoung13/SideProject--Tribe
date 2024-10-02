@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react'
 import PostModal from '../components/Community/PostModal' // PostModal 컴포넌트 추가
 import { useAuth } from '../hooks/useAuth'
 import Swal from 'sweetalert2'
-import aside_image from '../assets/images/community/aside/user.png'
+import aside_image from '../assets/images/community/aside/user2.png'
 import aside_image2 from '../assets/images/community/aside/stats.png'
 import { useQuery } from 'react-query'
 import { fetchPostCategories } from '../config/api/post/fetchPostCategories'
@@ -172,7 +172,11 @@ export default function Community() {
       <RightSidebar>
         <WidgetWrapper>
           <WidgetTitleWrapper>
-            <TitleImage src={aside_image2} alt="aside image1" />
+            <TitleImage
+              src={aside_image2}
+              alt="aside image1"
+              style={{ width: '16px', height: '18px' }}
+            />
             <WidgetTitle>실시간 인기 키워드</WidgetTitle>
           </WidgetTitleWrapper>
           <WidgetBack>
@@ -418,7 +422,7 @@ const Feed = styled.div`
 const RightSidebar = styled.div`
   position: sticky;
   top: 0px;
-  width: 350px;
+  width: 320px;
   padding: 30px 22px;
   background-color: #ffffff;
   border-left: 1px solid #e1e1e1;

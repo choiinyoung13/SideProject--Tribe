@@ -72,7 +72,7 @@ const Profile = styled.img`
   border: 1px soild rgba(240, 240, 240, 1);
 `
 const TextSection = styled.div`
-  width: 196px;
+  width: 166px;
   margin-left: 8px;
 `
 const UserName = styled.div`

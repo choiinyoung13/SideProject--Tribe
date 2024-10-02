@@ -14,15 +14,18 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { useQuery } from 'react-query'
 import loadingIcon from '../assets/images/logo/ball-triangle.svg'
 import UnauthorizedAccess from '../components/Common/UnauthorizedAccess'
+import { StatusMessageSection } from '../components/MyPage/StatusMessageSection'
 
 export default function MyPage() {
   const { session, isLoading: isAuthLoading } = useAuth()
   const [isNicknameEditMode, setIsNicknameEditMode] = useState(false)
+  const [isStatusMessageEditMode, setIsStatusMessageEditMode] = useState(false)
   const [isEmailEditMode, setIsEmailEditMode] = useState(false)
   const [userInfo, setUserInfo] = useState({
     id: '',
     email: '',
     avatar_url: null,
+    status_message: null,
     username: '',
     admin: false,
     likes: null,
@@ -64,6 +67,7 @@ export default function MyPage() {
       id: data?.id,
       email: data?.email,
       avatar_url: data?.avatar_url,
+      status_message: data?.status_message,
       username: data?.username,
       admin: data?.admin,
       likes: data?.likes,
@@ -159,6 +163,12 @@ export default function MyPage() {
                 userInfo={userInfo}
                 isNicknameEditMode={isNicknameEditMode}
                 setIsNicknameEditMode={setIsNicknameEditMode}
+                setUserInfo={setUserInfo}
+              />
+              <StatusMessageSection
+                userInfo={userInfo}
+                isStatusMessageEditMode={isStatusMessageEditMode}
+                setIsStatusMessageEditMode={setIsStatusMessageEditMode}
                 setUserInfo={setUserInfo}
               />
               <EmailSection
@@ -286,7 +296,7 @@ const Right = styled.div<LeftAndRightProps>`
   flex: 3;
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 55px;
   padding: ${props => (props.windowwidth > 768 ? '0 50px 0 0' : '0 50px')};
 
   @media (max-width: 768px) {
