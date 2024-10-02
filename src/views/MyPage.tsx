@@ -285,10 +285,10 @@ interface LeftAndRightProps {
 const Left = styled.div<LeftAndRightProps>`
   flex: 1;
   margin-bottom: ${props => (props.windowwidth > 768 ? '0px' : '50px')};
-  padding-left: 50px;
+  padding-right: 50px;
 
   @media (max-width: 768px) {
-    padding-left: 0px;
+    padding-right: 0px;
   }
 `
 

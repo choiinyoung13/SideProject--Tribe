@@ -15,6 +15,7 @@ import aside_image2 from '../assets/images/community/aside/stats.png'
 import { useQuery } from 'react-query'
 import { fetchPostCategories } from '../config/api/post/fetchPostCategories'
 import { CategorySkeletonUi } from '../components/Community/CategorySkeletonUi'
+import { fetchRecommends } from '../config/api/post/fecthRecommends'
 
 export default function Community() {
   const location = useLocation()
@@ -30,6 +31,16 @@ export default function Community() {
   const { data: categories, isLoading: isCategoryLoading } = useQuery(
     ['categories'],
     fetchPostCategories,
+    {
+      staleTime: 0,
+      cacheTime: 0,
+    }
+  )
+
+  // 유저추천 데이터 패칭
+  const { data: recommends, isLoading: isRecommendsLoading } = useQuery(
+    ['recommends'],
+    fetchRecommends,
     {
       staleTime: 0,
       cacheTime: 0,
@@ -96,7 +107,7 @@ export default function Community() {
     <CommunityCon>
       {windowWidth >= 768 ? (
         <Sidebar>
-          {isCategoryLoading ? (
+          {isCategoryLoading || isRecommendsLoading ? (
             <CategorySkeletonUi /> // 카테고리 데이터를 불러오는 동안 보여줄 Skeleton UI
           ) : (
             categories.map(cat => {
@@ -119,7 +130,7 @@ export default function Community() {
         </Sidebar>
       ) : (
         <SelectSection>
-          {isCategoryLoading ? (
+          {isCategoryLoading || isRecommendsLoading ? (
             <CategorySkeletonUi /> // 모바일 화면에서도 카테고리 데이터를 불러오는 동안 Skeleton UI 적용
           ) : (
             <Select
@@ -166,7 +177,11 @@ export default function Community() {
           </HeaderRight>
         </MainContentHeader>
         <Feed>
-          <PostListCon searchKeyword={searchKeyword} tab={tab} />
+          <PostListCon
+            searchKeyword={searchKeyword}
+            tab={tab}
+            isRecommendsLoading={isRecommendsLoading}
+          />
         </Feed>
       </MainContent>
       <RightSidebar>
@@ -177,7 +192,7 @@ export default function Community() {
               alt="aside image1"
               style={{ width: '16px', height: '18px' }}
             />
-            <WidgetTitle>실시간 인기 키워드</WidgetTitle>
+            <WidgetTitle>인기 키워드</WidgetTitle>
           </WidgetTitleWrapper>
           <WidgetBack>
             <Widget>
@@ -195,7 +210,10 @@ export default function Community() {
           </WidgetTitleWrapper>
           <WidgetBack>
             <Widget>
-              <FollowRecommends />
+              <FollowRecommends
+                isRecommendsLoading={isRecommendsLoading}
+                recommends={recommends}
+              />
             </Widget>
           </WidgetBack>
         </WidgetWrapper>

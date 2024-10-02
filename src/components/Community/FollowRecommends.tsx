@@ -1,47 +1,67 @@
 import styled from 'styled-components'
-import profile1 from '../../assets/images/community/fake_profile/1.jpg'
-import profile2 from '../../assets/images/community/fake_profile/2.jpg'
-import profile3 from '../../assets/images/community/fake_profile/3.jpg'
 
-export default function FollowRecommends() {
+type recommendType = {
+  userId: string
+  email: string
+  avatar_url: string
+  nickname: string
+  status_message: string
+}
+
+interface FollowRecommendsProps {
+  isRecommendsLoading: boolean
+  recommends: recommendType[] | undefined
+}
+
+export default function FollowRecommends({
+  isRecommendsLoading,
+  recommends,
+}: FollowRecommendsProps) {
+  const SkeletonArray = new Array(4).fill(null)
+
+  if (isRecommendsLoading || !recommends) {
+    return (
+      <>
+        {SkeletonArray.map((_, i) => (
+          <FollowRecommend key={i}>
+            <FollowRecommendLeft>
+              <SkeletonProfile />
+              <SkeletonTextSection>
+                <SkeletonUserName />
+                <SkeletonDescription />
+              </SkeletonTextSection>
+            </FollowRecommendLeft>
+          </FollowRecommend>
+        ))}
+      </>
+    )
+  }
+
   return (
     <>
-      <FollowRecommend>
-        <FollowRecommendLeft>
-          <Profile src={profile1} />
-          <TextSection>
-            <UserName>dlsdud156</UserName>
-            <Description>풀과 달, 식물과 제철 그리고 고양이입니다.</Description>
-          </TextSection>
-        </FollowRecommendLeft>
-      </FollowRecommend>
-      <FollowRecommend>
-        <FollowRecommendLeft>
-          <Profile src={profile2} />
-          <TextSection>
-            <UserName>chldls153</UserName>
-            <Description>풀과 달, 식물과 제철 그리고 고양이입니다.</Description>
-          </TextSection>
-        </FollowRecommendLeft>
-      </FollowRecommend>
-      <FollowRecommend>
-        <FollowRecommendLeft>
-          <Profile src={profile3} />
-          <TextSection>
-            <UserName>alscjf448</UserName>
-            <Description>풀과 달, 식물과 제철 그리고 고양이입니다.</Description>
-          </TextSection>
-        </FollowRecommendLeft>
-      </FollowRecommend>
-      <FollowRecommend>
-        <FollowRecommendLeft>
-          <Profile src={profile1} />
-          <TextSection>
-            <UserName>dlsdud156</UserName>
-            <Description>풀과 달, 식물과 제철 그리고 고양이입니다.</Description>
-          </TextSection>
-        </FollowRecommendLeft>
-      </FollowRecommend>
+      {recommends.map(recommend => {
+        return (
+          <FollowRecommend>
+            <FollowRecommendLeft>
+              <Profile
+                src={
+                  recommend.avatar_url
+                    ? recommend.avatar_url
+                    : 'http://img1.kakaocdn.net/thumb/R640x640.q70/?fname=http://t1.kakaocdn.net/account_images/default_profile.jpeg'
+                }
+              />
+              <TextSection>
+                <UserName>
+                  {recommend.nickname
+                    ? recommend.nickname
+                    : recommend.email.split('@')[0]}
+                </UserName>
+                <Description>{recommend.status_message}</Description>
+              </TextSection>
+            </FollowRecommendLeft>
+          </FollowRecommend>
+        )
+      })}
     </>
   )
 }
@@ -71,14 +91,34 @@ const Profile = styled.img`
   border-radius: 50%;
   border: 1px soild rgba(240, 240, 240, 1);
 `
+const SkeletonProfile = styled.div`
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background-color: rgba(230, 230, 230, 1);
+`
 const TextSection = styled.div`
-  width: 166px;
+  width: 164px;
+  margin-left: 8px;
+`
+
+const SkeletonTextSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 164px;
   margin-left: 8px;
 `
 const UserName = styled.div`
   font-size: 0.85rem;
   font-weight: bold;
   color: rgba(30, 30, 30, 1);
+`
+
+const SkeletonUserName = styled.div`
+  height: 10px;
+  width: 70px;
+  background-color: rgba(230, 230, 230, 1);
 `
 const Description = styled.div`
   font-size: 0.75rem;
@@ -88,6 +128,11 @@ const Description = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+`
+const SkeletonDescription = styled.div`
+  height: 10px;
+  width: 120px;
+  background-color: rgba(230, 230, 230, 1);
 `
 
 const FollowRecommendLeft = styled.div`

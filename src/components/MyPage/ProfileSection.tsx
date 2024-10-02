@@ -107,6 +107,8 @@ export function ProfileSection({
 // 스타일링
 const ProfileWrapper = styled.div`
   width: 100%;
+  display: flex;
+  justify-content: end;
 `
 
 const ProfileBox = styled.div`
@@ -129,6 +131,8 @@ const ProfileBox = styled.div`
 
 const ProfileImg = styled.img`
   border-radius: 50%;
+  min-width: 196px;
+  min-height: 196px;
   width: 100%;
   height: 100%;
 

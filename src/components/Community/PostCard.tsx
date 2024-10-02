@@ -235,7 +235,7 @@ const PostText = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 10px;
+  margin-top: 6px;
 
   @media (max-width: 768px) {
     margin-top: 8px;
@@ -276,6 +276,7 @@ const ProfileImg = styled.img`
   width: 24px;
   height: 24px;
   border-radius: 50%;
+  margin-top: 4px;
 
   @media (max-width: 450px) {
     width: 22px;

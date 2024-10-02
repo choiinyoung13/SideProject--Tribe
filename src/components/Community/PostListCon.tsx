@@ -18,9 +18,14 @@ export type FetchPostsResponse = {
 interface PostListConProps {
   searchKeyword: string
   tab: string | null
+  isRecommendsLoading: boolean
 }
 
-export default function PostListCon({ searchKeyword, tab }: PostListConProps) {
+export default function PostListCon({
+  searchKeyword,
+  tab,
+  isRecommendsLoading,
+}: PostListConProps) {
   const sortValue = useRecoilValue(communitySortState)
 
   const { inView, ref } = useInView({
@@ -90,7 +95,7 @@ export default function PostListCon({ searchKeyword, tab }: PostListConProps) {
     setImageLoadCount(prevCount => prevCount + 1)
   }
 
-  if (isLoading || !imagesLoaded) {
+  if (isLoading || !imagesLoaded || isRecommendsLoading) {
     return (
       <LoadingScreen>
         <img src={loadingIcon} alt="loading" />

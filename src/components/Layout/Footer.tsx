@@ -11,7 +11,8 @@ const noFooterSection = (path: string) => {
     path === '/community-feature' ||
     path === '/community' ||
     path === '/login' ||
-    path === '/join'
+    path === '/join' ||
+    path === '/fakeSignup'
   )
 }
 
