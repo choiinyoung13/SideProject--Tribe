@@ -113,7 +113,9 @@ export default function PostCard({ post, onImageLoad }: PostCardProps) {
                     />
                     <Username>
                       {userInfo.nickname === ''
-                        ? userInfo.email.split('@')[0]
+                        ? userInfo.email
+                          ? userInfo.email.split('@')[0]
+                          : null
                         : userInfo.nickname}
                     </Username>
                   </Profile>

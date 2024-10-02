@@ -22,8 +22,10 @@ export function StatusMessageSection({
 
   useEffect(() => {
     if (!userInfo) return
-    setInitialStatusMessage(userInfo.status_message)
-    setInputValue(userInfo.status_message)
+    setInitialStatusMessage(
+      !userInfo.status_message ? '' : userInfo.status_message
+    )
+    setInputValue(!userInfo.status_message ? '' : userInfo.status_message)
   }, [userInfo])
 
   // 상태메세지 저장 로직
