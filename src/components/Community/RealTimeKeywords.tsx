@@ -1,92 +1,64 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
+import { useQuery } from 'react-query'
+import { useNavigate } from 'react-router-dom'
+import styled from 'styled-components'
+import { fetchTop5Keywords } from '../../config/api/items/saveSearchKeywords'
 
-// 여러 세트의 Mock 데이터
-const mockKeywordSets: string[][] = [
-  [
-    "몬스테라 키우기",
-    "다육이 물주기",
-    "식물 병충해 방지",
-    "공기정화 식물 추천",
-    "하늘타리 관리법",
-  ],
-  [
-    "베고니아 키우기",
-    "아레카야자 관리",
-    "스킨답서스 물주기",
-    "산세베리아 관리",
-    "관엽식물 추천",
-  ],
-  [
-    "선인장 물주기",
-    "행운목 키우기",
-    "파키라 관리법",
-    "아이비 키우기",
-    "식물 인테리어 추천",
-  ],
-  [
-    "칼라데아 키우기",
-    "안스리움 관리",
-    "필로덴드론 물주기",
-    "페퍼민트 키우기",
-    "페페로미아 관리",
-  ],
-  [
-    "마오리 소철 키우기",
-    "슈가바인 물주기",
-    "로즈마리 키우기",
-    "허브식물 관리",
-    "다육이 번식법",
-  ],
-];
-
-// 랜덤으로 키워드 세트를 선택하되, 이전에 보인 세트는 제외하는 함수
-const getRandomKeywordSet = (prevKeywords: string[]): string[] => {
-  const availableSets = mockKeywordSets.filter(
-    (set) => set.toString() !== prevKeywords.toString()
-  );
-
-  // 랜덤으로 선택된 세트를 반환
-  const randomIndex = Math.floor(Math.random() * availableSets.length);
-  return availableSets[randomIndex];
-};
+// 키워드 데이터 타입 정의
+interface Keyword {
+  keyword: string
+  search_count: number
+}
 
 interface RealTimeKeywordsProps {
-  setInputValue: React.Dispatch<React.SetStateAction<string>>;
-  setSearchKeyword: React.Dispatch<React.SetStateAction<string>>;
+  setInputValue: (value: string) => void
+  setSearchKeyword: (value: string) => void
 }
 
 export default function RealTimeKeywords({
   setInputValue,
   setSearchKeyword,
 }: RealTimeKeywordsProps) {
-  const [keywords, setKeywords] = useState<string[]>(mockKeywordSets[0]); // 처음에는 첫 번째 세트를 기본으로 보여줌
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
-  useEffect(() => {
-    // 페이지가 처음 로드될 때 랜덤으로 키워드를 선택 (이전에 보인 키워드는 제외)
-    const newKeywords = getRandomKeywordSet(keywords);
-    setKeywords(newKeywords);
-  }, []);
+  // useQuery를 사용하여 인기 키워드 가져오기
+  const { data: keywords, isLoading } = useQuery<Keyword[]>(
+    'top5Keywords',
+    fetchTop5Keywords, // Supabase에서 상위 5개의 인기 키워드 가져오기
+    {
+      staleTime: 1000 * 60, // 데이터가 1분 동안은 다시 가져오지 않음
+    }
+  )
+
+  // 인기 키워드를 클릭하면 검색창에 자동으로 추가 및 페이지 이동
+  const handleKeywordClick = async (keyword: string) => {
+    await navigate('/community')
+    await setInputValue(keyword)
+    await setSearchKeyword(keyword)
+  }
 
   return (
     <KeywordsWrapper>
-      {keywords.map((keyword, index) => (
-        <KeywordCard
-          key={index}
-          onClick={async () => {
-            await navigate("/community");
-            await setInputValue(keyword);
-            await setSearchKeyword(keyword);
-          }}
-        >
-          <KeywordRank>{index + 1}</KeywordRank>
-          <KeywordText>{keyword}</KeywordText>
-        </KeywordCard>
-      ))}
+      {/* 로딩 중일 때 */}
+      {isLoading && <LoadingMessage>로딩 중...</LoadingMessage>}
+
+      {/* 인기 키워드 목록 */}
+      {!isLoading && keywords && keywords.length > 0
+        ? keywords.map((keyword, index) => (
+            <KeywordCard
+              key={index}
+              onClick={() => handleKeywordClick(keyword.keyword)} // 클릭 시 이벤트 처리
+            >
+              <KeywordRank>{index + 1}</KeywordRank>
+              <KeywordText>
+                {keyword.keyword} ({keyword.search_count}회 검색)
+              </KeywordText>
+            </KeywordCard>
+          ))
+        : !isLoading && (
+            <NoKeywordMessage>인기 검색어가 없습니다.</NoKeywordMessage>
+          )}
     </KeywordsWrapper>
-  );
+  )
 }
 
 // 스타일링
@@ -97,8 +69,8 @@ const KeywordsWrapper = styled.div`
   border-radius: 8px;
   display: flex;
   flex-direction: column;
-  gap: 18px; /* 각 키워드 간 간격 */
-`;
+  gap: 18px;
+`
 
 const KeywordCard = styled.div`
   display: flex;
@@ -114,14 +86,14 @@ const KeywordCard = styled.div`
   &:hover {
     background-color: rgba(240, 240, 240, 1);
   }
-`;
+`
 
 const KeywordRank = styled.div`
   font-size: 1rem;
   font-weight: bold;
   color: #6c757d;
   margin-right: 10px;
-`;
+`
 
 const KeywordText = styled.div`
   font-size: 1rem;
@@ -130,4 +102,22 @@ const KeywordText = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-`;
+`
+
+// 로딩 메시지 스타일
+const LoadingMessage = styled.div`
+  font-size: 1rem;
+  font-weight: 500;
+  color: #888;
+  text-align: center;
+  padding: 20px;
+`
+
+// 키워드가 없을 때 메시지
+const NoKeywordMessage = styled.div`
+  font-size: 1rem;
+  font-weight: 500;
+  color: #888;
+  text-align: center;
+  padding: 20px;
+`

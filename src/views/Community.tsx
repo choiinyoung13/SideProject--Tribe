@@ -12,10 +12,11 @@ import { useAuth } from '../hooks/useAuth'
 import Swal from 'sweetalert2'
 import aside_image from '../assets/images/community/aside/user2.png'
 import aside_image2 from '../assets/images/community/aside/stats.png'
-import { useQuery } from 'react-query'
+import { useQuery, useQueryClient } from 'react-query'
 import { fetchPostCategories } from '../config/api/post/fetchPostCategories'
 import { CategorySkeletonUi } from '../components/Community/CategorySkeletonUi'
 import { fetchRecommends } from '../config/api/post/fecthRecommends'
+import { saveSearchKeywords } from '../config/api/items/saveSearchKeywords'
 
 export default function Community() {
   const location = useLocation()
@@ -26,6 +27,7 @@ export default function Community() {
   const navigate = useNavigate()
   const [inputValue, setInputValue] = useState<string>('')
   const [searchKeyword, setSearchKeyword] = useState<string>('')
+  const queryClient = useQueryClient()
 
   // 카테고리 데이터 패칭
   const { data: categories, isLoading: isCategoryLoading } = useQuery(
@@ -91,6 +93,9 @@ export default function Community() {
       })
       return
     }
+    saveSearchKeywords(inputValue).then(() => {
+      queryClient.invalidateQueries('top5Keywords')
+    })
     setSearchKeyword(inputValue.trim())
   }
 
