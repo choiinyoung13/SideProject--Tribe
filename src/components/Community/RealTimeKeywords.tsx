@@ -59,7 +59,8 @@ export default function RealTimeKeywords({
             >
               <KeywordRank>{index + 1}</KeywordRank>
               <KeywordText>
-                {keyword.keyword} ({keyword.search_count}회 검색)
+                {keyword.keyword}
+                <span>({keyword.search_count}회 검색)</span>
               </KeywordText>
             </KeywordCard>
           ))
@@ -111,6 +112,12 @@ const KeywordText = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+
+  span {
+    font-size: 0.8rem;
+    color: rgba(120, 120, 120, 1);
+    margin-left: 3px;
+  }
 `
 
 // 로딩 메시지 스타일

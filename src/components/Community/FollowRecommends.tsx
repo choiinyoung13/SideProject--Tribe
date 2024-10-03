@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import styled from 'styled-components'
+import UserInfoModal from './UserInfoModal' // 분리된 UserInfoModal 컴포넌트 임포트
 
 type recommendType = {
-  userId: string
+  id: string
   email: string
   avatar_url: string
   nickname: string
@@ -14,11 +15,24 @@ interface FollowRecommendsProps {
   recommends: recommendType[] | undefined
 }
 
+// FollowRecommends 컴포넌트
 export default function FollowRecommends({
   isRecommendsLoading,
   recommends,
 }: FollowRecommendsProps) {
+  const [selectedUser, setSelectedUser] = useState<recommendType | null>(null) // 선택된 유저 상태 관리
+
   const SkeletonArray = new Array(4).fill(null)
+
+  // 유저 클릭 시 모달에 전달할 유저 데이터 설정
+  const handleClickUser = (user: recommendType) => {
+    setSelectedUser(user)
+  }
+
+  // 모달 닫기
+  const handleCloseModal = () => {
+    setSelectedUser(null)
+  }
 
   if (isRecommendsLoading || !recommends) {
     return (
@@ -39,33 +53,36 @@ export default function FollowRecommends({
   }
 
   return (
-    <>
-      {recommends.map((recommend, index) => {
-        return (
-          <FollowRecommend key={index}>
-            <FollowRecommendLeft>
-              <ProfileWithLoader
-                src={
-                  recommend.avatar_url
-                    ? recommend.avatar_url
-                    : 'http://img1.kakaocdn.net/thumb/R640x640.q70/?fname=http://t1.kakaocdn.net/account_images/default_profile.jpeg'
-                }
-                nickname={
-                  recommend.nickname
-                    ? recommend.nickname
-                    : recommend.email.split('@')[0]
-                }
-                status_message={recommend.status_message}
-              />
-            </FollowRecommendLeft>
-          </FollowRecommend>
-        )
-      })}
-    </>
+    <Container>
+      {recommends.map((recommend, index) => (
+        <FollowRecommend key={index} onClick={() => handleClickUser(recommend)}>
+          <FollowRecommendLeft>
+            <ProfileWithLoader
+              src={
+                recommend.avatar_url
+                  ? recommend.avatar_url
+                  : 'http://img1.kakaocdn.net/thumb/R640x640.q70/?fname=http://t1.kakaocdn.net/account_images/default_profile.jpeg'
+              }
+              nickname={
+                recommend.nickname
+                  ? recommend.nickname
+                  : recommend.email.split('@')[0]
+              }
+              status_message={recommend.status_message}
+            />
+          </FollowRecommendLeft>
+        </FollowRecommend>
+      ))}
+
+      {/* 선택된 유저가 있을 경우에만 모달을 표시 */}
+      {selectedUser && (
+        <UserInfoModal user={selectedUser} onClose={handleCloseModal} />
+      )}
+    </Container>
   )
 }
 
-// 이미지와 텍스트를 동시에 렌더링하는 컴포넌트
+// ProfileWithLoader 컴포넌트: 이미지와 텍스트를 동시에 렌더링
 const ProfileWithLoader = ({
   src,
   nickname,
@@ -79,7 +96,6 @@ const ProfileWithLoader = ({
 
   return (
     <>
-      {/* 이미지가 로드되었을 때만 콘텐츠를 보여줌 */}
       {!imageLoaded && (
         <SkeletonWrapper>
           <SkeletonProfile />
@@ -90,7 +106,6 @@ const ProfileWithLoader = ({
         </SkeletonWrapper>
       )}
 
-      {/* 이미지가 로드되면 보여지는 부분 */}
       <FadeInWrapper visible={imageLoaded}>
         <Profile src={src} onLoad={() => setImageLoaded(true)} />
         <TextSection>
@@ -102,7 +117,9 @@ const ProfileWithLoader = ({
   )
 }
 
-// 스타일링
+const Container = styled.div`
+  position: relative;
+`
 
 const FollowRecommend = styled.div`
   margin-top: 18px;
@@ -114,11 +131,9 @@ const FollowRecommend = styled.div`
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   transition: background-color 0.3s ease;
-
   &:hover {
     background-color: rgba(240, 240, 240, 1);
   }
-
   &:first-of-type {
     margin-top: 0px;
   }
