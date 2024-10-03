@@ -1,9 +1,20 @@
 import { supabase } from '../../../supabase/supabaseClient'
+import axios from 'axios'
 
-// 1. 키워드에서 제외시킬 용어 리스트 (필요시 확장 가능)
-const stopWords = ['이', '그', '저', '그리고', '또한', '하지만']
+// 키워드에서 제외시킬 용어 리스트 (필요시 확장 가능)
+const stopWords = [
+  '이',
+  '그',
+  '저',
+  '그리고',
+  '또한',
+  '하지만',
+  '에게',
+  '있는',
+  '있고',
+]
 
-// 2. 검색어에서 유효한 키워드만 추출하는 함수
+// 검색어에서 유효한 키워드만 추출하는 함수
 const extractKeywords = (searchQuery: string) => {
   // 검색어를 공백으로 분리하여 배열로 변환
   const words = searchQuery.split(' ')
@@ -16,21 +27,75 @@ const extractKeywords = (searchQuery: string) => {
   return filteredWords
 }
 
+// IP 주소를 가져오는 함수
+const fetchIpAddress = async () => {
+  try {
+    const response = await axios.get('https://ipapi.co/json/')
+    console.log('IP 주소:', response.data.ip)
+    return response.data.ip
+  } catch (error) {
+    console.error('IP 주소를 가져오는 중 오류 발생:', error)
+    return null
+  }
+}
+
 // 3. 키워드를 Supabase에 저장하는 함수
 export const saveSearchKeywords = async (searchQuery: string) => {
   // 검색어에서 유효한 키워드를 추출
   const keywords = extractKeywords(searchQuery)
 
+  // 현재 로그인된 사용자의 정보 가져오기
+  const { data } = await supabase.auth.getUser()
+
+  const user = data?.user // user 객체 추출
+
+  // 비회원의 경우 IP 주소 가져오기
+  let ipAddress = ''
+  if (!user) {
+    ipAddress = await fetchIpAddress()
+    if (!ipAddress) {
+      console.error('IP 주소 가져오기 실패.')
+      return
+    }
+  }
+
   // 유효한 키워드가 있을 경우에만 Supabase에 저장
   if (keywords.length > 0) {
-    const { data, error } = await supabase
+    // 5분 이내에 동일한 키워드가 저장되었는지 확인
+    const { data: recentKeywords, error: fetchError } = await supabase
       .from('search_keywords')
-      .insert(keywords.map(keyword => ({ keyword }))) // 각 키워드를 데이터베이스에 저장
+      .select('*')
+      .eq(user ? 'user_id' : 'ip_address', user?.id || ipAddress) // 회원은 user_id, 비회원은 ip_address로 구분
+      .in('keyword', keywords) // 동일한 키워드
+      .gte('created_at', new Date(Date.now() - 5 * 60 * 1000).toISOString()) // 5분 이내
 
-    if (error) {
-      console.error('키워드 저장 실패:', error)
+    if (fetchError) {
+      console.error('기존 키워드 확인 중 오류 발생:', fetchError)
+      return
+    }
+
+    // 이미 5분 내에 저장된 키워드는 제외
+    const newKeywords = keywords.filter(
+      keyword => !recentKeywords.some(recent => recent.keyword === keyword)
+    )
+
+    // 저장할 새로운 키워드가 있는 경우에만 저장
+    if (newKeywords.length > 0) {
+      const { data, error } = await supabase.from('search_keywords').insert(
+        newKeywords.map(keyword => ({
+          keyword,
+          user_id: user?.id || null, // 회원은 user_id를 저장, 비회원은 null
+          ip_address: user ? null : ipAddress, // 비회원의 경우 IP 주소를 저장
+        }))
+      )
+
+      if (error) {
+        console.error('키워드 저장 실패:', error)
+      } else {
+        console.log('키워드 저장 성공:', data)
+      }
     } else {
-      console.log('키워드 저장 성공:', data)
+      console.log('5분 내 중복된 키워드가 이미 존재하여 저장되지 않음.')
     }
   }
 }
