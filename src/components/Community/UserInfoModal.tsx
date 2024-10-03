@@ -8,7 +8,7 @@ import { FetchPostsResponse } from './PostListCon'
 import { useInView } from 'react-intersection-observer'
 import loadingIcon from '../../assets/images/logo/ball-triangle.svg'
 import { UserRecommendCard } from './UserRecommendCard'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 
 type recommendType = {
   id: string
@@ -28,7 +28,6 @@ export default function UserInfoModal({
   const location = useLocation()
   const queryParams = new URLSearchParams(location.search)
   const subTab = queryParams.get('subTab')
-  const navigate = useNavigate()
 
   // 모달이 열릴 때 body 스크롤을 막고, 모달이 닫힐 때 스크롤을 다시 허용
   // 내 활동 (내가 올린 게시물) 데이터 패칭
@@ -225,7 +224,7 @@ interface TabProps {
 }
 
 const Tab = styled.div<TabProps>`
-  padding: 30px 0px 16px;
+  padding: 26px 0px 16px;
   font-size: 0.95rem;
   cursor: pointer;
   border-bottom: ${props =>

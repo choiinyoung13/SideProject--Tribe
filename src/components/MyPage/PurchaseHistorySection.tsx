@@ -8,6 +8,7 @@ import { Card } from './Card'
 import loadingIcon from '../../assets/images/logo/ball-triangle.svg'
 
 type PurchaseHistory = {
+  id: number
   price: number
   title: string
   img_url: string

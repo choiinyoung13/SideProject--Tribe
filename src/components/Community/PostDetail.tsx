@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { IoMdHeart } from 'react-icons/io'
-import { FaCommentDots } from 'react-icons/fa'
+import { IoChatbubbleEllipsesOutline } from 'react-icons/io5'
+import { GoTrash } from 'react-icons/go'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import 'swiper/css'
 import 'swiper/css/pagination'
@@ -21,6 +22,7 @@ import Swal from 'sweetalert2'
 import Spinner from '../Common/Spinner'
 import { useNavigate } from 'react-router-dom'
 import { insertUserIdIntoLiked } from '../../config/api/post/insertPost'
+import { deletePost } from '../../config/api/post/deletePost'
 
 // dayjs 상대 시간 플러그인과 한국어 설정
 dayjs.extend(relativeTime)
@@ -163,6 +165,26 @@ export default function PostDetail({ userInfo, post }: PostDetailProps) {
     setIsExpanded(!isExpanded)
   }
 
+  const handleDeleteClick = () => {
+    Swal.fire({
+      html: `
+        <h1 style="font-weight:500; font-size:20px;">정말 게시물을 삭제하시겠습니까?</h1>
+      `,
+      confirmButtonText: '삭제',
+      showCancelButton: true,
+      cancelButtonText: '취소',
+      allowOutsideClick: false,
+      confirmButtonColor: '#1E1E1E',
+      cancelButtonColor: '#1E1E1E',
+    }).then(result => {
+      if (result.isConfirmed) {
+        deletePost(post.id).then(() => {
+          queryClient.invalidateQueries('posts')
+        })
+      }
+    })
+  }
+
   if (isLoading && !isImageLoading) {
     return (
       <LoadingContainer>
@@ -280,9 +302,14 @@ export default function PostDetail({ userInfo, post }: PostDetailProps) {
             <IoMdHeart /> <span>{post.liked ? post.liked.length : 0}</span>
           </Likes>
           <Comments>
-            <FaCommentDots />{' '}
+            <IoChatbubbleEllipsesOutline />{' '}
             <span>{post.comments ? post.comments.length : 0}</span>
           </Comments>
+          {session && session.user.id === userInfo.userId && (
+            <Delete onClick={handleDeleteClick}>
+              <GoTrash />
+            </Delete>
+          )}
         </PostInteractions>
       </CommentSection>
     </Container>
@@ -526,12 +553,25 @@ const Likes = styled.div<HeartIconProps>`
 const Comments = styled.div`
   display: flex;
   align-items: center;
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   margin-left: 28px;
 
   svg {
     margin-top: 1px;
     margin-right: 6px;
     color: rgba(50, 50, 50, 1);
+  }
+`
+
+const Delete = styled.div`
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-size: 1.25rem;
+  margin-left: 22px;
+
+  svg {
+    margin-top: 1px;
+    color: rgba(65, 65, 65, 1);
   }
 `

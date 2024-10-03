@@ -5,8 +5,10 @@ import { motion } from 'framer-motion'
 import { useState } from 'react'
 import { PostType } from '../../types/PostType'
 import { formatDateToYYYY_MM_DD } from '../../utill/formatDateToYYYYMMDD'
+import { useNavigate } from 'react-router-dom'
 
 type PurchaseHistory = {
+  id: number
   price: number
   title: string
   img_url: string
@@ -21,10 +23,15 @@ interface CardProps {
 
 export const Card = ({ post, purchase }: CardProps) => {
   const [isImageLoaded, setIsImageLoaded] = useState(false)
+  const navigate = useNavigate()
 
   if (purchase) {
     return (
-      <CardWrapper>
+      <CardWrapper
+        onClick={() => {
+          navigate(`/product/${purchase.id}`)
+        }}
+      >
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: isImageLoaded ? 1 : 0 }}

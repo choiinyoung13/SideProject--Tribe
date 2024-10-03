@@ -30,6 +30,7 @@ export const fetchUserInfoByUserId = async (userId: string) => {
 }
 
 type PurchaseHistory = {
+  id: number
   price: number
   title: string
   img_url: string

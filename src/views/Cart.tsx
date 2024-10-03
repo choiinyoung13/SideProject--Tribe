@@ -229,6 +229,7 @@ export default function Cart() {
 
                         // 구매 데이터를 생성
                         const purchaseDataArray = checkedItems.map(item => ({
+                          id: item.itemId,
                           img_url: item.imgUrl,
                           title: item.title,
                           price:
