@@ -2,13 +2,13 @@ import styled from 'styled-components'
 import { IoChatbubbleEllipsesOutline } from 'react-icons/io5'
 import { IoMdHeart } from 'react-icons/io'
 import { motion } from 'framer-motion'
-import { useEffect, useState } from 'react'
 import { PostType } from '../../types/PostType'
 import { formatDateToYYYY_MM_DD } from '../../utill/formatDateToYYYYMMDD'
 import { useNavigate } from 'react-router-dom'
 import { useQuery } from 'react-query'
 import { fetchUserInfoByUserId } from '../../config/api/user/fetchUserInfo'
 import PostDetailModal from '../Community/PostDetailModal'
+import { useState } from 'react'
 
 type PurchaseHistory = {
   id: number
@@ -36,9 +36,6 @@ export const Card = ({ post, purchase }: CardProps) => {
       enabled: post && !purchase,
     }
   )
-
-  console.log(post)
-  console.log(purchase)
 
   // 모달 열기 함수
   const handleCardClick = () => {
@@ -100,11 +97,11 @@ export const Card = ({ post, purchase }: CardProps) => {
       <>
         {' '}
         {isModalOpen && post && userInfo && (
-          <PostDetailModal
+          <PostDetailModal // 모달 컴포넌트
             userInfo={userInfo}
             post={post}
             onClose={handleCloseModal}
-          /> // 모달 컴포넌트
+          />
         )}
         <CardWrapper onClick={handleCardClick}>
           <motion.div

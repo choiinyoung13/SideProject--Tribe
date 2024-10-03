@@ -43,8 +43,10 @@ export default function ActivitySection() {
 
       <Main>
         {/* 좋아요 누른 게시물 */}
-        {subTab === null && <LikedPostsSection />} {/* 내가 올린 게시물 */}
-        {subTab === '1' && <MyPostsSection />} {/* 구매 내역 */}
+        {subTab === null && <LikedPostsSection />}
+        {/* 내가 올린 게시물 */}
+        {subTab === '1' && <MyPostsSection />}
+        {/* 구매 내역 */}
         {subTab === '2' && <PurchaseHistorySection />}
       </Main>
     </Container>

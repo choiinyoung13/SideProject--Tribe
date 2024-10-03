@@ -102,12 +102,12 @@ export default function UserInfoModal({
             <Tab selected={subTab === null} onClick={() => {}}>
               게시물
             </Tab>
-            <Tab selected={subTab === '1'} onClick={() => {}}>
+            {/* <Tab selected={subTab === '1'} onClick={() => {}}>
               팔로워
             </Tab>
             <Tab selected={subTab === '1'} onClick={() => {}}>
               팔로잉
-            </Tab>
+            </Tab> */}
           </TabWrapper>
         </Header>
         <Body>
@@ -141,7 +141,7 @@ const ModalOverlay = styled.div`
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 9999; // 가장 위에 표시될 수 있도록 설정
+  z-index: 1005; // 가장 위에 표시될 수 있도록 설정
   width: 100vw;
   height: 100vh;
   background: rgba(0, 0, 0, 0.6);

@@ -12,6 +12,7 @@ import Swal from 'sweetalert2'
 import { useNavigate } from 'react-router-dom'
 import { useMutation, useQueryClient } from 'react-query'
 import { insertUserIdIntoLiked } from '../../config/api/post/insertPost'
+import UserInfoModal from './UserInfoModal'
 
 interface PostCardProps {
   post: PostType
@@ -20,6 +21,7 @@ interface PostCardProps {
 
 export default function PostCard({ post, onImageLoad }: PostCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isUserInfoModalOpen, setIsUserInfoModalOpen] = useState(false)
   const [isImageLoaded, setIsImageLoaded] = useState(false)
   const { session } = useAuth()
   const navigate = useNavigate()
@@ -53,8 +55,18 @@ export default function PostCard({ post, onImageLoad }: PostCardProps) {
     setIsModalOpen(true)
   }
 
+  const handleUserInfoClick = () => {
+    setIsUserInfoModalOpen(true) // 프로필 클릭 시 UserInfoModal 열기
+  }
+
   return (
     <>
+      {isUserInfoModalOpen && userInfo && (
+        <UserInfoModal
+          user={userInfo}
+          onClose={() => setIsUserInfoModalOpen(false)} // 모달 닫기
+        />
+      )}
       {isModalOpen && userInfo && (
         <PostDetailModal
           userInfo={{
@@ -110,7 +122,9 @@ export default function PostCard({ post, onImageLoad }: PostCardProps) {
                           : 'http://img1.kakaocdn.net/thumb/R640x640.q70/?fname=http://t1.kakaocdn.net/account_images/default_profile.jpeg'
                       }
                     />
-                    <Username>
+                    <Username onClick={handleUserInfoClick}>
+                      {' '}
+                      {/* 프로필 클릭 시 모달 열림 */}
                       {userInfo?.nickname === ''
                         ? userInfo?.email
                           ? userInfo.email.split('@')[0]

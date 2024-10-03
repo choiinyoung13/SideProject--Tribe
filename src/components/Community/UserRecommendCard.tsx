@@ -4,6 +4,9 @@ import { IoMdHeart } from 'react-icons/io'
 import { motion } from 'framer-motion'
 import { useState } from 'react'
 import { PostType } from '../../types/PostType'
+import { useQuery } from 'react-query'
+import { fetchUserInfoByUserId } from '../../config/api/user/fetchUserInfo'
+import PostDetailModal from './PostDetailModal'
 
 interface UserRecommendCardProps {
   post?: PostType
@@ -11,43 +14,74 @@ interface UserRecommendCardProps {
 
 export const UserRecommendCard = ({ post }: UserRecommendCardProps) => {
   const [isImageLoaded, setIsImageLoaded] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const { data: userInfo } = useQuery(
+    ['userInfo'],
+    () => fetchUserInfoByUserId(post!.user),
+    {
+      enabled: !!post,
+    }
+  )
+
+  // 모달 열기 함수
+  const handleCardClick = () => {
+    if (post) {
+      setIsModalOpen(true)
+    }
+  }
+
+  // 모달 닫기 함수
+  const handleCloseModal = () => {
+    setIsModalOpen(false)
+  }
 
   if (post) {
     return (
-      <CardWrapper>
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: isImageLoaded ? 1 : 0 }}
-          transition={{ duration: 0.7 }}
-        >
-          <CardImage>
-            <img
-              src={post.img_urls[0]}
-              alt={post.title}
-              onLoad={() => {
-                setIsImageLoaded(true)
-              }}
-            />
-          </CardImage>
-          <CardContent>
-            <h3>
-              <Category>[{post.category}]</Category>
-              {post.title}
-            </h3>
-            <p>{post.content}</p>
-            <PostInfo>
-              <Liked>
-                <IoMdHeart />
-                <span>{!post.liked ? 0 : post.liked.length}개</span>
-              </Liked>
-              <Comment>
-                <IoChatbubbleEllipsesOutline />
-                <span>{!post.comments ? 0 : post.comments.length}개</span>
-              </Comment>
-            </PostInfo>
-          </CardContent>
-        </motion.div>
-      </CardWrapper>
+      <>
+        {isModalOpen && post && userInfo && (
+          <PostDetailModal // 모달 컴포넌트
+            userInfo={userInfo}
+            post={post}
+            onClose={handleCloseModal}
+          />
+        )}
+
+        <CardWrapper onClick={handleCardClick}>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: isImageLoaded ? 1 : 0 }}
+            transition={{ duration: 0.7 }}
+          >
+            <CardImage>
+              <img
+                src={post.img_urls[0]}
+                alt={post.title}
+                onLoad={() => {
+                  setIsImageLoaded(true)
+                }}
+              />
+            </CardImage>
+            <CardContent>
+              <h3>
+                <Category>[{post.category}]</Category>
+                {post.title}
+              </h3>
+              <p>{post.content}</p>
+              <PostInfo>
+                <Liked>
+                  <IoMdHeart />
+                  <span>{!post.liked ? 0 : post.liked.length}개</span>
+                </Liked>
+                <Comment>
+                  <IoChatbubbleEllipsesOutline />
+                  <span>{!post.comments ? 0 : post.comments.length}개</span>
+                </Comment>
+              </PostInfo>
+            </CardContent>
+          </motion.div>
+        </CardWrapper>
+      </>
     )
   }
 
@@ -55,6 +89,7 @@ export const UserRecommendCard = ({ post }: UserRecommendCardProps) => {
 }
 
 const CardWrapper = styled.div`
+  position: relative;
   width: calc(33.33% - 10px);
   height: 252px;
   background-color: #f8f9fa;
