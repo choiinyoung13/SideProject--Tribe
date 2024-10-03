@@ -23,9 +23,10 @@ export default function RealTimeKeywords({
   // useQuery를 사용하여 인기 키워드 가져오기
   const { data: keywords, isLoading } = useQuery<Keyword[]>(
     'top5Keywords',
-    fetchTop5Keywords, // Supabase에서 상위 5개의 인기 키워드 가져오기
+    fetchTop5Keywords,
     {
-      staleTime: 1000 * 60, // 데이터가 1분 동안은 다시 가져오지 않음
+      staleTime: 1000 * 60,
+      cacheTime: 1000 * 60 * 5,
     }
   )
 
@@ -35,12 +36,20 @@ export default function RealTimeKeywords({
     await setInputValue(keyword)
     await setSearchKeyword(keyword)
   }
+  const skeletonArray = new Array(5).fill(null)
+
+  if (isLoading) {
+    return (
+      <KeywordsWrapper>
+        {skeletonArray.map((_, i) => {
+          return <SkeletonLoading key={i} />
+        })}
+      </KeywordsWrapper>
+    )
+  }
 
   return (
     <KeywordsWrapper>
-      {/* 로딩 중일 때 */}
-      {isLoading && <LoadingMessage>로딩 중...</LoadingMessage>}
-
       {/* 인기 키워드 목록 */}
       {!isLoading && keywords && keywords.length > 0
         ? keywords.map((keyword, index) => (
@@ -105,12 +114,10 @@ const KeywordText = styled.div`
 `
 
 // 로딩 메시지 스타일
-const LoadingMessage = styled.div`
-  font-size: 1rem;
-  font-weight: 500;
-  color: #888;
-  text-align: center;
-  padding: 20px;
+const SkeletonLoading = styled.div`
+  width: 100%;
+  height: 40px;
+  background-color: #fff;
 `
 
 // 키워드가 없을 때 메시지

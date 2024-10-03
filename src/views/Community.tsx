@@ -44,8 +44,8 @@ export default function Community() {
     ['recommends'],
     fetchRecommends,
     {
-      staleTime: 0,
-      cacheTime: 0,
+      staleTime: 1000 * 60 * 1,
+      cacheTime: 1000 * 60 * 10,
     }
   )
 
@@ -112,7 +112,7 @@ export default function Community() {
     <CommunityCon>
       {windowWidth >= 768 ? (
         <Sidebar>
-          {isCategoryLoading || isRecommendsLoading ? (
+          {isCategoryLoading ? (
             <CategorySkeletonUi /> // 카테고리 데이터를 불러오는 동안 보여줄 Skeleton UI
           ) : (
             categories.map(cat => {
@@ -135,7 +135,7 @@ export default function Community() {
         </Sidebar>
       ) : (
         <SelectSection>
-          {isCategoryLoading || isRecommendsLoading ? (
+          {isCategoryLoading ? (
             <CategorySkeletonUi /> // 모바일 화면에서도 카테고리 데이터를 불러오는 동안 Skeleton UI 적용
           ) : (
             <Select
@@ -182,11 +182,7 @@ export default function Community() {
           </HeaderRight>
         </MainContentHeader>
         <Feed>
-          <PostListCon
-            searchKeyword={searchKeyword}
-            tab={tab}
-            isRecommendsLoading={isRecommendsLoading}
-          />
+          <PostListCon searchKeyword={searchKeyword} tab={tab} />
         </Feed>
       </MainContent>
       <RightSidebar>
@@ -197,7 +193,7 @@ export default function Community() {
               alt="aside image1"
               style={{ width: '16px', height: '18px' }}
             />
-            <WidgetTitle>인기 키워드</WidgetTitle>
+            <WidgetTitle>주간 인기 키워드</WidgetTitle>
           </WidgetTitleWrapper>
           <WidgetBack>
             <Widget>

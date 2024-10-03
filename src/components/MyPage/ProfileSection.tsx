@@ -19,6 +19,7 @@ export function ProfileSection({
 }: ProfileSectionProps) {
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [isImageLoading, setIsImageLoading] = useState<boolean>(false)
+  const [displayedImageUrl, setDisplayedImageUrl] = useState<string>(avatar_url) // 현재 보여주는 이미지 URL
   const queryClient = useQueryClient()
 
   // 파일 선택 시 호출되는 함수
@@ -51,6 +52,9 @@ export function ProfileSection({
 
         // 서버에도 업데이트 요청
         mutate({ url: uploadedImageUrl, id: userInfo.id })
+
+        // 이미지 로드 완료 후에 displayedImageUrl 업데이트
+        setDisplayedImageUrl(uploadedImageUrl)
       } catch (error) {
         console.error('프로필 이미지 변경 중 오류 발생:', error)
       }
@@ -71,13 +75,13 @@ export function ProfileSection({
         <div>
           <motion.div
             initial={{ opacity: 0 }}
-            animate={{ opacity: !isImageLoading ? 1 : 0 }}
-            transition={{ duration: 0.3 }}
+            animate={{ opacity: 1 }} // 부드럽게 나타나도록 설정
+            transition={{ duration: 0.7 }} // 전환 효과 시간 설정
           >
             <ProfileImg
               src={
-                avatar_url
-                  ? avatar_url
+                displayedImageUrl
+                  ? displayedImageUrl
                   : 'http://img1.kakaocdn.net/thumb/R640x640.q70/?fname=http://t1.kakaocdn.net/account_images/default_profile.jpeg'
               }
               alt="avatar url"
