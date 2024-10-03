@@ -36,6 +36,7 @@ interface PostDetailProps {
     nickname: string
   }
   post: PostType
+  onClose: () => void
 }
 
 interface CommentProps {
@@ -48,7 +49,11 @@ interface CommentProps {
   email?: string
 }
 
-export default function PostDetail({ userInfo, post }: PostDetailProps) {
+export default function PostDetail({
+  userInfo,
+  post,
+  onClose,
+}: PostDetailProps) {
   const [newComment, setNewComment] = useState('')
   const [isExpanded, setIsExpanded] = useState(false)
   const [showMoreButton, setShowMoreButton] = useState(false)
@@ -178,8 +183,9 @@ export default function PostDetail({ userInfo, post }: PostDetailProps) {
       cancelButtonColor: '#1E1E1E',
     }).then(result => {
       if (result.isConfirmed) {
-        deletePost(post.id).then(() => {
-          queryClient.invalidateQueries('posts')
+        deletePost(post.id).then(async () => {
+          await queryClient.invalidateQueries('posts')
+          onClose()
         })
       }
     })
@@ -305,7 +311,7 @@ export default function PostDetail({ userInfo, post }: PostDetailProps) {
             <IoChatbubbleEllipsesOutline />{' '}
             <span>{post.comments ? post.comments.length : 0}</span>
           </Comments>
-          {session && session.user.id === userInfo.userId && (
+          {session && session.user.id === post.user && (
             <Delete onClick={handleDeleteClick}>
               <GoTrash />
             </Delete>

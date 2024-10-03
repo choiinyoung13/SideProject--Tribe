@@ -1,5 +1,6 @@
+import { useQuery } from 'react-query'
 import styled from 'styled-components'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { IoMdHeart } from 'react-icons/io'
 import { IoChatbubbleEllipsesOutline } from 'react-icons/io5'
@@ -23,13 +24,14 @@ export default function PostCard({ post, onImageLoad }: PostCardProps) {
   const { session } = useAuth()
   const navigate = useNavigate()
   const queryClient = useQueryClient()
-  const [userInfo, setUserInfo] = useState({
-    userId: '',
-    email: '',
-    avatar_url: '',
-    nickname: '',
-  })
-  const [isUserInfoLoaded, setIsUserInfoLoaded] = useState(false) // 유저 정보 로딩 상태
+
+  const { data: userInfo, isLoading: isUserInfoLoading } = useQuery(
+    ['userInfo', post.user],
+    () => fetchUserInfoByUserId(post.user),
+    {
+      enabled: !!post.user,
+    }
+  )
 
   const { mutate } = useMutation(insertUserIdIntoLiked, {
     onSuccess: () => {
@@ -47,29 +49,20 @@ export default function PostCard({ post, onImageLoad }: PostCardProps) {
     },
   })
 
-  useEffect(() => {
-    const getUserInfo = async () => {
-      const result = await fetchUserInfoByUserId(post.user)
-      setUserInfo({
-        userId: post.user,
-        email: result?.email,
-        avatar_url: result?.avatar_url,
-        nickname: result?.nickname ? result.nickname : '',
-      })
-      setIsUserInfoLoaded(true) // 유저 정보가 로드된 후 true로 설정
-    }
-    getUserInfo()
-  }, [post.user])
-
   const handleCardClick = () => {
     setIsModalOpen(true)
   }
 
   return (
     <>
-      {isModalOpen && (
+      {isModalOpen && userInfo && (
         <PostDetailModal
-          userInfo={userInfo}
+          userInfo={{
+            userId: post.user,
+            email: userInfo?.email,
+            avatar_url: userInfo?.avatar_url,
+            nickname: userInfo?.nickname ? userInfo.nickname : '',
+          }}
           post={post}
           onClose={() => setIsModalOpen(false)}
         />
@@ -101,30 +94,30 @@ export default function PostCard({ post, onImageLoad }: PostCardProps) {
             </TextHeader>
             <PostText>
               <TextLeft>
-                {isUserInfoLoaded ? (
+                {isUserInfoLoading ? (
+                  // 유저 정보 로딩 중일 때 Skeleton 표시
+                  <ProfileSkeleton>
+                    <SkeletonCircle />
+                    <SkeletonText />
+                  </ProfileSkeleton>
+                ) : (
                   // 유저 정보가 로드되었을 때만 실제 데이터를 표시
                   <Profile>
                     <ProfileImg
                       src={
-                        userInfo.avatar_url
+                        userInfo?.avatar_url
                           ? userInfo.avatar_url
                           : 'http://img1.kakaocdn.net/thumb/R640x640.q70/?fname=http://t1.kakaocdn.net/account_images/default_profile.jpeg'
                       }
                     />
                     <Username>
-                      {userInfo.nickname === ''
-                        ? userInfo.email
+                      {userInfo?.nickname === ''
+                        ? userInfo?.email
                           ? userInfo.email.split('@')[0]
                           : null
-                        : userInfo.nickname}
+                        : userInfo?.nickname}
                     </Username>
                   </Profile>
-                ) : (
-                  // 로드 중일 때 Skeleton 표시
-                  <ProfileSkeleton>
-                    <SkeletonCircle />
-                    <SkeletonText />
-                  </ProfileSkeleton>
                 )}
               </TextLeft>
               <TextRight>

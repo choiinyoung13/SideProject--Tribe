@@ -71,8 +71,6 @@ export function PurchaseHistorySection() {
     )
   }
 
-  console.log(purchaseHistory?.pages)
-
   return (
     <Section>
       <ContentWrapper>

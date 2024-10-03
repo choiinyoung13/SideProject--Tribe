@@ -1,9 +1,9 @@
-import styled from "styled-components";
-import PostDetail from "./PostDetail";
-import { IoCloseSharp } from "react-icons/io5";
-import { useEffect } from "react";
-import { PostType } from "../../types/PostType";
-import { useQueryClient } from "react-query";
+import styled from 'styled-components'
+import PostDetail from './PostDetail'
+import { IoCloseSharp } from 'react-icons/io5'
+import { useEffect } from 'react'
+import { PostType } from '../../types/PostType'
+import { useQueryClient } from 'react-query'
 
 export default function PostDetailModal({
   userInfo,
@@ -11,39 +11,39 @@ export default function PostDetailModal({
   onClose,
 }: {
   userInfo: {
-    userId: string;
-    email: string;
-    avatar_url: string;
-    nickname: string;
-  };
-  post: PostType;
-  onClose: () => void;
+    userId: string
+    email: string
+    avatar_url: string
+    nickname: string
+  }
+  post: PostType
+  onClose: () => void
 }) {
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
 
   useEffect(() => {
     // 모달이 열릴 때 posts 쿼리 리패치
-    queryClient.invalidateQueries({ queryKey: ["posts"], exact: false });
+    queryClient.invalidateQueries({ queryKey: ['posts'], exact: false })
 
     // 모달이 열릴 때 body 스크롤 비활성화
-    document.body.style.overflow = "hidden";
+    document.body.style.overflow = 'hidden'
 
     // 컴포넌트가 언마운트될 때 (모달이 닫힐 때) 스크롤을 다시 활성화
     return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, []);
+      document.body.style.overflow = 'auto'
+    }
+  }, [])
 
   return (
     <ModalOverlay onClick={onClose}>
       <CloseIcon>
         <IoCloseSharp />
       </CloseIcon>
-      <ModalContent onClick={(e) => e.stopPropagation()}>
-        <PostDetail userInfo={userInfo} post={post} />
+      <ModalContent onClick={e => e.stopPropagation()}>
+        <PostDetail userInfo={userInfo} post={post} onClose={onClose} />
       </ModalContent>
     </ModalOverlay>
-  );
+  )
 }
 
 // 스타일 컴포넌트들
@@ -56,7 +56,7 @@ const CloseIcon = styled.div`
   font-size: 3rem;
   color: rgba(230, 230, 230, 1);
   cursor: pointer;
-`;
+`
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -69,11 +69,11 @@ const ModalOverlay = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-`;
+`
 
 const ModalContent = styled.div`
   background-color: #ffffff;
   border-radius: 10px;
   padding: 24px;
   position: relative;
-`;
+`
