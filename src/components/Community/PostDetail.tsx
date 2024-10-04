@@ -23,7 +23,6 @@ import Spinner from '../Common/Spinner'
 import { useNavigate } from 'react-router-dom'
 import { insertUserIdIntoLiked } from '../../config/api/post/insertPost'
 import { deletePost } from '../../config/api/post/deletePost'
-import useWindowWidth from '../../hooks/useWindowWidth'
 
 // dayjs 상대 시간 플러그인과 한국어 설정
 dayjs.extend(relativeTime)
