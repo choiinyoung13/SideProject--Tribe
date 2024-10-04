@@ -196,12 +196,19 @@ const Card = styled.div`
 
 const ImgBox = styled.div`
   width: 100%;
+  padding-top: 100%; /* 1:1 비율 유지 */
+  position: relative;
   border-radius: 20px;
   overflow: hidden;
   cursor: pointer;
 
   img {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 `
 

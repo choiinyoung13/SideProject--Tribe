@@ -147,6 +147,7 @@ const ModalOverlay = styled.div`
   left: 0;
   z-index: 1005; // 가장 위에 표시될 수 있도록 설정
   width: 100vw;
+  min-width: 375px;
   height: 100vh;
   background: rgba(0, 0, 0, 0.6);
   display: flex;
@@ -158,7 +159,8 @@ const ModalContent = styled.div`
   background: #fff;
   padding: 20px;
   border-radius: 8px;
-  width: 600px;
+  width: 90%;
+  max-width: 600px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -183,18 +185,44 @@ const ProfileImage = styled.img`
   width: 50px;
   height: 50px;
   border-radius: 50%;
+
+  @media (max-width: 600px) {
+    width: 40px;
+    height: 40px;
+  }
+
+  @media (max-width: 400px) {
+    width: 30px;
+    height: 30px;
+  }
 `
 
 const UserName = styled.div`
   font-size: 1.1rem;
   font-weight: bold;
   color: rgba(30, 30, 30, 1);
+
+  @media (max-width: 600px) {
+    font-size: 0.95rem;
+  }
+
+  @media (max-width: 400px) {
+    font-size: 0.85rem;
+  }
 `
 
 const UserStatus = styled.p`
   font-size: 0.9rem;
   color: #555;
   text-align: center;
+
+  @media (max-width: 600px) {
+    font-size: 0.8rem;
+  }
+
+  @media (max-width: 400px) {
+    font-size: 0.7rem;
+  }
 `
 
 const Header = styled.div`
@@ -239,6 +267,16 @@ const Tab = styled.div<TabProps>`
   &:hover {
     border-bottom: 2px solid black;
   }
+
+  @media (max-width: 600px) {
+    padding: 22px 0px 16px;
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 400px) {
+    padding: 18px 0px 16px;
+    font-size: 0.85rem;
+  }
 `
 
 const Body = styled.div`
@@ -247,7 +285,7 @@ const Body = styled.div`
   flex-direction: column;
   align-items: center;
   width: 100%;
-  height: 520px;
+  max-height: 523px;
   justify-content: center;
 
   overflow-y: scroll;
@@ -260,13 +298,10 @@ const Body = styled.div`
 
   section {
     width: 100%;
-    height: 520px;
+    max-height: 523px;
     display: flex;
     flex-wrap: wrap;
     gap: 14px;
-  }
-
-  @media (max-width: 1150px) {
   }
 `
 

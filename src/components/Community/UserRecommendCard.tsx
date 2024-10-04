@@ -91,7 +91,7 @@ export const UserRecommendCard = ({ post }: UserRecommendCardProps) => {
 const CardWrapper = styled.div`
   position: relative;
   width: calc(33.33% - 10px);
-  height: 252px;
+
   background-color: #f8f9fa;
   padding: 8px;
   border: 1px solid #e0e0e0;
@@ -116,19 +116,22 @@ const CardWrapper = styled.div`
     text-overflow: ellipsis;
   }
 
-  @media (max-width: 1024px) {
-  }
-
-  @media (max-width: 768px) {
-  }
-
   @media (max-width: 600px) {
+    width: calc(50% - 7.5px);
+
+    h3 {
+      font-size: 0.7rem;
+    }
+
+    p {
+      font-size: 0.65rem;
+    }
   }
 `
 
 const CardImage = styled.div`
   width: 100%;
-  padding-top: 100%;
+  padding-top: 100%; /* 1:1 비율 유지 */
   position: relative;
   margin-bottom: 10px;
 
@@ -171,6 +174,18 @@ const Category = styled.span`
   font-size: 0.8rem;
   color: rgba(100, 100, 100, 1);
   margin-right: 4px;
+
+  @media (max-width: 768px) {
+    font-size: 0.75rem;
+  }
+
+  @media (max-width: 600px) {
+    font-size: 0.7rem;
+  }
+
+  @media (max-width: 375px) {
+    font-size: 0.65rem;
+  }
 `
 
 const PostInfo = styled.div`
@@ -192,6 +207,10 @@ const PostInfo = styled.div`
   @media (max-width: 600px) {
     font-size: 0.7rem;
   }
+
+  @media (max-width: 375px) {
+    font-size: 0.65rem;
+  }
 `
 
 const Liked = styled.div`
@@ -205,6 +224,24 @@ const Liked = styled.div`
     margin-top: 5px;
     margin-right: 3px;
   }
+
+  @media (max-width: 768px) {
+    svg {
+      font-size: 0.8rem;
+    }
+  }
+
+  @media (max-width: 600px) {
+    svg {
+      font-size: 0.75rem;
+    }
+  }
+
+  @media (max-width: 375px) {
+    svg {
+      font-size: 0.7rem;
+    }
+  }
 `
 
 const Comment = styled.div`
@@ -216,5 +253,23 @@ const Comment = styled.div`
     font-size: 0.9rem;
     margin-top: 5px;
     margin-right: 3px;
+  }
+
+  @media (max-width: 768px) {
+    svg {
+      font-size: 0.8rem;
+    }
+  }
+
+  @media (max-width: 600px) {
+    svg {
+      font-size: 0.75rem;
+    }
+  }
+
+  @media (max-width: 375px) {
+    svg {
+      font-size: 0.7rem;
+    }
   }
 `
