@@ -57,10 +57,11 @@ const CloseIcon = styled.div`
   color: rgba(230, 230, 230, 1);
   cursor: pointer;
 
-  @media (max-width: 800px) {
-    top: 10px;
-    right: 10px;
-    font-size: 1.8rem;
+  @media (max-width: 680px) {
+    top: 42px;
+    right: 40px;
+    font-size: 1.5rem;
+    color: rgba(50, 50, 50, 1);
   }
 `
 

@@ -389,11 +389,25 @@ const ProfileImage = styled.img`
   height: 30px;
   border-radius: 50%;
   margin-right: 10px;
+
+  @media (max-width: 400px) {
+    width: 25px;
+    height: 25px;
+    margin-right: 8px;
+  }
 `
 
 const AuthorName = styled.div`
   font-weight: bold;
   font-size: 1.05rem;
+
+  @media (max-width: 600px) {
+    font-size: 1rem;
+  }
+
+  @media (max-width: 400px) {
+    font-size: 0.9rem;
+  }
 `
 
 const ContentWrapper = styled.div`
@@ -428,6 +442,14 @@ const Text = styled.span<TextProps>`
   white-space: normal;
   line-height: 1.7;
   word-break: break-word;
+
+  @media (max-width: 600px) {
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 400px) {
+    font-size: 0.85rem;
+  }
 `
 
 const MoreButton = styled.button`
@@ -438,7 +460,14 @@ const MoreButton = styled.button`
   font-weight: 400;
   font-size: 1rem;
   padding: 0;
-  margin-left: 8px;
+
+  @media (max-width: 600px) {
+    font-size: 0.8rem;
+  }
+
+  @media (max-width: 400px) {
+    font-size: 0.7rem;
+  }
 `
 
 const SwiperContainer = styled.div`
@@ -533,6 +562,10 @@ const CommentInput = styled.input`
   border: 1px solid #ccc;
   border-top-left-radius: 5px;
   border-bottom-left-radius: 5px;
+
+  @media (max-width: 600px) {
+    font-size: 0.7rem;
+  }
 `
 
 const CommentButton = styled.button`
@@ -548,6 +581,10 @@ const CommentButton = styled.button`
 
   &:hover {
     background-color: rgba(60, 60, 60, 1);
+  }
+
+  @media (max-width: 600px) {
+    font-size: 0.7rem;
   }
 `
 interface CommentsSectionType {

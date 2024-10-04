@@ -54,6 +54,16 @@ const CommentProfileImage = styled.img`
   height: 36px;
   border-radius: 50%;
   margin-right: 10px;
+
+  @media (max-width: 600px) {
+    width: 30px;
+    height: 30px;
+  }
+
+  @media (max-width: 400px) {
+    width: 28px;
+    height: 28px;
+  }
 `
 
 const CommentLeft = styled.div`
@@ -71,6 +81,14 @@ const CommentLeftText = styled.div`
 const CommentUser = styled.div`
   font-weight: bold;
   font-size: 0.9rem;
+
+  @media (max-width: 600px) {
+    font-size: 0.8rem;
+  }
+
+  @media (max-width: 400px) {
+    font-size: 0.7rem;
+  }
 `
 
 const CommentText = styled.div`
@@ -78,6 +96,16 @@ const CommentText = styled.div`
   font-size: 0.9rem;
   margin-right: 2px;
   color: #555;
+
+  @media (max-width: 600px) {
+    margin-top: 7px;
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 400px) {
+    margin-top: 6px;
+    font-size: 0.8rem;
+  }
 `
 
 const CommentTime = styled.div`
