@@ -23,6 +23,7 @@ import Spinner from '../Common/Spinner'
 import { useNavigate } from 'react-router-dom'
 import { insertUserIdIntoLiked } from '../../config/api/post/insertPost'
 import { deletePost } from '../../config/api/post/deletePost'
+import useWindowWidth from '../../hooks/useWindowWidth'
 
 // dayjs 상대 시간 플러그인과 한국어 설정
 dayjs.extend(relativeTime)
@@ -206,7 +207,7 @@ export default function PostDetail({
 
   return (
     <Container>
-      <DetailContainer>
+      <DetailContainer isSingleLine={isSingleLine}>
         <AuthorInfo>
           <ProfileImage
             src={
@@ -326,22 +327,18 @@ export default function PostDetail({
   )
 }
 
-// 스타일 컴포넌트들
-
 const Container = styled.div`
   display: flex;
   justify-content: space-between;
 
-  overflow-y: auto; /* 높이가 넘칠 때 스크롤 */
-  -ms-overflow-style: none; /* IE와 Edge에서 스크롤바 숨김 */
-  scrollbar-width: none; /* Firefox에서 스크롤바 숨김 */
-
-  &::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera에서 스크롤바 숨김 */
-  }
-
   @media (max-width: 1200px) {
     flex-direction: column;
+    overflow-y: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 `
 const LoadingContainer = styled.div`
@@ -357,13 +354,27 @@ const LoadingContainer = styled.div`
   }
 `
 
-const DetailContainer = styled.div`
+interface DetailContainerType {
+  isSingleLine: boolean
+}
+
+const DetailContainer = styled.div<DetailContainerType>`
   width: 100%;
   max-width: 620px;
-
   margin-right: 20px;
-  bl @media (max-width: 1200px) {
+  height: ${props => (props.isSingleLine ? '100%' : '730px')};
+
+  overflow-y: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  @media (max-width: 1200px) {
+    overflow-y: visible;
     max-width: 100%;
+    height: 100%;
     margin-right: 0;
   }
 `
@@ -499,7 +510,6 @@ const CommentSection = styled.div`
   flex-direction: column;
   align-items: flex-end;
   width: 450px;
-
   padding: 20px;
   background-color: #f8f9fa;
   border-left: 1px solid #e1e8ed;
@@ -507,8 +517,8 @@ const CommentSection = styled.div`
   @media (max-width: 1200px) {
     width: 100%;
     border-left: none;
-    border-top: 1px solid #e1e8ed;
-    padding: 16px;
+    background-color: #fff;
+    padding: 24px 0px 0px 0px;
   }
 `
 
@@ -546,12 +556,15 @@ interface CommentsSectionType {
 }
 
 const CommentsSection = styled.div<CommentsSectionType>`
+  display: flex;
+  flex-direction: column;
+  gap: ${props => (props.isSingleLine ? '29px' : '32px')};
   margin-top: 26px;
   width: 100%;
   height: ${props => (props.isSingleLine ? '560px' : '584px')};
   border-top: 1px solid #e1e8ed;
   border-bottom: 1px solid #e1e8ed;
-  padding-top: 20px;
+  padding: 20px 0;
   overflow-y: scroll;
 
   ::-webkit-scrollbar {
@@ -559,6 +572,14 @@ const CommentsSection = styled.div<CommentsSectionType>`
   }
   scrollbar-width: none;
   -ms-overflow-style: none;
+
+  @media (max-width: 1200px) {
+    height: 100%;
+    border-top: none;
+    padding-top: 0px;
+    gap: 27px;
+    max-height: 466px;
+  }
 `
 
 const PostInteractions = styled.div`
