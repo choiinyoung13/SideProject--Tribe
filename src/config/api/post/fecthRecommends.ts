@@ -28,8 +28,5 @@ export async function fetchRecommends() {
     console.error('이웃추천 데이터 조회중 오류가 발생했습니다:', error)
     return []
   }
-
-  console.log(`추천: ${JSON.stringify(data)}`)
-
   return data
 }

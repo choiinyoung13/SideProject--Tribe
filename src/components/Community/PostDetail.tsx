@@ -101,12 +101,6 @@ export default function PostDetail({
   })
 
   useEffect(() => {
-    // content가 160자 이상이면 더보기 버튼 생성
-    setShowMoreButton(post.content.length > 160)
-  }, [post.content])
-
-  useEffect(() => {
-    // Text가 한 줄만 차지하는지 확인하는 로직
     if (textRef.current) {
       const lineHeight = parseFloat(
         getComputedStyle(textRef.current).lineHeight
@@ -114,17 +108,28 @@ export default function PostDetail({
       const textHeight = textRef.current.clientHeight
       const numLines = textHeight / lineHeight
 
-      // 소수점 이하를 반올림하여 numLines 값을 정수로 처리
-      const roundedNumLines = Math.ceil(numLines)
-
-      console.log('textRef.current:', textRef.current)
-      console.log('lineHeight:', lineHeight)
-      console.log('textHeight:', textHeight)
-      console.log('numLines (rounded):', roundedNumLines)
-
-      setIsSingleLine(roundedNumLines === 1)
+      // 줄 수가 1줄을 넘으면 더보기 버튼을 보여줌
+      setShowMoreButton(numLines > 1)
     }
-  }, [post.content, isExpanded, textRef.current])
+  }, [post.content])
+
+  useEffect(() => {
+    console.log(textRef.current)
+
+    // Text가 한 줄만 차지하는지 확인하는 로직
+    if (textRef.current) {
+      if (textRef.current) {
+        const clientHeight = textRef.current.clientHeight // 요소가 실제로 보이는 높이
+        const scrollHeight = textRef.current.scrollHeight // 스크롤할 때 포함되는 전체 높이 (즉, 숨겨진 부분까지 포함)
+
+        // scrollHeight가 clientHeight보다 크면, 텍스트가 잘렸다는 의미로 한 줄 이상
+        setShowMoreButton(scrollHeight > clientHeight)
+
+        // 텍스트가 한 줄을 넘지 않는지 확인
+        setIsSingleLine(scrollHeight === clientHeight)
+      }
+    }
+  }, [textRef.current])
 
   useEffect(() => {
     const loadCommentsWithUserInfo = async () => {
@@ -225,14 +230,13 @@ export default function PostDetail({
                 {post.content}
               </Text>
               {showMoreButton && !isExpanded && (
-                <MoreButton onClick={handleExpandClick}>... 더보기</MoreButton>
+                <MoreButton onClick={handleExpandClick}>+더보기</MoreButton>
               )}
             </TextContainer>
           </Content>
 
           <SwiperContainer>
             <Swiper
-              spaceBetween={10}
               slidesPerView={1}
               pagination={{ clickable: true }}
               navigation
@@ -240,14 +244,14 @@ export default function PostDetail({
             >
               {post.img_urls.map((imgUrl, index) => (
                 <SwiperSlide key={index}>
-                  <SlideImage
-                    isSingleLine={isSingleLine} // 한 줄인지 여부를 SlideImage에 전달
-                    src={imgUrl}
-                    alt={`Slide ${index + 1}`}
-                    onLoad={() => {
-                      setIsImageLoading(true)
-                    }}
-                  />
+                  <SlideImageContainer>
+                    <SlideImage
+                      src={imgUrl}
+                      alt={`Slide ${index + 1}`}
+                      onLoad={() => setIsImageLoading(true)}
+                      isLoaded={isImageLoading} // 이미지가 로드된 후에만 opacity 전환
+                    />
+                  </SlideImageContainer>
                 </SwiperSlide>
               ))}
             </Swiper>
@@ -268,7 +272,7 @@ export default function PostDetail({
           </CommentButton>
         </CommentInputSection>
 
-        <CommentsSection>
+        <CommentsSection isSingleLine={isSingleLine}>
           {commentsWithUserInfo.map(comment => (
             <Comment key={comment.id} comment={comment} />
           ))}
@@ -327,6 +331,18 @@ export default function PostDetail({
 const Container = styled.div`
   display: flex;
   justify-content: space-between;
+
+  overflow-y: auto; /* 높이가 넘칠 때 스크롤 */
+  -ms-overflow-style: none; /* IE와 Edge에서 스크롤바 숨김 */
+  scrollbar-width: none; /* Firefox에서 스크롤바 숨김 */
+
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera에서 스크롤바 숨김 */
+  }
+
+  @media (max-width: 1200px) {
+    flex-direction: column;
+  }
 `
 const LoadingContainer = styled.div`
   display: flex;
@@ -342,9 +358,14 @@ const LoadingContainer = styled.div`
 `
 
 const DetailContainer = styled.div`
+  width: 100%;
   max-width: 620px;
-  margin: 0;
+
   margin-right: 20px;
+  bl @media (max-width: 1200px) {
+    max-width: 100%;
+    margin-right: 0;
+  }
 `
 
 const AuthorInfo = styled.div`
@@ -366,7 +387,7 @@ const AuthorName = styled.div`
 `
 
 const ContentWrapper = styled.div`
-  height: 722px;
+  width: 100%;
   overflow-y: scroll;
   border-radius: 10px;
 
@@ -389,35 +410,31 @@ interface TextProps {
 }
 
 const Text = styled.span<TextProps>`
-  display: block;
-  line-height: 1.7;
-  max-height: ${({ isExpanded }) => (isExpanded ? 'none' : '3.4em')};
-  font-size: 1rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
   display: -webkit-box;
-  -webkit-line-clamp: ${({ isExpanded }) => (isExpanded ? 'none' : 2)};
+  -webkit-line-clamp: ${({ isExpanded }) =>
+    isExpanded ? 'none' : 1}; /* 기본 1줄로 제한 */
   -webkit-box-orient: vertical;
+  overflow: hidden;
   white-space: normal;
+  line-height: 1.7;
   word-break: break-word;
 `
 
 const MoreButton = styled.button`
-  position: absolute;
-  right: 5.5px;
-  bottom: 2px;
-  background: #fff;
+  background: none;
   border: none;
   color: #0059ff;
   cursor: pointer;
-  padding: 0 0 0 0;
   font-weight: 400;
   font-size: 1rem;
+  padding: 0;
+  margin-left: 8px;
 `
 
 const SwiperContainer = styled.div`
   margin-top: 16px;
   border-radius: 10px;
+  width: 100%;
 
   .swiper-pagination {
     position: absolute;
@@ -436,11 +453,9 @@ const SwiperContainer = styled.div`
     background-color: rgba(30, 30, 30, 1);
   }
 
-  /* Navigation 버튼 스타일 */
   .swiper-button-prev,
   .swiper-button-next {
     color: rgba(0, 0, 0, 0.2);
-    transition: color 0.3s ease;
     font-size: 18px;
   }
 
@@ -452,15 +467,29 @@ const SwiperContainer = styled.div`
     margin-right: 14px;
   }
 
-  .swiper-button-prev:hover,
-  .swiper-button-next:hover {
-    color: rgba(0, 0, 0, 1);
+  @media (max-width: 1200px) {
+    .swiper-button-prev,
+    .swiper-button-next {
+      font-size: 16px;
+    }
   }
 `
 
-const SlideImage = styled.img<{ isSingleLine: boolean }>`
+const SlideImageContainer = styled.div`
+  position: relative;
   width: 100%;
-  height: ${({ isSingleLine }) => (isSingleLine ? '678px' : '650px')};
+  height: 100%;
+  padding-top: 100%; /* 1:1 비율 유지 */
+  border-radius: 10px;
+  overflow: hidden;
+`
+
+const SlideImage = styled.img<{ isLoaded: boolean }>`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   border-radius: 10px;
 `
@@ -470,9 +499,17 @@ const CommentSection = styled.div`
   flex-direction: column;
   align-items: flex-end;
   width: 450px;
+
   padding: 20px;
   background-color: #f8f9fa;
   border-left: 1px solid #e1e8ed;
+
+  @media (max-width: 1200px) {
+    width: 100%;
+    border-left: none;
+    border-top: 1px solid #e1e8ed;
+    padding: 16px;
+  }
 `
 
 const CommentInputSection = styled.form`
@@ -504,11 +541,14 @@ const CommentButton = styled.button`
     background-color: rgba(60, 60, 60, 1);
   }
 `
+interface CommentsSectionType {
+  isSingleLine: boolean
+}
 
-const CommentsSection = styled.div`
-  margin-top: 22px;
+const CommentsSection = styled.div<CommentsSectionType>`
+  margin-top: 26px;
   width: 100%;
-  height: 620px;
+  height: ${props => (props.isSingleLine ? '560px' : '584px')};
   border-top: 1px solid #e1e8ed;
   border-bottom: 1px solid #e1e8ed;
   padding-top: 20px;
@@ -525,7 +565,7 @@ const PostInteractions = styled.div`
   display: flex;
   align-items: center;
   justify-content: start;
-  margin: 18px 0 0px;
+  margin: 16px 0 0px;
 
   span {
     font-size: 1.2rem;

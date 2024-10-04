@@ -47,7 +47,7 @@ const CommentCon = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 27px;
+  margin-bottom: 28px;
 `
 
 const CommentProfileImage = styled.img`

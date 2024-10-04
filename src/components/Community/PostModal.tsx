@@ -345,7 +345,7 @@ const ModalBody = styled.div`
 
 const DropZone = styled.div`
   width: 100%;
-  height: 150px;
+  height: 138px;
   border: 2px dashed #ccc;
   display: flex;
   justify-content: center;

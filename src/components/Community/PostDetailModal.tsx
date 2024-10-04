@@ -64,11 +64,16 @@ const ModalOverlay = styled.div`
   top: 0;
   left: 0;
   width: 100vw;
+  min-width: 375px;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
+
+  @media (max-width: 1200px) {
+    padding: 0 16px;
+  }
 `
 
 const ModalContent = styled.div`
@@ -76,4 +81,14 @@ const ModalContent = styled.div`
   border-radius: 10px;
   padding: 24px;
   position: relative;
+  max-width: 1100px; /* 최대 너비 설정 */
+  max-height: 90vh; /* 최대 높이를 90%로 설정 */
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  @media (max-width: 1200px) {
+    max-width: 100%; /* 화면에 맞춰 최대 너비를 조정 */
+    padding: 20px; /* 작은 화면에서 패딩 조정 */
+  }
 `
