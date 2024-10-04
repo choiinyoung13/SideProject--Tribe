@@ -46,7 +46,7 @@ export default function PostDetailModal({
 
       <ModalContent onClick={e => e.stopPropagation()}>
         {windowWidth <= 700 && (
-          <SmallCloseIcon>
+          <SmallCloseIcon onClick={onClose}>
             <IoCloseSharp />
           </SmallCloseIcon>
         )}

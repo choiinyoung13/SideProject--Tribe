@@ -345,7 +345,6 @@ const LoadingContainer = styled.div`
   justify-content: center;
   align-items: center;
   height: 744px;
-  width: 1090px;
 
   img {
     width: 150px;
