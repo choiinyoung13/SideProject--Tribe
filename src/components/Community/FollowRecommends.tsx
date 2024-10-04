@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import styled from 'styled-components'
-import UserInfoModal from './UserInfoModal' // 분리된 UserInfoModal 컴포넌트 임포트
+import UserInfoModal from './UserInfoModal'
 
 type recommendType = {
   id: string
@@ -20,7 +20,8 @@ export default function FollowRecommends({
   isRecommendsLoading,
   recommends,
 }: FollowRecommendsProps) {
-  const [selectedUser, setSelectedUser] = useState<recommendType | null>(null) // 선택된 유저 상태 관리
+  const [selectedUser, setSelectedUser] = useState<recommendType | null>(null)
+  const [imageLoaded, setImageLoaded] = useState<{ [key: string]: boolean }>({}) // 이미지 로딩 상태를 각 유저별로 관리
 
   const SkeletonArray = new Array(4).fill(null)
 
@@ -32,6 +33,11 @@ export default function FollowRecommends({
   // 모달 닫기
   const handleCloseModal = () => {
     setSelectedUser(null)
+  }
+
+  // 특정 유저의 이미지 로딩 상태 업데이트
+  const handleImageLoad = (userId: string) => {
+    setImageLoaded(prev => ({ ...prev, [userId]: true }))
   }
 
   if (isRecommendsLoading || !recommends) {
@@ -57,19 +63,34 @@ export default function FollowRecommends({
       {recommends.map((recommend, index) => (
         <FollowRecommend key={index} onClick={() => handleClickUser(recommend)}>
           <FollowRecommendLeft>
-            <ProfileWithLoader
-              src={
-                recommend.avatar_url
-                  ? recommend.avatar_url
-                  : 'http://img1.kakaocdn.net/thumb/R640x640.q70/?fname=http://t1.kakaocdn.net/account_images/default_profile.jpeg'
-              }
-              nickname={
-                recommend.nickname
-                  ? recommend.nickname
-                  : recommend.email.split('@')[0]
-              }
-              status_message={recommend.status_message}
-            />
+            {!imageLoaded[recommend.id] && ( // 개별 이미지 로딩 상태 확인
+              <SkeletonWrapper>
+                <SkeletonProfile />
+                <SkeletonTextSection>
+                  <SkeletonUserName />
+                  <SkeletonDescription />
+                </SkeletonTextSection>
+              </SkeletonWrapper>
+            )}
+
+            <FadeInWrapper visible={!!imageLoaded[recommend.id]}>
+              <Profile
+                src={
+                  recommend.avatar_url
+                    ? recommend.avatar_url
+                    : 'http://img1.kakaocdn.net/thumb/R640x640.q70/?fname=http://t1.kakaocdn.net/account_images/default_profile.jpeg'
+                }
+                onLoad={() => handleImageLoad(recommend.id)} // 이미지 로드 시 해당 유저의 로딩 상태 업데이트
+              />
+              <TextSection>
+                <UserName>
+                  {recommend.nickname
+                    ? recommend.nickname
+                    : recommend.email.split('@')[0]}
+                </UserName>
+                <Description>{recommend.status_message}</Description>
+              </TextSection>
+            </FadeInWrapper>
           </FollowRecommendLeft>
         </FollowRecommend>
       ))}
@@ -79,41 +100,6 @@ export default function FollowRecommends({
         <UserInfoModal user={selectedUser} onClose={handleCloseModal} />
       )}
     </Container>
-  )
-}
-
-// ProfileWithLoader 컴포넌트: 이미지와 텍스트를 동시에 렌더링
-const ProfileWithLoader = ({
-  src,
-  nickname,
-  status_message,
-}: {
-  src: string
-  nickname: string
-  status_message: string
-}) => {
-  const [imageLoaded, setImageLoaded] = useState(false)
-
-  return (
-    <>
-      {!imageLoaded && (
-        <SkeletonWrapper>
-          <SkeletonProfile />
-          <SkeletonTextSection>
-            <SkeletonUserName />
-            <SkeletonDescription />
-          </SkeletonTextSection>
-        </SkeletonWrapper>
-      )}
-
-      <FadeInWrapper visible={imageLoaded}>
-        <Profile src={src} onLoad={() => setImageLoaded(true)} />
-        <TextSection>
-          <UserName>{nickname}</UserName>
-          <Description>{status_message}</Description>
-        </TextSection>
-      </FadeInWrapper>
-    </>
   )
 }
 
