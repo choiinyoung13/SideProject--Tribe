@@ -4,6 +4,7 @@ import { IoCloseSharp } from 'react-icons/io5'
 import { useEffect } from 'react'
 import { PostType } from '../../types/PostType'
 import { useQueryClient } from 'react-query'
+import useWindowWidth from '../../hooks/useWindowWidth'
 
 export default function PostDetailModal({
   userInfo,
@@ -20,6 +21,7 @@ export default function PostDetailModal({
   onClose: () => void
 }) {
   const queryClient = useQueryClient()
+  const windowWidth = useWindowWidth()
 
   useEffect(() => {
     // 모달이 열릴 때 posts 쿼리 리패치
@@ -36,10 +38,18 @@ export default function PostDetailModal({
 
   return (
     <ModalOverlay onClick={onClose}>
-      <CloseIcon>
-        <IoCloseSharp />
-      </CloseIcon>
+      {windowWidth > 700 && (
+        <BigCloseIcon>
+          <IoCloseSharp />
+        </BigCloseIcon>
+      )}
+
       <ModalContent onClick={e => e.stopPropagation()}>
+        {windowWidth <= 700 && (
+          <SmallCloseIcon>
+            <IoCloseSharp />
+          </SmallCloseIcon>
+        )}
         <PostDetail userInfo={userInfo} post={post} onClose={onClose} />
       </ModalContent>
     </ModalOverlay>
@@ -48,7 +58,7 @@ export default function PostDetailModal({
 
 // 스타일 컴포넌트들
 
-const CloseIcon = styled.div`
+const BigCloseIcon = styled.div`
   position: absolute;
   z-index: 1003;
   top: 24px;
@@ -56,13 +66,15 @@ const CloseIcon = styled.div`
   font-size: 2.5rem;
   color: rgba(230, 230, 230, 1);
   cursor: pointer;
-
-  @media (max-width: 680px) {
-    top: 42px;
-    right: 40px;
-    font-size: 1.5rem;
-    color: rgba(50, 50, 50, 1);
-  }
+`
+const SmallCloseIcon = styled.div`
+  position: absolute;
+  z-index: 1003;
+  top: 25px;
+  right: 25px;
+  font-size: 1.5rem;
+  color: rgba(50, 50, 50, 1);
+  cursor: pointer;
 `
 
 const ModalOverlay = styled.div`
@@ -84,6 +96,7 @@ const ModalOverlay = styled.div`
 `
 
 const ModalContent = styled.div`
+  position: relative;
   background-color: #ffffff;
   border-radius: 10px;
   padding: 24px;
