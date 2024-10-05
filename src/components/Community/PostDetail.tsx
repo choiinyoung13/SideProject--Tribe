@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { IoMdHeart } from 'react-icons/io'
-import { IoChatbubbleEllipsesOutline } from 'react-icons/io5'
+import { IoChatbubbleEllipsesOutline, IoCloseSharp } from 'react-icons/io5'
 import { GoTrash } from 'react-icons/go'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import 'swiper/css'
@@ -23,6 +23,7 @@ import Spinner from '../Common/Spinner'
 import { useNavigate } from 'react-router-dom'
 import { insertUserIdIntoLiked } from '../../config/api/post/insertPost'
 import { deletePost } from '../../config/api/post/deletePost'
+import useWindowWidth from '../../hooks/useWindowWidth'
 
 // dayjs 상대 시간 플러그인과 한국어 설정
 dayjs.extend(relativeTime)
@@ -67,6 +68,7 @@ export default function PostDetail({
   const queryClient = useQueryClient()
   const { session } = useAuth()
   const navigate = useNavigate()
+  const windowWidth = useWindowWidth()
 
   const { mutate: commentMutate, isLoading: insertCommentLoading } =
     useMutation(insertComment, {
@@ -208,19 +210,26 @@ export default function PostDetail({
     <Container>
       <DetailContainer isSingleLine={isSingleLine}>
         <AuthorInfo>
-          <ProfileImage
-            src={
-              userInfo.avatar_url
-                ? userInfo.avatar_url
-                : 'http://img1.kakaocdn.net/thumb/R640x640.q70/?fname=http://t1.kakaocdn.net/account_images/default_profile.jpeg'
-            }
-            alt="Author"
-          />
-          <AuthorName>
-            {userInfo.nickname
-              ? userInfo.nickname
-              : userInfo.email.split('@')[0]}
-          </AuthorName>
+          <div>
+            <ProfileImage
+              src={
+                userInfo.avatar_url
+                  ? userInfo.avatar_url
+                  : 'http://img1.kakaocdn.net/thumb/R640x640.q70/?fname=http://t1.kakaocdn.net/account_images/default_profile.jpeg'
+              }
+              alt="Author"
+            />
+            <AuthorName>
+              {userInfo.nickname
+                ? userInfo.nickname
+                : userInfo.email.split('@')[0]}
+            </AuthorName>
+          </div>
+          {windowWidth <= 700 && (
+            <SmallCloseIcon onClick={onClose}>
+              <IoCloseSharp />
+            </SmallCloseIcon>
+          )}
         </AuthorInfo>
 
         <ContentWrapper>
@@ -380,7 +389,13 @@ const DetailContainer = styled.div<DetailContainerType>`
 const AuthorInfo = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-between;
   margin-bottom: 12px;
+
+  div {
+    display: flex;
+    align-items: center;
+  }
 `
 
 const ProfileImage = styled.img`
@@ -438,7 +453,7 @@ const Text = styled.span<TextProps>`
     isExpanded ? 'none' : 1}; /* 기본 1줄로 제한 */
   -webkit-box-orient: vertical;
   overflow: hidden;
-  white-space: normal;
+  white-space: pre-wrap; /* 줄바꿈과 공백을 유지 */
   line-height: 1.7;
   word-break: break-word;
 
@@ -676,4 +691,10 @@ const Delete = styled.div`
     margin-top: 1px;
     color: rgba(65, 65, 65, 1);
   }
+`
+
+const SmallCloseIcon = styled.div`
+  font-size: 1.5rem;
+  color: rgba(50, 50, 50, 1);
+  cursor: pointer;
 `

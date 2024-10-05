@@ -45,18 +45,11 @@ export default function PostDetailModal({
       )}
 
       <ModalContent onClick={e => e.stopPropagation()}>
-        {windowWidth <= 700 && (
-          <SmallCloseIcon onClick={onClose}>
-            <IoCloseSharp />
-          </SmallCloseIcon>
-        )}
         <PostDetail userInfo={userInfo} post={post} onClose={onClose} />
       </ModalContent>
     </ModalOverlay>
   )
 }
-
-// 스타일 컴포넌트들
 
 const BigCloseIcon = styled.div`
   position: absolute;
@@ -65,15 +58,6 @@ const BigCloseIcon = styled.div`
   right: 24px;
   font-size: 2.5rem;
   color: rgba(230, 230, 230, 1);
-  cursor: pointer;
-`
-const SmallCloseIcon = styled.div`
-  position: absolute;
-  z-index: 1003;
-  top: 25px;
-  right: 25px;
-  font-size: 1.5rem;
-  color: rgba(50, 50, 50, 1);
   cursor: pointer;
 `
 

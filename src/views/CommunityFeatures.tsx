@@ -1,19 +1,24 @@
+import { useState } from 'react'
 import styled from 'styled-components'
 import community_feature_full from '../assets/images/communityFeature/communityFeature_web_full.jpg'
 import useWindowWidth from '../hooks/useWindowWidth'
 import MobileHome from './MobileHome'
 import useWindowHeight from '../hooks/useWindowHeight'
 import InfinityMarquee from '../components/Common/Marquee'
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Button from '../components/Common/Button'
 import loadingIcon from '../assets/images/logo/ball-triangle.svg'
+import GuidelinesModal from '../components/Community-features/GuidelinesModal'
 
 export default function CommunityFeatures() {
   const windowWidth = useWindowWidth()
   const windowHeight = useWindowHeight()
   const [isOnMouse, setIsOnMouse] = useState(false)
   const [isImageLoaded, setIsImageLoaded] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const openModal = () => setIsModalOpen(true)
+  const closeModal = () => setIsModalOpen(false)
 
   if (windowWidth <= 600) {
     return <MobileHome />
@@ -72,15 +77,14 @@ export default function CommunityFeatures() {
                   식물에 대한 열정을 공유할 수 있습니다.
                 </p>
                 <ButtonCon>
-                  <Link to={'/community-guide'}>
-                    <Button
-                      colortype="black"
-                      btntype={'link'}
-                      hover={true.toString()}
-                    >
-                      커뮤니티 가이드라인
-                    </Button>
-                  </Link>
+                  <Button
+                    colortype="black"
+                    btntype={'link'}
+                    hover={true.toString()}
+                    onClick={openModal} // 모달 열기 버튼
+                  >
+                    커뮤니티 가이드라인
+                  </Button>
                 </ButtonCon>
               </TextContentCon>
             </TextBox>
@@ -96,6 +100,9 @@ export default function CommunityFeatures() {
           style={{ display: isImageLoaded ? 'block' : 'none' }}
         />
       </ImgSection>
+
+      {/* 모달 컴포넌트 렌더링 */}
+      {isModalOpen && <GuidelinesModal onClose={closeModal} />}
     </CommunityFeaturesCon>
   )
 }
