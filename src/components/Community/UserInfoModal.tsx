@@ -308,7 +308,7 @@ const Body = styled.div`
 const Empty = styled.div`
   display: flex;
   width: 100%;
-  height: 450px;
+  height: 250px;
   justify-content: center;
   align-items: center;
 
