@@ -46,7 +46,8 @@ export default function Comment({ comment }: CommentProps) {
 const CommentCon = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: start;
+  gap: 6px;
 `
 
 const CommentProfileImage = styled.img`
@@ -54,6 +55,7 @@ const CommentProfileImage = styled.img`
   height: 36px;
   border-radius: 50%;
   margin-right: 10px;
+  margin-top: 2px;
 
   @media (max-width: 600px) {
     width: 30px;
@@ -68,14 +70,13 @@ const CommentProfileImage = styled.img`
 
 const CommentLeft = styled.div`
   display: flex;
-  align-items: center;
+  align-items: start;
 `
 
 const CommentLeftText = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  margin-bottom: 3.5px;
+  gap: 2px;
 `
 
 const CommentUser = styled.div`
@@ -91,9 +92,9 @@ const CommentUser = styled.div`
   }
 `
 
-const CommentText = styled.div`
-  margin-top: 8px;
+const CommentText = styled.p`
   font-size: 0.9rem;
+  line-height: 26px;
   margin-right: 2px;
   color: #555;
 
@@ -111,4 +112,6 @@ const CommentText = styled.div`
 const CommentTime = styled.div`
   font-size: 0.8rem;
   color: #aaa;
+  flex-shrink: 0;
+  margin-top: 13px;
 `
