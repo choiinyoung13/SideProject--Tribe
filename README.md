@@ -50,6 +50,7 @@
  <br>
 
 ## 아키텍처
+![아키텍처2](https://github.com/user-attachments/assets/d8428d7c-2e94-46d3-a6d1-73075574c994)
 
  <br>
 
