@@ -353,11 +353,11 @@ const LoadingContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 744px;
+  height: 757px;
 
   img {
-    width: 150px;
-    height: 150px;
+    width: 120px;
+    height: 120px;
   }
 `
 

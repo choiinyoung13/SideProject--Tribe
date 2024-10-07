@@ -91,12 +91,15 @@ export default function PostListCon({ searchKeyword, tab }: PostListConProps) {
     setImageLoadCount(prevCount => prevCount + 1)
   }
 
+  const isLoadingState =
+    !sortedPosts || isLoading || !imagesLoaded || !userInfoLoaded
+
   return (
     <>
-      <ListCon>
+      <ListCon isLoadingState={isLoadingState}>
         {/* 이미지 로드와 데이터 패칭이 끝나면 카드들을 한번에 화면에 보여줌 */}
-        {(isLoading || !imagesLoaded || !userInfoLoaded) && (
-          <LoadingScreen>
+        {isLoadingState && (
+          <LoadingScreen isLoadingState={isLoadingState}>
             <img src={loadingIcon} alt="loading" />
           </LoadingScreen>
         )}
@@ -122,19 +125,24 @@ export default function PostListCon({ searchKeyword, tab }: PostListConProps) {
   )
 }
 
-const LoadingScreen = styled.div`
+interface LoadingScreenType {
+  isLoadingState: boolean
+}
+
+const LoadingScreen = styled.div<LoadingScreenType>`
   position: absolute;
   background-color: #f4f4f4;
   z-index: 1000;
   width: 100%;
   height: 100%;
+  border: 1px solid red;
 
   img {
     width: 100px;
     position: absolute;
-    top: 300px;
+    top: 50%;
     left: 50%;
-    transform: translateX(-55%);
+    transform: translate(-55%, -90%);
   }
 
   @media (max-width: 1024px) {
@@ -156,9 +164,16 @@ const LoadingScreen = styled.div`
   }
 `
 
-const ListCon = styled.div`
+interface ListConType {
+  isLoadingState: boolean
+}
+
+const ListCon = styled.div<ListConType>`
   position: relative;
   width: 100%;
+  height: ${props =>
+    props.isLoadingState === true ? 'calc(100vh - 100px)' : '100%'};
+  max-height: 100%;
   display: flex;
   flex-direction: column;
 `
@@ -172,7 +187,9 @@ const ListWrapper = styled.div`
 
 const Empty = styled.div`
   width: 100%;
-  height: calc(100vh - 220px);
+  height: 100%;
+  max-height: calc(100vh - 100px);
+
   display: flex;
   justify-content: center;
   align-items: center;
