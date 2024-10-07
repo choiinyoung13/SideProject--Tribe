@@ -17,9 +17,14 @@ import UserInfoModal from './UserInfoModal'
 interface PostCardProps {
   post: PostType
   onImageLoad: () => void
+  setUserInfoLoaded: (loaded: boolean) => void
 }
 
-export default function PostCard({ post, onImageLoad }: PostCardProps) {
+export default function PostCard({
+  post,
+  onImageLoad,
+  setUserInfoLoaded,
+}: PostCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isUserInfoModalOpen, setIsUserInfoModalOpen] = useState(false)
   const [isImageLoaded, setIsImageLoaded] = useState(false)
@@ -32,6 +37,9 @@ export default function PostCard({ post, onImageLoad }: PostCardProps) {
     () => fetchUserInfoByUserId(post.user),
     {
       enabled: !!post.user,
+      onSuccess: () => {
+        setUserInfoLoaded(true)
+      },
     }
   )
 
@@ -57,6 +65,11 @@ export default function PostCard({ post, onImageLoad }: PostCardProps) {
 
   const handleUserInfoClick = () => {
     setIsUserInfoModalOpen(true) // 프로필 클릭 시 UserInfoModal 열기
+  }
+
+  const handleImageLoad = () => {
+    setIsImageLoaded(true)
+    onImageLoad()
   }
 
   return (
@@ -90,92 +103,86 @@ export default function PostCard({ post, onImageLoad }: PostCardProps) {
               src={post.img_urls[0]}
               alt="post image"
               draggable="false"
-              onLoad={() => {
-                setIsImageLoaded(true)
-                onImageLoad() // 이미지 로드 시 부모 컴포넌트로 전달
-              }}
+              onLoad={handleImageLoad}
               style={{ display: isImageLoaded ? 'block' : 'none' }}
             />
           </motion.div>
         </ImgBox>
-        {isImageLoaded && (
-          <TextBox>
-            <TextHeader onClick={handleCardClick}>
-              <PostCategory>[{post.category}]</PostCategory>
-              <Title>{post.title}</Title>
-            </TextHeader>
-            <PostText>
-              <TextLeft>
-                {isUserInfoLoading ? (
-                  // 유저 정보 로딩 중일 때 Skeleton 표시
-                  <ProfileSkeleton>
-                    <SkeletonCircle />
-                    <SkeletonText />
-                  </ProfileSkeleton>
-                ) : (
-                  // 유저 정보가 로드되었을 때만 실제 데이터를 표시
-                  <Profile>
-                    <ProfileImg
-                      src={
-                        userInfo?.avatar_url
-                          ? userInfo.avatar_url
-                          : 'http://img1.kakaocdn.net/thumb/R640x640.q70/?fname=http://t1.kakaocdn.net/account_images/default_profile.jpeg'
-                      }
-                    />
-                    {/* 프로필 클릭 시 모달 열림 */}
-                    <Username onClick={handleUserInfoClick}>
-                      {userInfo?.nickname
-                        ? userInfo?.nickname
-                        : userInfo.email.split('@')[0]}
-                    </Username>
-                  </Profile>
-                )}
-              </TextLeft>
-              <TextRight>
-                <HeartIcon
-                  isLiked={
-                    !!(
-                      session?.user.id &&
-                      Array.isArray(post.liked) &&
-                      post.liked.includes(session.user.id)
-                    )
-                  }
-                  onClick={() => {
-                    if (!session) {
-                      Swal.fire({
-                        text: '로그인 후 사용 가능한 기능입니다.',
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#1E1E1E',
-                        cancelButtonColor: '#1E1E1E',
-                        confirmButtonText: '로그인',
-                        cancelButtonText: '닫기',
-                        scrollbarPadding: false,
-                      }).then(result => {
-                        if (result.isConfirmed) {
-                          navigate('/login')
-                        }
-                      })
-                      return
+
+        <TextBox>
+          <TextHeader onClick={handleCardClick}>
+            <PostCategory>[{post.category}]</PostCategory>
+            <Title>{post.title}</Title>
+          </TextHeader>
+          <PostText>
+            <TextLeft>
+              {isUserInfoLoading ? (
+                // 유저 정보 로딩 중일 때 Skeleton 표시
+                <ProfileSkeleton>
+                  <SkeletonCircle />
+                  <SkeletonText />
+                </ProfileSkeleton>
+              ) : (
+                // 유저 정보가 로드되었을 때만 실제 데이터를 표시
+                <Profile>
+                  <ProfileImg
+                    src={
+                      userInfo?.avatar_url
+                        ? userInfo.avatar_url
+                        : 'http://img1.kakaocdn.net/thumb/R640x640.q70/?fname=http://t1.kakaocdn.net/account_images/default_profile.jpeg'
                     }
-                    mutate({ postId: post.id, userId: session.user.id })
-                  }}
-                >
-                  <IoMdHeart />
-                  <span>
-                    {Array.isArray(post.liked) ? post.liked.length : 0}
-                  </span>
-                </HeartIcon>
-                <CommentIcon>
-                  <IoChatbubbleEllipsesOutline />
-                  <span>
-                    {Array.isArray(post.comments) ? post.comments.length : 0}
-                  </span>
-                </CommentIcon>
-              </TextRight>
-            </PostText>
-          </TextBox>
-        )}
+                  />
+                  {/* 프로필 클릭 시 모달 열림 */}
+                  <Username onClick={handleUserInfoClick}>
+                    {userInfo?.nickname
+                      ? userInfo?.nickname
+                      : userInfo.email.split('@')[0]}
+                  </Username>
+                </Profile>
+              )}
+            </TextLeft>
+            <TextRight>
+              <HeartIcon
+                isLiked={
+                  !!(
+                    session?.user.id &&
+                    Array.isArray(post.liked) &&
+                    post.liked.includes(session.user.id)
+                  )
+                }
+                onClick={() => {
+                  if (!session) {
+                    Swal.fire({
+                      text: '로그인 후 사용 가능한 기능입니다.',
+                      icon: 'warning',
+                      showCancelButton: true,
+                      confirmButtonColor: '#1E1E1E',
+                      cancelButtonColor: '#1E1E1E',
+                      confirmButtonText: '로그인',
+                      cancelButtonText: '닫기',
+                      scrollbarPadding: false,
+                    }).then(result => {
+                      if (result.isConfirmed) {
+                        navigate('/login')
+                      }
+                    })
+                    return
+                  }
+                  mutate({ postId: post.id, userId: session.user.id })
+                }}
+              >
+                <IoMdHeart />
+                <span>{Array.isArray(post.liked) ? post.liked.length : 0}</span>
+              </HeartIcon>
+              <CommentIcon>
+                <IoChatbubbleEllipsesOutline />
+                <span>
+                  {Array.isArray(post.comments) ? post.comments.length : 0}
+                </span>
+              </CommentIcon>
+            </TextRight>
+          </PostText>
+        </TextBox>
       </Card>
     </>
   )
@@ -325,6 +332,7 @@ const Username = styled.div`
 `
 
 // Skeleton UI 추가
+
 const ProfileSkeleton = styled.div`
   display: flex;
   align-items: center;

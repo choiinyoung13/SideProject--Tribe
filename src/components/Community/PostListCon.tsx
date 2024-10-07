@@ -31,6 +31,7 @@ export default function PostListCon({ searchKeyword, tab }: PostListConProps) {
   // 상태 추가: 이미지 로딩 완료 여부
   const [imagesLoaded, setImagesLoaded] = useState(false)
   const [imageLoadCount, setImageLoadCount] = useState(0)
+  const [userInfoLoaded, setUserInfoLoaded] = useState(false)
 
   const {
     data: paginatedData,
@@ -81,7 +82,7 @@ export default function PostListCon({ searchKeyword, tab }: PostListConProps) {
 
   // 모든 이미지가 로드되었는지 확인하는 로직
   useEffect(() => {
-    if (imageLoadCount === sortedPosts.length) {
+    if (sortedPosts && imageLoadCount === sortedPosts.length) {
       setImagesLoaded(true)
     }
   }, [imageLoadCount, sortedPosts.length])
@@ -90,57 +91,50 @@ export default function PostListCon({ searchKeyword, tab }: PostListConProps) {
     setImageLoadCount(prevCount => prevCount + 1)
   }
 
-  if (isLoading || !imagesLoaded) {
-    return (
-      <LoadingScreen>
-        <img src={loadingIcon} alt="loading" />
-      </LoadingScreen>
-    )
-  }
-
-  if (!paginatedData || !sortedPosts) {
-    return null
-  }
-
   return (
     <>
-      {imagesLoaded ? (
-        <ListCon>
-          <ListWrapper>
-            {sortedPosts.length === 0 ? (
-              <Empty>게시물이 없습니다.</Empty>
-            ) : (
-              <>
-                {sortedPosts.map(post => (
-                  <PostCard
-                    key={post.id}
-                    post={post}
-                    onImageLoad={handleImageLoad} // 이미지 로드 핸들러 전달
-                  />
-                ))}
-                {hasNextPage && <div ref={ref} />}
-              </>
-            )}
-          </ListWrapper>
-        </ListCon>
-      ) : (
-        <LoadingScreen>
-          <img src={loadingIcon} alt="loading" />
-        </LoadingScreen>
-      )}
+      <ListCon>
+        {/* 이미지 로드와 데이터 패칭이 끝나면 카드들을 한번에 화면에 보여줌 */}
+        {(isLoading || !imagesLoaded || !userInfoLoaded) && (
+          <LoadingScreen>
+            <img src={loadingIcon} alt="loading" />
+          </LoadingScreen>
+        )}
+        <ListWrapper>
+          {sortedPosts.length === 0 ? (
+            <Empty>게시물이 없습니다.</Empty>
+          ) : (
+            <>
+              {sortedPosts.map(post => (
+                <PostCard
+                  key={post.id}
+                  post={post}
+                  onImageLoad={handleImageLoad}
+                  setUserInfoLoaded={setUserInfoLoaded}
+                />
+              ))}
+              {hasNextPage && <div ref={ref} />}
+            </>
+          )}
+        </ListWrapper>
+      </ListCon>
     </>
   )
 }
 
 const LoadingScreen = styled.div`
+  position: absolute;
+  background-color: #f4f4f4;
+  z-index: 1000;
   width: 100%;
-  height: 75vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  height: 100%;
 
   img {
     width: 100px;
+    position: absolute;
+    top: 300px;
+    left: 50%;
+    transform: translateX(-55%);
   }
 
   @media (max-width: 1024px) {
@@ -163,6 +157,7 @@ const LoadingScreen = styled.div`
 `
 
 const ListCon = styled.div`
+  position: relative;
   width: 100%;
   display: flex;
   flex-direction: column;
