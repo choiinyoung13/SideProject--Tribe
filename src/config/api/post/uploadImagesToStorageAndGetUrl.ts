@@ -9,7 +9,7 @@ function convertImageToWebP(file: File): Promise<File> {
       650, // 너비 설정
       650, // 높이 설정
       'WEBP', // 변환할 형식
-      90, // 이미지 품질 (0 ~ 100)
+      80, // 이미지 품질 (0 ~ 100)
       0, // 회전 각도
       uri => {
         // 데이터 URI를 Blob으로 변환하여 File 객체로 생성

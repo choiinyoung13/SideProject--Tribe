@@ -135,10 +135,12 @@ const ProfileBox = styled.div`
 
 const ProfileImg = styled.img`
   border-radius: 50%;
-  min-width: 196px;
-  min-height: 196px;
+  max-width: 196px;
+  max-height: 196px;
   width: 100%;
-  height: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  border: 1px solid red;
 
   @media (max-width: 768px) {
     width: 70%;
