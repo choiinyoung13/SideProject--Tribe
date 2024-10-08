@@ -9,20 +9,13 @@ import { useInView } from 'react-intersection-observer'
 import loadingIcon from '../../assets/images/logo/ball-triangle.svg'
 import { UserRecommendCard } from './UserRecommendCard'
 import { useLocation } from 'react-router-dom'
-
-type recommendType = {
-  id: string
-  email: string
-  avatar_url: string
-  nickname: string
-  status_message: string
-}
+import { UserInfoType } from '../../types/UserInfoType'
 
 export default function UserInfoModal({
   user,
   onClose,
 }: {
-  user: recommendType | null
+  user: UserInfoType | null
   onClose: () => void
 }) {
   const location = useLocation()

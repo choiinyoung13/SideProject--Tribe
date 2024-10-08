@@ -2,13 +2,14 @@ import styled from 'styled-components'
 import PostCard from './PostCard'
 import loadingIcon from '../../assets/images/logo/ball-triangle.svg'
 import { fetchPostsPerPage } from '../../config/api/post/fecthPosts'
-import { useInfiniteQuery } from 'react-query'
+import { useInfiniteQuery, useQuery } from 'react-query'
 import { PostType } from '../../types/PostType'
 import { useInView } from 'react-intersection-observer'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo } from 'react'
 import { communitySortState } from '../../recoil/atoms/SortState'
 import { useRecoilValue } from 'recoil'
 import { tabNumberToCommunityCategory } from '../../utill/tabNumberToCategory'
+import { fetchAllUserInfo } from '../../config/api/user/fetchUserInfo'
 
 export type FetchPostsResponse = {
   posts: PostType[]
@@ -28,10 +29,10 @@ export default function PostListCon({ searchKeyword, tab }: PostListConProps) {
     initialInView: true,
   })
 
-  // 상태 추가: 이미지 로딩 완료 여부
-  const [imagesLoaded, setImagesLoaded] = useState(false)
-  const [imageLoadCount, setImageLoadCount] = useState(0)
-  const [userInfoLoaded, setUserInfoLoaded] = useState(false)
+  const { data: userInfoData, isLoading: isUserInfoLoading } = useQuery(
+    'allUsers',
+    fetchAllUserInfo
+  )
 
   const {
     data: paginatedData,
@@ -80,42 +81,36 @@ export default function PostListCon({ searchKeyword, tab }: PostListConProps) {
     }
   }, [paginatedData, sortValue])
 
-  // 모든 이미지가 로드되었는지 확인하는 로직
-  useEffect(() => {
-    if (sortedPosts && imageLoadCount === sortedPosts.length) {
-      setImagesLoaded(true)
-    }
-  }, [imageLoadCount, sortedPosts.length])
-
-  const handleImageLoad = () => {
-    setImageLoadCount(prevCount => prevCount + 1)
+  if (isLoading || isUserInfoLoading) {
+    return (
+      <ListCon>
+        <ListWrapper>
+          <LoadingScreen>
+            <img src={loadingIcon} alt="loading" />
+          </LoadingScreen>
+        </ListWrapper>
+      </ListCon>
+    )
   }
-
-  const isLoadingState =
-    !sortedPosts || isLoading || !imagesLoaded || !userInfoLoaded
 
   return (
     <>
-      <ListCon isLoadingState={isLoadingState}>
-        {/* 이미지 로드와 데이터 패칭이 끝나면 카드들을 한번에 화면에 보여줌 */}
-        {isLoadingState && (
-          <LoadingScreen isLoadingState={isLoadingState}>
-            <img src={loadingIcon} alt="loading" />
-          </LoadingScreen>
-        )}
+      <ListCon>
         <ListWrapper>
           {sortedPosts.length === 0 ? (
             <Empty>게시물이 없습니다.</Empty>
           ) : (
             <>
-              {sortedPosts.map(post => (
-                <PostCard
-                  key={post.id}
-                  post={post}
-                  onImageLoad={handleImageLoad}
-                  setUserInfoLoaded={setUserInfoLoaded}
-                />
-              ))}
+              {sortedPosts.map(post => {
+                // post.user와 일치하는 사용자 정보를 배열에서 찾아서 전달
+                const userInfo = userInfoData?.find(
+                  user => user.id === post.user
+                )
+
+                return (
+                  <PostCard key={post.id} post={post} userInfo={userInfo} />
+                )
+              })}
               {hasNextPage && <div ref={ref} />}
             </>
           )}
@@ -125,23 +120,17 @@ export default function PostListCon({ searchKeyword, tab }: PostListConProps) {
   )
 }
 
-interface LoadingScreenType {
-  isLoadingState: boolean
-}
-
-const LoadingScreen = styled.div<LoadingScreenType>`
-  position: absolute;
+const LoadingScreen = styled.div`
   background-color: #f4f4f4;
   z-index: 1000;
   width: 100%;
-  height: 100%;
+  height: calc(100vh - 200px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   img {
     width: 100px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-55%, -90%);
   }
 
   @media (max-width: 1024px) {
@@ -157,21 +146,18 @@ const LoadingScreen = styled.div<LoadingScreenType>`
   }
 
   @media (max-width: 600px) {
+    height: calc(100vh - 250px);
+
     img {
       width: 80px;
     }
   }
 `
 
-interface ListConType {
-  isLoadingState: boolean
-}
-
-const ListCon = styled.div<ListConType>`
+const ListCon = styled.div`
   position: relative;
   width: 100%;
-  height: ${props =>
-    props.isLoadingState === true ? 'calc(100vh - 100px)' : '100%'};
+  height: 100%;
   max-height: 100%;
   display: flex;
   flex-direction: column;

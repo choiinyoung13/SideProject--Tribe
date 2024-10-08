@@ -14,6 +14,17 @@ export const fetchUserLikesInfo = async (userId: string) => {
   return data
 }
 
+// 모든 userinfo 받아오기
+export const fetchAllUserInfo = async () => {
+  const { data, error } = await supabase.from('userinfo').select('*')
+
+  if (error) {
+    console.error('Error fetching user info:', error)
+    return []
+  }
+  return data
+}
+
 // userId로 해당 유저의 email, avatar_url, nickname 정보 받아오기
 export const fetchUserInfoByUserId = async (userId: string) => {
   const { data, error } = await supabase

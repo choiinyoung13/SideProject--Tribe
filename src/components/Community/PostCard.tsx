@@ -1,47 +1,28 @@
-import { useQuery } from 'react-query'
 import styled from 'styled-components'
 import { useState } from 'react'
-import { motion } from 'framer-motion'
 import { IoMdHeart } from 'react-icons/io'
 import { IoChatbubbleEllipsesOutline } from 'react-icons/io5'
 import PostDetailModal from './PostDetailModal'
 import { PostType } from '../../types/PostType'
-import { fetchUserInfoByUserId } from '../../config/api/user/fetchUserInfo'
 import { useAuth } from '../../hooks/useAuth'
 import Swal from 'sweetalert2'
 import { useNavigate } from 'react-router-dom'
 import { useMutation, useQueryClient } from 'react-query'
 import { insertUserIdIntoLiked } from '../../config/api/post/insertPost'
 import UserInfoModal from './UserInfoModal'
+import { UserInfoType } from '../../types/UserInfoType'
 
 interface PostCardProps {
   post: PostType
-  onImageLoad: () => void
-  setUserInfoLoaded: (loaded: boolean) => void
+  userInfo: UserInfoType
 }
 
-export default function PostCard({
-  post,
-  onImageLoad,
-  setUserInfoLoaded,
-}: PostCardProps) {
+export default function PostCard({ post, userInfo }: PostCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isUserInfoModalOpen, setIsUserInfoModalOpen] = useState(false)
-  const [isImageLoaded, setIsImageLoaded] = useState(false)
   const { session } = useAuth()
   const navigate = useNavigate()
   const queryClient = useQueryClient()
-
-  const { data: userInfo, isLoading: isUserInfoLoading } = useQuery(
-    ['userInfo', post.user],
-    () => fetchUserInfoByUserId(post.user),
-    {
-      enabled: !!post.user,
-      onSuccess: () => {
-        setUserInfoLoaded(true)
-      },
-    }
-  )
 
   const { mutate } = useMutation(insertUserIdIntoLiked, {
     onSuccess: () => {
@@ -67,11 +48,6 @@ export default function PostCard({
     setIsUserInfoModalOpen(true) // 프로필 클릭 시 UserInfoModal 열기
   }
 
-  const handleImageLoad = () => {
-    setIsImageLoaded(true)
-    onImageLoad()
-  }
-
   return (
     <>
       {isUserInfoModalOpen && userInfo && (
@@ -94,19 +70,7 @@ export default function PostCard({
       )}
       <Card>
         <ImgBox onClick={handleCardClick}>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: isImageLoaded ? 1 : 0 }}
-            transition={{ duration: 0.7 }}
-          >
-            <img
-              src={post.img_urls[0]}
-              alt="post image"
-              draggable="false"
-              onLoad={handleImageLoad}
-              style={{ display: isImageLoaded ? 'block' : 'none' }}
-            />
-          </motion.div>
+          <img src={post.img_urls[0]} alt="post image" draggable="false" />
         </ImgBox>
 
         <TextBox>
@@ -116,30 +80,21 @@ export default function PostCard({
           </TextHeader>
           <PostText>
             <TextLeft>
-              {isUserInfoLoading ? (
-                // 유저 정보 로딩 중일 때 Skeleton 표시
-                <ProfileSkeleton>
-                  <SkeletonCircle />
-                  <SkeletonText />
-                </ProfileSkeleton>
-              ) : (
-                // 유저 정보가 로드되었을 때만 실제 데이터를 표시
-                <Profile>
-                  <ProfileImg
-                    src={
-                      userInfo?.avatar_url
-                        ? userInfo.avatar_url
-                        : 'http://img1.kakaocdn.net/thumb/R640x640.q70/?fname=http://t1.kakaocdn.net/account_images/default_profile.jpeg'
-                    }
-                  />
-                  {/* 프로필 클릭 시 모달 열림 */}
-                  <Username onClick={handleUserInfoClick}>
-                    {userInfo?.nickname
-                      ? userInfo?.nickname
-                      : userInfo.email.split('@')[0]}
-                  </Username>
-                </Profile>
-              )}
+              <Profile>
+                <ProfileImg
+                  src={
+                    userInfo?.avatar_url
+                      ? userInfo.avatar_url
+                      : 'http://img1.kakaocdn.net/thumb/R640x640.q70/?fname=http://t1.kakaocdn.net/account_images/default_profile.jpeg'
+                  }
+                />
+                {/* 프로필 클릭 시 모달 열림 */}
+                <Username onClick={handleUserInfoClick}>
+                  {userInfo?.nickname
+                    ? userInfo?.nickname
+                    : userInfo.email.split('@')[0]}
+                </Username>
+              </Profile>
             </TextLeft>
             <TextRight>
               <HeartIcon
@@ -328,47 +283,6 @@ const Username = styled.div`
 
   @media (max-width: 375px) {
     font-size: 0.75rem;
-  }
-`
-
-// Skeleton UI 추가
-
-const ProfileSkeleton = styled.div`
-  display: flex;
-  align-items: center;
-`
-
-const SkeletonCircle = styled.div`
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background-color: rgba(240, 240, 240, 1);
-
-  @media (max-width: 450px) {
-    width: 22px;
-    height: 22px;
-  }
-
-  @media (max-width: 375px) {
-    width: 18px;
-    height: 18px;
-  }
-`
-
-const SkeletonText = styled.div`
-  width: 80px;
-  height: 13px;
-  background-color: rgba(236, 236, 236, 1);
-  margin-left: 6px;
-
-  @media (max-width: 450px) {
-    width: 80px;
-    height: 14px;
-  }
-
-  @media (max-width: 375px) {
-    width: 60px;
-    height: 12px;
   }
 `
 
