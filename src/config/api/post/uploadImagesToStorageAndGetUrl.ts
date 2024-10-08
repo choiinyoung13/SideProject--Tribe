@@ -1,13 +1,13 @@
-import { supabase } from '../../../supabase/supabaseClient'
 import Resizer from 'react-image-file-resizer'
+import { supabase } from '../../../supabase/supabaseClient'
 
 // 이미지를 WebP로 변환하는 함수
 function convertImageToWebP(file: File): Promise<File> {
   return new Promise((resolve, reject) => {
     Resizer.imageFileResizer(
       file,
-      650, // 너비 설정
-      650, // 높이 설정
+      800, // 너비 설정
+      800, // 높이 설정
       'WEBP', // 변환할 형식
       80, // 이미지 품질 (0 ~ 100)
       0, // 회전 각도
