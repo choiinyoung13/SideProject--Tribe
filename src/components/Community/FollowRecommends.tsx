@@ -1,18 +1,11 @@
 import { useState } from 'react'
 import styled from 'styled-components'
 import UserInfoModal from './UserInfoModal'
-
-type recommendType = {
-  id: string
-  email: string
-  avatar_url: string
-  nickname: string
-  status_message: string
-}
+import { UserInfoType } from '../../types/UserInfoType'
 
 interface FollowRecommendsProps {
   isRecommendsLoading: boolean
-  recommends: recommendType[] | undefined
+  recommends: UserInfoType[] | undefined
 }
 
 // FollowRecommends 컴포넌트
@@ -20,13 +13,13 @@ export default function FollowRecommends({
   isRecommendsLoading,
   recommends,
 }: FollowRecommendsProps) {
-  const [selectedUser, setSelectedUser] = useState<recommendType | null>(null)
+  const [selectedUser, setSelectedUser] = useState<UserInfoType | null>(null)
   const [imageLoaded, setImageLoaded] = useState<{ [key: string]: boolean }>({}) // 이미지 로딩 상태를 각 유저별로 관리
 
   const SkeletonArray = new Array(4).fill(null)
 
   // 유저 클릭 시 모달에 전달할 유저 데이터 설정
-  const handleClickUser = (user: recommendType) => {
+  const handleClickUser = (user: UserInfoType) => {
     setSelectedUser(user)
   }
 
