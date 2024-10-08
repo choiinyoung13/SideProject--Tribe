@@ -11,6 +11,7 @@ import { useMutation, useQueryClient } from 'react-query'
 import { insertUserIdIntoLiked } from '../../config/api/post/insertPost'
 import UserInfoModal from './UserInfoModal'
 import { UserInfoType } from '../../types/UserInfoType'
+import { motion } from 'framer-motion'
 
 interface PostCardProps {
   post: PostType
@@ -19,6 +20,7 @@ interface PostCardProps {
 
 export default function PostCard({ post, userInfo }: PostCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isImageLoaded, setIsImageLoaded] = useState(false)
   const [isUserInfoModalOpen, setIsUserInfoModalOpen] = useState(false)
   const { session } = useAuth()
   const navigate = useNavigate()
@@ -70,7 +72,18 @@ export default function PostCard({ post, userInfo }: PostCardProps) {
       )}
       <Card>
         <ImgBox onClick={handleCardClick}>
-          <img src={post.img_urls[0]} alt="post image" draggable="false" />
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: isImageLoaded ? 1 : 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <img
+              src={post.img_urls[0]}
+              onLoad={() => setIsImageLoaded(true)}
+              alt="post image"
+              draggable="false"
+            />
+          </motion.div>
         </ImgBox>
 
         <TextBox>
@@ -88,6 +101,7 @@ export default function PostCard({ post, userInfo }: PostCardProps) {
                       : 'http://img1.kakaocdn.net/thumb/R640x640.q70/?fname=http://t1.kakaocdn.net/account_images/default_profile.jpeg'
                   }
                 />
+
                 {/* 프로필 클릭 시 모달 열림 */}
                 <Username onClick={handleUserInfoClick}>
                   {userInfo?.nickname
