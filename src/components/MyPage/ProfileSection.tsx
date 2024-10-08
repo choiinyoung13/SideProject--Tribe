@@ -140,7 +140,6 @@ const ProfileImg = styled.img`
   width: 100%;
   height: auto;
   aspect-ratio: 1 / 1;
-  border: 1px solid red;
 
   @media (max-width: 768px) {
     width: 70%;
