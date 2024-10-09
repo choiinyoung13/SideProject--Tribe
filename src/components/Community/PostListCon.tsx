@@ -5,7 +5,7 @@ import { fetchPostsPerPage } from '../../config/api/post/fecthPosts'
 import { useInfiniteQuery, useQuery } from 'react-query'
 import { PostType } from '../../types/PostType'
 import { useInView } from 'react-intersection-observer'
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { communitySortState } from '../../recoil/atoms/SortState'
 import { useRecoilValue } from 'recoil'
 import { tabNumberToCommunityCategory } from '../../utill/tabNumberToCategory'
@@ -23,6 +23,8 @@ interface PostListConProps {
 
 export default function PostListCon({ searchKeyword, tab }: PostListConProps) {
   const sortValue = useRecoilValue(communitySortState)
+  const [loadedImageCount, setLoadedImageCount] = useState(0) // 로드된 이미지 수 추적
+  const [allImagesLoaded, setAllImagesLoaded] = useState(false) // 모든 이미지 로드 상태
 
   const { inView, ref } = useInView({
     threshold: 0.5,
@@ -62,16 +64,28 @@ export default function PostListCon({ searchKeyword, tab }: PostListConProps) {
     }
   }, [inView])
 
-  // 데이터를 sortValue에 따라 재가공
+  const totalImageCount = useMemo(() => {
+    if (!paginatedData) return 0
+    return paginatedData.pages.flatMap(page => page.posts).length
+  }, [paginatedData])
+
+  useEffect(() => {
+    if (loadedImageCount === totalImageCount && totalImageCount > 0) {
+      setAllImagesLoaded(true)
+    }
+  }, [loadedImageCount, totalImageCount])
+
+  const handleImageLoad = () => {
+    setLoadedImageCount(prevCount => prevCount + 1)
+  }
+
   const sortedPosts = useMemo(() => {
     let allPosts: PostType[] = []
 
     if (paginatedData) {
-      // paginatedData가 있는지 확인
       allPosts = paginatedData.pages.flatMap(page => page.posts)
     }
 
-    // sortValue에 따라 정렬
     if (sortValue === '인기순') {
       return allPosts.sort(
         (a, b) => (b.liked?.length || 0) - (a.liked?.length || 0)
@@ -81,76 +95,53 @@ export default function PostListCon({ searchKeyword, tab }: PostListConProps) {
     }
   }, [paginatedData, sortValue])
 
-  if (isLoading || isUserInfoLoading) {
-    return (
-      <ListCon>
-        <ListWrapper>
-          <LoadingScreen>
-            <img src={loadingIcon} alt="loading" />
-          </LoadingScreen>
-        </ListWrapper>
-      </ListCon>
-    )
-  }
-
   return (
-    <>
-      <ListCon>
-        <ListWrapper>
-          {sortedPosts.length === 0 ? (
-            <Empty>게시물이 없습니다.</Empty>
-          ) : (
-            <>
-              {sortedPosts.map(post => {
-                // post.user와 일치하는 사용자 정보를 배열에서 찾아서 전달
-                const userInfo = userInfoData?.find(
-                  user => user.id === post.user
-                )
+    <ListCon>
+      {(isUserInfoLoading || isLoading || !allImagesLoaded) && (
+        <LoadingScreen>
+          <img src={loadingIcon} alt="loading" />
+        </LoadingScreen>
+      )}
+      <ListWrapper style={{ opacity: allImagesLoaded ? 1 : 0.5 }}>
+        {sortedPosts.length === 0 ? (
+          <Empty>게시물이 없습니다.</Empty>
+        ) : (
+          <>
+            {sortedPosts.map(post => {
+              const userInfo = userInfoData?.find(user => user.id === post.user)
 
-                return (
-                  <PostCard key={post.id} post={post} userInfo={userInfo} />
-                )
-              })}
-              {hasNextPage && <div ref={ref} />}
-            </>
-          )}
-        </ListWrapper>
-      </ListCon>
-    </>
+              return (
+                <PostCard
+                  key={post.id}
+                  post={post}
+                  userInfo={userInfo}
+                  onImageLoad={handleImageLoad} // 이미지 로드 콜백 전달
+                />
+              )
+            })}
+            {hasNextPage && <div ref={ref} />}
+          </>
+        )}
+      </ListWrapper>
+    </ListCon>
   )
 }
 
 const LoadingScreen = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(100vh - 160px);
   background-color: #f4f4f4;
   z-index: 1000;
-  width: 100%;
-  height: calc(100vh - 200px);
   display: flex;
   justify-content: center;
   align-items: center;
 
   img {
     width: 100px;
-  }
-
-  @media (max-width: 1024px) {
-    img {
-      width: 80px;
-    }
-  }
-
-  @media (max-width: 768px) {
-    img {
-      width: 90px;
-    }
-  }
-
-  @media (max-width: 600px) {
-    height: calc(100vh - 250px);
-
-    img {
-      width: 80px;
-    }
+    height: 100px;
   }
 `
 
@@ -174,7 +165,6 @@ const Empty = styled.div`
   width: 100%;
   height: 100%;
   max-height: calc(100vh - 100px);
-
   display: flex;
   justify-content: center;
   align-items: center;

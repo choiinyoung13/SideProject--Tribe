@@ -16,9 +16,14 @@ import { motion } from 'framer-motion'
 interface PostCardProps {
   post: PostType
   userInfo: UserInfoType
+  onImageLoad: () => void
 }
 
-export default function PostCard({ post, userInfo }: PostCardProps) {
+export default function PostCard({
+  post,
+  userInfo,
+  onImageLoad,
+}: PostCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isImageLoaded, setIsImageLoaded] = useState(false)
   const [isUserInfoModalOpen, setIsUserInfoModalOpen] = useState(false)
@@ -50,6 +55,11 @@ export default function PostCard({ post, userInfo }: PostCardProps) {
     setIsUserInfoModalOpen(true) // 프로필 클릭 시 UserInfoModal 열기
   }
 
+  const handleImageLoad = () => {
+    setIsImageLoaded(true)
+    onImageLoad()
+  }
+
   return (
     <>
       {isUserInfoModalOpen && userInfo && (
@@ -79,7 +89,7 @@ export default function PostCard({ post, userInfo }: PostCardProps) {
           >
             <img
               src={post.img_urls[0]}
-              onLoad={() => setIsImageLoaded(true)}
+              onLoad={handleImageLoad}
               alt="post image"
               draggable="false"
             />
