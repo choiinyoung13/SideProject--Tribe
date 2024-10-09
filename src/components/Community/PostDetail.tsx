@@ -24,6 +24,7 @@ import { useNavigate } from 'react-router-dom'
 import { insertUserIdIntoLiked } from '../../config/api/post/insertPost'
 import { deletePost } from '../../config/api/post/deletePost'
 import useWindowWidth from '../../hooks/useWindowWidth'
+import LazyLoadedSlideImage from './LazyLoadedSlideImage'
 
 // dayjs 상대 시간 플러그인과 한국어 설정
 dayjs.extend(relativeTime)
@@ -69,6 +70,7 @@ export default function PostDetail({
   const { session } = useAuth()
   const navigate = useNavigate()
   const windowWidth = useWindowWidth()
+  const [currentSlideIndex, setCurrentSlideIndex] = useState(0)
 
   const { mutate: commentMutate, isLoading: insertCommentLoading } =
     useMutation(insertComment, {
@@ -198,6 +200,19 @@ export default function PostDetail({
     })
   }
 
+  // 슬라이드 변경 이벤트 핸들러
+  const handleSlideChange = (swiper: {
+    activeIndex: React.SetStateAction<number>
+  }) => {
+    setCurrentSlideIndex(swiper.activeIndex)
+  }
+
+  // 다음 슬라이드 이미지 URL 가져오기
+  const preloadNextImageSrc =
+    currentSlideIndex + 1 < post.img_urls.length
+      ? post.img_urls[currentSlideIndex + 1]
+      : undefined // 마지막 슬라이드일 경우 undefined
+
   if (isLoading && !isImageLoading) {
     return (
       <LoadingContainer>
@@ -244,23 +259,23 @@ export default function PostDetail({
             </TextContainer>
           </Content>
 
+          {/* 이미지 슬라이드 섹션 */}
           <SwiperContainer>
             <Swiper
               slidesPerView={1}
               pagination={{ clickable: true }}
               navigation
               modules={[Pagination, Navigation]}
+              onSlideChange={handleSlideChange} // 슬라이드 변경 시 인덱스 업데이트
             >
               {post.img_urls.map((imgUrl, index) => (
                 <SwiperSlide key={index}>
-                  <SlideImageContainer>
-                    <SlideImage
-                      src={imgUrl}
-                      alt={`Slide ${index + 1}`}
-                      onLoad={() => setIsImageLoading(true)}
-                      isLoaded={isImageLoading} // 이미지가 로드된 후에만 opacity 전환
-                    />
-                  </SlideImageContainer>
+                  <LazyLoadedSlideImage
+                    src={imgUrl}
+                    alt={`Slide ${index + 1}`}
+                    setIsImageLoading={setIsImageLoading}
+                    preloadNextImageSrc={preloadNextImageSrc}
+                  />
                 </SwiperSlide>
               ))}
             </Swiper>
@@ -526,25 +541,6 @@ const SwiperContainer = styled.div`
       font-size: 16px;
     }
   }
-`
-
-const SlideImageContainer = styled.div`
-  position: relative;
-  width: 100%;
-  height: 100%;
-  padding-top: 100%; /* 1:1 비율 유지 */
-  border-radius: 10px;
-  overflow: hidden;
-`
-
-const SlideImage = styled.img<{ isLoaded: boolean }>`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 10px;
 `
 
 const CommentSection = styled.div`
