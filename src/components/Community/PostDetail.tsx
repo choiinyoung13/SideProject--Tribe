@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { IoMdHeart } from 'react-icons/io'
 import { IoChatbubbleEllipsesOutline, IoCloseSharp } from 'react-icons/io5'
@@ -25,6 +25,7 @@ import { insertUserIdIntoLiked } from '../../config/api/post/insertPost'
 import { deletePost } from '../../config/api/post/deletePost'
 import useWindowWidth from '../../hooks/useWindowWidth'
 import LazyLoadedSlideImage from './LazyLoadedSlideImage'
+import useIsSingleLine from '../../hooks/useIsSingleLine'
 
 // dayjs 상대 시간 플러그인과 한국어 설정
 dayjs.extend(relativeTime)
@@ -64,13 +65,12 @@ export default function PostDetail({
   >([])
   const [isLoading, setIsLoading] = useState(true)
   const [isImageLoading, setIsImageLoading] = useState(false)
-  const [isSingleLine, setIsSingleLine] = useState(false)
-  const textRef = useRef<HTMLDivElement>(null)
   const queryClient = useQueryClient()
   const { session } = useAuth()
   const navigate = useNavigate()
   const windowWidth = useWindowWidth()
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0)
+  const [isSingleLine, textRef] = useIsSingleLine()
 
   const { mutate: commentMutate, isLoading: insertCommentLoading } =
     useMutation(insertComment, {
@@ -105,17 +105,6 @@ export default function PostDetail({
   })
 
   useEffect(() => {
-    if (textRef.current) {
-      const clientHeight = textRef.current.clientHeight // 요소가 실제로 보이는 높이
-      const scrollHeight = textRef.current.scrollHeight // 스크롤할 때 포함되는 전체 높이 (즉, 숨겨진 부분까지 포함)
-
-      // 텍스트가 잘렸는지 확인하고 "더보기" 버튼 활성화
-      setShowMoreButton(scrollHeight > clientHeight)
-      setIsSingleLine(scrollHeight === clientHeight)
-    }
-  }, [post.content, textRef.current])
-
-  useEffect(() => {
     const loadCommentsWithUserInfo = async () => {
       if (!post.comments || post.comments.length === 0) {
         setIsLoading(false)
@@ -139,6 +128,13 @@ export default function PostDetail({
 
     loadCommentsWithUserInfo()
   }, [post.comments])
+
+  useEffect(() => {
+    // 한 줄이 아닌 경우에만 "더보기" 버튼을 표시합니다.
+    if (isSingleLine !== null) {
+      setShowMoreButton(!isSingleLine)
+    }
+  }, [isSingleLine])
 
   const OnInputSubmit = async (
     e: React.FormEvent<HTMLFormElement>
