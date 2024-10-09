@@ -106,34 +106,14 @@ export default function PostDetail({
 
   useEffect(() => {
     if (textRef.current) {
-      const lineHeight = parseFloat(
-        getComputedStyle(textRef.current).lineHeight
-      )
-      const textHeight = textRef.current.clientHeight
-      const numLines = textHeight / lineHeight
+      const clientHeight = textRef.current.clientHeight // 요소가 실제로 보이는 높이
+      const scrollHeight = textRef.current.scrollHeight // 스크롤할 때 포함되는 전체 높이 (즉, 숨겨진 부분까지 포함)
 
-      // 줄 수가 1줄을 넘으면 더보기 버튼을 보여줌
-      setShowMoreButton(numLines > 1)
+      // 텍스트가 잘렸는지 확인하고 "더보기" 버튼 활성화
+      setShowMoreButton(scrollHeight > clientHeight)
+      setIsSingleLine(scrollHeight === clientHeight)
     }
-  }, [post.content])
-
-  useEffect(() => {
-    console.log(textRef.current)
-
-    // Text가 한 줄만 차지하는지 확인하는 로직
-    if (textRef.current) {
-      if (textRef.current) {
-        const clientHeight = textRef.current.clientHeight // 요소가 실제로 보이는 높이
-        const scrollHeight = textRef.current.scrollHeight // 스크롤할 때 포함되는 전체 높이 (즉, 숨겨진 부분까지 포함)
-
-        // scrollHeight가 clientHeight보다 크면, 텍스트가 잘렸다는 의미로 한 줄 이상
-        setShowMoreButton(scrollHeight > clientHeight)
-
-        // 텍스트가 한 줄을 넘지 않는지 확인
-        setIsSingleLine(scrollHeight === clientHeight)
-      }
-    }
-  }, [textRef.current])
+  }, [post.content, textRef.current])
 
   useEffect(() => {
     const loadCommentsWithUserInfo = async () => {
@@ -164,6 +144,24 @@ export default function PostDetail({
     e: React.FormEvent<HTMLFormElement>
   ): Promise<void> => {
     e.preventDefault()
+    if (!session) {
+      Swal.fire({
+        text: '로그인 후 사용 가능한 기능입니다.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#1E1E1E',
+        cancelButtonColor: '#1E1E1E',
+        confirmButtonText: '로그인',
+        cancelButtonText: '닫기',
+        scrollbarPadding: false,
+      }).then(result => {
+        if (result.isConfirmed) {
+          navigate('/login')
+        }
+      })
+      return
+    }
+
     if (!newComment.trim()) return
 
     await commentMutate({
