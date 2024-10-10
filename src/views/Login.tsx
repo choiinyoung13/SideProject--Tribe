@@ -146,7 +146,7 @@ export default function Login() {
           >
             <EmailInput
               type="text"
-              placeholder="가입한 이메일을 입력해주세요."
+              placeholder="가입한 이메일을 입력해주세요.( test계정 id: test1@gmail.com )"
               value={email}
               onChange={e => {
                 setEmail(e.target.value)
@@ -154,7 +154,7 @@ export default function Login() {
             />
             <PasswordInput
               type="password"
-              placeholder="비밀번호를 입력해주세요."
+              placeholder="비밀번호를 입력해주세요. ( test계정 pw: 123456 )"
               value={password}
               onChange={e => {
                 setPassword(e.target.value)

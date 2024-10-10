@@ -113,6 +113,7 @@ export default function ButtonSection({
                   // 구매 데이터를 생성
                   if (session) {
                     const purchaseDataArray = {
+                      id: orderInfo.itemId,
                       img_url: orderInfo.imgUrl,
                       title: orderInfo.title,
                       price:

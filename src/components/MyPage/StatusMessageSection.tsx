@@ -32,7 +32,7 @@ export function StatusMessageSection({
   const onSave = async (newMessage: string, id: string) => {
     if (!inputValue || !inputValue.trim()) {
       Swal.fire({
-        text: '상태메세지란을 채워 주세요',
+        text: '상태 메세지란을 채워 주세요',
         icon: 'warning',
         confirmButtonColor: '#1E1E1E',
         confirmButtonText: '확인',
