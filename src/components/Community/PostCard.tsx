@@ -114,9 +114,16 @@ export default function PostCard({
 
                 {/* 프로필 클릭 시 모달 열림 */}
                 <Username onClick={handleUserInfoClick}>
-                  {userInfo?.nickname
-                    ? userInfo?.nickname
-                    : userInfo.email.split('@')[0]}
+                  {userInfo ? (
+                    <Username onClick={handleUserInfoClick}>
+                      {userInfo.nickname
+                        ? userInfo.nickname
+                        : userInfo.email?.split('@')[0] ||
+                          '등록된 이메일이 없습니다.'}
+                    </Username>
+                  ) : (
+                    <p>사용자 정보를 불러오는 중...</p>
+                  )}
                 </Username>
               </Profile>
             </TextLeft>
