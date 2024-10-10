@@ -39,14 +39,13 @@ const fetchIpAddress = async () => {
   }
 }
 
-// 3. 키워드를 Supabase에 저장하는 함수
+// 키워드를 Supabase에 저장하는 함수
 export const saveSearchKeywords = async (searchQuery: string) => {
   // 검색어에서 유효한 키워드를 추출
   const keywords = extractKeywords(searchQuery)
 
   // 현재 로그인된 사용자의 정보 가져오기
   const { data } = await supabase.auth.getUser()
-
   const user = data?.user // user 객체 추출
 
   // 비회원의 경우 IP 주소 가져오기
@@ -65,9 +64,9 @@ export const saveSearchKeywords = async (searchQuery: string) => {
     const { data: recentKeywords, error: fetchError } = await supabase
       .from('search_keywords')
       .select('*')
-      .eq(user ? 'user_id' : 'ip_address', user?.id || ipAddress) // 회원은 user_id, 비회원은 ip_address로 구분
-      .in('keyword', keywords) // 동일한 키워드
-      .gte('created_at', new Date(Date.now() - 5 * 60 * 1000).toISOString()) // 5분 이내
+      .eq(user ? 'user_id' : 'ip_address', user?.id || ipAddress)
+      .in('keyword', keywords)
+      .gte('created_at', new Date(Date.now() - 5 * 60 * 1000).toISOString())
 
     if (fetchError) {
       console.error('기존 키워드 확인 중 오류 발생:', fetchError)
@@ -84,8 +83,8 @@ export const saveSearchKeywords = async (searchQuery: string) => {
       const { data, error } = await supabase.from('search_keywords').insert(
         newKeywords.map(keyword => ({
           keyword,
-          user_id: user?.id || null, // 회원은 user_id를 저장, 비회원은 null
-          ip_address: user ? null : ipAddress, // 비회원의 경우 IP 주소를 저장
+          user_id: user?.id || null,
+          ip_address: user ? null : ipAddress,
         }))
       )
 
@@ -105,12 +104,11 @@ interface Keyword {
   search_count: number
 }
 
+// 인기 키워드를 안정적으로 정렬하여 가져오는 함수
 export const fetchTop5Keywords = async (): Promise<Keyword[]> => {
-  // 'get_top_keywords'라는 함수는 미리 Supabase 데이터베이스에 생성된 Stored Procedure로,
-  // SQL에서 GROUP BY, COUNT, ORDER BY 등의 집계 연산을 수행하여,
-  // 검색 기록에서 가장 많이 검색된 상위 5개의 키워드를 집계해 반환.
+  // Supabase에서 상위 5개의 인기 키워드를 가져오는 Stored Procedure 실행
   const { data, error } = await supabase.rpc('get_top_keywords', {
-    limit_count: 5, // 상위 5개 키워드 요청
+    limit_count: 5,
   })
 
   if (error) {
@@ -118,5 +116,14 @@ export const fetchTop5Keywords = async (): Promise<Keyword[]> => {
     return []
   }
 
-  return data as Keyword[]
+  // 가져온 데이터를 안정적인 정렬로 보장
+  const sortedKeywords = [...data].sort((a, b) => {
+    if (b.search_count === a.search_count) {
+      // 동일한 검색 횟수일 경우 키워드를 알파벳순으로 정렬하여 안정성 유지
+      return a.keyword.localeCompare(b.keyword)
+    }
+    return b.search_count - a.search_count // 검색 횟수가 다를 경우 내림차순 정렬
+  })
+
+  return sortedKeywords as Keyword[]
 }
