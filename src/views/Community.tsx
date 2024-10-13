@@ -231,20 +231,19 @@ const CommunityCon = styled.div`
   margin-top: 100px;
   overflow: visible;
   border-top: 1px solid rgba(210, 210, 210, 1);
-
   background-color: #fff;
 
   @media (max-width: 1024px) {
-    margin-top: 90px;
+    margin-top: 98px;
   }
 
   @media (max-width: 768px) {
-    margin-top: 74px;
+    margin-top: 65px;
     flex-direction: column;
   }
 
   @media (max-width: 600px) {
-    margin-top: 52px;
+    margin-top: 53px;
     flex-direction: column;
   }
 `
@@ -254,10 +253,10 @@ const Sidebar = styled.div`
   position: sticky;
   top: 0px;
   width: 200px;
+  height: 100%;
   padding: 30px;
   background-color: #ffffff;
   border-right: 1px solid #e1e1e1;
-  height: calc(100vh - 102px);
 
   @media (max-width: 768px) {
     width: 100%;
@@ -342,8 +341,8 @@ const MainContent = styled.div`
   padding: 20px;
   background-color: #f4f4f4;
   width: 100%;
-  height: fit-content;
-  min-height: clac(100vh - 100px);
+  height: 100%;
+  min-height: clac(100vh - 102px);
 
   @media (max-width: 768px) {
     padding: 14px 20px 20px 20px;

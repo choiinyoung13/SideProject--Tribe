@@ -155,9 +155,20 @@ const ListCon = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
-  max-height: 100%;
+  min-height: calc(100vh - 202px);
   display: flex;
   flex-direction: column;
+
+  @media (max-width: 1024px) {
+    min-height: calc(100vh - 200px);
+  }
+
+  @media (max-width: 768px) {
+    min-height: calc(100vh - 230px);
+  }
+  @media (max-width: 600px) {
+    min-height: calc(100vh - 270px);
+  }
 `
 
 const ListWrapper = styled.div`
@@ -180,7 +191,7 @@ const Empty = styled.div`
     font-size: 1.4rem;
   }
   @media (max-width: 768px) {
-    min-height: calc(100vh - 230px);
+    min-height: calc(100vh - 220px);
     font-size: 1.3rem;
   }
   @media (max-width: 600px) {
