@@ -63,10 +63,13 @@ export default function ItemCard({
       }}
     >
       <ImgBox>
+        {/* Placeholder 이미지 */}
+        {!isImageLoaded && <Placeholder />}
+
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: isImageLoaded ? 1 : 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.3 }}
         >
           <img
             src={imgurl ? imgurl : defaultImage}
@@ -77,6 +80,7 @@ export default function ItemCard({
           />
         </motion.div>
       </ImgBox>
+
       {isImageLoaded && (
         <TextBox>
           <ItemTitle>
@@ -283,13 +287,26 @@ const LikeButton = styled.span<{ isliked: string }>`
   }
 `
 
+const Placeholder = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(230, 230, 230, 1);
+  border-radius: 20px;
+`
+
 const ImgBox = styled.div`
+  position: relative;
   width: 100%;
   border-radius: 20px;
   overflow: hidden;
 
   img {
     width: 100%;
+    height: auto;
+    display: block;
   }
 `
 
