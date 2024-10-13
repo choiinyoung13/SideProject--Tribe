@@ -26,6 +26,7 @@ export default function PostCard({
 }: PostCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isImageLoaded, setIsImageLoaded] = useState(false)
+  const [isProfileLoaded, setIsProfileLoaded] = useState(false)
   const [isUserInfoModalOpen, setIsUserInfoModalOpen] = useState(false)
   const { session } = useAuth()
   const navigate = useNavigate()
@@ -81,21 +82,25 @@ export default function PostCard({
         />
       )}
       <Card>
-        <ImgBox onClick={handleCardClick}>
+        <ImgBox>
+          {/* Placeholder 이미지 */}
+          {!isImageLoaded && <Placeholder />}
+
+          {/* 실제 이미지 */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: isImageLoaded ? 1 : 0 }}
             transition={{ duration: 0.5 }}
           >
             <img
-              src={post.img_urls[0]}
-              onLoad={handleImageLoad}
+              src={post.img_urls[0]} // 실제 포스트의 이미지 URL
+              onLoad={handleImageLoad} // 이미지 로드 완료 시 호출
               alt="post image"
               draggable="false"
+              style={{ display: isImageLoaded ? 'block' : 'none' }} // 이미지가 로드되지 않으면 숨김 처리
             />
           </motion.div>
         </ImgBox>
-
         <TextBox>
           <TextHeader onClick={handleCardClick}>
             <PostCategory>[{post.category}]</PostCategory>
@@ -104,27 +109,35 @@ export default function PostCard({
           <PostText>
             <TextLeft>
               <Profile>
-                <ProfileImg
-                  src={
-                    userInfo?.avatar_url
-                      ? userInfo.avatar_url
-                      : 'http://img1.kakaocdn.net/thumb/R640x640.q70/?fname=http://t1.kakaocdn.net/account_images/default_profile.jpeg'
-                  }
-                />
+                {/* Placeholder 표시 */}
+                <>
+                  {!isProfileLoaded && <ProfilePlaceholder />}
+
+                  <ProfileImg
+                    src={
+                      userInfo?.avatar_url
+                        ? userInfo.avatar_url
+                        : 'http://img1.kakaocdn.net/thumb/R640x640.q70/?fname=http://t1.kakaocdn.net/account_images/default_profile.jpeg'
+                    }
+                    alt="Profile"
+                    onLoad={() =>
+                      setIsProfileLoaded(true)
+                    } /* 이미지 로드 시 상태 변경 */
+                    isProfileLoaded={isProfileLoaded}
+                  />
+                </>
 
                 {/* 프로필 클릭 시 모달 열림 */}
-                <Username onClick={handleUserInfoClick}>
-                  {userInfo ? (
-                    <Username onClick={handleUserInfoClick}>
-                      {userInfo.nickname
-                        ? userInfo.nickname
-                        : userInfo.email?.split('@')[0] ||
-                          '등록된 이메일이 없습니다.'}
-                    </Username>
-                  ) : (
-                    <p>사용자 정보를 불러오는 중...</p>
-                  )}
-                </Username>
+                {userInfo ? (
+                  <Username onClick={handleUserInfoClick}>
+                    {userInfo.nickname
+                      ? userInfo.nickname
+                      : userInfo.email?.split('@')[0] ||
+                        '등록된 이메일이 없습니다.'}
+                  </Username>
+                ) : (
+                  <p>사용자 정보를 불러오는 중...</p>
+                )}
               </Profile>
             </TextLeft>
             <TextRight>
@@ -205,6 +218,18 @@ const ImgBox = styled.div`
   }
 `
 
+const Placeholder = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #e2e2e2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+
 const TextBox = styled.div`
   margin-top: 10px;
   padding: 8px;
@@ -255,7 +280,6 @@ const Title = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding-bottom: 2px;
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
@@ -273,14 +297,35 @@ const Profile = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
+  margin-top: 7px;
+  justify-content: center;
   cursor: pointer;
 `
 
-const ProfileImg = styled.img`
+const ProfilePlaceholder = styled.div`
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  margin-top: 4px;
+  background: #ddd;
+  background-size: 200px 100%;
+
+  @media (max-width: 450px) {
+    width: 22px;
+    height: 22px;
+  }
+
+  @media (max-width: 375px) {
+    width: 18px;
+    height: 18px;
+  }
+`
+
+const ProfileImg = styled.img<{ isProfileLoaded: boolean }>`
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: ${({ isProfileLoaded }) =>
+    isProfileLoaded ? 'block' : 'none'}; /* 로드 전 숨기기 */
 
   @media (max-width: 450px) {
     width: 22px;
@@ -301,14 +346,13 @@ const Username = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-top: 3px;
-  padding-bottom: 3px;
 
   @media (max-width: 1350px) {
     font-size: 0.85rem;
   }
 
   @media (max-width: 450px) {
+    margin-left: 3px;
     font-size: 0.8rem;
   }
 
