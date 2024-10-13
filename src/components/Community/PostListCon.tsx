@@ -75,6 +75,12 @@ export default function PostListCon({ searchKeyword, tab }: PostListConProps) {
     }
   }, [loadedImageCount, totalImageCount])
 
+  useEffect(() => {
+    if (totalImageCount === 0) {
+      setAllImagesLoaded(true)
+    }
+  }, [totalImageCount])
+
   const handleImageLoad = () => {
     setLoadedImageCount(prevCount => prevCount + 1)
   }
