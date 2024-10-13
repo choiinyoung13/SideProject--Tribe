@@ -9,7 +9,9 @@ export default function Shop() {
   const { pathname } = useLocation()
 
   useEffect(() => {
-    if (pathname === 'shop') {
+    if (pathname === '/shop') {
+      console.log('gd')
+
       window.scrollTo(0, 0)
     }
   }, [pathname])
