@@ -26,11 +26,15 @@ const cleanSearchQuery = (searchQuery: string, stopWords: string[]) => {
     cleanedQuery = cleanedQuery.replace(regex, ' ') // 불용어 제거 후 공백으로 대체
   })
 
-  // 공백으로 분리하고, 공백을 정리(trim), 2자 이상인 단어만 필터링하여 반환
-  return cleanedQuery
-    .split(' ')
-    .map(word => word.trim())
-    .filter(word => word.length >= 2) // 2자 이상인 단어만 반환
+  // 공백으로 분리하고, 공백을 정리(trim), 2자 이상인 단어만 필터링하여 중복을 제거한 후 반환
+  return [
+    ...new Set(
+      cleanedQuery
+        .split(' ')
+        .map(word => word.trim())
+        .filter(word => word.length >= 2) // 2자 이상인 단어만 반환
+    ),
+  ]
 }
 
 // IP 주소를 가져오는 함수
