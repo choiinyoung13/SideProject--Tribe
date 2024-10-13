@@ -1,6 +1,5 @@
 import styled from 'styled-components'
 import PostCard from './PostCard'
-import loadingIcon from '../../assets/images/logo/ball-triangle.svg'
 import { fetchPostsPerPage } from '../../config/api/post/fecthPosts'
 import { useInfiniteQuery, useQuery } from 'react-query'
 import { PostType } from '../../types/PostType'
@@ -10,6 +9,7 @@ import { communitySortState } from '../../recoil/atoms/SortState'
 import { useRecoilValue } from 'recoil'
 import { tabNumberToCommunityCategory } from '../../utill/tabNumberToCategory'
 import { fetchAllUserInfo } from '../../config/api/user/fetchUserInfo'
+import PostCardSkeletonUI from './PostCardSkeletonUI'
 
 export type FetchPostsResponse = {
   posts: PostType[]
@@ -104,9 +104,12 @@ export default function PostListCon({ searchKeyword, tab }: PostListConProps) {
   return (
     <ListCon>
       {(isUserInfoLoading || isLoading || !allImagesLoaded) && (
-        <LoadingScreen>
-          <img src={loadingIcon} alt="loading" />
-        </LoadingScreen>
+        <ListWrapper>
+          {/* 스켈레톤 UI를 보여줍니다 */}
+          {Array.from({ length: 8 }).map((_, index) => (
+            <PostCardSkeletonUI key={index} />
+          ))}
+        </ListWrapper>
       )}
       <ListWrapper style={{ opacity: allImagesLoaded ? 1 : 0.5 }}>
         {sortedPosts.length === 0 ? (
@@ -132,24 +135,6 @@ export default function PostListCon({ searchKeyword, tab }: PostListConProps) {
     </ListCon>
   )
 }
-
-const LoadingScreen = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: calc(100vh - 160px);
-  background-color: #f4f4f4;
-  z-index: 1000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  img {
-    width: 100px;
-    height: 100px;
-  }
-`
 
 const ListCon = styled.div`
   position: relative;
