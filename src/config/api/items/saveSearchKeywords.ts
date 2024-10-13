@@ -32,12 +32,6 @@ const cleanSearchQuery = (searchQuery: string, stopWords: string[]) => {
     .filter(word => word.length >= 2) // 2자 이상인 단어만 반환
 }
 
-// 검색어에서 유효한 키워드만 추출하는 함수
-const extractKeywords = (searchQuery: string) => {
-  // 검색어에서 불용어를 제거하고 유효한 키워드만 추출
-  return cleanSearchQuery(searchQuery, stopWords)
-}
-
 // IP 주소를 가져오는 함수
 const fetchIpAddress = async () => {
   try {
@@ -53,7 +47,7 @@ const fetchIpAddress = async () => {
 // 키워드를 Supabase에 저장하는 함수
 export const saveSearchKeywords = async (searchQuery: string) => {
   // 검색어에서 유효한 키워드를 추출
-  const keywords = extractKeywords(searchQuery)
+  const keywords = cleanSearchQuery(searchQuery, stopWords)
 
   // 현재 로그인된 사용자의 정보 가져오기
   const { data } = await supabase.auth.getUser()
