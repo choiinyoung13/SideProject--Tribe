@@ -3,18 +3,13 @@ import BannerSection from '../components/Shop/BannerSection'
 import HeaderSection from '../components/Shop/HeaderSection'
 import MainSection from '../components/Shop/MainSection'
 import styled from 'styled-components'
-import { useLocation } from 'react-router-dom'
 
 export default function Shop() {
-  const { pathname } = useLocation()
-
   useEffect(() => {
-    if (pathname === '/shop') {
-      console.log('gd')
-
+    window.onbeforeunload = function pushRefresh() {
       window.scrollTo(0, 0)
     }
-  }, [pathname])
+  }, [])
 
   return (
     <>
