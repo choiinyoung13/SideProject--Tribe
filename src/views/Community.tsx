@@ -257,7 +257,7 @@ const Sidebar = styled.div`
   padding: 30px;
   background-color: #ffffff;
   border-right: 1px solid #e1e1e1;
-  height: 100vh;
+  height: calc(100vh - 102px);
 
   @media (max-width: 768px) {
     width: 100%;
@@ -343,7 +343,8 @@ const MainContent = styled.div`
   background-color: #f4f4f4;
   width: 100%;
   height: fit-content;
-  min-height: 100vh;
+  min-height: clac(100vh - 100px);
+
   @media (max-width: 768px) {
     padding: 14px 20px 20px 20px;
   }
@@ -445,7 +446,7 @@ const RightSidebar = styled.div`
   padding: 30px 22px;
   background-color: #ffffff;
   border-left: 1px solid #e1e1e1;
-  height: 100vh;
+  height: calc(100vh - 102px);
 
   @media (max-width: 1024px) {
     display: none;

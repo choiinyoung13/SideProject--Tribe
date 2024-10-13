@@ -164,7 +164,7 @@ const ListWrapper = styled.div`
 const Empty = styled.div`
   width: 100%;
   height: 100%;
-  max-height: calc(100vh - 100px);
+  min-height: calc(100vh - 202px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -174,9 +174,11 @@ const Empty = styled.div`
     font-size: 1.4rem;
   }
   @media (max-width: 768px) {
+    min-height: calc(100vh - 230px);
     font-size: 1.3rem;
   }
   @media (max-width: 600px) {
+    min-height: calc(100vh - 270px);
     font-size: 1.2rem;
   }
 `
