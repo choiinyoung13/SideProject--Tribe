@@ -62,6 +62,45 @@ export default function ItemCard({
         navigate(`/product/${id}`)
       }}
     >
+      <ImgBox>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isImageLoaded ? 1 : 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <img
+            src={imgurl ? imgurl : defaultImage}
+            alt="item image"
+            draggable="false"
+            onLoad={() => setIsImageLoaded(true)}
+            style={{ display: isImageLoaded ? 'block' : 'none' }}
+          />
+        </motion.div>
+      </ImgBox>
+      {isImageLoaded && (
+        <TextBox>
+          <ItemTitle>
+            <Title>{title}</Title>
+            <BadgeWrapper>
+              {badge.map((badgeType: 'hot' | 'fast', i: number) => {
+                return <Badge key={i} badgeType={badgeType} />
+              })}
+            </BadgeWrapper>
+          </ItemTitle>
+          <OriginalPrice>
+            {formatNumberWithCommas(originalprice)}원
+          </OriginalPrice>
+          <PriceDetail>
+            <Discount>{discount}%</Discount>
+            <DiscountedPrice>
+              {formatNumberWithCommas(
+                priceCalculation(originalprice, discount)
+              )}
+              원
+            </DiscountedPrice>
+          </PriceDetail>
+        </TextBox>
+      )}
       {isImageLoaded && (
         <OptionButtonWrapper>
           <LikeButton
@@ -133,45 +172,6 @@ export default function ItemCard({
             <PiShoppingCartFill />
           </CartButton>
         </OptionButtonWrapper>
-      )}
-      <ImgBox>
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: isImageLoaded ? 1 : 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <img
-            src={imgurl ? imgurl : defaultImage}
-            alt="item image"
-            draggable="false"
-            onLoad={() => setIsImageLoaded(true)}
-            style={{ display: isImageLoaded ? 'block' : 'none' }}
-          />
-        </motion.div>
-      </ImgBox>
-      {isImageLoaded && (
-        <TextBox>
-          <ItemTitle>
-            <Title>{title}</Title>
-            <BadgeWrapper>
-              {badge.map((badgeType: 'hot' | 'fast', i: number) => {
-                return <Badge key={i} badgeType={badgeType} />
-              })}
-            </BadgeWrapper>
-          </ItemTitle>
-          <OriginalPrice>
-            {formatNumberWithCommas(originalprice)}원
-          </OriginalPrice>
-          <PriceDetail>
-            <Discount>{discount}%</Discount>
-            <DiscountedPrice>
-              {formatNumberWithCommas(
-                priceCalculation(originalprice, discount)
-              )}
-              원
-            </DiscountedPrice>
-          </PriceDetail>
-        </TextBox>
       )}
     </Card>
   )

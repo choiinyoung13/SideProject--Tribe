@@ -36,7 +36,7 @@ const SkeletonBox = styled.div`
   width: 100%;
   padding-top: 100%; /* 1:1 비율 */
   position: relative;
-  background: #ddd;
+  background-color: rgba(230, 230, 230, 1);
   background-size: 200px 100%;
   border-radius: 20px;
 `
@@ -45,7 +45,7 @@ const SkeletonText = styled.div<{ width: string; height: string }>`
   width: ${({ width }) => width};
   height: ${({ height }) => height};
   margin-top: 10px;
-  background-color: #ddd;
+  background-color: rgba(230, 230, 230, 1);
   background-size: 200px 100%;
   border-radius: 4px;
 
