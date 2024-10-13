@@ -3,7 +3,6 @@ import axios from 'axios'
 
 // 키워드에서 제외시킬 용어 리스트 (필요시 확장 가능)
 const stopWords = [
-  '이',
   '저',
   '그리고',
   '또한',
