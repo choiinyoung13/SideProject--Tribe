@@ -4,7 +4,6 @@ import axios from 'axios'
 // 키워드에서 제외시킬 용어 리스트 (필요시 확장 가능)
 const stopWords = [
   '이',
-  '그',
   '저',
   '그리고',
   '또한',
@@ -13,36 +12,31 @@ const stopWords = [
   '있는',
   '있고',
   '과',
-  '그리고',
   '와',
+  '데',
 ]
 
-// 불용어를 단어 내부에서 제거하는 함수
-const removeStopWordsFromWord = (word: string, stopWords: string[]) => {
-  let filteredWord = word
+// 불용어를 제거하고 유효한 키워드를 추출하는 함수
+const cleanSearchQuery = (searchQuery: string, stopWords: string[]) => {
+  let cleanedQuery = searchQuery
 
-  // 불용어 목록을 순회하면서 단어에서 불용어를 제거
+  // 불용어 목록을 순회하면서 검색어에서 불용어를 제거
   stopWords.forEach(stopWord => {
-    // 불용어가 단어에 포함되어 있으면 그 부분을 제거
-    const regex = new RegExp(stopWord, 'g')
-    filteredWord = filteredWord.replace(regex, '')
+    const regex = new RegExp(stopWord, 'g') // 불용어가 포함된 부분을 찾아 제거
+    cleanedQuery = cleanedQuery.replace(regex, ' ') // 불용어 제거 후 공백으로 대체
   })
 
-  // 불용어를 제거한 결과가 2자 이상이어야 유효한 키워드로 간주
-  return filteredWord.length >= 2 ? filteredWord : null
+  // 공백으로 분리하고, 공백을 정리(trim), 2자 이상인 단어만 필터링하여 반환
+  return cleanedQuery
+    .split(' ')
+    .map(word => word.trim())
+    .filter(word => word.length >= 2) // 2자 이상인 단어만 반환
 }
 
-// 검색어에서 유효한 키워드만 추출하는 함수 (개선된 버전)
+// 검색어에서 유효한 키워드만 추출하는 함수
 const extractKeywords = (searchQuery: string) => {
-  // 검색어를 공백으로 분리하여 배열로 변환
-  const words = searchQuery.split(' ')
-
-  // 단어가 2자 이상이고 불용어가 아닌 것만 필터링하여 키워드로 간주
-  const filteredWords = words
-    .map(word => removeStopWordsFromWord(word, stopWords)) // 불용어가 포함된 부분 제거
-    .filter(word => word !== null) // 유효한 단어만 필터링
-
-  return filteredWords
+  // 검색어에서 불용어를 제거하고 유효한 키워드만 추출
+  return cleanSearchQuery(searchQuery, stopWords)
 }
 
 // IP 주소를 가져오는 함수
