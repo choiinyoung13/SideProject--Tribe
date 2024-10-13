@@ -82,7 +82,7 @@ export default function PostCard({
         />
       )}
       <Card>
-        <ImgBox>
+        <ImgBox onClick={handleCardClick}>
           {/* Placeholder 이미지 */}
           {!isImageLoaded && <Placeholder />}
 
