@@ -17,15 +17,30 @@ const stopWords = [
   '와',
 ]
 
-// 검색어에서 유효한 키워드만 추출하는 함수
+// 불용어를 단어 내부에서 제거하는 함수
+const removeStopWordsFromWord = (word: string, stopWords: string[]) => {
+  let filteredWord = word
+
+  // 불용어 목록을 순회하면서 단어에서 불용어를 제거
+  stopWords.forEach(stopWord => {
+    // 불용어가 단어에 포함되어 있으면 그 부분을 제거
+    const regex = new RegExp(stopWord, 'g')
+    filteredWord = filteredWord.replace(regex, '')
+  })
+
+  // 불용어를 제거한 결과가 2자 이상이어야 유효한 키워드로 간주
+  return filteredWord.length >= 2 ? filteredWord : null
+}
+
+// 검색어에서 유효한 키워드만 추출하는 함수 (개선된 버전)
 const extractKeywords = (searchQuery: string) => {
   // 검색어를 공백으로 분리하여 배열로 변환
   const words = searchQuery.split(' ')
 
   // 단어가 2자 이상이고 불용어가 아닌 것만 필터링하여 키워드로 간주
-  const filteredWords = words.filter(
-    word => word.length >= 2 && !stopWords.includes(word)
-  )
+  const filteredWords = words
+    .map(word => removeStopWordsFromWord(word, stopWords)) // 불용어가 포함된 부분 제거
+    .filter(word => word !== null) // 유효한 단어만 필터링
 
   return filteredWords
 }
