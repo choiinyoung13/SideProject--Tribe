@@ -116,13 +116,26 @@ interface Keyword {
 
 // 인기 키워드를 안정적으로 정렬하여 가져오는 함수
 export const fetchTop5Keywords = async (): Promise<Keyword[]> => {
-  // Supabase에서 상위 5개의 인기 키워드를 가져오는 Stored Procedure 실행
-  const { data, error } = await supabase.rpc('get_top_keywords', {
+  // 먼저 오래된 키워드를 삭제하고 결과를 받아옴
+  const { data: deletedData, error: deleteError } = await supabase.rpc(
+    'delete_and_fetch_keywords'
+  )
+
+  if (deleteError) {
+    console.error('오래된 키워드 삭제 실패:', deleteError)
+    return []
+  }
+
+  // 삭제된 데이터를 로그로 출력 (확인용)
+  console.log('삭제된 키워드 데이터:', deletedData)
+
+  // 오래된 키워드 삭제 후, 상위 5개의 인기 키워드를 가져옴
+  const { data, error: fetchError } = await supabase.rpc('get_top_keywords', {
     limit_count: 5,
   })
 
-  if (error) {
-    console.error('인기 키워드 가져오기 실패:', error)
+  if (fetchError) {
+    console.error('인기 키워드 가져오기 실패:', fetchError)
     return []
   }
 
