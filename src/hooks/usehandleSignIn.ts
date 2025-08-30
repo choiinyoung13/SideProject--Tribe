@@ -68,8 +68,7 @@ export const useHandleSignIn = () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: provider,
       options: {
-        redirectTo:
-          import.meta.env.VITE_REDIRECT_URL || 'http://localhost:5173',
+        redirectTo: 'https://tribe-beige.vercel.app',
         queryParams: {
           access_type: 'offline',
           prompt: 'select_account',
