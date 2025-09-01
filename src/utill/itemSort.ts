@@ -77,9 +77,11 @@ export const sortItmeByFilterObj = async (
   }
 
   if (filterObj.like) {
-    const userId = localStorage.getItem("sb-dipwebufeocjtwzmmcjt-auth-token");
+    const userId = localStorage.getItem("sb-gkumxciovhhhvaswvhkq-auth-token");
+
     if (userId) {
       const data = await fetchUserLikesInfo(JSON.parse(userId).user.id);
+      console.log(data);
       filtered = filtered.filter((item) => data!.likes.includes(item.id));
     }
   }
