@@ -38,6 +38,7 @@ export default function Badge({ badgeType }: badgeType) {
   );
 }
 
+
 const BadgeCon = styled.div`
   display: flex;
   align-items: center;

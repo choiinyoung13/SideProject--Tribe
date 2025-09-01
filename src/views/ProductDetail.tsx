@@ -1,25 +1,29 @@
-import { useState } from 'react'
-import styled from 'styled-components'
-import ImageSection from '../components/ProductDetail/ImageSection'
-import TextSection from '../components/ProductDetail/TextSection'
-import { useParams } from 'react-router-dom'
-import { useQuery } from 'react-query'
-import { fetchItemById } from '../config/api/items/fetchItems'
-import loadingIcon from '../assets/images/logo/ball-triangle.svg'
+import { useState, useEffect } from "react";
+import styled from "styled-components";
+import ImageSection from "../components/ProductDetail/ImageSection";
+import TextSection from "../components/ProductDetail/TextSection";
+import { useParams } from "react-router-dom";
+import { useQuery } from "react-query";
+import { fetchItemById } from "../config/api/items/fetchItems";
+import loadingIcon from "../assets/images/logo/ball-triangle.svg";
 
 export default function ProductDetail() {
-  const [isDateSelected, setIsDateSelected] = useState(false)
-  const { id } = useParams<{ id: string }>()
+  const [isDateSelected, setIsDateSelected] = useState(false);
+  const { id } = useParams<{ id: string }>();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, []);
 
   const { data, error, isLoading } = useQuery(
-    'items' + id,
+    "items" + id,
     () => fetchItemById(Number(id)),
     {
       enabled: !!id,
       staleTime: Infinity,
       cacheTime: 30 * 60 * 1000,
     }
-  )
+  );
 
   if (isLoading)
     return (
@@ -28,9 +32,9 @@ export default function ProductDetail() {
           <img src={loadingIcon} alt="" />
         </LoadingIcon>
       </LoadingPage>
-    )
+    );
 
-  if (error) return <div>Error...</div>
+  if (error) return <div>Error...</div>;
 
   if (data)
     return (
@@ -44,7 +48,7 @@ export default function ProductDetail() {
           />
         </DetailWrapper>
       </DetailCon>
-    )
+    );
 }
 const LoadingPage = styled.div`
   margin-top: 100px;
@@ -53,7 +57,7 @@ const LoadingPage = styled.div`
   display: flex;
   justify-content: center:
   align-items: center;
-`
+`;
 const LoadingIcon = styled.div`
   display: flex;
   justify-content: center:
@@ -64,7 +68,7 @@ const LoadingIcon = styled.div`
   img {
     width: 100%;
   }
-`
+`;
 
 const DetailCon = styled.div`
   width: 90%;
@@ -79,7 +83,7 @@ const DetailCon = styled.div`
     margin-top: 40px;
     width: 100%;
   }
-`
+`;
 const DetailWrapper = styled.div`
   display: flex;
   width: 85%;
@@ -89,4 +93,4 @@ const DetailWrapper = styled.div`
     width: 100%;
     flex-direction: column;
   }
-`
+`;
