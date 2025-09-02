@@ -1,27 +1,27 @@
-import { useState } from 'react'
-import styled from 'styled-components'
-import community_feature_full from '../assets/images/communityFeature/communityFeature_web_full.jpg'
-import useWindowWidth from '../hooks/useWindowWidth'
-import MobileHome from './MobileHome'
-import useWindowHeight from '../hooks/useWindowHeight'
-import InfinityMarquee from '../components/Common/Marquee'
-import { Link } from 'react-router-dom'
-import Button from '../components/Common/Button'
-import loadingIcon from '../assets/images/logo/ball-triangle.svg'
-import GuidelinesModal from '../components/Community-features/GuidelinesModal'
+import { useState } from "react";
+import styled from "styled-components";
+import community_feature_full from "../assets/images/communityFeature/communityFeature_web_full.jpg";
+import useWindowWidth from "../hooks/useWindowWidth";
+import MobileHome from "./MobileHome";
+import useWindowHeight from "../hooks/useWindowHeight";
+import InfinityMarquee from "../components/Common/Marquee";
+import { Link } from "react-router-dom";
+import Button from "../components/Common/Button";
+import loadingIcon from "../assets/images/logo/ball-triangle.svg";
+import GuidelinesModal from "../components/Community-features/GuidelinesModal";
 
 export default function CommunityFeatures() {
-  const windowWidth = useWindowWidth()
-  const windowHeight = useWindowHeight()
-  const [isOnMouse, setIsOnMouse] = useState(false)
-  const [isImageLoaded, setIsImageLoaded] = useState(false)
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const windowWidth = useWindowWidth();
+  const windowHeight = useWindowHeight();
+  const [isOnMouse, setIsOnMouse] = useState(false);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const openModal = () => setIsModalOpen(true)
-  const closeModal = () => setIsModalOpen(false)
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
   if (windowWidth <= 600) {
-    return <MobileHome />
+    return <MobileHome />;
   }
 
   return (
@@ -31,7 +31,7 @@ export default function CommunityFeatures() {
           <img src={loadingIcon} alt="Loading..." />
         </Loading>
       )}
-      <Section style={{ display: isImageLoaded ? 'block' : 'none' }}>
+      <Section style={{ display: isImageLoaded ? "block" : "none" }}>
         <HoverableCon
           windowheight={windowHeight}
           onMouseOver={() => setIsOnMouse(true)}
@@ -54,10 +54,10 @@ export default function CommunityFeatures() {
                   사용자의 도움을 받을 수 있습니다.
                 </p>
                 <ButtonCon>
-                  <Link to={'/community'}>
+                  <Link to={"/community"}>
                     <Button
                       colortype="black"
-                      btntype={'link'}
+                      btntype={"link"}
                       hover={true.toString()}
                     >
                       커뮤니티 이용하기
@@ -79,7 +79,7 @@ export default function CommunityFeatures() {
                 <ButtonCon>
                   <Button
                     colortype="black"
-                    btntype={'link'}
+                    btntype={"link"}
                     hover={true.toString()}
                     onClick={openModal} // 모달 열기 버튼
                   >
@@ -97,14 +97,14 @@ export default function CommunityFeatures() {
           alt=""
           draggable="false"
           onLoad={() => setIsImageLoaded(true)}
-          style={{ display: isImageLoaded ? 'block' : 'none' }}
+          style={{ display: isImageLoaded ? "block" : "none" }}
         />
       </ImgSection>
 
       {/* 모달 컴포넌트 렌더링 */}
       {isModalOpen && <GuidelinesModal onClose={closeModal} />}
     </CommunityFeaturesCon>
-  )
+  );
 }
 
 const CommunityFeaturesCon = styled.div`
@@ -112,7 +112,7 @@ const CommunityFeaturesCon = styled.div`
   height: 100vh;
   position: relative;
   background-color: #ebebed;
-`
+`;
 
 const ImgSection = styled.div`
   position: fixed;
@@ -122,7 +122,7 @@ const ImgSection = styled.div`
   transform: translateX(-50%);
   width: 100dvw;
   height: 100dvh;
-`
+`;
 
 const Img = styled.img`
   position: absolute;
@@ -131,7 +131,10 @@ const Img = styled.img`
   transform: translate(-50%, -50%);
   object-fit: cover;
   object-position: center;
-`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+`;
 
 const Section = styled.section`
   position: fixed;
@@ -140,10 +143,10 @@ const Section = styled.section`
   right: 0;
   top: 0;
   bottom: 0;
-`
+`;
 
 interface HoverableConPropsType {
-  windowheight: number
+  windowheight: number;
 }
 
 const HoverableCon = styled.div<HoverableConPropsType>`
@@ -153,29 +156,29 @@ const HoverableCon = styled.div<HoverableConPropsType>`
   position: absolute;
   top: 170px;
   width: 100%;
-  height: ${props => (props.windowheight >= 1050 ? '440px' : '290px')};
-`
+  height: ${(props) => (props.windowheight >= 1050 ? "440px" : "290px")};
+`;
 
 interface TextConProps {
-  isonmouse: string
+  isonmouse: string;
 }
 
 const TextCon = styled.div<TextConProps>`
   width: 100%;
   min-width: 1800px;
-  z-index: ${props => (props.isonmouse === 'true' ? '98' : '100')};
+  z-index: ${(props) => (props.isonmouse === "true" ? "98" : "100")};
   background-color: rgba(0, 0, 0, 0);
-  opacity: ${props => (props.isonmouse === 'true' ? '0' : '1')};
-`
+  opacity: ${(props) => (props.isonmouse === "true" ? "0" : "1")};
+`;
 
 interface DetailTextProps {
-  isonmouse: string
-  windowheight: number
+  isonmouse: string;
+  windowheight: number;
 }
 
 const DetailText = styled.div<DetailTextProps>`
   position: absolute;
-  top: ${props => (props.windowheight >= 1050 ? '18%' : '10%')};
+  top: ${(props) => (props.windowheight >= 1050 ? "18%" : "10%")};
   left: 0;
   z-index: 99;
   width: 80%;
@@ -183,14 +186,14 @@ const DetailText = styled.div<DetailTextProps>`
   transform: translateX(-50%);
   display: flex;
   justify-content: space-around;
-  opacity: ${props => (props.isonmouse === 'true' ? '1' : '0')};
+  opacity: ${(props) => (props.isonmouse === "true" ? "1" : "0")};
   transition: opacity 0.1s ease;
 
   @media (max-width: 970px) {
     flex-direction: column;
     gap: 60px;
   }
-`
+`;
 
 const TextBox = styled.div`
   display: flex;
@@ -208,7 +211,7 @@ const TextBox = styled.div`
   @media (max-width: 970px) {
     width: 100%;
   }
-`
+`;
 
 const TextNumber = styled.span`
   font-size: 1.7rem;
@@ -227,7 +230,7 @@ const TextNumber = styled.span`
 
   @media (max-width: 600px) {
   }
-`
+`;
 
 const TextContentCon = styled.div`
   font-size: 1.1rem;
@@ -247,7 +250,7 @@ const TextContentCon = styled.div`
   @media (max-width: 768px) {
     max-width: 500px;
   }
-`
+`;
 
 const ButtonCon = styled.div`
   display: flex;
@@ -276,7 +279,7 @@ const ButtonCon = styled.div`
       font-size: 0.8rem;
     }
   }
-`
+`;
 
 const Loading = styled.div`
   display: flex;
@@ -293,4 +296,4 @@ const Loading = styled.div`
   img {
     width: 10%; /* Adjust size as needed */
   }
-`
+`;

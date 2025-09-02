@@ -52,7 +52,7 @@ export default function ProductDetail() {
 }
 const LoadingPage = styled.div`
   margin-top: 100px;
-  height: 710px;
+  height: calc(100vh - 100px);
   width: 100%;
   display: flex;
   justify-content: center:
@@ -71,23 +71,34 @@ const LoadingIcon = styled.div`
 `;
 
 const DetailCon = styled.div`
-  width: 90%;
-  margin: 120px auto 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 100px;
+  height: calc(100vh - 100px);
 
   @media (max-width: 1024px) {
     margin: 0px;
     width: 100%;
+    height: 100%;
   }
 
   @media (max-width: 600px) {
     margin-top: 40px;
     width: 100%;
+    height: 100%;
   }
 `;
 const DetailWrapper = styled.div`
   display: flex;
+  align-items: center;
+  justify-content: center;
   width: 85%;
   margin: 0px auto;
+
+  @media (max-width: 1550px) {
+    align-items: start;
+  }
 
   @media (max-width: 1024px) {
     width: 100%;

@@ -1,14 +1,14 @@
-import React from 'react'
-import styled from 'styled-components'
-import FutureDatePicker from '../Common/DatePicker'
-import { CartItemType } from '../../types/CartItemType'
+import React from "react";
+import styled from "styled-components";
+import FutureDatePicker from "../Common/DatePicker";
+import { CartItemType } from "../../types/CartItemType";
 
 interface DatePickerSectionProps {
-  setIsDateSelected: React.Dispatch<React.SetStateAction<boolean>>
-  setOrderInfo: React.Dispatch<React.SetStateAction<CartItemType>>
-  deliveryperiod: number
-  isDateSelected: boolean
-  receivingDate: number
+  setIsDateSelected: React.Dispatch<React.SetStateAction<boolean>>;
+  setOrderInfo: React.Dispatch<React.SetStateAction<CartItemType>>;
+  deliveryperiod: number;
+  isDateSelected: boolean;
+  receivingDate: number;
 }
 
 export default function DatePickerSection({
@@ -30,12 +30,12 @@ export default function DatePickerSection({
           setIsDateSelected={setIsDateSelected}
           setOrderInfo={setOrderInfo}
           isDateSelected={isDateSelected}
-          type={'productDetail'}
+          type={"productDetail"}
           receivingDate={receivingDate}
         />
       </DatePicker>
     </DatePickerWrapper>
-  )
+  );
 }
 
 const DatePickerWrapper = styled.div`
@@ -49,10 +49,10 @@ const DatePickerWrapper = styled.div`
   @media (max-width: 600px) {
     margin: 35px 0;
   }
-`
+`;
 
 const PickDateText = styled.div`
-  font-size: 1.1rem;
+  font-size: 1.3rem;
   font-weight: 500;
   width: 100%;
 
@@ -60,6 +60,10 @@ const PickDateText = styled.div`
     color: rgb(223, 33, 19);
     font-size: 1rem;
     font-weight: 400;
+  }
+
+  @media (max-width: 1980px) {
+    font-size: 1.1rem;
   }
 
   @media (max-width: 1024px) {
@@ -75,9 +79,9 @@ const PickDateText = styled.div`
       font-size: 0.8rem;
     }
   }
-`
+`;
 
 const DatePicker = styled.div`
   margin-top: 10px;
   width: 100%;
-`
+`;

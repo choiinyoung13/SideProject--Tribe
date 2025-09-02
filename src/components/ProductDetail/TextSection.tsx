@@ -1,31 +1,31 @@
-import React, { useState } from 'react'
-import styled from 'styled-components'
-import PriceInfo from '../../components/ProductDetail/PriceInfo'
-import ProductInfo from '../../components/ProductDetail/ProductInfo'
-import DatePickerSection from '../../components/ProductDetail/DatePickerSection'
-import OptionsSection from '../../components/ProductDetail/OptionSection'
-import TotalPriceSection from '../../components/ProductDetail/TotalPriceSection'
-import ButtonSection from '../../components/ProductDetail/ButtonSection'
-import { CartItemType } from '../../types/CartItemType'
+import React, { useState } from "react";
+import styled from "styled-components";
+import PriceInfo from "../../components/ProductDetail/PriceInfo";
+import ProductInfo from "../../components/ProductDetail/ProductInfo";
+import DatePickerSection from "../../components/ProductDetail/DatePickerSection";
+import OptionsSection from "../../components/ProductDetail/OptionSection";
+import TotalPriceSection from "../../components/ProductDetail/TotalPriceSection";
+import ButtonSection from "../../components/ProductDetail/ButtonSection";
+import { CartItemType } from "../../types/CartItemType";
 
-type BadgeType = 'hot' | 'fast'
+type BadgeType = "hot" | "fast";
 
 interface TextSectionProps {
-  isDateSelected: boolean
-  setIsDateSelected: React.Dispatch<React.SetStateAction<boolean>>
+  isDateSelected: boolean;
+  setIsDateSelected: React.Dispatch<React.SetStateAction<boolean>>;
   productInfo: {
-    id: number
-    title: string
-    imgurl: string
-    originalprice: number
-    badge: BadgeType[]
-    discount: number
-    category: string
-    size: string
-    origin: string
-    classification: string
-    deliveryperiod: number
-  }
+    id: number;
+    title: string;
+    imgurl: string;
+    originalprice: number;
+    badge: BadgeType[];
+    discount: number;
+    category: string;
+    size: string;
+    origin: string;
+    classification: string;
+    deliveryperiod: number;
+  };
 }
 
 export default function TextSection({
@@ -42,7 +42,7 @@ export default function TextSection({
     origin,
     classification,
     deliveryperiod,
-  } = productInfo
+  } = productInfo;
   const [orderInfo, setOrderInfo] = useState<CartItemType>({
     itemId: productInfo.id,
     title: title,
@@ -53,7 +53,7 @@ export default function TextSection({
     receivingDate: 0,
     quantity: 1,
     deliveryPeriod: deliveryperiod,
-  })
+  });
 
   return (
     <TextSectionCon>
@@ -81,14 +81,19 @@ export default function TextSection({
       />
       <ButtonSection isDateSelected={isDateSelected} orderInfo={orderInfo} />
     </TextSectionCon>
-  )
+  );
 }
 
 const TextSectionCon = styled.section`
   width: 50%;
-  padding: 26px 0px 26px 60px;
   border-left: 1px solid rgba(50, 50, 50, 1);
-  margin-left: 60px;
+  padding: 115px 0px 115px 80px;
+  margin-left: 35px;
+
+  @media (max-width: 1980px) {
+    padding: 26px 0px 26px 60px;
+    margin-left: 60px;
+  }
 
   @media (max-width: 1024px) {
     width: 100%;
@@ -102,4 +107,4 @@ const TextSectionCon = styled.section`
     padding: 20px;
     border-left: none;
   }
-`
+`;

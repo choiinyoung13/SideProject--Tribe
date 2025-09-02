@@ -1,11 +1,11 @@
-import styled from 'styled-components'
+import styled from "styled-components";
 
 interface ProductInfoPropsType {
-  title: string
-  size: string
-  origin: string
-  classification: string
-  deliveryPeriod: number
+  title: string;
+  size: string;
+  origin: string;
+  classification: string;
+  deliveryPeriod: number;
 }
 
 export default function ProductInfo({
@@ -37,11 +37,11 @@ export default function ProductInfo({
         </Info>
       </InfoWrapper>
     </>
-  )
+  );
 }
 
 const Title = styled.div`
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   font-weight: 500;
   margin-top: 14px;
 
@@ -54,14 +54,13 @@ const Title = styled.div`
     font-size: 1rem;
     margin-top: 10px;
   }
-`
+`;
 
 const InfoWrapper = styled.div`
   margin: 40px 0px 40px;
   display: flex;
-  justify-content: space-between;
   width: 100%;
-  max-width: 730px;
+  max-width: 880px;
 
   display: flex;
   overflow-x: auto;
@@ -82,6 +81,12 @@ const InfoWrapper = styled.div`
   scrollbar-width: thin;
   scrollbar-color: rgba(210, 210, 210, 1) #fff;
 
+  @media (max-width: 1980px) {
+    width: 100%;
+    margin: 40px 0px 40px;
+    scrollbar-color: rgba(210, 210, 210, 1) #fff;
+  }
+
   @media (max-width: 1024px) {
     width: 90%;
     margin: 30px auto 0px;
@@ -99,24 +104,37 @@ const InfoWrapper = styled.div`
     min-width: 100%;
     scrollbar-color: rgba(210, 210, 210, 0) #fff;
   }
-`
+`;
 
 const Info = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 4px 56px;
+  padding: 4px 70px;
   border-left: 1px solid rgba(90, 90, 90, 1);
   flex-shrink: 0;
 
   &:first-of-type {
     border: none;
-    padding: 4px 60px 4px 40px;
+    padding: 4px 70px 4px 70px;
   }
 
   &:last-of-type {
-    padding: 4px 40px 4px 40px;
+    padding: 4px 70px 4px 70px;
+  }
+
+  @media (max-width: 1980px) {
+    padding: 4px 60px;
+
+    &:first-of-type {
+      border: none;
+      padding: 4px 60px 4px 60px;
+    }
+
+    &:last-of-type {
+      padding: 4px 60px 4px 60px;
+    }
   }
 
   @media (max-width: 1024px) {
@@ -152,12 +170,16 @@ const Info = styled.div`
       flex-grow: 0.5;
     }
   }
-`
+`;
 
 const InfoKey = styled.div`
-  font-size: 0.8rem;
+  font-size: 1.3rem;
   font-weight: 400;
   color: rgba(90, 90, 90, 1);
+
+  @media (max-width: 1980px) {
+    font-size: 0.8rem;
+  }
 
   @media (max-width: 1024px) {
     font-size: 1rem;
@@ -166,13 +188,18 @@ const InfoKey = styled.div`
   @media (max-width: 600px) {
     font-size: 0.8rem;
   }
-`
+`;
 
 const InfoValue = styled.div`
-  font-size: 1rem;
+  font-size: 1.2rem;
   font-weight: 400;
   color: rgba(60, 60, 60, 1);
-  margin-top: 10px;
+  margin-top: 14px;
+
+  @media (max-width: 1980px) {
+    font-size: 1rem;
+    font-weight: 500;
+  }
 
   @media (max-width: 1024px) {
     font-size: 1rem;
@@ -183,4 +210,4 @@ const InfoValue = styled.div`
     font-size: 0.8rem;
     font-weight: 600;
   }
-`
+`;

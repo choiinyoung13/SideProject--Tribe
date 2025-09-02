@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from "styled-components";
 
 export default function OptionsSection() {
   return (
@@ -14,7 +14,7 @@ export default function OptionsSection() {
         </p>
       </TextWrapper>
     </OptionCon>
-  )
+  );
 }
 
 const OptionCon = styled.div`
@@ -27,10 +27,10 @@ const OptionCon = styled.div`
   @media (max-width: 600px) {
     margin: 35px 0;
   }
-`
+`;
 
 const OptionTitle = styled.div`
-  font-size: 1.1rem;
+  font-size: 1.3rem;
   font-weight: 500;
   margin-bottom: 10px;
 
@@ -38,6 +38,10 @@ const OptionTitle = styled.div`
     color: rgba(120, 120, 120, 1);
     font-size: 1rem;
     font-weight: 400;
+  }
+
+  @media (max-width: 1980px) {
+    font-size: 1.1rem;
   }
 
   @media (max-width: 1024px) {
@@ -53,7 +57,7 @@ const OptionTitle = styled.div`
       font-size: 0.8rem;
     }
   }
-`
+`;
 
 const TextWrapper = styled.div`
   display: flex;
@@ -61,11 +65,18 @@ const TextWrapper = styled.div`
   margin-top: 8px;
 
   p {
-    font-size: 0.9rem;
-    line-height: 26px;
+    font-size: 1.1rem;
+    line-height: 32px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  @media (max-width: 1980px) {
+    p {
+      font-size: 0.9rem;
+      line-height: 26px;
+    }
   }
 
   @media (max-width: 600px) {
@@ -73,4 +84,4 @@ const TextWrapper = styled.div`
       font-size: 0.8rem;
     }
   }
-`
+`;
