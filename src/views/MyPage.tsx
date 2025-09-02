@@ -211,11 +211,6 @@ const Container = styled.div`
   margin-top: 100px;
   border-top: 1px solid rgba(210, 210, 210, 1);
   padding: 0 0 90px 0;
-  height: calc(100vh - 373px);
-
-  @media (max-width: 1980px) {
-    height: calc(100vh - 100px);
-  }
 
   @media (max-width: 768px) {
     margin-top: 74px;
