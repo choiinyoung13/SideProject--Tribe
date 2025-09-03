@@ -274,12 +274,12 @@ export default function Cart() {
 }
 const CartCon = styled.div`
   width: 100%;
-  height: calc(100vh - 373px);
+  min-height: calc(100vh - 373px);
   border-top: 1px solid rgba(210, 210, 210, 1);
   margin-top: 100px;
 
   @media (max-width: 1980px) {
-    height: calc(100vh - 100px);
+    min-height: calc(100vh - 100px);
   }
 
   @media (max-width: 1024px) {

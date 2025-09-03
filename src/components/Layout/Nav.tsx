@@ -360,7 +360,6 @@ const NavCon = styled.nav<NavProps>`
   position: absolute;
   top: 0px;
   z-index: 102;
-  min-width: 375px;
   width: 100%;
   height: 100px;
   padding: 15px 60px 15px;
@@ -454,7 +453,7 @@ const MobileMenu = styled.ul`
   }
 
   @media (max-width: 600px) {
-    min-width: 375px;
+    width: 100%;
   }
 `;
 

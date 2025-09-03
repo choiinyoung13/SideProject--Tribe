@@ -89,6 +89,12 @@ export function EmailSection({
               },
             }).then(async (result) => {
               if (result.isConfirmed && result.value) {
+                // 디버깅: 실제 값들 확인
+                console.log("verifyOtpCode 호출 시 값들:");
+                console.log("newEmail:", newEmail);
+                console.log("result.value (OTP):", result.value);
+                console.log("userInfo.email:", userInfo.email);
+
                 // 인증번호 검증 로직 실행
                 const res = await verifyOtpCode(newEmail, result.value);
 

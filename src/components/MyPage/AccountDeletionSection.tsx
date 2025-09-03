@@ -1,20 +1,20 @@
-import styled from 'styled-components'
-import { FaChevronDown } from 'react-icons/fa'
-import Swal from 'sweetalert2'
-import { deleteUser } from '../../config/api/user/deleteUser'
-import { useNavigate } from 'react-router-dom'
+import styled from "styled-components";
+import { FaChevronDown } from "react-icons/fa";
+import Swal from "sweetalert2";
+import { deleteUser } from "../../config/api/user/deleteUser";
+import { useNavigate } from "react-router-dom";
 
 interface AccountDeletionSectionProps {
-  selectedReason: string
-  setSelectedReason: (value: string) => void
-  isDeletionButtonDisabled: boolean
+  selectedReason: string;
+  setSelectedReason: (value: string) => void;
+  isDeletionButtonDisabled: boolean;
 }
 
 export function AccountDeletionSection({
   setSelectedReason,
   isDeletionButtonDisabled,
 }: AccountDeletionSectionProps) {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const setDeleteModalOpen = () => {
     Swal.fire({
@@ -22,19 +22,19 @@ export function AccountDeletionSection({
         <h1 style="font-weight:500; font-size:22px;">정말 탈퇴 하시겠습니까?</h1><br/>
         <p style="font-size:16px;">회원탈퇴 시 기존에 등록했던 모든 게시물은 삭제됩니다.<p/>
       `,
-      confirmButtonText: '탈퇴',
+      confirmButtonText: "탈퇴",
       showCancelButton: true,
-      cancelButtonText: '취소',
+      cancelButtonText: "취소",
       allowOutsideClick: false,
-      confirmButtonColor: '#1E1E1E',
-      cancelButtonColor: '#1E1E1E',
-    }).then(async result => {
+      confirmButtonColor: "#1E1E1E",
+      cancelButtonColor: "#1E1E1E",
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        await deleteUser()
-        navigate('/')
+        await deleteUser();
+        navigate("/");
       }
-    })
-  }
+    });
+  };
 
   return (
     <Section>
@@ -44,12 +44,12 @@ export function AccountDeletionSection({
       <SectionBody>
         <CustomSelectWrapper>
           <AccountDeletionSelect
-            onChange={e => setSelectedReason(e.target.value)}
+            onChange={(e) => setSelectedReason(e.target.value)}
           >
             <option value="" disabled hidden selected>
               Trib를 떠나는 이유를 알려주세요
             </option>
-            <option value="더이상 사용하지 않아요">
+            <option value="더 이상 사용하지 않아요">
               더이상 사용하지 않아요
             </option>
             <option value="대체할 만한 서비스를 찾았어요">
@@ -66,7 +66,7 @@ export function AccountDeletionSection({
           </SelectArrow>
         </CustomSelectWrapper>
         <Infomation>
-          * 회원탈퇴 완료시 계정을 다시 복구할 수 없습니다. <br />* 이전에
+          * 회원 탈퇴 완료시 계정을 다시 복구할 수 없습니다. <br />* 이전에
           작성했던 게시물 및 활동 기록은 자동으로 삭제됩니다.
           <br />
         </Infomation>
@@ -74,7 +74,7 @@ export function AccountDeletionSection({
       <SectionFooter>
         <button
           onClick={() => {
-            setDeleteModalOpen()
+            setDeleteModalOpen();
           }}
           disabled={isDeletionButtonDisabled}
         >
@@ -82,13 +82,13 @@ export function AccountDeletionSection({
         </button>
       </SectionFooter>
     </Section>
-  )
+  );
 }
 
 // 스타일링
 const Section = styled.section`
   width: 100%;
-`
+`;
 
 const SectionHeader = styled.div`
   width: 100%;
@@ -96,11 +96,11 @@ const SectionHeader = styled.div`
   align-items: center;
   justify-content: space-between;
   margin-bottom: 10px;
-`
+`;
 
 const SectionBody = styled.div`
   width: 100%;
-`
+`;
 const Infomation = styled.p`
   line-height: 28px;
   margin-top: 10px;
@@ -113,13 +113,13 @@ const Infomation = styled.p`
   @media (max-width: 768px) {
     font-size: 0.8rem;
   }
-`
+`;
 
 const CustomSelectWrapper = styled.div`
   position: relative;
   display: inline-block;
   width: 100%;
-`
+`;
 
 const AccountDeletionSelect = styled.select`
   width: 100%;
@@ -135,7 +135,7 @@ const AccountDeletionSelect = styled.select`
   @media (max-width: 768px) {
     font-size: 0.85rem;
   }
-`
+`;
 
 const SelectArrow = styled.span`
   position: absolute;
@@ -145,7 +145,7 @@ const SelectArrow = styled.span`
   pointer-events: none;
   font-size: 1rem;
   color: rgba(120, 120, 120, 1);
-`
+`;
 
 const SectionFooter = styled.div`
   display: flex;
@@ -171,7 +171,7 @@ const SectionFooter = styled.div`
       cursor: not-allowed;
     }
   }
-`
+`;
 const Title = styled.div`
   font-size: 1.2rem;
   font-weight: 600;
@@ -180,4 +180,4 @@ const Title = styled.div`
   @media (max-width: 768px) {
     font-size: 1.1rem;
   }
-`
+`;
