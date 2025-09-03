@@ -1,16 +1,16 @@
-import styled from 'styled-components'
-import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
-import { useEffect, useState } from 'react'
-import { passwordRegex } from '../../utill/checkInputValueValid'
+import styled from "styled-components";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import { useEffect, useState } from "react";
+import { passwordRegex } from "../../utill/checkInputValueValid";
 
 interface PasswordSectionProps {
-  password: string
-  setPassword: React.Dispatch<React.SetStateAction<string>>
-  confirmPassword: string
-  setConfirmPassword: React.Dispatch<React.SetStateAction<string>>
-  setIsPasswordValid: React.Dispatch<React.SetStateAction<boolean>>
-  setIsConfirmPasswordValid: React.Dispatch<React.SetStateAction<boolean>>
-  disabled: boolean
+  password: string;
+  setPassword: React.Dispatch<React.SetStateAction<string>>;
+  confirmPassword: string;
+  setConfirmPassword: React.Dispatch<React.SetStateAction<string>>;
+  setIsPasswordValid: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsConfirmPasswordValid: React.Dispatch<React.SetStateAction<boolean>>;
+  disabled: boolean;
 }
 
 // 비밀번호 입력 섹션
@@ -23,65 +23,65 @@ export default function PasswordSection({
   setIsConfirmPasswordValid,
   disabled,
 }: PasswordSectionProps) {
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false) // 비밀번호 가시성 상태
-  const [warningText, setWarningText] = useState<string>('')
-  const [successText, setSuccessText] = useState<string>('')
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false); // 비밀번호 가시성 상태
+  const [warningText, setWarningText] = useState<string>("");
+  const [successText, setSuccessText] = useState<string>("");
   const [infoText] = useState<string>(
-    '비밀번호는 영문자, 숫자, 특수문자를 포함한 6~20자이어야 합니다'
-  )
+    "비밀번호는 영문자, 숫자, 특수문자 중 2가지 이상을 포함한 6~20자이어야 합니다"
+  );
 
   useEffect(() => {
-    const result = passwordRegex.test(password)
-    setWarningText('')
-    setSuccessText('')
-    setIsPasswordValid(false)
-    setIsPasswordValid(false)
+    const result = passwordRegex.test(password);
+    setWarningText("");
+    setSuccessText("");
+    setIsPasswordValid(false);
+    setIsPasswordValid(false);
 
     if (password && confirmPassword && password !== confirmPassword) {
-      setWarningText('비밀번호가 일치하지 않습니다')
-      setIsConfirmPasswordValid(false)
+      setWarningText("비밀번호가 일치하지 않습니다");
+      setIsConfirmPasswordValid(false);
     }
 
     if (password && result) {
-      setSuccessText('사용가능한 비밀번호입니다')
-      setIsPasswordValid(true)
+      setSuccessText("사용가능한 비밀번호입니다");
+      setIsPasswordValid(true);
     }
 
     if (password && !result) {
-      setWarningText('유효하지 않은 비밀번호 형식입니다')
+      setWarningText("유효하지 않은 비밀번호 형식입니다");
     }
 
     if (password && confirmPassword && password === confirmPassword) {
-      setSuccessText('비밀번호가 일치합니다')
-      setIsConfirmPasswordValid(true)
+      setSuccessText("비밀번호가 일치합니다");
+      setIsConfirmPasswordValid(true);
     }
-  }, [password])
+  }, [password]);
 
   useEffect(() => {
-    setWarningText('')
-    setSuccessText('')
-    setIsPasswordValid(false)
+    setWarningText("");
+    setSuccessText("");
+    setIsPasswordValid(false);
 
-    const result = passwordRegex.test(password)
+    const result = passwordRegex.test(password);
     if (password && result) {
-      setSuccessText('사용가능한 비밀번호입니다')
-      setIsPasswordValid(true)
+      setSuccessText("사용가능한 비밀번호입니다");
+      setIsPasswordValid(true);
     }
 
     if (password && !result) {
-      setWarningText('유효하지 않은 비밀번호 형식입니다')
+      setWarningText("유효하지 않은 비밀번호 형식입니다");
     }
 
     if (confirmPassword && password !== confirmPassword) {
-      setWarningText('비밀번호가 일치하지 않습니다')
-      setIsConfirmPasswordValid(false)
+      setWarningText("비밀번호가 일치하지 않습니다");
+      setIsConfirmPasswordValid(false);
     }
 
     if (password && confirmPassword && password === confirmPassword) {
-      setSuccessText('비밀번호가 일치합니다')
-      setIsConfirmPasswordValid(true)
+      setSuccessText("비밀번호가 일치합니다");
+      setIsConfirmPasswordValid(true);
     }
-  }, [confirmPassword])
+  }, [confirmPassword]);
 
   return (
     <>
@@ -90,8 +90,8 @@ export default function PasswordSection({
         <PasswordInput
           disabled={disabled}
           value={password}
-          onChange={e => {
-            setPassword(e.target.value)
+          onChange={(e) => {
+            setPassword(e.target.value);
           }}
           type="password"
           placeholder="비밀번호를 입력해주세요."
@@ -103,14 +103,14 @@ export default function PasswordSection({
         <PasswordConfirmInput
           disabled={disabled}
           value={confirmPassword}
-          onChange={e => {
-            setConfirmPassword(e.target.value)
+          onChange={(e) => {
+            setConfirmPassword(e.target.value);
           }}
-          type={isPasswordVisible ? 'text' : 'password'}
+          type={isPasswordVisible ? "text" : "password"}
           placeholder="비밀번호 확인을 위해 다시 입력해주세요."
         />
         {/* 눈 모양 아이콘 */}
-        <EyeIcon onClick={() => setIsPasswordVisible(prev => !prev)}>
+        <EyeIcon onClick={() => setIsPasswordVisible((prev) => !prev)}>
           {isPasswordVisible ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
         </EyeIcon>
       </InputWrapper>
@@ -131,12 +131,12 @@ export default function PasswordSection({
         <WarningText>{warningText}</WarningText>
       )}
     </>
-  )
+  );
 }
 
 const PasswordInputCon = styled.div`
   width: 100%;
-`
+`;
 
 const InputWrapper = styled.div`
   position: relative;
@@ -148,7 +148,7 @@ const InputWrapper = styled.div`
   @media (max-width: 600px) {
     display: flex;
   }
-`
+`;
 
 const EyeIcon = styled.div`
   position: absolute;
@@ -163,7 +163,7 @@ const EyeIcon = styled.div`
     top: 50%;
     right: 14px;
   }
-`
+`;
 
 const PasswordInput = styled.input`
   padding: 10px 12px;
@@ -178,7 +178,7 @@ const PasswordInput = styled.input`
     font-size: 0.8rem;
     margin: 0 auto 7px;
   }
-`
+`;
 
 const PasswordConfirmInput = styled.input`
   padding: 10px 12px;
@@ -194,7 +194,7 @@ const PasswordConfirmInput = styled.input`
     font-size: 0.8rem;
     margin: 0 auto 14px;
   }
-`
+`;
 
 const InfoText = styled.span`
   color: rgba(60, 60, 60, 1);
@@ -207,7 +207,7 @@ const InfoText = styled.span`
     width: 85%;
     margin: 0 0 35px 4px;
   }
-`
+`;
 
 const SuccessText = styled.span`
   color: rgb(0, 150, 75);
@@ -219,7 +219,7 @@ const SuccessText = styled.span`
     width: 85%;
     margin: 0 auto;
   }
-`
+`;
 
 const WarningText = styled.span`
   color: rgb(243, 28, 0);
@@ -231,4 +231,4 @@ const WarningText = styled.span`
     width: 85%;
     margin: 0 auto;
   }
-`
+`;
