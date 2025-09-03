@@ -27,7 +27,7 @@ export default function PasswordSection({
   const [warningText, setWarningText] = useState<string>("");
   const [successText, setSuccessText] = useState<string>("");
   const [infoText] = useState<string>(
-    "비밀번호는 영문자, 숫자, 특수문자 중 2가지 이상을 포함한 6~20자이어야 합니다"
+    "비밀번호는 영문자, 숫자, 특수문자 중 2가지 이상을 포함한 6~20자이어야 합니다."
   );
 
   useEffect(() => {
