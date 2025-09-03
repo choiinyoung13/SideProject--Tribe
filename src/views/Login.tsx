@@ -1,23 +1,23 @@
-import styled from 'styled-components'
-import google_logo from '../assets/images/logo/logo_google.png'
-import kakao_logo from '../assets/images/logo/logo_kakao.png'
-import login_image from '../assets/images/logo/login_web_1.jpg'
-import useWindowWidth from '../hooks/useWindowWidth'
-import loadingIcon from '../assets/images/logo/ball-triangle.svg'
-import { Link, useNavigate } from 'react-router-dom'
-import { useState } from 'react'
-import { useHandleSignIn } from '../hooks/usehandleSignIn'
-import Swal from 'sweetalert2'
-import { useHandleSignUp } from '../hooks/usehandleSignUp'
+import styled from "styled-components";
+import google_logo from "../assets/images/logo/logo_google.png";
+import kakao_logo from "../assets/images/logo/logo_kakao.png";
+import login_image from "../assets/images/logo/login_web_1.jpg";
+import useWindowWidth from "../hooks/useWindowWidth";
+import loadingIcon from "../assets/images/logo/ball-triangle.svg";
+import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useHandleSignIn } from "../hooks/usehandleSignIn";
+import Swal from "sweetalert2";
+import { useHandleSignUp } from "../hooks/usehandleSignUp";
 
 export default function Login() {
-  const windowWidth = useWindowWidth()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const { handleSignIn, signInWithOAuth, errorMessage } = useHandleSignIn()
-  const { verifyOtpCode } = useHandleSignUp()
-  const [isImageLoaded, setIsImageLoaded] = useState(false)
-  const navigate = useNavigate()
+  const windowWidth = useWindowWidth();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { handleSignIn, signInWithOAuth, errorMessage } = useHandleSignIn();
+  const { verifyOtpCode } = useHandleSignUp();
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const navigate = useNavigate();
 
   // 인증번호 입력 모달 띄우기
   const openVerificationModal = (email: string) => {
@@ -26,68 +26,68 @@ export default function Login() {
         <h1 style="font-weight:500; font-size:22px;">인증번호 입력</h1>
         <input type="text" id="otp-code" class="swal2-input" placeholder="6자리 인증번호 입력">
       `,
-      confirmButtonText: '확인',
+      confirmButtonText: "확인",
       showCancelButton: true,
-      cancelButtonText: '취소',
+      cancelButtonText: "취소",
       allowOutsideClick: false,
-      confirmButtonColor: '#1E1E1E',
-      cancelButtonColor: '#1E1E1E',
+      confirmButtonColor: "#1E1E1E",
+      cancelButtonColor: "#1E1E1E",
       preConfirm: () => {
         const otpCode = (
-          document.getElementById('otp-code') as HTMLInputElement
-        ).value
+          document.getElementById("otp-code") as HTMLInputElement
+        ).value;
         if (!otpCode || otpCode.length !== 6) {
-          Swal.showValidationMessage('6자리 인증번호를 입력하세요.')
-          return false
+          Swal.showValidationMessage("6자리 인증번호를 입력하세요.");
+          return false;
         }
-        return otpCode
+        return otpCode;
       },
-    }).then(async result => {
+    }).then(async (result) => {
       if (result.isConfirmed && result.value) {
         // 인증번호 검증 로직 실행
-        const res = await verifyOtpCode(email, result.value)
+        const res = await verifyOtpCode(email, result.value);
 
         if (res.success) {
           Swal.fire({
-            text: '이메일 인증이 완료되었습니다!',
-            icon: 'success',
-            confirmButtonColor: '#1E1E1E',
-            confirmButtonText: '확인',
+            text: "이메일 인증이 완료되었습니다!",
+            icon: "success",
+            confirmButtonColor: "#1E1E1E",
+            confirmButtonText: "확인",
           }).then(() => {
             // 인증 성공 후 리다이렉트
-            navigate('/')
-            return
-          })
+            navigate("/");
+            return;
+          });
         } else if (!res.success && res.error) {
-          if (res.error.message === 'Token has expired or is invalid') {
+          if (res.error.message === "Token has expired or is invalid") {
             Swal.fire({
-              text: '인증코드가 유효하지 않습니다.',
-              icon: 'warning',
-              confirmButtonColor: '#1E1E1E',
-              confirmButtonText: '확인',
-            }).then(result => {
+              text: "인증코드가 유효하지 않습니다.",
+              icon: "warning",
+              confirmButtonColor: "#1E1E1E",
+              confirmButtonText: "확인",
+            }).then((result) => {
               if (result.isConfirmed && result.value) {
-                openVerificationModal(email)
-                return
+                openVerificationModal(email);
+                return;
               }
-            })
+            });
           } else {
             Swal.fire({
-              text: '인증과정 중 오류가 발생했습니다.',
-              icon: 'warning',
-              confirmButtonColor: '#1E1E1E',
-              confirmButtonText: '확인',
-            }).then(result => {
+              text: "인증과정 중 오류가 발생했습니다.",
+              icon: "warning",
+              confirmButtonColor: "#1E1E1E",
+              confirmButtonText: "확인",
+            }).then((result) => {
               if (result.isConfirmed && result.value) {
-                openVerificationModal(email)
-                return
+                openVerificationModal(email);
+                return;
               }
-            })
+            });
           }
         }
       }
-    })
-  }
+    });
+  };
 
   return (
     <LoginCon>
@@ -98,48 +98,48 @@ export default function Login() {
             우리 함께 당신의 공간을 아름답게 꾸며 볼까요?
           </FormSubTitle>
           <form
-            onSubmit={async e => {
-              e.preventDefault()
+            onSubmit={async (e) => {
+              e.preventDefault();
 
               if (!email.trim()) {
                 Swal.fire({
-                  text: '아이디를 입력해 주세요.',
-                  icon: 'warning',
-                  confirmButtonColor: '#1E1E1E',
-                  confirmButtonText: '확인',
+                  text: "아이디를 입력해 주세요.",
+                  icon: "warning",
+                  confirmButtonColor: "#1E1E1E",
+                  confirmButtonText: "확인",
                   scrollbarPadding: false,
-                })
-                return
+                });
+                return;
               }
 
               if (!password.trim()) {
                 Swal.fire({
-                  text: '비밀번호를 입력해 주세요.',
-                  icon: 'warning',
-                  confirmButtonColor: '#1E1E1E',
-                  confirmButtonText: '확인',
+                  text: "비밀번호를 입력해 주세요.",
+                  icon: "warning",
+                  confirmButtonColor: "#1E1E1E",
+                  confirmButtonText: "확인",
                   scrollbarPadding: false,
-                })
-                return
+                });
+                return;
               }
 
-              const result = await handleSignIn(email, password)
+              const result = await handleSignIn(email, password);
 
               if (!result.success && result.error) {
-                if (result?.error?.message === 'Email not confirmed') {
+                if (result?.error?.message === "Email not confirmed") {
                   Swal.fire({
-                    text: '이메일 인증이 완료되지 않은 계정입니다.',
-                    icon: 'warning',
+                    text: "이메일 인증이 완료되지 않은 계정입니다.",
+                    icon: "warning",
                     allowOutsideClick: false,
-                    confirmButtonColor: '#1E1E1E',
-                    confirmButtonText: '확인',
+                    confirmButtonColor: "#1E1E1E",
+                    confirmButtonText: "확인",
                     scrollbarPadding: false,
-                  }).then(result => {
+                  }).then((result) => {
                     if (result.isConfirmed && result.value) {
-                      openVerificationModal(email)
+                      openVerificationModal(email);
                     }
-                  })
-                  return
+                  });
+                  return;
                 }
               }
             }}
@@ -148,24 +148,24 @@ export default function Login() {
               type="text"
               placeholder="가입한 이메일을 입력해주세요.( test계정 id: test1@gmail.com )"
               value={email}
-              onChange={e => {
-                setEmail(e.target.value)
+              onChange={(e) => {
+                setEmail(e.target.value);
               }}
             />
             <PasswordInput
               type="password"
               placeholder="비밀번호를 입력해주세요. ( test계정 pw: 123456 )"
               value={password}
-              onChange={e => {
-                setPassword(e.target.value)
+              onChange={(e) => {
+                setPassword(e.target.value);
               }}
             />
             {errorMessage && (
-              <p style={{ color: 'rgb(243, 28, 0)' }}>{errorMessage}</p>
+              <p style={{ color: "rgb(243, 28, 0)" }}>{errorMessage}</p>
             )}
             <HelperTextCon>
               <HelperText>
-                계정을 잊으셨나요? <span>ID찾기</span> 또는{' '}
+                계정을 잊으셨나요? <span>ID찾기</span> 또는{" "}
                 <span>비밀번호 찾기</span>
               </HelperText>
             </HelperTextCon>
@@ -173,7 +173,7 @@ export default function Login() {
             <GoogleLoginBtn
               type="button"
               onClick={() => {
-                signInWithOAuth('google')
+                signInWithOAuth("google");
               }}
             >
               <img src={google_logo} alt="" />
@@ -182,7 +182,7 @@ export default function Login() {
             <KaKaoLoginBtn
               type="button"
               onClick={() => {
-                signInWithOAuth('kakao')
+                signInWithOAuth("kakao");
               }}
             >
               <img src={kakao_logo} alt="" />
@@ -193,7 +193,7 @@ export default function Login() {
             <HelperText>
               아직 회원이 아니신가요?
               <span>
-                <Link to={'/join'}> 회원가입</Link>
+                <Link to={"/join"}> 회원가입</Link>
               </span>
             </HelperText>
           </HelperTextCon>
@@ -210,24 +210,24 @@ export default function Login() {
           src={login_image}
           alt=""
           onLoad={() => setIsImageLoaded(true)}
-          style={{ display: isImageLoaded ? 'block' : 'none' }}
+          style={{ display: isImageLoaded ? "block" : "none" }}
         />
       </ImgCon>
     </LoginCon>
-  )
+  );
 }
 
 const LoginCon = styled.div`
   width: 100%;
   display: flex;
-`
+`;
 
 interface FormConType {
-  windowwidth: number
+  windowwidth: number;
 }
 
 const FormCon = styled.div<FormConType>`
-  width: ${props => (props.windowwidth >= 1920 ? '50%' : '100%')};
+  width: ${(props) => (props.windowwidth >= 1920 ? "50%" : "100%")};
   height: 100vh;
   min-height: 900px;
   display: flex;
@@ -245,7 +245,7 @@ const FormCon = styled.div<FormConType>`
     min-height: 700px;
     }
   }
-`
+`;
 const FormWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -257,7 +257,7 @@ const FormWrapper = styled.div`
     align-items: center;
     min-width: 100%;
   }
-`
+`;
 
 const FormTitle = styled.h2`
   margin-top: 30px;
@@ -271,7 +271,7 @@ const FormTitle = styled.h2`
   @media (max-width: 370px) {
     font-size: 1.1rem;
   }
-`
+`;
 
 const FormSubTitle = styled.p`
   font-size: 1rem;
@@ -282,7 +282,7 @@ const FormSubTitle = styled.p`
     font-size: 0.8rem;
     margin: 20px 0 38px;
   }
-`
+`;
 
 const LoginBtn = styled.button`
   color: #fff;
@@ -301,7 +301,7 @@ const LoginBtn = styled.button`
     width: 85%;
     margin: 0 auto 14px;
   }
-`
+`;
 const GoogleLoginBtn = styled.button`
   color: rgba(20, 20, 20, 1);
   background-color: #fff;
@@ -330,7 +330,7 @@ const GoogleLoginBtn = styled.button`
       height: 16px;
     }
   }
-`
+`;
 
 const KaKaoLoginBtn = styled.button`
   color: rgba(20, 20, 20, 1);
@@ -362,13 +362,13 @@ const KaKaoLoginBtn = styled.button`
       height: 16px;
     }
   }
-`
+`;
 
 const HelperTextCon = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
-`
+`;
 
 const HelperText = styled.p`
   font-size: 0.9rem;
@@ -383,7 +383,7 @@ const HelperText = styled.p`
   @media (max-width: 600px) {
     font-size: 0.8rem;
   }
-`
+`;
 
 const ImgCon = styled.div`
   width: 50%;
@@ -399,7 +399,7 @@ const ImgCon = styled.div`
   @media (max-width: 1919px) {
     display: none;
   }
-`
+`;
 
 const Loading = styled.div`
   display: flex;
@@ -411,7 +411,7 @@ const Loading = styled.div`
   img {
     width: 15%;
   }
-`
+`;
 
 const EmailInput = styled.input`
   padding: 10px 12px;
@@ -427,7 +427,7 @@ const EmailInput = styled.input`
     font-size: 0.8rem;
     margin: 0 auto 14px;
   }
-`
+`;
 
 const PasswordInput = styled.input`
   padding: 10px 12px;
@@ -443,4 +443,4 @@ const PasswordInput = styled.input`
     font-size: 0.8rem;
     margin: 0 auto 14px;
   }
-`
+`;
