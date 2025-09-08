@@ -43,6 +43,6 @@ const ImgWrapper = styled.section`
   }
 
   @media (max-width: 1980px) {
-    width: 98%;
+    width: 100%;
   }
 `;
