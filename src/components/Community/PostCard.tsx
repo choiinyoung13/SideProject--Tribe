@@ -48,6 +48,13 @@ export default function PostCard({
     },
   })
 
+  // 복잡한 조건문을 명명된 변수로 분리
+  const isUserLoggedIn = !!session?.user.id
+  const isLikedArray = Array.isArray(post.liked)
+  const isUserInLikedList =
+    isUserLoggedIn && isLikedArray && post.liked.includes(session.user.id)
+  const isLiked = !!isUserInLikedList
+
   const handleCardClick = () => {
     setIsModalOpen(true)
   }
@@ -142,13 +149,7 @@ export default function PostCard({
             </TextLeft>
             <TextRight>
               <HeartIcon
-                isLiked={
-                  !!(
-                    session?.user.id &&
-                    Array.isArray(post.liked) &&
-                    post.liked.includes(session.user.id)
-                  )
-                }
+                isLiked={isLiked}
                 onClick={() => {
                   if (!session) {
                     Swal.fire({

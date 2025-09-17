@@ -2,9 +2,22 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../supabase/supabaseClient'
 import { Session } from '@supabase/supabase-js'
 
-export const useAuth = () => {
+// 표준화된 인증 상태 타입
+type AuthState = {
+  session: Session | null
+  isLoading: boolean
+  isAuthenticated: boolean
+}
+
+type AuthActions = {
+  signOut: () => Promise<void>
+}
+
+export type UseAuthReturn = AuthState & AuthActions
+
+export const useAuth = (): UseAuthReturn => {
   const [session, setSession] = useState<Session | null>(null)
-  const [isLoading, setIsLoading] = useState(true) // 로딩 상태 추가
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const getSession = async () => {
@@ -14,7 +27,7 @@ export const useAuth = () => {
       } else {
         setSession(data.session)
       }
-      setIsLoading(false) // 세션 확인 후 로딩 상태 변경
+      setIsLoading(false)
     }
 
     getSession()
@@ -39,5 +52,10 @@ export const useAuth = () => {
     }
   }
 
-  return { session, signOut, isLoading } // isLoading 상태 반환
+  return {
+    session,
+    isLoading,
+    isAuthenticated: !!session,
+    signOut,
+  }
 }
