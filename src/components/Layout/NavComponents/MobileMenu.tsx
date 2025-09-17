@@ -13,7 +13,7 @@ interface MobileMenuProps {
 
 export default function MobileMenu({ menuOpen, toggleMenu }: MobileMenuProps) {
   const { session, signOut } = useAuth()
-  const { cartState, clearCartState } = useCartState()
+  const { clearCartState } = useCartState()
   const navigate = useNavigate()
 
   const handleLogout = async () => {
