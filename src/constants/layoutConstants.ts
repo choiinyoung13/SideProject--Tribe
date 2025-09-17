@@ -11,7 +11,8 @@ export const LAYOUT_CONSTANTS = {
   BREAKPOINTS: {
     MOBILE: 600,
     TABLET: 768,
-    DESKTOP: 1920,
+    DESKTOP: 1000,
+    LARGE_DESKTOP: 1920,
   },
 } as const
 
