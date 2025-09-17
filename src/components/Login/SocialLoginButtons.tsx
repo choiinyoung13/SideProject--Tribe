@@ -50,7 +50,6 @@ const GoogleLoginBtn = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 10px;
 
   &:disabled {
     opacity: 0.6;

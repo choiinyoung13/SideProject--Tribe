@@ -139,12 +139,12 @@ export default function Login() {
             isLoading={isLoading}
           />
 
-          <HelperTextCon>
+          {/* <HelperTextCon>
             <HelperText>
               계정을 잊으셨나요? <span>ID찾기</span> 또는{' '}
               <span>비밀번호 찾기</span>
             </HelperText>
-          </HelperTextCon>
+          </HelperTextCon> */}
 
           <SocialLoginButtons
             onGoogleLogin={handleGoogleLogin}

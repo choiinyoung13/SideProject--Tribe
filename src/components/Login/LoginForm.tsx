@@ -118,10 +118,11 @@ const ErrorMessage = styled.p`
 const LoginBtn = styled.button`
   color: #fff;
   background-color: rgba(20, 20, 20, 1);
-  padding: 12px 20px;
+  padding: 12px 30px;
   cursor: pointer;
   border: none;
   border-radius: 6px;
+  margin-bottom: 10px;
 
   &:hover:not(:disabled) {
     background-color: rgba(30, 30, 30, 1);
