@@ -1,4 +1,4 @@
-import { VALIDATION_CONSTANTS } from '../constants/layoutConstants'
+import { VALIDATION_CONSTANTS } from '../constants/validationConstants'
 
 // 표준화된 검증 결과 타입
 export type ValidationResult =

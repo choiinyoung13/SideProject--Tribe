@@ -73,7 +73,7 @@ export const useJoinFormLogic = ({
       const errorMessage =
         result.error?.message === 'email rate limit exceeded'
           ? '인증 이메일 발신 횟수 제한을 초과했습니다.'
-          : '이메일 주소가 유효하지 않습니다.'
+          : '가입이 불가능한 이메일 주소입니다.'
 
       Swal.fire({
         text: errorMessage,
