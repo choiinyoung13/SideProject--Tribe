@@ -25,7 +25,8 @@ export const VALIDATION_CONSTANTS = {
   EMAIL: {
     MIN_LENGTH: 1,
     MAX_LENGTH: 50,
-    REGEX: /^[a-z0-9]{1,50}@[a-zA-Z0-9]+\.[a-zA-Z0-9]+$/,
+    REGEX:
+      /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
   },
   PASSWORD: {
     MIN_LENGTH: 6,

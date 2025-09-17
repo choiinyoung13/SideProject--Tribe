@@ -3,7 +3,6 @@ import { SWAL_CONFIG, JOIN_CONSTANTS } from '../../constants/joinConstants'
 
 interface VerificationModalProps {
   onSuccess: () => void
-  onRetry: () => void
   onCancel: () => void
 }
 
@@ -11,7 +10,7 @@ interface VerificationModalProps {
  * 인증번호 입력 모달 컴포넌트 - 모달 로직 분리
  */
 export const VerificationModal = {
-  open: ({ onSuccess, onRetry, onCancel }: VerificationModalProps) => {
+  open: ({ onSuccess, onCancel }: VerificationModalProps) => {
     Swal.fire({
       html: `
         <h1 style="font-weight:500; font-size:22px;">인증번호 입력</h1>

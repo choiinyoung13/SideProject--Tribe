@@ -23,6 +23,8 @@ export const useHandleSignUp = () => {
         error.message.includes('duplicate key value violates unique constraint')
       ) {
         setErrorMessage('이미 사용중인 이메일입니다.')
+      } else if (error.code === 'email_address_invalid') {
+        setErrorMessage('올바른 이메일 형식이 아닙니다.')
       } else {
         setErrorMessage(error.message)
       }

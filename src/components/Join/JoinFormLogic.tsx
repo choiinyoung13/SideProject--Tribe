@@ -4,6 +4,7 @@ import { useHandleSignUp } from '../../hooks/usehandleSignUp'
 import { joinValidationHelpers } from '../../utill/joinValidationHelpers'
 import { SWAL_CONFIG } from '../../constants/joinConstants'
 import { VerificationModal } from './VerificationModal'
+import Swal from 'sweetalert2'
 
 interface JoinFormLogicProps {
   formData: any
@@ -43,7 +44,6 @@ export const useJoinFormLogic = ({
           )
         }
       },
-      onRetry: () => openVerificationModal(email),
       onCancel: () => updateFormData({ isInputsDisabled: true }),
     })
   }
@@ -73,7 +73,7 @@ export const useJoinFormLogic = ({
       const errorMessage =
         result.error?.message === 'email rate limit exceeded'
           ? '인증 이메일 발신 횟수 제한을 초과했습니다.'
-          : '계정등록 오류가 발생했습니다.'
+          : '이메일 주소가 유효하지 않습니다.'
 
       Swal.fire({
         text: errorMessage,

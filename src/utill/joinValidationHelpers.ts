@@ -1,5 +1,4 @@
 import { ValidationResult } from './validationHelpers'
-import { JOIN_CONSTANTS } from '../constants/joinConstants'
 
 // Join 폼 검증 관련 헬퍼 함수들
 export const joinValidationHelpers = {

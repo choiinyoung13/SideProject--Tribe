@@ -40,14 +40,14 @@ export const LoginForm = ({
     <Form onSubmit={handleSubmit}>
       <EmailInput
         type="text"
-        placeholder="가입한 이메일을 입력해주세요."
+        placeholder="가입한 이메일을 입력해주세요. (테스트 id: test1@gmail.com)"
         value={email}
         onChange={e => setEmail(e.target.value)}
         disabled={isLoading}
       />
       <PasswordInput
         type="password"
-        placeholder="비밀번호를 입력해주세요."
+        placeholder="비밀번호를 입력해주세요. (테스트 pw: 123456)"
         value={password}
         onChange={e => setPassword(e.target.value)}
         disabled={isLoading}

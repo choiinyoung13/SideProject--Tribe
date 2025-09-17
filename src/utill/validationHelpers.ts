@@ -73,20 +73,20 @@ export const validateNickname = (nickname: string): ValidationResult => {
 }
 
 /**
- * 폼 전체 유효성 검사
+ * 로그인 폼 유효성 검사 (비밀번호 형식 검사 제외)
  */
 export const validateLoginForm = (
   email: string,
-  password: string
+  password?: string
 ): ValidationResult => {
   const emailValidation = validateEmail(email)
   if (!emailValidation.isValid) {
     return emailValidation
   }
 
-  const passwordValidation = validatePassword(password)
-  if (!passwordValidation.isValid) {
-    return passwordValidation
+  // 비밀번호는 존재하는지만 확인 (형식 검사 없음)
+  if (!password || password.trim() === '') {
+    return { isValid: false, error: '비밀번호를 입력해주세요.' }
   }
 
   return { isValid: true }

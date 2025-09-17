@@ -52,7 +52,7 @@ export default function PostCard({
   const isUserLoggedIn = !!session?.user.id
   const isLikedArray = Array.isArray(post.liked)
   const isUserInLikedList =
-    isUserLoggedIn && isLikedArray && post.liked.includes(session.user.id)
+    isUserLoggedIn && isLikedArray && post.liked?.includes(session.user.id)
   const isLiked = !!isUserInLikedList
 
   const handleCardClick = () => {
