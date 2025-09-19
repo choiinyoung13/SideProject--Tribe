@@ -25,6 +25,7 @@ export const JOIN_CONSTANTS = {
   },
 } as const
 
+// SWAL 모달 관련 상수들
 export const SWAL_CONFIG = {
   CONFIRM_BUTTON_COLOR: '#1E1E1E',
   CANCEL_BUTTON_COLOR: '#1E1E1E',
