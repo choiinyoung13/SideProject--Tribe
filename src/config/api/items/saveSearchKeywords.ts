@@ -90,7 +90,7 @@ export const saveSearchKeywords = async (searchQuery: string) => {
 
     // 저장할 새로운 키워드가 있는 경우에만 저장
     if (newKeywords.length > 0) {
-      const { data, error } = await supabase.from('search_keywords').insert(
+      const { error } = await supabase.from('search_keywords').insert(
         newKeywords.map(keyword => ({
           keyword,
           user_id: user?.id || null,
@@ -113,9 +113,7 @@ interface Keyword {
 // 인기 키워드를 안정적으로 정렬하여 가져오는 함수
 export const fetchTop5Keywords = async (): Promise<Keyword[]> => {
   // 먼저 오래된 키워드를 삭제하고 결과를 받아옴
-  const { data: deletedData, error: deleteError } = await supabase.rpc(
-    'delete_and_fetch_keywords'
-  )
+  const { error: deleteError } = await supabase.rpc('delete_and_fetch_keywords')
 
   if (deleteError) {
     console.error('오래된 키워드 삭제 실패:', deleteError)

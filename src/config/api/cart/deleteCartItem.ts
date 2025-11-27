@@ -22,7 +22,7 @@ export const deleteCheckedCartItems = async (cartId: string) => {
     (item: { checked: boolean }) => !item.checked
   )
 
-  const { data, error: deleteError } = await supabase
+  const { error: deleteError } = await supabase
     .from('carts')
     .update({ items: filteredItems })
     .eq('user_id', cartId)
@@ -37,7 +37,7 @@ export const deleteCheckedCartItems = async (cartId: string) => {
 
 // 모든 아이템을 삭제하는 함수
 export const deleteAllCartItems = async (cartId: string) => {
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from('carts')
     .update({ items: [] })
     .eq('user_id', cartId)
