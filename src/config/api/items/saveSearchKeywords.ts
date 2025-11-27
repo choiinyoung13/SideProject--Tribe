@@ -41,7 +41,7 @@ const cleanSearchQuery = (searchQuery: string, stopWords: string[]) => {
 const fetchIpAddress = async () => {
   try {
     const response = await axios.get('https://ipapi.co/json/')
-    console.log('IP 주소:', response.data.ip)
+
     return response.data.ip
   } catch (error) {
     console.error('IP 주소를 가져오는 중 오류 발생:', error)
@@ -100,11 +100,7 @@ export const saveSearchKeywords = async (searchQuery: string) => {
 
       if (error) {
         console.error('키워드 저장 실패:', error)
-      } else {
-        console.log('키워드 저장 성공:', data)
       }
-    } else {
-      console.log('5분 내 중복된 키워드가 이미 존재하여 저장되지 않음.')
     }
   }
 }
@@ -125,9 +121,6 @@ export const fetchTop5Keywords = async (): Promise<Keyword[]> => {
     console.error('오래된 키워드 삭제 실패:', deleteError)
     return []
   }
-
-  // 삭제된 데이터를 로그로 출력 (확인용)
-  console.log('삭제된 키워드 데이터:', deletedData)
 
   // 오래된 키워드 삭제 후, 상위 5개의 인기 키워드를 가져옴
   const { data, error: fetchError } = await supabase.rpc('get_top_keywords', {

@@ -50,8 +50,6 @@ export const Card = ({ post, purchase }: CardProps) => {
   }
 
   if (purchase) {
-    console.log(purchase)
-
     return (
       <CardWrapper
         onClick={() => {

@@ -104,6 +104,13 @@ export default function Community() {
     setSearchKeyword('')
   }, [tab])
 
+  // 검색어를 지우면 searchKeyword도 초기화
+  useEffect(() => {
+    if (inputValue.trim() === '') {
+      setSearchKeyword('')
+    }
+  }, [inputValue])
+
   if (!categories) {
     return null
   }

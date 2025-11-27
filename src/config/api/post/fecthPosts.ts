@@ -17,9 +17,6 @@ export async function fetchPostsPerPage(
   const start = pageParam * pageSize
   const end = start + pageSize - 1
 
-  console.log('카테고리:', category)
-  console.log('검색어:', searchKeyword)
-
   // 기본 쿼리 설정 (정렬과 범위만 적용)
   let query = supabase
     .from('posts')

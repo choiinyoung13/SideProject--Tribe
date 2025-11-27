@@ -41,7 +41,5 @@ export async function addPurchaseHistory(
       '유저의 구매내역을 업데이트하는데 실패하였습니다.:',
       updateError
     )
-  } else {
-    console.log('성공적으로 구매내역을 업데이트하였습니다.')
   }
 }

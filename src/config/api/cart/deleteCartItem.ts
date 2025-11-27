@@ -32,8 +32,6 @@ export const deleteCheckedCartItems = async (cartId: string) => {
       '장바구니 데이터를 업데이트하는 중 에러가 발생했습니다:',
       deleteError
     )
-  } else {
-    console.log('장바구니에서 삭제된 아이템:', data)
   }
 }
 
@@ -46,7 +44,5 @@ export const deleteAllCartItems = async (cartId: string) => {
 
   if (error) {
     console.error('장바구니 데이터를 삭제하는 중 에러가 발생했습니다:', error)
-  } else {
-    console.log('장바구니에서 삭제된 아이템:', data)
   }
 }

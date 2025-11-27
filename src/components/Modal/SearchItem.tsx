@@ -16,7 +16,6 @@ export default function SearchItem({
     <SearchItemCon
       onClick={e => {
         e.stopPropagation()
-        console.log(1)
         navigate(`/product/${id}`)
       }}
     >
