@@ -76,7 +76,7 @@ export default function PostCard({ post }: PostCardProps) {
       // 롤백을 위한 이전 데이터 반환
       return { previousQueries }
     },
-    onError: (error, variables, context) => {
+    onError: (error, _variables, context) => {
       console.error('좋아요 업데이트 오류:', error)
 
       // 이전 데이터로 롤백
