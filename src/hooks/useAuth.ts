@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react'
-import { supabase } from '../supabase/supabaseClient'
+'use client'
+import { useContext } from 'react'
+import { AuthContext } from '@/providers/AuthProvider'
 import { Session } from '@supabase/supabase-js'
 
-// 표준화된 인증 상태 타입
+// 기존 타입을 유지하여 호환성 보장
 type AuthState = {
   session: Session | null
   isLoading: boolean
@@ -15,47 +16,18 @@ type AuthActions = {
 
 export type UseAuthReturn = AuthState & AuthActions
 
+/**
+ * 전역 AuthContext를 사용하는 hook
+ * 이를 통해 모든 컴포넌트가 동일한 인증 상태를 즉시 공유합니다.
+ */
 export const useAuth = (): UseAuthReturn => {
-  const [session, setSession] = useState<Session | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const context = useContext(AuthContext)
 
-  useEffect(() => {
-    const getSession = async () => {
-      const { data, error } = await supabase.auth.getSession()
-      if (error) {
-        console.error('Error getting session:', error.message)
-      } else {
-        setSession(data.session)
-      }
-      setIsLoading(false)
-    }
-
-    getSession()
-
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setSession(session)
-      }
-    )
-
-    return () => {
-      authListener?.subscription.unsubscribe()
-    }
-  }, [])
-
-  const signOut = async () => {
-    const { error } = await supabase.auth.signOut()
-    if (error) {
-      console.error('Error signing out:', error.message)
-    } else {
-      setSession(null)
-    }
+  if (context === undefined) {
+    // 만약 AuthProvider 밖에서 사용된다면 에러를 던지지 않고 기본값 혹은 warning을 주는 것도 고려할 수 있지만, 
+    // 여기서는 일관성을 위해 에러를 던지는 Provider 버전의 useAuth를 래핑합니다.
+    throw new Error('useAuth must be used within an AuthProvider')
   }
 
-  return {
-    session,
-    isLoading,
-    isAuthenticated: !!session,
-    signOut,
-  }
+  return context
 }

@@ -1,8 +1,7 @@
-import { Link } from 'react-router-dom'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from '@/shared/routing/navigation'
 import Swal from 'sweetalert2'
-import styled from 'styled-components'
-import { useAuth } from '../../../hooks/useAuth'
+import { useAuth } from '@/hooks/useAuth'
+import Link from 'next/link'
 
 interface CartButtonProps {
   cartState: boolean
@@ -32,26 +31,19 @@ export default function CartButton({ cartState }: CartButtonProps) {
   }
 
   return (
-    <Link to={session ? '/cart' : '#'} onClick={handleCartClick}>
-      <PointerWrapper>
-        <li>CART</li>
-        {session?.user.id && <Pointer cartstate={cartState.toString()} />}
-      </PointerWrapper>
-    </Link>
+    <li className="mr-[50px] last:mr-0">
+      <Link
+        href={session ? '/cart' : '#'}
+        onClick={handleCartClick}
+        className="text-[rgba(20,20,20,1)] text-[1rem] font-bold no-underline"
+      >
+        <span className="relative">
+          CART
+          {session?.user.id && cartState && (
+            <span className="block w-[8px] h-[8px] bg-[rgba(241,28,63,0.877)] absolute right-[-4px] top-[1px] rounded-full" />
+          )}
+        </span>
+      </Link>
+    </li>
   )
 }
-
-const PointerWrapper = styled.div`
-  position: relative;
-`
-
-const Pointer = styled.span<{ cartstate: string }>`
-  display: ${props => (props.cartstate === 'true' ? 'block' : 'none')};
-  width: 9px;
-  height: 9px;
-  background-color: rgba(241, 28, 63, 0.877);
-  position: absolute;
-  right: -4px;
-  top: -4px;
-  border-radius: 50%;
-`

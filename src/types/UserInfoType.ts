@@ -1,10 +1,10 @@
 export type UserInfoType = {
   id: string
   email: string
-  avatar_url: string
+  avatar_url: string | null
   username: string | null
-  admin: boolean | null
-  likes: string[] | null
+  admin: boolean
+  likes: number[] | null
   nickname: string | null
-  status_message: string
+  status_message: string | null
 }

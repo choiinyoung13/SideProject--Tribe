@@ -1,5 +1,45 @@
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap");
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* sample 프로젝트 유틸리티(디자인 동일 적용용) */
+@layer utilities {
+  .font-heading {
+    font-family: "Noto Sans KR", sans-serif;
+    letter-spacing: -0.01em;
+  }
+
+  .animate-fade-in {
+    animation: fade-in 240ms ease-out both;
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .line-clamp-1 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+  }
+  .line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+}
+
 * {
   box-sizing: border-box;
   font-family: "Noto Sans KR", sans-serif;

@@ -1,0 +1,4 @@
+.shop-category-scroll::-webkit-scrollbar {
+  display: none;
+}
+

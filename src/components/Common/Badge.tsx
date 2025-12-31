@@ -1,100 +1,44 @@
-import { AiFillThunderbolt } from "react-icons/ai";
-import { FaHotjar } from "react-icons/fa";
-import styled from "styled-components";
-import { IoHeartSharp } from "react-icons/io5";
+import { AiFillThunderbolt } from 'react-icons/ai'
+import { FaHotjar } from 'react-icons/fa'
+import { IoHeartSharp } from 'react-icons/io5'
 
 interface badgeType {
-  badgeType: "fast" | "hot" | "like";
+  badgeType: 'fast' | 'hot' | 'like'
 }
 
 export default function Badge({ badgeType }: badgeType) {
   return (
-    <BadgeCon>
-      {badgeType === "fast" && (
+    <div className="flex items-center border border-[rgba(200,200,200,1)] border-solid rounded-[30px] px-[8px] py-[5px] w-[86px] max-[480px]:px-[4px] max-[480px]:py-[2px] max-[480px]:w-[64px]">
+      {badgeType === 'fast' && (
         <>
-          <BadgeFastIcon>
+          <span className="text-[0.9rem] text-[rgb(23,241,172)] mr-[4px] max-[480px]:text-[0.8rem]">
             <AiFillThunderbolt />
-          </BadgeFastIcon>
-          <BadgeText>빠른배송</BadgeText>
+          </span>
+          <p className="text-[0.8rem] font-[400] text-[rgba(90,90,90,1)] max-[480px]:text-[0.6rem]">
+            빠른배송
+          </p>
         </>
       )}
-      {badgeType === "hot" && (
+      {badgeType === 'hot' && (
         <>
-          <BadgeHotIcon>
+          <span className="text-[0.7rem] text-[rgba(250,50,167,0.8)] mr-[5px] max-[480px]:text-[0.6rem]">
             <FaHotjar />
-          </BadgeHotIcon>
-          <BadgeText>인기상품</BadgeText>
+          </span>
+          <p className="text-[0.8rem] font-[400] text-[rgba(90,90,90,1)] max-[480px]:text-[0.6rem]">
+            인기상품
+          </p>
         </>
       )}
-      {badgeType === "like" && (
+      {badgeType === 'like' && (
         <>
-          <BadgeLikeIcon>
+          <span className="text-[0.7rem] text-[rgb(231,22,49)] mr-[5px] max-[480px]:text-[0.6rem]">
             <IoHeartSharp />
-          </BadgeLikeIcon>
-          <BadgeText>찜한상품</BadgeText>
+          </span>
+          <p className="text-[0.8rem] font-[400] text-[rgba(90,90,90,1)] max-[480px]:text-[0.6rem]">
+            찜한상품
+          </p>
         </>
       )}
-    </BadgeCon>
-  );
+    </div>
+  )
 }
-
-
-const BadgeCon = styled.div`
-  display: flex;
-  align-items: center;
-  border: 1px solid rgba(200, 200, 200, 1);
-  border-radius: 30px;
-  padding: 5px 8px;
-  width: 86px;
-
-  button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  @media (max-width: 480px) {
-    padding: 2px 4px;
-    width: 64px;
-  }
-`;
-
-const BadgeFastIcon = styled.span`
-  font-size: 0.9rem;
-  color: rgb(23, 241, 172);
-  margin-right: 4px;
-
-  @media (max-width: 480px) {
-    font-size: 0.8rem;
-  }
-`;
-
-const BadgeHotIcon = styled.span`
-  font-size: 0.7rem;
-  color: rgb(250, 50, 167, 0.8);
-  margin-right: 5px;
-
-  @media (max-width: 480px) {
-    font-size: 0.6rem;
-  }
-`;
-
-const BadgeLikeIcon = styled.span`
-  font-size: 0.7rem;
-  color: rgb(231, 22, 49);
-  margin-right: 5px;
-
-  @media (max-width: 480px) {
-    font-size: 0.6rem;
-  }
-`;
-
-const BadgeText = styled.p`
-  font-size: 0.8rem;
-  font-weight: 400;
-  color: rgba(90, 90, 90, 1);
-
-  @media (max-width: 480px) {
-    font-size: 0.6rem;
-  }
-`;

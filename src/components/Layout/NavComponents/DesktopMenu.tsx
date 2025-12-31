@@ -1,64 +1,62 @@
-import { Link } from 'react-router-dom'
-import styled from 'styled-components'
-import { useAuth } from '../../../hooks/useAuth'
-import { useCartState } from '../../../hooks/useCartState'
+import Link from 'next/link'
+import { useAuth } from '@/hooks/useAuth'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { QUERY_KEYS } from '@/shared/constants/queryKeys'
+import { fetchCartItems } from '@/lib/cart/fetchCartItems'
 import CartButton from './CartButton'
 
 export default function DesktopMenu() {
   const { session, signOut } = useAuth()
-  const { cartState, clearCartState } = useCartState()
+  const queryClient = useQueryClient()
+
+  const { data: cartData } = useQuery({
+    queryKey: QUERY_KEYS.CART_ITEMS,
+    queryFn: () => fetchCartItems(session!.user.id),
+    enabled: !!session,
+  })
+
+  const cartState = !!session && !!(cartData?.items && cartData.items.length > 0)
 
   const handleLogout = async () => {
     await signOut()
-    clearCartState()
+    queryClient.removeQueries({ queryKey: QUERY_KEYS.CART_ITEMS })
   }
 
   return (
-    <NavRight>
+    <ul className="flex list-none m-0 p-0 max-[1000px]:hidden max-[768px]:hidden">
       {session ? (
-        <Link to={'/'} onClick={handleLogout}>
-          <li>LOGOUT</li>
-        </Link>
+        <li className="mr-[50px] last:mr-0">
+          <Link
+            href="/"
+            onClick={handleLogout}
+            className="text-[rgba(20,20,20,1)] text-[1rem] font-bold no-underline"
+          >
+            LOGOUT
+          </Link>
+        </li>
       ) : (
-        <Link to={'/login'}>
-          <li>LOGIN</li>
-        </Link>
+        <li className="mr-[50px] last:mr-0">
+          <Link
+            href="/login"
+            className="text-[rgba(20,20,20,1)] text-[1rem] font-bold no-underline"
+          >
+            LOGIN
+          </Link>
+        </li>
       )}
 
       <CartButton cartState={cartState} />
 
       {session && (
-        <Link to={'/mypage'}>
-          <li>MYPAGE</li>
-        </Link>
+        <li className="mr-0">
+          <Link
+            href="/mypage"
+            className="text-[rgba(20,20,20,1)] text-[1rem] font-bold no-underline"
+          >
+            MYPAGE
+          </Link>
+        </li>
       )}
-    </NavRight>
+    </ul>
   )
 }
-
-const NavRight = styled.ul`
-  display: flex;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-
-  a {
-    color: rgba(20, 20, 20, 1);
-    font-size: 1rem;
-    font-weight: bold;
-    text-decoration: none;
-    margin-right: 50px;
-
-    &:last-of-type {
-      margin-right: 0;
-    }
-  }
-
-  @media (max-width: 1000px) {
-    display: none; // 1000px 이하에서 숨김
-  }
-
-  @media (max-width: 768px) {
-    display: none;
-  }
-`

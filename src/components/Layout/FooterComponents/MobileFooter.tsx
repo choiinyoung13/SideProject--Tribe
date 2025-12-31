@@ -1,12 +1,17 @@
-import styled from 'styled-components'
-import { MobileFooterProps } from '../../../types/FooterTypes'
+import { MobileFooterProps } from '@/types/FooterTypes'
 import ToggleSection from './ToggleSection'
 import CustomerServiceSection from './CustomerServiceSection'
 import CompanyInfoSection from './CompanyInfoSection'
 
-export default function MobileFooter({ isNoFooterSection, openSections, toggleSection }: MobileFooterProps) {
+export default function MobileFooter({
+  isNoFooterSection,
+  openSections,
+  toggleSection,
+}: MobileFooterProps) {
+  if (isNoFooterSection) return null
+
   return (
-    <FooterContainer isNoFooterSection={isNoFooterSection}>
+    <div className="w-full flex flex-col justify-center items-start bg-[rgba(30,30,30,1)] px-[20px] pt-[20px] min-w-full text-[rgba(210,210,210,1)]">
       <ToggleSection
         title="고객센터"
         isOpen={openSections.customerService}
@@ -28,24 +33,8 @@ export default function MobileFooter({ isNoFooterSection, openSections, toggleSe
         isOpen={openSections.otherInfo}
         onToggle={() => toggleSection('otherInfo')}
       >
-        <OtherInfoContainer>㈜ TRIBE. Inc. All rights reserved.</OtherInfoContainer>
+        <div className="text-[0.8rem]">㈜ TRIBE. Inc. All rights reserved.</div>
       </ToggleSection>
-    </FooterContainer>
+    </div>
   )
 }
-
-const FooterContainer = styled.div<{ isNoFooterSection: boolean }>`
-  width: 100%;
-  display: ${props => (props.isNoFooterSection ? 'none' : 'flex')};
-  flex-direction: column;
-  justify-content: center;
-  align-items: start;
-  background-color: rgba(30, 30, 30, 1);
-  padding: 20px 20px 0 20px;
-  min-width: 100%;
-  color: rgba(210, 210, 210, 1);
-`
-
-const OtherInfoContainer = styled.div`
-  font-size: 0.8rem;
-`

@@ -1,10 +1,9 @@
-import { Link } from 'react-router-dom'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from '@/shared/routing/navigation'
 import Swal from 'sweetalert2'
-import styled from 'styled-components'
-import { useAuth } from '../../../hooks/useAuth'
-import { useCartState } from '../../../hooks/useCartState'
-import { LAYOUT_CONSTANTS } from '../../../constants/layoutConstants'
+import { useAuth } from '@/hooks/useAuth'
+import Link from 'next/link'
+import { useQueryClient } from '@tanstack/react-query'
+import { QUERY_KEYS } from '@/shared/constants/queryKeys'
 
 interface MobileMenuProps {
   menuOpen: boolean
@@ -13,12 +12,12 @@ interface MobileMenuProps {
 
 export default function MobileMenu({ menuOpen, toggleMenu }: MobileMenuProps) {
   const { session, signOut } = useAuth()
-  const { clearCartState } = useCartState()
+  const queryClient = useQueryClient()
   const navigate = useNavigate()
 
   const handleLogout = async () => {
     await signOut()
-    clearCartState()
+    queryClient.removeQueries({ queryKey: QUERY_KEYS.CART_ITEMS })
     toggleMenu(false)
   }
 
@@ -45,71 +44,78 @@ export default function MobileMenu({ menuOpen, toggleMenu }: MobileMenuProps) {
   if (!menuOpen) return null
 
   return (
-    <MobileMenuContainer>
-      <Link to={'/'} onClick={() => toggleMenu(false)}>
-        <li>HOME</li>
-      </Link>
-      <Link to={'/shop'} onClick={() => toggleMenu(false)}>
-        <li>SHOP</li>
-      </Link>
-      <Link to={'/community'} onClick={() => toggleMenu(false)}>
-        <li>COMMUNITY</li>
-      </Link>
+    <ul className="hidden flex-col list-none m-0 p-0 fixed inset-0 w-full h-full bg-white justify-center items-center z-[9998] max-[1000px]:flex">
+      <li className="my-[20px]">
+        <Link
+          href="/"
+          onClick={() => toggleMenu(false)}
+          className="text-[rgba(20,20,20,1)] text-[1.5rem] font-bold no-underline"
+        >
+          HOME
+        </Link>
+      </li>
+      <li className="my-[20px]">
+        <Link
+          href="/shop"
+          onClick={() => toggleMenu(false)}
+          className="text-[rgba(20,20,20,1)] text-[1.5rem] font-bold no-underline"
+        >
+          SHOP
+        </Link>
+      </li>
+      <li className="my-[20px]">
+        <Link
+          href="/community"
+          onClick={() => toggleMenu(false)}
+          className="text-[rgba(20,20,20,1)] text-[1.5rem] font-bold no-underline"
+        >
+          COMMUNITY
+        </Link>
+      </li>
 
       {session ? (
-        <Link to={'/'} onClick={handleLogout}>
-          <li>LOGOUT</li>
-        </Link>
+        <li className="my-[20px]">
+          <Link
+            href="/"
+            onClick={handleLogout}
+            className="text-[rgba(20,20,20,1)] text-[1.5rem] font-bold no-underline"
+          >
+            LOGOUT
+          </Link>
+        </li>
       ) : (
-        <Link to={'/login'} onClick={() => toggleMenu(false)}>
-          <li>LOGIN</li>
-        </Link>
+        <li className="my-[20px]">
+          <Link
+            href="/login"
+            onClick={() => toggleMenu(false)}
+            className="text-[rgba(20,20,20,1)] text-[1.5rem] font-bold no-underline"
+          >
+            LOGIN
+          </Link>
+        </li>
       )}
 
-      <Link to={session ? '/cart' : '#'} onClick={handleCartClick}>
-        <li>CART</li>
-      </Link>
+      <li className="my-[20px]">
+        <Link
+          href={session ? '/cart' : '#'}
+          onClick={handleCartClick}
+          className="text-[rgba(20,20,20,1)] text-[1.5rem] font-bold no-underline"
+        >
+          CART
+        </Link>
+      </li>
 
       {session && (
-        <Link to={'/mypage'} onClick={() => toggleMenu(false)}>
-          <li>MYPAGE</li>
-        </Link>
+        <li className="my-[20px]">
+          <Link
+            href="/mypage"
+            onClick={() => toggleMenu(false)}
+            className="text-[rgba(20,20,20,1)] text-[1.5rem] font-bold no-underline"
+          >
+            MYPAGE
+          </Link>
+        </li>
       )}
-    </MobileMenuContainer>
+    </ul>
   )
 }
-
-const MobileMenuContainer = styled.ul`
-  display: none;
-  flex-direction: column;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: #fff;
-  justify-content: center;
-  align-items: center;
-  z-index: 9998;
-
-  a {
-    color: rgba(20, 20, 20, 1);
-    font-size: 1.5rem;
-    font-weight: bold;
-    text-decoration: none;
-    margin: 20px 0;
-  }
-
-  @media (max-width: ${LAYOUT_CONSTANTS.BREAKPOINTS.DESKTOP}px) {
-    display: flex;
-  }
-
-  @media (max-width: ${LAYOUT_CONSTANTS.BREAKPOINTS.MOBILE}px) {
-    width: 100%;
-  }
-`

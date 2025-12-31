@@ -7,7 +7,6 @@ export interface NavProps {
 export type PageName = 'login' | 'join' | 'about' | 'community-feature' | ''
 
 export interface AppInstallBannerProps {
-  windowwidth: number
   menuOpen: boolean
 }
 

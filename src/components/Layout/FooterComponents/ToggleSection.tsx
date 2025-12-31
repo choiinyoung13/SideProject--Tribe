@@ -1,6 +1,5 @@
 import { MdKeyboardArrowRight } from 'react-icons/md'
-import styled from 'styled-components'
-import { ToggleSectionProps } from '../../../types/FooterTypes'
+import { ToggleSectionProps } from '@/types/FooterTypes'
 
 export default function ToggleSection({
   title,
@@ -9,48 +8,18 @@ export default function ToggleSection({
   children,
 }: ToggleSectionProps) {
   return (
-    <ToggleSectionContainer>
-      <ToggleHeader onClick={onToggle}>
+    <div className="w-full mb-[10px] pb-[12px] border-b border-b-[rgba(210,210,210,0.1)] last:border-0 last:pb-[4px]">
+      <div
+        className="flex justify-between items-center text-[1rem] font-[600] cursor-pointer p-[10px] bg-[rgba(30,30,30,1)] text-[rgba(210,210,210,1)] max-[1024px]:text-[0.8rem]"
+        onClick={onToggle}
+      >
         {title} <MdKeyboardArrowRight />
-      </ToggleHeader>
-      {isOpen && <ToggleContent>{children}</ToggleContent>}
-    </ToggleSectionContainer>
+      </div>
+      {isOpen && (
+        <div className="p-[10px] bg-[rgba(30,30,30,1)] text-[rgba(210,210,210,1)] text-[0.8rem] font-[300] leading-[28px]">
+          {children}
+        </div>
+      )}
+    </div>
   )
 }
-
-const ToggleSectionContainer = styled.div`
-  width: 100%;
-  margin-bottom: 10px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid rgba(210, 210, 210, 0.1);
-
-  &:last-of-type {
-    border: none;
-    padding-bottom: 4px;
-  }
-`
-
-const ToggleHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  padding: 10px;
-  background-color: rgba(30, 30, 30, 1);
-  color: rgba(210, 210, 210, 1);
-
-  @media (max-width: 1024px) {
-    font-size: 0.8rem;
-  }
-`
-
-const ToggleContent = styled.div`
-  padding: 10px;
-  background-color: rgba(30, 30, 30, 1);
-  color: rgba(210, 210, 210, 1);
-  font-size: 0.8rem;
-  font-weight: 300;
-  line-height: 28px;
-`

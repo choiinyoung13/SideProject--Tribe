@@ -1,78 +1,27 @@
-import styled from 'styled-components'
 import { GrFormPrevious } from 'react-icons/gr'
 import { GrFormNext } from 'react-icons/gr'
 
 export default function PageNation() {
   return (
-    <PageNationCon>
-      <PageNationWrapper>
-        <PrevButton disabled>
+    <div className="w-full max-[768px]:hidden">
+      <div className="w-[22%] min-w-[380px] flex justify-between items-center mx-auto">
+        <button className="bg-transparent border-0 text-[1.6rem] cursor-pointer pt-[5px]" disabled>
           <GrFormPrevious />
-        </PrevButton>
-        <PageNumberCon>
-          <PageNumber className="selected">1</PageNumber>
-          <PageNumber>2</PageNumber>
-          <PageNumber>3</PageNumber>
-          <PageNumber>4</PageNumber>
-          <PageNumber>5</PageNumber>
-          <PageNumber>6</PageNumber>
-        </PageNumberCon>
-        <NextButton>
+        </button>
+        <ul className="w-[70%] h-[40px] flex justify-between items-center">
+          <li className="cursor-pointer flex justify-center items-center bg-[rgba(30,30,30,1)] text-white rounded-full w-[26px] h-[26px] pb-[2px] mt-[3px]">
+            1
+          </li>
+          <li className="cursor-pointer">2</li>
+          <li className="cursor-pointer">3</li>
+          <li className="cursor-pointer">4</li>
+          <li className="cursor-pointer">5</li>
+          <li className="cursor-pointer">6</li>
+        </ul>
+        <button className="bg-transparent border-0 text-[1.6rem] cursor-pointer pt-[5px]">
           <GrFormNext />
-        </NextButton>
-      </PageNationWrapper>
-    </PageNationCon>
+        </button>
+      </div>
+    </div>
   )
 }
-
-const PageNationCon = styled.div`
-  width: 100%;
-
-  @media (max-width: 768px) {
-    display: none;
-  }
-`
-
-const PageNationWrapper = styled.div`
-  width: 22%;
-  min-width: 380px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 0 auto;
-
-  button {
-    background-color: rgba(0, 0, 0, 0);
-    border: none;
-    font-size: 1.6rem;
-    cursor: pointer;
-    padding-top: 5px;
-  }
-`
-const PrevButton = styled.button``
-
-const NextButton = styled.button``
-
-const PageNumberCon = styled.ul`
-  width: 70%;
-  height: 40px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`
-const PageNumber = styled.li`
-  cursor: pointer;
-
-  &.selected {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: rgba(30, 30, 30, 1);
-    color: #fff;
-    border-radius: 50%;
-    width: 26px;
-    height: 26px;
-    padding-bottom: 2px;
-    margin-top: 3px;
-  }
-`

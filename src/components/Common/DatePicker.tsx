@@ -1,16 +1,16 @@
+﻿'use client'
+
 import { useEffect, useState } from 'react'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import './DatePicker.css' // CSS 파일 임포트
-import formatDateFromNumber from '../../utill/formatDateFromNumber'
+import formatDateFromNumber from '@/lib/utils/formatDateFromNumber'
 import { AiOutlineCalendar } from 'react-icons/ai'
-import useWindowWidth from '../../hooks/useWindowWidth'
-import styled from 'styled-components'
-import { formatDateToYYYYMMDD } from '../../utill/formatDateToYYYYMMDD'
-import { useAuth } from '../../hooks/useAuth'
-import { useCartMutations } from '../../mutations/useCartMutations'
-import { checkCartItemReceivingDateById } from '../../config/api/cart/checkCartItemReceivingDate'
-import { CartItemType } from '../../types/CartItemType'
+import { formatDateToYYYYMMDD } from '@/lib/utils/formatDateToYYYYMMDD'
+import { useAuth } from '@/hooks/useAuth'
+import { useCartMutations } from '@/features/cart/mutations/useCartMutations'
+import { checkCartItemReceivingDateById } from '@/lib/cart/checkCartItemReceivingDateById'
+import { CartItemType } from '@/types/CartItemType'
 
 interface FutureDatePickerProps {
   daysOffset: number
@@ -31,11 +31,15 @@ export default function FutureDatePicker({
   isDateSelected,
   type,
 }: FutureDatePickerProps) {
+  const [mounted, setMounted] = useState(false)
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
   const { session } = useAuth()
-  const windowWidth = useWindowWidth()
   const { updateCartItemReceivingDateMutation } = useCartMutations()
   const [isReceivingDateExsisted, setIsReceivingDateExsisted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
     if (session && itemId) {
@@ -77,17 +81,53 @@ export default function FutureDatePicker({
     return today
   }
 
+  const iconColor =
+    isDateSelected !== undefined
+      ? isDateSelected
+        ? 'rgb(18, 202, 147)'
+        : 'rgb(223, 33, 19)'
+      : isReceivingDateExsisted
+        ? 'rgb(18, 202, 147)'
+        : 'rgb(223, 33, 19)'
+
+
+
+  // react-datepicker는 SSR 환경에서 hydration mismatch를 유발할 수 있어
+  // 최초 렌더(서버 + 클라이언트 hydration)에서는 동일한 마크업만 렌더하고,
+  // 마운트 이후에만 DatePicker를 렌더합니다.
+  if (!mounted) {
+    return (
+      <div className="flex items-center w-full">
+        <label className="flex items-center justify-center text-[1.4rem] text-[rgba(100,100,100,1)] w-full">
+          <div
+            className="cursor-pointer max-[500px]:text-[1.3rem]"
+            style={{ color: iconColor }}
+          >
+            <AiOutlineCalendar />
+          </div>
+          <div className="w-[10px]" />
+          <input
+            className={`dp-full-width ${type}`}
+            style={{ padding: '4px 4px 6px 4px' }}
+            value={receivingDate !== 0 ? formatDateFromNumber(receivingDate) : ''}
+            placeholder={'수령일을 선택해주세요'}
+            readOnly
+          />
+        </label>
+      </div>
+    )
+  }
+
   return (
-    <DatePickerCon>
-      <DataPickerLabel>
-        <DatePickerIcon
-          isreceivingdateexsisted={isReceivingDateExsisted}
-          isdateselected={isDateSelected}
-          datepickertype={type}
+    <div className="flex items-center w-full">
+      <label className="flex items-center justify-center text-[1.4rem] text-[rgba(100,100,100,1)] w-full">
+        <div
+          className="cursor-pointer max-[500px]:text-[1.3rem]"
+          style={{ color: iconColor }}
         >
           <AiOutlineCalendar />
-        </DatePickerIcon>
-        <Space />
+        </div>
+        <div className="w-[10px]" />
         <DatePicker
           wrapperClassName="dp-full-width-wrapper"
           className={`dp-full-width ${type}`}
@@ -99,58 +139,12 @@ export default function FutureDatePicker({
           placeholderText={'수령일을 선택해주세요'}
           customInput={
             <input
-              style={{
-                fontSize: windowWidth <= 600 ? '0.8rem' : '0.9rem',
-                padding: '4px 4px 6px 4px',
-              }}
+              style={{ padding: '4px 4px 6px 4px' }}
             />
           }
         />
-      </DataPickerLabel>
-    </DatePickerCon>
+      </label>
+    </div>
   )
 }
 
-const DatePickerCon = styled.div`
-  display: flex;
-  align-items: center;
-  width: 100%;
-`
-
-const DataPickerLabel = styled.label`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.4rem;
-  color: rgba(100, 100, 100, 1);
-  width: 100%;
-`
-
-const Space = styled.div`
-  width: 10px;
-`
-
-const DatePickerIcon = styled.div<{
-  isreceivingdateexsisted: boolean
-  isdateselected: boolean | undefined
-  datepickertype: string | undefined
-}>`
-  cursor: pointer;
-  color: ${props =>
-    props.isdateselected !== undefined
-      ? props.isdateselected
-        ? 'rgb(18, 202, 147)'
-        : 'rgb(223, 33, 19)'
-      : props.isreceivingdateexsisted
-      ? 'rgb(18, 202, 147)'
-      : 'rgb(223, 33, 19)'};
-
-  @media (max-width: 530px) {
-    position: ${props =>
-      props.datepickertype === 'productDetail' ? 'block' : 'absolute'};
-  }
-
-  @media (max-width: 500px) {
-    font-size: 1.3rem;
-  }
-`

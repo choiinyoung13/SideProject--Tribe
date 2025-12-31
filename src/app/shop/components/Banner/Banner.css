@@ -1,0 +1,16 @@
+.banner-nav::after {
+  color: rgba(150, 150, 150, 1);
+  font-size: 2rem;
+}
+
+.banner-nav:hover::after {
+  color: rgba(20, 20, 20, 1);
+}
+
+@media (max-width: 600px) {
+  .banner-nav::after {
+    font-size: 1.5rem;
+  }
+}
+
+

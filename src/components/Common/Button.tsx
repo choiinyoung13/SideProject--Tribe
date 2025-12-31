@@ -1,8 +1,7 @@
 import { MdOutlineKeyboardArrowRight } from 'react-icons/md'
-import styled from 'styled-components'
 
 type ButtonProps = {
-  children: string
+  children: React.ReactNode
   hover: string
   btntype?: 'link'
   colortype: 'white' | 'black'
@@ -16,72 +15,24 @@ export default function Button({
   colortype,
   onClick,
 }: ButtonProps) {
+  const base =
+    'flex items-center text-[1rem] px-[20px] py-[10px] cursor-pointer rounded-[10px] max-[768px]:px-[16px] max-[768px]:py-[8px] max-[768px]:text-[0.9rem] max-[414px]:w-[120px] max-[414px]:text-[0.6rem] max-[414px]:px-[10px] max-[414px]:py-[6px]'
+
+  const color =
+    colortype === 'white'
+      ? 'bg-white text-[rgba(20,20,20,1)] border border-[rgba(150,150,150,0.5)]'
+      : 'bg-[rgba(20,20,20,1)] text-white border-0'
+
+  const hoverClass = hover === 'true' ? 'hover:bg-[rgba(40,40,40,1)]' : ''
+
   return (
-    <Btn hover={hover} colortype={colortype} onClick={onClick}>
+    <button type="button" className={`${base} ${color} ${hoverClass}`} onClick={onClick}>
       {children}
       {btntype === 'link' && (
-        <RightIcon>
+        <span className="flex items-center ml-[20px] text-[24px] max-[768px]:text-[20px] max-[768px]:ml-[10px] max-[414px]:ml-0 max-[414px]:text-[14px]">
           <MdOutlineKeyboardArrowRight />
-        </RightIcon>
+        </span>
       )}
-    </Btn>
+    </button>
   )
 }
-
-interface ButtonPropsType {
-  hover: string
-  colortype: string
-}
-
-const Btn = styled.button<ButtonPropsType>`
-  display: flex;
-  align-items: center;
-  font-size: 1rem;
-  background-color: ${props =>
-    props.colortype === 'white'
-      ? 'rgba(255,255,255,1)'
-      : 'rgba(20, 20, 20, 1)'};
-  color: ${props =>
-    props.colortype === 'white'
-      ? 'rgba(20, 20, 20, 1)'
-      : 'rgba(255,255,255,1)'};
-  padding: 10px 20px;
-  cursor: pointer;
-  border: 1px solid
-    ${props =>
-      props.colortype === 'white' ? 'rgba(150, 150, 150, 0.5)' : 'none'};
-  border-radius: 10px;
-
-  &:hover {
-    background-color: ${props =>
-      props.hover === 'true' ? 'rgba(40,40,40,1)' : ''};
-  }
-
-  @media (max-width: 768px) {
-    padding: 8px 16px;
-    font-size: 0.9rem;
-  }
-
-  @media (max-width: 414px) {
-    width: 120px;
-    font-size: 0.6rem;
-    padding: 6px 10px;
-  }
-`
-
-const RightIcon = styled.span`
-  display: flex;
-  align-items: center;
-  margin-left: 20px;
-  font-size: 24px;
-
-  @media (max-width: 768px) {
-    font-size: 20px;
-    margin-left: 10px;
-  }
-
-  @media (max-width: 414px) {
-    margin-left: 0px;
-    font-size: 14px;
-  }
-`

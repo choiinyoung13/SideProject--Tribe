@@ -1,5 +1,3 @@
-import styled from 'styled-components'
-
 interface InputType {
   type: 'text' | 'password'
   placeholder: string
@@ -7,7 +5,8 @@ interface InputType {
 
 export default function Input({ type, placeholder }: InputType) {
   return (
-    <FormInput
+    <input
+      className="px-[12px] py-[10px] text-[1rem] w-full bg-[rgb(245,245,245)] border border-[rgba(220,220,220,1)] rounded-[6px] max-[1450px]:w-[300px] max-[600px]:text-[0.8rem] max-[600px]:mx-auto max-[600px]:mb-[14px]"
       autoComplete="off"
       type={type}
       placeholder={placeholder}
@@ -15,21 +14,3 @@ export default function Input({ type, placeholder }: InputType) {
     />
   )
 }
-
-const FormInput = styled.input`
-  padding: 10px 12px;
-  font-size: 1rem;
-  width: 100%;
-  background-color: rgb(245, 245, 245);
-  border: 1px solid rgba(220, 220, 220, 1);
-  border-radius: 6px;
-
-  @media (max-width: 1450px) {
-    width: 300px;
-  }
-
-  @media (max-width: 600px) {
-    font-size: 0.8rem;
-    margin: 0 auto 14px;
-  }
-`

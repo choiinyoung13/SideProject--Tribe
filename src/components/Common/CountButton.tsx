@@ -1,8 +1,7 @@
-import styled from 'styled-components'
-import { AiOutlinePlus, AiOutlineMinus } from 'react-icons/ai'
-import { useCartMutations } from '../../mutations/useCartMutations'
+﻿import { AiOutlinePlus, AiOutlineMinus } from 'react-icons/ai'
+import { useCartMutations } from '@/features/cart/mutations/useCartMutations'
 import { useEffect } from 'react'
-import { CartItemType } from '../../types/CartItemType'
+import { CartItemType } from '@/types/CartItemType'
 
 interface CountButtonPropsType {
   type?: string
@@ -28,12 +27,47 @@ export default function CountButton({
 
   useEffect(() => {
     if (setOrderInfo) setOrderInfo(prev => ({ ...prev, quantity: count }))
-  }, [count])
+  }, [count, setOrderInfo])
+
+  const pad = type === 'cart' ? 'p-[6px]' : 'p-[4px]'
+  const font = type === 'cart' ? 'text-[1.1rem]' : 'text-[0.9rem]'
+  const countPad = type === 'cart' ? 'p-[6px]' : 'p-[4px]'
+  const countFont = type === 'cart' ? 'text-[1rem]' : 'text-[0.9rem]'
+
+  if (type === 'productDetail') {
+    return (
+      <div className="rounded-lg flex items-center bg-white border-0">
+        <button
+          className="py-2 pl-3 pr-3 cursor-pointer flex items-center justify-center text-[rgba(60,60,60,1)] hover:bg-[rgba(250,250,250,1)] transition-colors border-0 bg-transparent"
+          onClick={() => {
+            if (setCount && count > 1) {
+              setCount(prev => prev - 1)
+            }
+          }}
+        >
+          <AiOutlineMinus size={14} />
+        </button>
+        <div className="border-l border-r border-[rgba(240,240,240,1)] px-3 py-2 flex items-center justify-center min-w-[32px] text-[rgba(60,60,60,1)] text-sm">
+          {count}
+        </div>
+        <button
+          className="py-2 pl-3 pr-3 cursor-pointer flex items-center justify-center text-[rgba(60,60,60,1)] hover:bg-[rgba(250,250,250,1)] transition-colors border-0 bg-transparent"
+          onClick={() => {
+            if (setCount) {
+              setCount(prev => prev + 1)
+            }
+          }}
+        >
+          <AiOutlinePlus size={14} />
+        </button>
+      </div>
+    )
+  }
 
   return (
-    <ButtonCon>
-      <MinusButton
-        type={type}
+    <div className="border border-[rgba(200,200,200,1)] rounded-[6px] flex">
+      <div
+        className={`${pad} ${font} cursor-pointer flex items-start justify-center max-[1024px]:p-[4px] max-[1024px]:text-[0.9rem] max-[400px]:p-[2px] max-[400px]:text-[0.8rem]`}
         onClick={() => {
           if (type === 'cart') {
             const direction = 'minus'
@@ -41,101 +75,28 @@ export default function CountButton({
             cartItemQuantityMutation.mutate({ cartId, itemId, direction })
             return
           }
-          if (type === 'productDetail' && setCount) {
-            if (count === 1) return
-            setCount(prev => prev - 1)
-            return
-          }
         }}
       >
         <AiOutlineMinus />
-      </MinusButton>
-      <Count type={type}>{type === 'productDetail' ? count : quantity}</Count>
-      <PlusButton
-        type={type}
+      </div>
+      <div
+        className={`border-l border-r border-[rgba(200,200,200,1)] ${countPad} flex items-start justify-center w-[24px] ${countFont} max-[1024px]:p-[4px] max-[1024px]:text-[0.9rem] max-[400px]:p-[2px] max-[400px]:text-[0.8rem]`}
+      >
+        {quantity}
+      </div>
+      <div
+        className={`${pad} ${font} cursor-pointer flex items-start justify-center max-[1024px]:p-[4px] max-[1024px]:text-[0.9rem] max-[400px]:p-[2px] max-[400px]:text-[0.8rem]`}
         onClick={() => {
           if (type === 'cart') {
             const direction = 'plus'
             cartItemQuantityMutation.mutate({ cartId, itemId, direction })
             return
           }
-          if (type === 'productDetail' && setCount) {
-            setCount(prev => prev + 1)
-            return
-          }
         }}
       >
         <AiOutlinePlus />
-      </PlusButton>
-    </ButtonCon>
+      </div>
+    </div>
   )
 }
 
-interface CountButtonType {
-  type?: string
-}
-
-const ButtonCon = styled.div`
-  border: 1px solid rgba(200, 200, 200, 1);
-  border-radius: 6px;
-  display: flex;
-`
-
-const PlusButton = styled.div<CountButtonType>`
-  padding: ${props => (props.type === 'cart' ? '6px' : '4px')};
-  cursor: pointer;
-  display: flex;
-  align-items: start;
-  justify-content: center;
-  font-size: ${props => (props.type === 'cart' ? '1.1rem' : '0.9rem')};
-
-  @media (max-width: 1024px) {
-    padding: 4px;
-    font-size: 0.9rem;
-  }
-
-  @media (max-width: 400px) {
-    padding: 2px;
-    font-size: 0.8rem;
-  }
-`
-
-const MinusButton = styled.div<CountButtonType>`
-  padding: ${props => (props.type === 'cart' ? '6px' : '4px')};
-  cursor: pointer;
-  display: flex;
-  align-items: start;
-  justify-content: center;
-  font-size: ${props => (props.type === 'cart' ? '1.1rem' : '0.9rem')};
-
-  @media (max-width: 1024px) {
-    padding: 4px;
-    font-size: 0.9rem;
-  }
-
-  @media (max-width: 400px) {
-    padding: 2px;
-    font-size: 0.8rem;
-  }
-`
-
-const Count = styled.div<CountButtonType>`
-  border-left: 1px solid rgba(200, 200, 200, 1);
-  border-right: 1px solid rgba(200, 200, 200, 1);
-  padding: ${props => (props.type === 'cart' ? '6px' : '4px')};
-  display: flex;
-  align-items: start;
-  justify-content: center;
-  width: 24px;
-  font-size: ${props => (props.type === 'cart' ? '1rem' : '0.9rem')};
-
-  @media (max-width: 1024px) {
-    padding: 4px;
-    font-size: 0.9rem;
-  }
-
-  @media (max-width: 400px) {
-    padding: 2px;
-    font-size: 0.8rem;
-  }
-`
