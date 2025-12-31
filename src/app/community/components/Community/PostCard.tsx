@@ -3,10 +3,11 @@ import { Heart, MessageSquare, Share2 } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 import Swal from 'sweetalert2'
 import { useNavigate } from '@/shared/routing/navigation'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueryClient, type InfiniteData } from '@tanstack/react-query'
 import { togglePostLike } from '@/app/community/lib/post/togglePostLike'
 import UserInfoModal from './UserInfoModal'
 import type { PostWithAuthor } from '@/app/community/lib/post/_types'
+import type { FetchPostsResponse } from '@/app/community/lib/post/_types'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import 'dayjs/locale/ko'
@@ -36,11 +37,55 @@ export default function PostCard({ post }: PostCardProps) {
 
   const { mutate } = useMutation({
     mutationFn: togglePostLike,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['posts'], exact: false })
+    onMutate: async ({ postId, userId }) => {
+      // 진행 중인 쿼리 취소
+      await queryClient.cancelQueries({ queryKey: ['posts'] })
+
+      // 이전 데이터 백업
+      const previousQueries = queryClient.getQueriesData({ queryKey: ['posts'] })
+
+      // 모든 posts 쿼리에 대해 낙관적 업데이트
+      queryClient.setQueriesData<InfiniteData<FetchPostsResponse>>(
+        { queryKey: ['posts'] },
+        old => {
+          if (!old) return old
+
+          return {
+            ...old,
+            pages: old.pages.map(page => ({
+              ...page,
+              posts: page.posts.map(p => {
+                if (p.id !== postId) return p
+
+                const currentLiked = Array.isArray(p.liked) ? p.liked : []
+                const isCurrentlyLiked = currentLiked.includes(userId)
+                const newLiked = isCurrentlyLiked
+                  ? currentLiked.filter(id => id !== userId)
+                  : [...currentLiked, userId]
+
+                return {
+                  ...p,
+                  liked: newLiked,
+                }
+              }),
+            })),
+          }
+        }
+      )
+
+      // 롤백을 위한 이전 데이터 반환
+      return { previousQueries }
     },
-    onError: error => {
+    onError: (error, variables, context) => {
       console.error('좋아요 업데이트 오류:', error)
+
+      // 이전 데이터로 롤백
+      if (context?.previousQueries) {
+        context.previousQueries.forEach(([queryKey, data]) => {
+          queryClient.setQueryData(queryKey, data)
+        })
+      }
+
       Swal.fire({
         text: '좋아요 업데이트에 실패했습니다.',
         icon: 'error',
@@ -48,6 +93,10 @@ export default function PostCard({ post }: PostCardProps) {
         confirmButtonText: '확인',
         scrollbarPadding: false,
       })
+    },
+    onSettled: () => {
+      // 성공/실패 관계없이 최종적으로 서버 데이터와 동기화
+      queryClient.invalidateQueries({ queryKey: ['posts'], exact: false })
     },
   })
 
