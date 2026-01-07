@@ -107,7 +107,24 @@ export function useCartMutations() {
     onMutate: async variables => {
       const { itemId } = variables
 
-      // 낙관적 업데이트: 모든 shop items 쿼리의 캐시를 업데이트
+      // 현재 아이템의 isInCart 상태 확인
+      const queriesData = queryClient.getQueriesData<InfiniteData<FetchShopItemsResponse>>({
+        queryKey: ['items'],
+      })
+      
+      let currentIsInCart = false
+      queriesData.forEach(([, data]) => {
+        if (data) {
+          data.pages.forEach(page => {
+            const item = page.items.find(item => item.id === itemId)
+            if (item) {
+              currentIsInCart = item.isInCart
+            }
+          })
+        }
+      })
+
+      // 낙관적 업데이트: 토글 방식으로 isInCart 상태 변경
       queryClient.setQueriesData<InfiniteData<FetchShopItemsResponse>>(
         { queryKey: ['items'] },
         oldData => {
@@ -118,7 +135,7 @@ export function useCartMutations() {
             pages: oldData.pages.map(page => ({
               ...page,
               items: page.items.map(item =>
-                item.id === itemId ? { ...item, isInCart: true } : item
+                item.id === itemId ? { ...item, isInCart: !currentIsInCart } : item
               ),
             })),
           }
