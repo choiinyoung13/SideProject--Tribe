@@ -16,11 +16,12 @@ export default function RealTimeKeywords({
 }: RealTimeKeywordsProps) {
   const navigate = useNavigate()
 
-  const { data: keywords, isLoading } = useQuery<Keyword[]>({
+  const { data: keywords, isLoading, error } = useQuery<Keyword[]>({
     queryKey: ['top5Keywords'],
     queryFn: fetchTop5Keywords,
-    staleTime: 1000 * 60,
+    staleTime: 1000 * 30, // 30초로 줄여서 더 자주 업데이트
     gcTime: 1000 * 60 * 5,
+    refetchOnWindowFocus: true, // 창 포커스 시 자동 refetch
   })
 
   const handleKeywordClick = async (keyword: string) => {
@@ -37,6 +38,14 @@ export default function RealTimeKeywords({
         {skeletonArray.map((_, i) => {
           return <div key={i} className="w-full h-[40px] bg-white" />
         })}
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="text-[1rem] font-[500] text-[#888] text-center p-[20px]">
+        키워드를 불러오는 중 오류가 발생했습니다.
       </div>
     )
   }

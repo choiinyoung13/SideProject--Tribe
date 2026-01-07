@@ -9,13 +9,17 @@ export const saveSearchKeywords = async (searchQuery: string) => {
   const { data } = await supabase.auth.getUser()
   const user = data?.user
 
-  // 비회원의 경우 IP 주소 가져오기
+  // 비회원의 경우 IP 주소 가져오기 (실패해도 계속 진행)
   let ipAddress = ''
   if (!user) {
-    ipAddress = (await fetchIpAddress()) ?? ''
-    if (!ipAddress) {
-      console.error('IP 주소 가져오기 실패.')
-      return
+    try {
+      ipAddress = (await fetchIpAddress()) ?? ''
+      if (!ipAddress) {
+        console.warn('IP 주소를 가져오지 못했습니다. IP 없이 키워드를 저장합니다.')
+      }
+    } catch (error) {
+      console.warn('IP 주소 가져오기 실패. IP 없이 키워드를 저장합니다.', error)
+      // IP 주소를 가져오지 못해도 키워드 저장은 계속 진행
     }
   }
 

@@ -8,6 +8,8 @@ import PostGridClient from './components/Community/PostGridClient'
 import WritePostButton from './components/Community/WritePostButton'
 import FollowRecommendsClient from './components/Community/FollowRecommendsClient'
 import SortAccordion from './components/Community/SortAccordion'
+import PopularKeywordsClient from './components/Community/PopularKeywordsClient'
+import SearchFormClient from './components/Community/SearchFormClient'
 import {
   Calendar,
   ChevronDown,
@@ -50,7 +52,7 @@ export default async function Page({ searchParams }: Props) {
   const user = await getOptionalUser()
   const queryClient = new QueryClient()
 
-  const [{ categories, recommends }, , keywords] = await Promise.all([
+  const [{ categories, recommends }] = await Promise.all([
     getCommunityInitialData(user?.id ?? null, searchKeyword),
     queryClient.prefetchInfiniteQuery({
       queryKey: ['posts', tabValue, searchKeyword],
@@ -65,7 +67,11 @@ export default async function Page({ searchParams }: Props) {
       getNextPageParam: (lastPage: FetchPostsResponse) =>
         lastPage.nextCursor ?? undefined,
     }),
-    fetchTop5KeywordsServer(),
+    // 인기 키워드는 클라이언트에서 tanstack query로 가져오므로 prefetch만 수행
+    queryClient.prefetchQuery({
+      queryKey: ['top5Keywords'],
+      queryFn: fetchTop5KeywordsServer,
+    }),
   ])
 
   const dehydratedState = dehydrate(queryClient)
@@ -228,23 +234,7 @@ export default async function Page({ searchParams }: Props) {
         <section className="space-y-6 min-w-0">
           {/* Search & Action Bar */}
           <div className="bg-white rounded-[20px] p-2 shadow-[0_8px_24px_rgba(15,23,42,0.08)] border border-gray-100 flex items-center flex-nowrap gap-2">
-            <div className="relative flex-1 min-w-0">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <Search className="h-5 w-5 text-gray-400" />
-              </div>
-              <form action="/community" method="GET">
-                {tabValue ? (
-                  <input type="hidden" name="tab" value={String(tabValue)} />
-                ) : null}
-                <input
-                  type="text"
-                  className="block w-full pl-11 pr-3 py-3 border-none rounded-2xl text-gray-900 bg-gray-50 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:bg-white transition-all text-sm font-medium"
-                  placeholder="궁금한 키워드를 검색해보세요 (예: 몬스테라, 분갈이)"
-                  name="q"
-                  defaultValue={searchKeyword}
-                />
-              </form>
-            </div>
+            <SearchFormClient />
 
             <div className="flex gap-2 shrink-0">
               {searchKeyword && (
@@ -275,47 +265,9 @@ export default async function Page({ searchParams }: Props) {
             <WritePostButton variant="cta" />
           </div>
 
-          <div className="bg-white rounded-2xl shadow-[0_8px_24px_rgba(15,23,42,0.08)] border border-gray-100 p-5">
-            <div className="flex items-center gap-2 mb-4">
-              <TrendingUp size={18} className="text-gray-900" />
-              <h3 className="font-bold text-gray-900 font-heading">
-                주간 인기 키워드
-              </h3>
-            </div>
-            <div className="space-y-3">
-              {(keywords ?? []).slice(0, 5).map((kw, idx) => {
-                const rank = idx + 1
-                return (
-                  <Link
-                    key={`${kw.keyword}-${idx}`}
-                    href={buildCommunityHref({
-                      tab: tabValue,
-                      q: kw.keyword,
-                    })}
-                    className="flex items-center justify-between group"
-                  >
-                    <div className="flex items-center gap-3">
-                      <span
-                        className={`flex items-center justify-center w-6 h-6 rounded-md text-xs font-bold ${
-                          rank <= 3
-                            ? 'bg-emerald-100 text-emerald-700'
-                            : 'bg-gray-100 text-gray-500'
-                        }`}
-                      >
-                        {rank}
-                      </span>
-                      <span className="text-sm text-gray-600 group-hover:text-emerald-600 transition-colors">
-                        {kw.keyword}
-                      </span>
-                    </div>
-                    <span className="text-xs text-gray-400">
-                      {kw.search_count}
-                    </span>
-                  </Link>
-                )
-              })}
-            </div>
-          </div>
+          <ReactQueryHydrate state={dehydratedState}>
+            <PopularKeywordsClient />
+          </ReactQueryHydrate>
 
           <div className="bg-white rounded-2xl shadow-[0_8px_24px_rgba(15,23,42,0.08)] border border-gray-100 p-5">
             <div className="flex items-center gap-2 mb-4">

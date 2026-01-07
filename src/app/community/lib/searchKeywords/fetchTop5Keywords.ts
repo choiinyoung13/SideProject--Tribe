@@ -20,12 +20,32 @@ export const fetchTop5Keywords = async (): Promise<Keyword[]> => {
     return []
   }
 
-  const sortedKeywords = [...data].sort((a, b) => {
-    if (b.search_count === a.search_count) {
-      return a.keyword.localeCompare(b.keyword)
-    }
-    return b.search_count - a.search_count
-  })
+  if (!data || !Array.isArray(data)) {
+    console.warn('인기 키워드 데이터가 없거나 배열이 아닙니다.')
+    return []
+  }
+
+  type KeywordRow = {
+    keyword: string | null
+    search_count: number | null
+  }
+
+  const rows = data as KeywordRow[]
+  const sortedKeywords = [...rows]
+    .filter(row => row.keyword && row.search_count !== null)
+    .sort((a, b) => {
+      const aCount = Number(a.search_count ?? 0)
+      const bCount = Number(b.search_count ?? 0)
+
+      if (bCount === aCount) {
+        return String(a.keyword ?? '').localeCompare(String(b.keyword ?? ''))
+      }
+      return bCount - aCount
+    })
+    .map(row => ({
+      keyword: String(row.keyword ?? ''),
+      search_count: Number(row.search_count ?? 0),
+    }))
 
   return sortedKeywords as Keyword[]
 }

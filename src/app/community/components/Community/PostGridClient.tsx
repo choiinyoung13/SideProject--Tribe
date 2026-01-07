@@ -2,12 +2,13 @@
 
 import { useEffect, useMemo, useRef } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { useSuspenseInfiniteQuery } from '@tanstack/react-query'
+import { useSuspenseInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { useInView } from 'react-intersection-observer'
 import PostCard from './PostCard'
 import { fetchPostsPerPage } from '@/app/community/lib/post/fetchPostsPerPage'
 import EmptySearchResult from '@/components/Common/EmptySearchResult'
 import { useCommunitySortStore } from '@/store/communitySort.store'
+import { saveSearchKeywords } from '@/app/community/lib/searchKeywords/saveSearchKeywords'
 
 export default function PostGridClient() {
   const searchParams = useSearchParams()
@@ -15,6 +16,7 @@ export default function PostGridClient() {
   const tabValue = tabParam ? Number(tabParam) : 0
   const q = (searchParams.get('q') ?? '').trim()
   const sortValue = useCommunitySortStore(s => s.sort)
+  const queryClient = useQueryClient()
 
   const prevInViewRef = useRef(false)
   const [ref, inView] = useInView({ threshold: 0, delay: 0 })
@@ -28,6 +30,24 @@ export default function PostGridClient() {
       getNextPageParam: lastPage => lastPage.nextCursor ?? undefined,
       staleTime: 60 * 1000,
     })
+
+  // 검색어가 변경될 때 키워드 저장 및 인기 키워드 목록 갱신
+  useEffect(() => {
+    if (q && q.length > 0) {
+      saveSearchKeywords(q)
+        .then(() => {
+          // 키워드 저장 후 약간의 딜레이를 두고 인기 키워드 목록 갱신
+          // (DB 집계 반영 시간 고려)
+          setTimeout(() => {
+            queryClient.invalidateQueries({ queryKey: ['top5Keywords'] })
+            queryClient.refetchQueries({ queryKey: ['top5Keywords'] })
+          }, 500)
+        })
+        .catch(error => {
+          console.error('키워드 저장 실패:', error)
+        })
+    }
+  }, [q, queryClient])
 
   // InView Logic
   useEffect(() => {

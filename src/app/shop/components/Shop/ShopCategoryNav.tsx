@@ -82,30 +82,36 @@ function CategoryList({
             <Link
               href={hrefForTab(cat.id, searchKeyword)}
               scroll={false}
-              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm transition-all duration-200 group ${isActive
-                ? 'bg-[#141414] text-white font-semibold'
-                : 'text-gray-600 hover:bg-gray-50 hover:text-emerald-600'
-                }`}
+              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm transition-all duration-200 group ${
+                isActive
+                  ? 'bg-[#141414] text-white font-semibold'
+                  : 'text-gray-600 hover:bg-gray-50 hover:text-emerald-600'
+              }`}
             >
               <span className="flex items-center gap-3 min-w-0">
                 <span
-                  className={`shrink-0 flex items-center justify-center translate-y-[1px] ${isActive
-                    ? 'text-white'
-                    : 'text-gray-400 group-hover:text-emerald-500'
-                    }`}
+                  className={`shrink-0 flex items-center justify-center translate-y-[1px] ${
+                    isActive
+                      ? 'text-white'
+                      : 'text-gray-400 group-hover:text-emerald-500'
+                  }`}
                 >
                   {getCategoryIcon(cat.title)}
                 </span>
                 <span
-                  className={`font-medium leading-none truncate ${isActive ? 'text-white' : ''
-                    }`}
+                  className={`font-medium leading-none truncate ${
+                    isActive ? 'text-white' : ''
+                  }`}
                 >
                   {cat.title}
                 </span>
               </span>
               <span
-                className={`text-xs px-2 py-0.5 rounded-full ${isActive ? 'bg-white/15 text-white' : 'bg-gray-100 text-gray-500'
-                  }`}
+                className={`text-xs px-2 py-0.5 rounded-full ${
+                  isActive
+                    ? 'bg-white/15 text-white'
+                    : 'bg-gray-100 text-gray-500'
+                }`}
               >
                 {count}
               </span>
@@ -147,7 +153,11 @@ export default function ShopCategoryNav({
           <ChevronDown size={18} className="text-gray-400 shrink-0" />
         </summary>
         <div className="px-3 pb-3">
-          <CategoryList activeTab={activeTab} counts={counts} searchKeyword={searchKeyword} />
+          <CategoryList
+            activeTab={activeTab}
+            counts={counts}
+            searchKeyword={searchKeyword}
+          />
         </div>
       </details>
     )
@@ -155,9 +165,11 @@ export default function ShopCategoryNav({
 
   return (
     <div className="bg-white rounded-2xl shadow-[0_8px_24px_rgba(15,23,42,0.08)] p-4 border border-gray-100">
-      <CategoryList activeTab={activeTab} counts={counts} searchKeyword={searchKeyword} />
+      <CategoryList
+        activeTab={activeTab}
+        counts={counts}
+        searchKeyword={searchKeyword}
+      />
     </div>
   )
 }
-
-

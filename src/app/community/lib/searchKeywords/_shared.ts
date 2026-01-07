@@ -45,7 +45,11 @@ export const fetchIpAddress = async () => {
     const response = await axios.get('https://ipapi.co/json/')
     return response.data.ip as string
   } catch (error) {
-    console.error('IP 주소를 가져오는 중 오류 발생:', error)
+    // IP 주소를 가져오지 못해도 키워드 저장은 계속 진행되므로 경고만 출력
+    // 네트워크 에러는 흔히 발생할 수 있으므로 조용히 처리
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('IP 주소를 가져오지 못했습니다. 키워드는 정상적으로 저장됩니다.')
+    }
     return null
   }
 }
