@@ -19,8 +19,6 @@ import {
   Info,
   MessageCircle,
   MoreHorizontal,
-  Search,
-  TrendingUp,
   UserPlus,
 } from 'lucide-react'
 import { QueryClient, dehydrate } from '@tanstack/react-query'
