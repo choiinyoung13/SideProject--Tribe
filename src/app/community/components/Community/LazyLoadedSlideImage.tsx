@@ -45,7 +45,7 @@ export default function LazyLoadedSlideImage({
   // 다음 이미지를 미리 로드하는 로직 추가
   useEffect(() => {
     if (preloadNextImageSrc) {
-      const img = new Image()
+      const img = new window.Image()
       img.src = preloadNextImageSrc // 다음 슬라이드 이미지를 미리 로드
     }
   }, [preloadNextImageSrc])
