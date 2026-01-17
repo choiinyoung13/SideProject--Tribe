@@ -13,6 +13,7 @@ import { useUserInfoMutations } from '@/features/user/mutations/useUserInfoMutat
 import defaultImage from '@/assets/images/shop_item/default-image.png'
 import Swal from 'sweetalert2'
 import { assetSrc } from '@/shared/lib/asset'
+import Image from 'next/image'
 
 type BadgeType = 'hot' | 'fast'
 
@@ -70,17 +71,13 @@ export default function ItemCard({
       }}
     >
       <div className="relative w-full aspect-square rounded-[20px] overflow-hidden bg-[rgba(230,230,230,1)]">
-        <img
+        <Image
           src={imgSrc}
           alt="item image"
-          draggable="false"
-          loading="lazy"
-          onError={() => {
-            // fallback으로 교체
-            const fallback = assetSrc(defaultImage)
-            if (imgSrc !== fallback) setImgSrc(fallback)
-          }}
-          className="w-full h-full object-cover"
+          fill
+          sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+          className="object-cover"
+          unoptimized={!imgSrc.startsWith('http')}
         />
       </div>
 

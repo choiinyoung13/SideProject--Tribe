@@ -11,6 +11,8 @@ import type { FetchPostsResponse } from '@/app/community/lib/post/_types'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import 'dayjs/locale/ko'
+import Image from 'next/image'
+import Link from 'next/link'
 
 dayjs.extend(relativeTime)
 dayjs.locale('ko')
@@ -106,10 +108,6 @@ export default function PostCard({ post }: PostCardProps) {
     isUserLoggedIn && isLikedArray && post.liked?.includes(session.user.id)
   const isLiked = !!isUserInLikedList
 
-  const handleCardClick = () => {
-    navigate(`/community/post/${post.id}`)
-  }
-
   const handleUserInfoClick = () => {
     setIsUserInfoModalOpen(true)
   }
@@ -146,23 +144,24 @@ export default function PostCard({ post }: PostCardProps) {
         />
       )}
 
-      <article
-        onClick={handleCardClick}
+      <Link
+        href={`/community/post/${post.id}`}
         className="group bg-white rounded-[24px] shadow-[0_10px_28px_rgba(15,23,42,0.10)] border border-gray-100 hover:shadow-[0_18px_46px_rgba(15,23,42,0.16)] hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col h-full cursor-pointer"
       >
         {/* Image Section */}
         <div className="relative aspect-[16/10] overflow-hidden bg-gray-100">
           {!isImageLoaded && <div className="absolute inset-0 bg-gray-100" />}
-          <img
+          <Image
             src={
               firstImgUrl ??
               'https://picsum.photos/seed/botanica-fallback/600/600'
             }
             alt={post.title}
-            draggable={false}
-            loading="lazy"
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="object-cover transform group-hover:scale-105 transition-transform duration-500"
             onLoad={handleImageLoad}
-            className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
+            unoptimized={!firstImgUrl?.startsWith('http')}
           />
           <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-full text-xs font-semibold text-emerald-700 shadow-sm">
             {post.category}
@@ -301,7 +300,7 @@ export default function PostCard({ post }: PostCardProps) {
             </div>
           </div>
         </div>
-      </article>
+      </Link>
     </>
   )
 }

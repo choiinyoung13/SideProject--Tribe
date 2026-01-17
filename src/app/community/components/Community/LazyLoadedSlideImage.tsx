@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import Image from 'next/image'
 
 export default function LazyLoadedSlideImage({
   src,
@@ -59,12 +60,15 @@ export default function LazyLoadedSlideImage({
       ref={imgRef}
     >
       {isInView && (
-        <img
-          className={`absolute top-0 left-0 w-full h-full object-contain rounded-[10px] transition-opacity duration-300 ease-in-out ${isLoaded ? 'opacity-100' : 'opacity-0'
+        <Image
+          className={`object-contain rounded-[10px] transition-opacity duration-300 ease-in-out ${isLoaded ? 'opacity-100' : 'opacity-0'
             }`}
           src={src}
           alt={alt}
+          fill
+          sizes="(max-width: 1024px) 100vw, 50vw"
           onLoad={handleLoaded}
+          unoptimized={!src.startsWith('http')}
         />
       )}
     </div>
